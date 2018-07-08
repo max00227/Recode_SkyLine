@@ -1,0 +1,24 @@
+ManifestFileVersion: 0
+CRC: 4272541817
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 13e5e625e43d12d182cc4efaaf695374
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 36c33a819640bead83b84b1645a12e6d
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+Assets:
+- Assets/Sources/text/btn_link_lobi_start.png
+- Assets/Sources/text/ability_icon_alert_league_1.png
+- Assets/Sources/text/btn_link_lobi_transfer.png
+- Assets/Sources/text/ability_icon_alert_league_2.png
+- Assets/Sources/text/btn_wiki.png
+- Assets/Sources/text/btn_swipe.png
+- Assets/Sources/text/btn_link_line_start.png
+Dependencies: []

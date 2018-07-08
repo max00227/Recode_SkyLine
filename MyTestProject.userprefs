@@ -1,0 +1,17 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/Wnd/FightWnd.cs">
+    <Files>
+      <File FileName="Assets/Script/Manager/TalkManager.cs" Line="46" Column="3" />
+      <File FileName="Assets/Script/Manager/TutorialManager.cs" Line="224" Column="29" />
+      <File FileName="Assets/Script/UITool/EventTriggerListner.cs" Line="102" Column="2" />
+      <File FileName="Assets/Script/Wnd/FightWnd.cs" Line="51" Column="3" />
+      <File FileName="Assets/Script/Test/TextBG.cs" Line="309" Column="14" />
+      <File FileName="Assets/Script/Test/GroundController.cs" Line="30" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
