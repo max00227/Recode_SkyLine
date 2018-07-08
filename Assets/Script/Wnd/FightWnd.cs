@@ -63,12 +63,11 @@ public class FightWnd : MonoBehaviour {
 
 	List<int> RandomInt(int iCount, int[] randomList){
 		List<int> intL = new List<int> ();
-
 		if (randomList.Length > iCount) {
 			for (int i = 0; i < iCount; i++) {
-				int idx = UnityEngine.Random.Range (0, randomList.Length-1);
+				int idx = UnityEngine.Random.Range (0, randomList.Length);
 				while (intL.Contains (idx)) {
-					idx = UnityEngine.Random.Range (0, randomList.Length-1);
+					idx = UnityEngine.Random.Range (0, randomList.Length);
 				}
 				intL.Add (randomList[idx]);
 			}
