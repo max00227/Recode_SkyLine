@@ -150,6 +150,30 @@ public class TextBG : MonoBehaviour {
 		}
 	}
 
+	[MenuItem("MyProject/CloseCollider")]
+	public static void CloseCollider(){
+		GameObject selGO = Selection.activeGameObject;
+		GroundController[] gc = selGO.transform.GetChild (1).GetComponentsInChildren<GroundController> ();
+
+		for (int i = 0; i < gc.Length; i++) {
+			if ((int)gc [i]._groundType == 99) {
+				DestroyImmediate (gc [i].GetComponent<PolygonCollider2D> ());
+			}
+		}
+	}
+
+	[MenuItem("MyProject/SetSprite")]
+	public static void SetSprite(){
+		GameObject selGO = Selection.activeGameObject;
+		GroundController[] uiGC = selGO.transform.GetChild (0).GetComponentsInChildren<GroundController> ();
+
+		foreach (GroundController gc in uiGC) {
+			gc.image = gc.GetComponent<UIPolygon> ();
+			gc.ChangeSprite ();
+			gc.image.color = Color.white;
+		}
+	}
+
 	[MenuItem("MyProject/CreateBG")]
 	public static void CreateBg(){
 		Debug.Log (File.Exists(Application.dataPath + "/bg2.prefab"));

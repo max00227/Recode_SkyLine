@@ -15,7 +15,7 @@ public class FightWnd : MonoBehaviour {
 	[SerializeField]
 	DirectGroundController[] angleGc = new DirectGroundController[6];
 
-	GroundController[] allGc;
+	GroundController[] allGcs;
 
 	GroundController orgGc;
 
@@ -25,12 +25,46 @@ public class FightWnd : MonoBehaviour {
 
     private CharaLargeData[] characters;
 
-    
+	List<GroundController> norGcs;
+
+	int CreateGround;
+
+	int ResetCount;
 
 	// Use this for initialization
 	void Start () {
-		allGc = groundPool.GetComponentsInChildren<GroundController> ();
+		allGcs = groundPool.GetComponentsInChildren<GroundController> ();
+		norGcs = new List<GroundController> ();
+		CreateGround = 3;
+		foreach (GroundController gc in allGcs) {
+			if ((int)gc._groundType == 0) {
+				norGcs.Add (gc);
+			}
+		}
         groundSpaces = new List<GroundSpace> ();
+	}
+
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.G)) {
+			FightStart (new DirectGroundController ());
+		}
+
+		if (Input.GetKeyDown (KeyCode.R)) {
+			ResetGround ();
+		}
+
+		if (Input.GetKeyDown (KeyCode.H)) {
+			NextRound (false);
+		}
+
+		if (Input.GetKeyDown (KeyCode.Mouse0)) {
+			TouchDown ();
+		}
+
+		if (Input.GetKeyUp (KeyCode.Mouse0)) {
+			TouchUp ();
+		}
 	}
 
     void SetChara() {
@@ -45,15 +79,14 @@ public class FightWnd : MonoBehaviour {
 
 		RaycastHit2D[] hits;
 
-		List<int> randomList = RandomInt (2, dirCenter.randomList);
-        ChangeType(dirCenter.gc);
+		List<int> randomList = RandomList (2, dirCenter.randomList);
+		ChangeType(dirCenter.gc.matchController);
 		
 		if(randomList.Count>0){
 			foreach (int randomI in randomList) {
-				hits = GetRaycastHits(dirCenter.gc.matchController.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + randomI * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + randomI * 60))), 0.97f);
+				hits = GetRaycastHits(dirCenter.gc.matchController.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + dirCenter.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + dirCenter.randomList[randomI] * 60))), 0.97f);
 				if (hits.Length > 0) {
 					foreach (var hit in hits) {
-						Debug.Log (hit.collider+","+hit.collider.transform.parent.name);
                         ChangeType(hit.collider.GetComponent<GroundController>());
 					}
 				}
@@ -61,41 +94,52 @@ public class FightWnd : MonoBehaviour {
 		}
 	}
 
-	List<int> RandomInt(int iCount, int[] randomList){
-		List<int> intL = new List<int> ();
-		if (randomList.Length > iCount) {
-			for (int i = 0; i < iCount; i++) {
-				int idx = UnityEngine.Random.Range (0, randomList.Length);
-				while (intL.Contains (idx)) {
-					idx = UnityEngine.Random.Range (0, randomList.Length);
+	private void NextRound(bool isSpace = true){
+        Debug.Log("NextRound");
+		List<GroundController> nextRoundGc = new List<GroundController> ();
+		List<GroundController> layerList = new List<GroundController> ();
+		GroundController maxLayerGc = null;
+		for (int i = 6; i > 0; i--) {
+			foreach (GroundController gc in norGcs) {
+				if (maxLayerGc == null) {
+                    Debug.Log("NextRound2");
+                    if (gc.matchController._layer == i) {
+						layerList.Add (gc);
+					}
+				} else {
+                    Debug.Log("NextRound3");
+                    if (gc.matchController._layer >= i && gc != maxLayerGc) {
+						layerList.Add (gc);
+					}
 				}
-				intL.Add (randomList[idx]);
 			}
-		} else if (randomList.Length == iCount) {
-			for (int i = 0; i < iCount; i++) {
-				intL.Add (randomList[i]);
+				
+			if (maxLayerGc == null) {
+                Debug.Log("NextRound6");
+                if (layerList.Count == 1) {
+					maxLayerGc = layerList [0];
+				} else if (layerList.Count > 1) {
+					maxLayerGc = RandomList (1, layerList.ToArray ()) [0];
+				}
+				layerList = new List<GroundController> ();
 			}
 		}
-		return intL;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown (KeyCode.G)) {
-			FightStart (new DirectGroundController ());
+
+		if (layerList.Count > 0) {
+            Debug.Log("NextRound4");
+            foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-1, layerList.ToArray())) {
+				nextRoundGc.Add (gc);
+			}
+		}
+		if (maxLayerGc != null) {
+            Debug.Log("NextRound5");
+            nextRoundGc.Add (maxLayerGc);
 		}
 
-		if (Input.GetKeyDown (KeyCode.R)) {
-			ResetGround ();
-		}
-
-
-		if (Input.GetKeyDown (KeyCode.Mouse0)) {
-			TouchDown ();
-		}
-
-		if (Input.GetKeyUp (KeyCode.Mouse0)) {
-			TouchUp ();
+		if (nextRoundGc != null && nextRoundGc.Count > 0) {
+			foreach (GroundController gc in nextRoundGc) {
+				ChangeType (gc.matchController);
+			}
 		}
 	}
 
@@ -207,6 +251,7 @@ public class FightWnd : MonoBehaviour {
 			ResetGround ();
 		} else {
             groundSpaces.Add (groundSpace);
+            NextRound();
 		}
 	}
 
@@ -239,7 +284,7 @@ public class FightWnd : MonoBehaviour {
 
 	private void ResetGround(){
         Debug.Log("ResetGround");
-		foreach (GroundController gc in allGc) {
+		foreach (GroundController gc in allGcs) {
 			gc.ResetType ();
 			gc.matchController.ResetType ();
 		}
@@ -251,6 +296,8 @@ public class FightWnd : MonoBehaviour {
     {
         gc.ChangeType(type, charaIdx);
         gc.matchController.ChangeType(type, charaIdx);
+
+		ChangeLayer (gc.transform.localPosition);
     }
 
     private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
@@ -259,6 +306,55 @@ public class FightWnd : MonoBehaviour {
 
         return hits;
     }
+
+	private void ChangeLayer(Vector2 center){
+		RaycastHit2D[] hits;
+		for (int i = 0; i < 6; i++) {
+			hits = GetRaycastHits(center, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + i * 60))), 0.97f);
+			foreach (var hit in hits) {
+				hit.collider.GetComponent<GroundController>().UpLayer();
+			}
+		}
+	}
+
+	List<int> RandomInt(int iCount, int length){
+		List<int> intL = new List<int> ();
+		if (length > iCount) {
+			for (int i = 0; i < iCount; i++) {
+				int idx = UnityEngine.Random.Range (0, length);
+				while (intL.Contains (idx)) {
+					idx = UnityEngine.Random.Range (0, length);
+				}
+
+				intL.Add (idx);
+			}
+		} else if (length <= iCount) {
+			for (int i = 0; i < length; i++) {
+				intL.Add (i);
+			}
+		}
+		return intL;
+	}
+
+	List<T> RandomList<T>(int iCount, T[] array){
+		List<T> ListT = new List<T> ();
+		if (array.Length > iCount) {
+			for (int i = 0; i < iCount; i++) {
+				int idx = UnityEngine.Random.Range (0, array.Length);
+				while (ListT.Contains (array[idx])) {
+					idx = UnityEngine.Random.Range (0, array.Length);
+				}
+
+				ListT.Add (array[idx]);
+			}
+		} else if (array.Length <= iCount) {
+			Debug.Log ("Over");
+			for (int i = 0; i < array.Length; i++) {
+				ListT.Add (array[i]);
+			}
+		}
+		return ListT;
+	}
 
 
     [Serializable]
