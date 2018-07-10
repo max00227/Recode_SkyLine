@@ -71,12 +71,12 @@ public class testLoader : MonoBehaviour {
 	}
 
 	public void testAbility(){
-		var data = AbilityConvert.GetCharaAbility (MasterDataManager.GetCaraLargeData[1],12);
+		/*var data = AbilityConvert.GetCharaAbility (MasterDataManager.GetCaraLargeData[1],12);
 
 		Debug.Log (string.Format ("ATK:{0} , DEF:{1} , MATK:{2} , MDEF:{3} , HP:{4}", data["Atk"], data["Def"], data["MAtk"], data["MDef"], data["Hp"]));
 		Debug.Log (MasterDataManager.GetCaraLargeData [1].name);
 		foreach (var v in MasterDataManager.GetCaraLargeData [1].Act) {
 			Debug.Log (v);		
-		}
+		}*/
 	}
 }

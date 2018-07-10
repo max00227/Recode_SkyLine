@@ -15,9 +15,17 @@ public class FightWnd : MonoBehaviour {
 	[SerializeField]
 	DirectGroundController[] angleGc = new DirectGroundController[6];
 
+	[SerializeField]
+	Transform CharaGroup;
+
+	[SerializeField]
+	Transform CharaPool;
+
 	GroundController[] allGcs;
 
-	GroundController orgGc;
+	GroundController startGc;
+
+	GroundController endGc;
 
 	bool isResetGround=false;
 
@@ -31,8 +39,32 @@ public class FightWnd : MonoBehaviour {
 
 	int ResetCount;
 
+	Stack<Image> Group = new Stack<Image> ();
+
+	Stack<Image> Pool = new Stack<Image> ();
+
+	[SerializeField]
+	Image charaImage;
+
+	int? charaIdx;
+
+	Image startCharaImage;
+	Image endCharaImage;
+
+	public Sprite[] CharaSprite;
+
+	bool CheckSpace = false;
+
 	// Use this for initialization
 	void Start () {
+		for (int i = 0; i < 32; i++) {
+			Image _charaImage = Instantiate (charaImage) as Image;
+			_charaImage.GetComponent<RectTransform> ().SetParent (CharaPool);
+			_charaImage.transform.localPosition = Vector3.zero;
+			_charaImage.gameObject.SetActive (false);
+			Pool.Push (_charaImage);
+		}
+
 		allGcs = groundPool.GetComponentsInChildren<GroundController> ();
 		norGcs = new List<GroundController> ();
 		CreateGround = 3;
@@ -60,6 +92,10 @@ public class FightWnd : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Mouse0)) {
 			TouchDown ();
+		}
+
+		if (Input.GetKey (KeyCode.Mouse0)) {
+			TouchDrap ();
 		}
 
 		if (Input.GetKeyUp (KeyCode.Mouse0)) {
@@ -95,27 +131,27 @@ public class FightWnd : MonoBehaviour {
 	}
 
 	private void NextRound(bool isSpace = true){
-        Debug.Log("NextRound");
 		List<GroundController> nextRoundGc = new List<GroundController> ();
 		List<GroundController> layerList = new List<GroundController> ();
 		GroundController maxLayerGc = null;
+		int noneCount = 1;
 		for (int i = 6; i > 0; i--) {
 			foreach (GroundController gc in norGcs) {
 				if (maxLayerGc == null) {
-                    Debug.Log("NextRound2");
                     if (gc.matchController._layer == i) {
 						layerList.Add (gc);
 					}
 				} else {
-                    Debug.Log("NextRound3");
                     if (gc.matchController._layer >= i && gc != maxLayerGc) {
+						if (i == 1) {
+							noneCount++;
+						}
 						layerList.Add (gc);
 					}
 				}
 			}
 				
 			if (maxLayerGc == null) {
-                Debug.Log("NextRound6");
                 if (layerList.Count == 1) {
 					maxLayerGc = layerList [0];
 				} else if (layerList.Count > 1) {
@@ -124,15 +160,14 @@ public class FightWnd : MonoBehaviour {
 				layerList = new List<GroundController> ();
 			}
 		}
+		Debug.Log (noneCount);
 
 		if (layerList.Count > 0) {
-            Debug.Log("NextRound4");
-            foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-1, layerList.ToArray())) {
+			foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-1, layerList.ToArray(),noneCount)) {
 				nextRoundGc.Add (gc);
 			}
 		}
 		if (maxLayerGc != null) {
-            Debug.Log("NextRound5");
             nextRoundGc.Add (maxLayerGc);
 		}
 
@@ -144,20 +179,38 @@ public class FightWnd : MonoBehaviour {
 	}
 
 	private void TouchDown(){
-		var result = CanvasManager.Instance.GetRaycastResult ();
-		if (result.Count > 0) {
-			foreach (var r in result) {
-				if (r.gameObject.tag == "fightG") {
-					if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 0
-					    || (int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
-						orgGc = r.gameObject.GetComponent<GroundController> ().matchController;
+		if (charaIdx != null) {
+			var result = CanvasManager.Instance.GetRaycastResult ();
+			if (result.Count > 0) {
+				foreach (var r in result) {
+					if (r.gameObject.tag == "fightG") {
+						if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 0
+						   || (int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
+							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
 
-						if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
-							isResetGround = true;
+							startCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
+							endCharaImage = PopImage (Pool);
+					
+							if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
+								isResetGround = true;
+							}
+						} else {
+							Debug.Log ("Start Error");
 						}
-					} 
-					else {
-						Debug.Log ("Start Error");
+					}
+				}
+			}
+		}
+	}
+
+	private void TouchDrap(){
+		if (endCharaImage != null) {
+			var result = CanvasManager.Instance.GetRaycastResult ();
+			if (result.Count > 0) {
+				foreach (var r in result) {
+					if (r.gameObject.tag == "fightG") {
+						endGc = r.gameObject.GetComponent<GroundController> ().matchController;
+						endCharaImage.transform.localPosition = r.gameObject.transform.localPosition;
 					}
 				}
 			}
@@ -165,57 +218,58 @@ public class FightWnd : MonoBehaviour {
 	}
 
 	private void TouchUp(){
-		var result = CanvasManager.Instance.GetRaycastResult ();
-		if (result.Count > 0) {
-			foreach (var r in result) {
-				if (r.gameObject.tag == "fightG") {
-                    if (((int)r.gameObject.GetComponent<GroundController>()._groundType == 0
-                        || (int)r.gameObject.GetComponent<GroundController>()._groundType == 99)
-                        && orgGc != null
-                        && orgGc.gameObject != r.gameObject.GetComponent<GroundController>().matchController.gameObject)
-                    {
+		if (endCharaImage != null) {
+			var result = CanvasManager.Instance.GetRaycastResult ();
+			if (result.Count > 0) {
+				foreach (var r in result) {
+					if (r.gameObject.tag == "fightG") {
+						if (((int)endGc._groundType == 0
+						   || (int)endGc._groundType == 99)
+						   && startGc != null
+						   && startGc.gameObject != endGc.matchController.gameObject) {
                         
-                        CalculatePlace(orgGc, r.gameObject.GetComponent<GroundController>().matchController);
+							CalculatePlace ();
 
-                        if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99)
-                        {
-                            isResetGround = true;
-                        }
-                    }
-                    else
-                    {
-                        isResetGround = false;
-                        orgGc = null;
-                        Debug.Log("End Error");
-                    }
+							if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
+								isResetGround = true;
+							}
+						} else {
+							isResetGround = false;
+							startGc = null;
+							endGc = null;
+							PopImage (Group);
+							PopImage (Group);
+							Debug.Log ("End Error");
+						}
+					}
 				}
 			}
 		}
 	}
 
-	private void CalculatePlace(GroundController startGO, GroundController endGo, int? charaIdx = null){
-		Vector2 dir = ConvertDirNormalized (startGO.transform.localPosition, endGo.transform.localPosition);
+	private void CalculatePlace(int? charaIdx = null){
+		Vector2 dir = ConvertDirNormalized (startGc.transform.localPosition, endGc.transform.localPosition);
 		if (IsCorrectEnd (dir)) {
-			float dis = Vector2.Distance (startGO.transform.localPosition, endGo.transform.localPosition);
+			float dis = Vector2.Distance (startGc.transform.localPosition, endGc.transform.localPosition);
 			RaycastHit2D[] hits;
-			hits = GetRaycastHits(startGO.transform.localPosition, dir, dis);
+			hits = GetRaycastHits(startGc.transform.localPosition, dir, dis);
 			if (hits.Length > 0) {
-                ChangeType(endGo, GroundType.Chara, charaIdx);
-                ChangeType(startGO, GroundType.Chara, charaIdx);
+                ChangeType(endGc, GroundType.Chara, charaIdx);
+                ChangeType(startGc, GroundType.Chara, charaIdx);
 
-                CalculateDamage(hits, endGo);
+                CalculateDamage(hits);
 			}
 		}			
 	}
 
    
 
-	private void CalculateDamage(RaycastHit2D[] hits, GroundController endGc){
+	private void CalculateDamage(RaycastHit2D[] hits){
 		bool isNone = false;
 		int extraDamage = 0;
 
 		GroundSpace groundSpace = new GroundSpace ();
-        groundSpace.start = orgGc;
+		groundSpace.start = startGc;
         groundSpace.end = endGc;
         groundSpace.hits = new List<GroundController>();
 		foreach (var hit in hits) {
@@ -223,8 +277,6 @@ public class FightWnd : MonoBehaviour {
                 groundSpace.hits.Add(hit.collider.GetComponent<GroundController>());
             }
 		}
-
-        Debug.Log(groundSpace.hits.Count);
 
 		if (Array.TrueForAll (hits, HasDamage)) {
 			foreach (var hit in hits) {
@@ -241,10 +293,18 @@ public class FightWnd : MonoBehaviour {
                 }
 
 			}
+
+			groundSpace.isActive = true;
 			Debug.Log ("Damage " + extraDamage);
 		} 
 		else {
+			groundSpace.isActive = false;
             Debug.Log("Damage " + extraDamage);
+		}
+
+		if (CheckSpace == false && groundSpaces.Count > 0) {
+			CheckActiveFalse ();
+			CheckSpace = true;
 		}
 
 		if (isResetGround) {
@@ -252,6 +312,18 @@ public class FightWnd : MonoBehaviour {
 		} else {
             groundSpaces.Add (groundSpace);
             NextRound();
+		}
+	}
+
+	private void CheckActiveFalse(){
+		Debug.Log (groundSpaces.Count);
+		foreach (GroundSpace space in groundSpaces) {
+			if (space.isActive == false) {
+				Debug.Log ("Start : " + space.start.name + " , End : " + space.end.name);
+				/*startGc = space.start;
+				endGc = space.end;
+				CalculatePlace ();*/
+			}
 		}
 	}
 
@@ -290,6 +362,9 @@ public class FightWnd : MonoBehaviour {
 		}
         isResetGround = false;
         groundSpaces = new List<GroundSpace> ();
+		while (Group.Count > 0) {
+			PopImage (Group);
+		}
 	}
 
     private void ChangeType(GroundController gc, GroundType type = GroundType.None, int? charaIdx = null)
@@ -317,43 +392,51 @@ public class FightWnd : MonoBehaviour {
 		}
 	}
 
-	List<int> RandomInt(int iCount, int length){
-		List<int> intL = new List<int> ();
-		if (length > iCount) {
-			for (int i = 0; i < iCount; i++) {
-				int idx = UnityEngine.Random.Range (0, length);
-				while (intL.Contains (idx)) {
-					idx = UnityEngine.Random.Range (0, length);
-				}
-
-				intL.Add (idx);
-			}
-		} else if (length <= iCount) {
-			for (int i = 0; i < length; i++) {
-				intL.Add (i);
-			}
-		}
-		return intL;
-	}
-
-	List<T> RandomList<T>(int iCount, T[] array){
+	List<T> RandomList<T>(int randomCount, T[] array, int? lastCount= null){
 		List<T> ListT = new List<T> ();
-		if (array.Length > iCount) {
-			for (int i = 0; i < iCount; i++) {
+		int count = lastCount==null?array.Length:(int)lastCount;
+		if (count > randomCount) {
+			for (int i = 0; i < randomCount; i++) {
 				int idx = UnityEngine.Random.Range (0, array.Length);
-				while (ListT.Contains (array[idx])) {
+				while (ListT.Contains (array [idx])) {
 					idx = UnityEngine.Random.Range (0, array.Length);
 				}
 
-				ListT.Add (array[idx]);
+				ListT.Add (array [idx]);
 			}
-		} else if (array.Length <= iCount) {
-			Debug.Log ("Over");
+		} else if (count <= randomCount) {
 			for (int i = 0; i < array.Length; i++) {
-				ListT.Add (array[i]);
+				if (!ListT.Contains (array [i])) {
+					ListT.Add (array [i]);
+				}
 			}
 		}
 		return ListT;
+	}
+
+	private Image PopImage(Stack<Image> stack,Vector3? position = null){
+		Image image = stack.Pop ();
+		if (stack == Pool) {
+			image.GetComponent<RectTransform> ().SetParent (CharaGroup);
+			if (position != null) {
+				image.transform.localPosition = (Vector3)position;
+			}
+			image.sprite = CharaSprite [(int)charaIdx];
+			image.gameObject.SetActive (true);
+				Group.Push (image);
+			return image;
+		} else {
+			image.GetComponent<RectTransform> ().SetParent (CharaPool);
+			image.transform.localPosition = Vector3.zero;
+			image.gameObject.SetActive (false);
+			image.sprite = null;
+			Pool.Push (image);
+			return null;
+		}
+	}
+
+	public void SelectChara(int idx){
+		charaIdx = idx;
 	}
 
 

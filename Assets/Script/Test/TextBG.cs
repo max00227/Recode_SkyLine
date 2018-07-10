@@ -157,7 +157,8 @@ public class TextBG : MonoBehaviour {
 
 		for (int i = 0; i < gc.Length; i++) {
 			if ((int)gc [i]._groundType == 99) {
-				DestroyImmediate (gc [i].GetComponent<PolygonCollider2D> ());
+				//DestroyImmediate (gc [i].GetComponent<PolygonCollider2D> ());
+				gc[i].gameObject.AddComponent<PolygonCollider2D>();
 			}
 		}
 	}

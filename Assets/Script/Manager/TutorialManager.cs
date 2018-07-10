@@ -194,7 +194,7 @@ public class TutorialManager: Singleton<TutorialManager>
 
 
 		if (process.listnerType == EventListnerType.onClick) {
-			TutorialTriggerListener.GetListener (recListArray[recListArray.Length-1]).onClick += go => {
+			TutorialTriggerListener.GetListener (process.focusGameObject).onClick += go => {
 				if (process.focusGameObject == focusGameObject) {
 					if (nProcess._tutorialType == TutorialType.End) {
 						StepEnd (process);
