@@ -580,3 +580,9 @@ public enum GroundType{
 	Chara = 10,
 	Caution = 99,
 }
+
+public struct RaycastData {
+    public GroundController start;
+    public GroundController end;
+    public int damage;
+}
