@@ -18,8 +18,11 @@ public class GroundController : MonoBehaviour
     [HideInInspector]
     public int _layer;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isActived;
+
+    [HideInInspector]
+    public bool raycasted;
 
     [HideInInspector]
     public UIPolygon image;
@@ -31,6 +34,9 @@ public class GroundController : MonoBehaviour
 
 	bool isChanged;
 
+    [SerializeField]
+    bool activeLock;
+
     // Use this for initialization
     void Awake()
     {
@@ -41,14 +47,19 @@ public class GroundController : MonoBehaviour
         _layer = 1;
         isActived = false;
 		isChanged = false;
+        activeLock = false;
+        raycasted = false;
     }
 
     // Update is called once per frame
     public void ResetType()
     {
         _groundType = defaultType;
-        
-		isChanged = false;
+
+        activeLock = false;
+        raycasted = false;
+        isActived = false;
+        isChanged = false;
         charaIdx = null;
 
 		_layer = (int)_groundType == 0 ? 1 : 0;
@@ -77,6 +88,10 @@ public class GroundController : MonoBehaviour
 
     public void SetType()
     {
+        if (isActived) {
+            activeLock = true;
+        }
+        raycasted = false;
 		isChanged = false;
 		if ((int)_groundType == 0) {
 			_layer = 1;
@@ -114,12 +129,19 @@ public class GroundController : MonoBehaviour
 			for (int j = 0; j < hits.Length; j++) {
 				hitGcs.Add (hits [j]);
 				if ((int)hits [j].transform.GetComponent<GroundController> ()._groundType == 10) {
-					if (hits [j].transform.GetComponent<GroundController> ().charaIdx == charaIdx) {
+                    if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
+                    {
+                        break;
+                    }
+                    else {
 						if (j > 0) {
 							RaycastData data = new RaycastData ();
 							data.start = GetComponent<GroundController> ();
 							data.end = hits [j].transform.GetComponent<GroundController> ();
 							data.damage = CalculateDamage (hitGcs.ToArray (), isPrev);
+                            if (data.damage > 0) {
+                                Debug.Log(gameObject.name + "," + hitGcs[hitGcs.Count - 1].collider.name + " : " + data.damage);
+                            }
 							data.charaIdx = (int)charaIdx;
 							dataList.Add (data);
 						}
@@ -131,6 +153,7 @@ public class GroundController : MonoBehaviour
 		return dataList;
 	}
 
+
     private int CalculateDamage(RaycastHit2D[] hits, bool isPrev)
     {
         int extraDamage = 0;
@@ -140,32 +163,97 @@ public class GroundController : MonoBehaviour
 			}
 		} else { 
 			if (Array.TrueForAll (hits, HasDamage)) {
-				foreach (var hit in hits) {
-					if ((int)hit.collider.GetComponent<GroundController> ()._groundType != 10) {
-						if (!hits [hits.Length - 1].collider.GetComponent<GroundController> ().isActived) {
-							Debug.Log (gameObject.name);
+                bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
+                bool according = hasChange ? hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived : hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted;
+                foreach (var hit in hits)
+                {
+                    if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
+                    {
+                        if (according)
+                        {
+                            if (hasChange) {
+                                hit.collider.GetComponent<GroundController>().ChangeType();
+                                hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted = true;
+                            }
 
-							hit.collider.GetComponent<GroundController> ().ChangeType ();
-						
-							switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
-							case 2:
-								extraDamage = extraDamage + 50;
-								break;
-							case 3:
-								extraDamage = extraDamage + 75;
-								break;
-							}
-						} 
-						else {
-							break;
-						}
-					} else {
-						ChangeActive ();
-					}
-				}
+                            switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
+                            {
+                                case 2:
+                                    extraDamage = extraDamage + 50;
+                                    break;
+                                case 3:
+                                    extraDamage = extraDamage + 50;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ChangeActive();
+                    }
+                }
 			}
 		}
-       
+        return extraDamage;
+    }
+
+    public int ActivedDamage(RaycastHit2D[] hits) {
+        int extraDamage = 0;
+        foreach (var hit in hits)
+        {
+            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
+            {
+                if (hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted)
+                {
+                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
+                    {
+                        case 2:
+                            extraDamage = extraDamage + 50;
+                            break;
+                        case 3:
+                            extraDamage = extraDamage + 50;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                ChangeActive();
+            }
+        }
+
+        return extraDamage;
+    }
+
+    public int NewDamage(RaycastHit2D[] hits)
+    {
+        int extraDamage = 0;
+
+        foreach (var hit in hits)
+        {
+            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
+            {
+                if (hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived)
+                {
+                    hit.collider.GetComponent<GroundController>().ChangeType();
+
+                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
+                    {
+                        case 2:
+                            extraDamage = extraDamage + 50;
+                            break;
+                        case 3:
+                            extraDamage = extraDamage + 50;
+                            break;
+                    }
+                    hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted = true;
+                }
+            }
+            else
+            {
+                ChangeActive();
+            }
+        }
 
         return extraDamage;
     }
@@ -202,8 +290,13 @@ public class GroundController : MonoBehaviour
 	}
 
 	public void ChangeActive(){
-		isActived = true;
-		isChanged = true;
+        if (!activeLock)
+        {
+            isActived = true;
+        }
+        raycasted = true;
+
+        isChanged = true;
 	}
 
     public void PrevType() {
@@ -217,8 +310,12 @@ public class GroundController : MonoBehaviour
 				break;
 			}
 			isChanged = false;
-			isActived = false;
+            raycasted = false;
 
+            if (!activeLock)
+            {
+                isActived = false;
+            }
 			selfGc.matchController.ChangeSprite(_groundType);
 		}
     }

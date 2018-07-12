@@ -207,8 +207,8 @@ public class FightWnd : MonoBehaviour {
 			if (result.Count > 0) {
 				foreach (var r in result) {
 					if (r.gameObject.tag == "fightG") {
-						if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 0
-						   || (int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
+						if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
+						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
                             charaGc.Push(startGc);
 							startGc.ChangeType(charaIdx);
@@ -305,9 +305,19 @@ public class FightWnd : MonoBehaviour {
     private void CheckGround() {
 		charaDamages = new Dictionary<int, List<int>> ();
         foreach (GroundController gc in charaGc) {
-			ResponseData (gc.OnChangeType ());
+            if (gc.isActived == false)
+            {
+                ResponseData(gc.OnChangeType());
+            }
         }
-		ChangeCharaDamage ();
+        foreach (GroundController gc in charaGc)
+        {
+            if (gc.isActived == true && gc.raycasted == false)
+            {
+                ResponseData(gc.OnChangeType());
+            }
+        }
+        ChangeCharaDamage ();
     }
 		
 	private void ResponseData(List<RaycastData> raycastData){
