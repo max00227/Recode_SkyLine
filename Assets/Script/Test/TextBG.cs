@@ -170,7 +170,7 @@ public class TextBG : MonoBehaviour {
 
 		foreach (GroundController gc in uiGC) {
 			gc.image = gc.GetComponent<UIPolygon> ();
-			gc.ChangeSprite ();
+			//gc.ChangeSprite ();
 			gc.image.color = Color.white;
 		}
 	}

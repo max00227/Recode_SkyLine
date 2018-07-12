@@ -47,7 +47,7 @@ public class FightWnd : MonoBehaviour {
 	[SerializeField]
 	Image charaImage;
 
-	int? charaIdx;
+	int charaIdx;
 
 	Image startCharaImage;
 	Image endCharaImage;
@@ -56,8 +56,6 @@ public class FightWnd : MonoBehaviour {
 
 
     public Sprite[] CharaSprite;
-
-	bool CheckSpace = false;
 
     int[] charaDamage;
 
@@ -88,7 +86,7 @@ public class FightWnd : MonoBehaviour {
 		CreateGround = 3;
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType == 0) {
-				norGcs.Add (gc);
+				norGcs.Add (gc.matchController);
 			}
 		}
 	}
@@ -104,6 +102,7 @@ public class FightWnd : MonoBehaviour {
         }
 
         if (Input.GetKeyDown(KeyCode.H)) {
+			ChangeLayer ();
             NextRound(false);
         }
 
@@ -135,18 +134,14 @@ public class FightWnd : MonoBehaviour {
 
 		List<int> randomList = RandomList (2, dirCenter.randomList);
 
-        ChangeType(dirCenter.gc.matchController);
-        ChangeLayer(dirCenter.gc.matchController.transform.localPosition);
+		dirCenter.gc.matchController.ChangeType ();
 
         if (randomList.Count>0){
 			foreach (int randomI in randomList) {
 				hits = GetRaycastHits(dirCenter.gc.matchController.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + dirCenter.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + dirCenter.randomList[randomI] * 60))), 0.97f);
 				if (hits.Length > 0) {
-                    int i = 0;
 					foreach (var hit in hits) {
-                        i++;
-                        ChangeType(hit.collider.GetComponent<GroundController>());
-                        ChangeLayer(hit.transform.localPosition);
+						hit.collider.GetComponent<GroundController> ().ChangeType ();
                     }
                 }
 			}
@@ -161,17 +156,16 @@ public class FightWnd : MonoBehaviour {
 		List<GroundController> nextRoundGc = new List<GroundController> ();
 		List<GroundController> layerList = new List<GroundController> ();
 		GroundController maxLayerGc = null;
-        CheckSpace = false;
 
-        int noneCount = 1;
-		for (int i = 6; i > 0; i--) {
+        /*int noneCount = 1;
+		for (int i = 7; i > 0; i--) {
 			foreach (GroundController gc in norGcs) {
 				if (maxLayerGc == null) {
-                    if (gc.matchController._layer == i) {
+                    if (gc._layer == i) {
 						layerList.Add (gc);
 					}
 				} else {
-                    if (gc.matchController._layer >= i && gc != maxLayerGc) {
+                    if (gc._layer >= i && gc != maxLayerGc) {
 						if (i == 1) {
 							noneCount++;
 						}
@@ -192,19 +186,19 @@ public class FightWnd : MonoBehaviour {
 
 		if (layerList.Count > 0) {
 			foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-1, layerList.ToArray(),noneCount)) {
-				nextRoundGc.Add (gc);
+				nextRoundGc.Add (gc.matchController);
 			}
 		}
 		if (maxLayerGc != null) {
-            nextRoundGc.Add (maxLayerGc);
+			nextRoundGc.Add (maxLayerGc.matchController);
 		}
 
 		if (nextRoundGc != null && nextRoundGc.Count > 0) {
 			foreach (GroundController gc in nextRoundGc) {
-				ChangeType (gc.matchController);
+				gc.ChangeType ();
                 ChangeLayer(gc.matchController.transform.localPosition);
             }
-        }
+        }*/
 	}
 
 	private void TouchDown(){
@@ -217,7 +211,7 @@ public class FightWnd : MonoBehaviour {
 						   || (int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
                             charaGc.Push(startGc);
-                            ChangeType(startGc, GroundType.Chara, charaIdx);
+							startGc.ChangeType(charaIdx);
 
 							startCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
 							endCharaImage = PopImage (Pool);
@@ -245,35 +239,37 @@ public class FightWnd : MonoBehaviour {
                         if (endGc != r.gameObject.GetComponent<GroundController>().matchController
                             && startGc != r.gameObject.GetComponent<GroundController>().matchController) {
 
-                            if (endGc!=null && charaGc.Peek() == endGc)
-                            {
-                                ResetType(endGc);
+							foreach (GroundController gc in charaGc) {
+								gc.OnPrevType ();
+							}
+
+							if (endGc!=null && charaGc.Peek() == endGc)
+							{
+								endGc.ResetType ();
                                 charaGc.Pop();
                             }
+								
                             endCharaImage.transform.localPosition = r.gameObject.transform.localPosition;
-                            if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 0 || (int)r.gameObject.GetComponent<GroundController>()._groundType == 99){
-                                endGc = r.gameObject.GetComponent<GroundController>().matchController;
+							if ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 0 || (int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 99){
+								endGc = r.gameObject.GetComponent<GroundController>().matchController;
 
                                 Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, endGc.transform.localPosition);
 
+
                                 if (IsCorrectEnd(dir))
                                 {
-                                    ChangeType(endGc, GroundType.Chara, charaIdx);
+									endGc.ChangeType (charaIdx);
                                     charaGc.Push(endGc);
                                     CheckGround();
+									spaceCorrect = true;
                                 }
                                 else {
-                                    Debug.Log("1, " + charaGc.Count);
-                                    PrevGround();
                                     ResetDamage();
                                     spaceCorrect = false;
                                 }
                             }
                             else
                             {
-                                PrevGround();
-
-                                ResetDamage();
                                 endGc = null;
                                 spaceCorrect = false;
                             }
@@ -293,13 +289,10 @@ public class FightWnd : MonoBehaviour {
 				foreach (var r in result) {
                     if (spaceCorrect == true)
                     {
-                        ChangeLayer(startGc.transform.localPosition);
-                        ChangeLayer(endGc.transform.localPosition);
-                        if (charaDamages.Count > 0)
-                        {
-                            SetCharaDamage();
-                        }
-                        NextRound();
+						ChangeLayer ();
+						NextRound ();
+
+						RoundEnd();
                     }
                     else {
                         Debug.Log("End Error");
@@ -310,94 +303,21 @@ public class FightWnd : MonoBehaviour {
     }
 
     private void CheckGround() {
-        charaDamages = new Dictionary<int, List<int>>();
-        raycasted = new List<GroundController[]>();
+		charaDamages = new Dictionary<int, List<int>> ();
         foreach (GroundController gc in charaGc) {
-            RaycastRound(gc);
+			ResponseData (gc.OnChangeType ());
         }
-        spaceCorrect = true;
+		ChangeCharaDamage ();
     }
-
-    private void RaycastRound(GroundController _center) {
-        RaycastHit2D[] hits;
-        for (int i = 0; i < 6; i++)
-        {
-            hits = GetRaycastHits(_center.transform.localPosition, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
-
-            List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
-            for (int j = 0; j < hits.Length; j++)
-            {
-                hitGcs.Add(hits[j]);
-                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 10)
-                {
-                    if (hits[j].transform.GetComponent<GroundController>().charaIdx == _center.charaIdx)
-                    {
-                        if (charaDamages.Count == 0 || !charaDamages.ContainsKey((int)_center.charaIdx))
-                        {
-                            charaDamages.Add((int)_center.charaIdx, new List<int>());
-                        }
-                        if (hitGcs.Count > 1)
-                        {
-                            if (raycasted.Count > 0)
-                            {
-                                foreach (var gcs in raycasted)
-                                {
-                                    if (!gcs.Contains(_center) || !gcs.Contains(hits[j].transform.GetComponent<GroundController>()))
-                                    {
-                                        charaDamages[(int)_center.charaIdx].Add(CalculateDamage(hitGcs.ToArray(), _center.isActived));
-                                        raycasted.Add(new GroundController[2] { _center, hits[j].transform.GetComponent<GroundController>()});
-                                    }
-                                }
-                            }
-                            else {
-                                charaDamages[(int)_center.charaIdx].Add(CalculateDamage(hitGcs.ToArray(), _center.isActived));
-                                raycasted.Add(new GroundController[2] { _center, hits[j].transform.GetComponent<GroundController>()});
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        ChangeCharaDamage();
-    }
-
-
-    private int CalculateDamage(RaycastHit2D[] hits, bool isActived)
-    {
-        int extraDamage = 0;
-       
-        if (Array.TrueForAll(hits, HasDamage))
-        {
-            foreach (var hit in hits)
-            {
-                if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
-                {
-                    if (!hits[hits.Length - 1].transform.GetComponent<GroundController>().isActived)
-                    {
-                        ChangeType(hit.collider.GetComponent<GroundController>());
-                    }
-
-                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
-                    {
-                        case 2:
-                            extraDamage = extraDamage + 50;
-                            break;
-                        case 3:
-                            extraDamage = extraDamage + 75;
-                            break;
-                    }
-                }
-            }
-        }
-        else
-        {
-            PrevGround();
-        }
-
-        return extraDamage;
-    }
+		
+	private void ResponseData(List<RaycastData> raycastData){
+		foreach (RaycastData data in raycastData) {
+			if (charaDamages.Count == 0 || !charaDamages.ContainsKey (data.charaIdx)) {
+				charaDamages.Add (data.charaIdx, new List<int> ());
+			}
+			charaDamages [data.charaIdx].Add (data.damage);
+		}
+	}
 
     private void ChangeCharaDamage()
     {
@@ -407,32 +327,18 @@ public class FightWnd : MonoBehaviour {
         }
     }
 
-    private void SetCharaDamage()
+    private void RoundEnd()
     {
-        if (charaDamage[(int)charaIdx] != charaDamages[(int)charaIdx].Take(charaDamages[(int)charaIdx].Count).Sum())
-        {
-            startGc.isActived = true;
-            endGc.isActived = true;
-        }
-
-        foreach (GroundController gc in norGcs) {
-            gc.SetType();
-        }
-
-        foreach (KeyValuePair<int, List<int>> kv in charaDamages)
-        {
-            charaDamage[kv.Key] = kv.Value.Take(kv.Value.Count).Sum();
-        }
-    }
-
-    private bool HasDamage(RaycastHit2D hit){
-        //Debug.Log((int)hit.collider.GetComponent<GroundController>()._groundType);
-		if ((int)hit.collider.GetComponent<GroundController> ()._groundType == 0) {
-			return false;
-		} else {
-			return true;
+		if (charaDamages.Count > 0) {
+			foreach (KeyValuePair<int, List<int>> kv in charaDamages) {
+				charaDamage [kv.Key] = kv.Value.Take (kv.Value.Count).Sum ();
+			}
 		}
-	}
+
+		foreach (GroundController gc in norGcs) {
+			gc.SetType();
+		}
+    }
 
     private void ResetDamage() {
         for (int i = 0; i < charaDamage.Length; i++) {
@@ -461,44 +367,22 @@ public class FightWnd : MonoBehaviour {
 
 	private void ResetGround(){
 		foreach (GroundController gc in allGcs) {
-			gc.ResetType (true);
-			gc.matchController.ResetType (true);
+			gc.ResetType ();
+			gc.matchController.ResetType ();
 		}
 
-        charaDamage = new int[5] { 0, 0, 0, 0, 0 };
+		charaDamage = new int[5] { 0, 0, 0, 0, 0 };
 
-        charaDamages = new Dictionary<int, List<int>>();
+		charaDamages = new Dictionary<int, List<int>> ();
 
-        spaceCorrect = false;
-        charaGc = new Stack<GroundController>();
+		spaceCorrect = false;
+		charaGc = new Stack<GroundController> ();
 
-        isResetGround = false;
+		isResetGround = false;
 		while (Group.Count > 0) {
 			PopImage (Group);
 		}
 	}
-
-    private void PrevGround() {
-        foreach (GroundController gc in norGcs)
-        {
-            if (!charaGc.Contains(gc.matchController)) {
-               
-                gc.ResetType();
-                gc.matchController.ResetType();
-            }
-        }
-    }
-
-    private void ResetType(GroundController gc) {
-        gc.ResetType();
-        gc.matchController.ResetType();
-    }
-
-    private void ChangeType(GroundController gc, GroundType type = GroundType.None, int? charaIdx = null)
-    {
-        gc.ChangeType(type, charaIdx);
-        gc.matchController.ChangeType(type, charaIdx);
-    }
 
     private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
         LayerMask mask = 1 << 8;
@@ -506,6 +390,14 @@ public class FightWnd : MonoBehaviour {
 
         return hits;
     }
+
+	private void ChangeLayer(){
+		foreach (GroundController gc in norGcs) {
+			if ((int)gc._groundType != 0 && (int)gc._groundType != 99) {
+				ChangeLayer (gc.transform.localPosition);
+			}
+		}
+	}
 
 	private void ChangeLayer(Vector2 center){
 		RaycastHit2D[] hits;
@@ -585,4 +477,5 @@ public struct RaycastData {
     public GroundController start;
     public GroundController end;
     public int damage;
+	public int charaIdx;
 }

@@ -11,7 +11,7 @@ public class GroundController : MonoBehaviour
 
     public GroundController matchController;
 
-    public GroundController selfGc;
+    GroundController selfGc;
 
     public int? charaIdx;
 
@@ -26,113 +26,64 @@ public class GroundController : MonoBehaviour
 
     GroundType defaultType;
 
-    GroundType? prevType;
-
     [SerializeField]
     Sprite[] GetSprites;
 
-    int typeIdx;
-
-    public delegate void RaycastRound();
-
-    public event RaycastRound onRaycastRound;
+	bool isChanged;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
+		
         selfGc = GetComponent<GroundController>();
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
-        prevType = null;
         isActived = false;
-        typeIdx = 1;
+		isChanged = false;
     }
 
     // Update is called once per frame
-    public void ResetType(bool isResetGround = false)
+    public void ResetType()
     {
-        if (gameObject.name == "29")
-        {
-            Debug.Log("Reset");
-        }
-        if (isResetGround)
-        {
-            _groundType = defaultType;
-            typeIdx = 1;
-            prevType = null;
-        }
-        else
-        {
-            if (prevType != null)
-            {
-                _groundType = (GroundType)prevType;
-                typeIdx = (int)_groundType + 1;
-                prevType = null;
-            }
-        }
+        _groundType = defaultType;
+        
+		isChanged = false;
         charaIdx = null;
-        _layer = 1;
+
+		_layer = (int)_groundType == 0 ? 1 : 0;
 
         if (image != null)
         {
-            ChangeSprite();
+			ChangeSprite(_groundType);
         }
     }
 
-    public void ChangeType(GroundType type = GroundType.None, int? idx = null)
+	public void ChangeSprite(GroundType type)
     {
-        charaIdx = idx;
-
-        if ((int)_groundType != 0 || (int)type != 0)
-        {
-            prevType = _groundType;
-        }
-        if (type == GroundType.None)
-        {
-            if ((int)_groundType == 0)
-            {
-                _groundType = GroundType.Copper;
-            }
-            else if ((int)_groundType == 1)
-            {
-                _groundType = GroundType.Silver;
-            }
-            else if ((int)_groundType == 2)
-            {
-                _groundType = GroundType.gold;
-            }
-        }
-        else
-        {
-            _groundType = type;
-        }
-
+		//Debug.Log (gameObject.name+", ChangeSprite : " + type);
         if (image != null)
         {
-            ChangeSprite();
-        }
-        _layer = 0;
-    }
-
-    public void ChangeSprite()
-    {
-        if (image != null)
-        {
-            if ((int)_groundType == 99)
+			if ((int)type == 99)
             {
                 image.sprite = GetSprites[4];
             }
-            else if ((int)_groundType < 4)
+			else if ((int)type < 4)
             {
-                image.sprite = GetSprites[(int)_groundType];
+				image.sprite = GetSprites[(int)type];
             }
         }
     }
 
     public void SetType()
     {
-        prevType = null;
+		isChanged = false;
+		if ((int)_groundType == 0) {
+			_layer = 1;
+		} 
+		else {
+			_layer = 0;
+		}
     }
 
     public void UpLayer()
@@ -143,111 +94,133 @@ public class GroundController : MonoBehaviour
         }
     }
 
+	public List<RaycastData> OnChangeType(){
+		return RaycastRound();	
+	}
 
-    private List<RaycastData> Raycast()
-    {
-        if (image == null)
-        {
-            RaycastHit2D[] hits;
-            List<RaycastData> dataList = new List<RaycastData>();
-            for (int i = 0; i < 6; i++)
-            {
-                hits = GetRaycastHits(transform.localPosition, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
+	public void OnPrevType(){
+		RaycastRound (true);
+	}
 
-                List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
-                for (int j = 0; j < hits.Length; j++)
-                {
-                    hitGcs.Add(hits[j]);
-                    if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 10)
-                    {
-                        if (hits[j].transform.GetComponent<GroundController>().charaIdx == charaIdx)
-                        {
-                            if (j > 0)
-                            {
-                                RaycastData data = new RaycastData();
-                                data.start = GetComponent<GroundController>();
-                                data.end = hits[j].transform.GetComponent<GroundController>();
-                                data.damage = CalculateDamage(hitGcs.ToArray());
 
-                                dataList.Add(data);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            return dataList;
-        }
+	private List<RaycastData> RaycastRound(bool isPrev = false)
+	{
+		RaycastHit2D[] hits;
+		List<RaycastData> dataList = new List<RaycastData> ();
+		for (int i = 0; i < 6; i++) {
+			hits = GetRaycastHits (transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
 
-        return null;
-    }
+			List<RaycastHit2D> hitGcs = new List<RaycastHit2D> ();
+			for (int j = 0; j < hits.Length; j++) {
+				hitGcs.Add (hits [j]);
+				if ((int)hits [j].transform.GetComponent<GroundController> ()._groundType == 10) {
+					if (hits [j].transform.GetComponent<GroundController> ().charaIdx == charaIdx) {
+						if (j > 0) {
+							RaycastData data = new RaycastData ();
+							data.start = GetComponent<GroundController> ();
+							data.end = hits [j].transform.GetComponent<GroundController> ();
+							data.damage = CalculateDamage (hitGcs.ToArray (), isPrev);
+							data.charaIdx = (int)charaIdx;
+							dataList.Add (data);
+						}
+						break;
+					}
+				}
+			}
+		}
+		return dataList;
+	}
 
-    private int CalculateDamage(RaycastHit2D[] hits)
+    private int CalculateDamage(RaycastHit2D[] hits, bool isPrev)
     {
         int extraDamage = 0;
+		if (isPrev) {
+			foreach (var hit in hits) {
+				hit.collider.GetComponent<GroundController> ().PrevType ();
+			}
+		} else { 
+			if (Array.TrueForAll (hits, HasDamage)) {
+				foreach (var hit in hits) {
+					if ((int)hit.collider.GetComponent<GroundController> ()._groundType != 10) {
+						if (!hits [hits.Length - 1].collider.GetComponent<GroundController> ().isActived) {
+							Debug.Log (gameObject.name);
 
-        if (Array.TrueForAll(hits, HasDamage))
-        {
-            foreach (var hit in hits)
-            {
-                if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
-                {
-                    if (isActived)
-                    {
-                        ChangeType();
-                    }
-
-                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
-                    {
-                        case 2:
-                            extraDamage = extraDamage + 50;
-                            break;
-                        case 3:
-                            extraDamage = extraDamage + 75;
-                            break;
-                    }
-                }
-            }
-        }
+							hit.collider.GetComponent<GroundController> ().ChangeType ();
+						
+							switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
+							case 2:
+								extraDamage = extraDamage + 50;
+								break;
+							case 3:
+								extraDamage = extraDamage + 75;
+								break;
+							}
+						} 
+						else {
+							break;
+						}
+					} else {
+						ChangeActive ();
+					}
+				}
+			}
+		}
        
+
         return extraDamage;
     }
 
     public void ChangeType()
     {
-        if (_groundType == GroundType.None)
+        if ((int)_groundType == 0)
         {
-            if ((int)_groundType == 0)
-            {
-                _groundType = GroundType.Copper;
-            }
-            else if ((int)_groundType == 1)
-            {
-                _groundType = GroundType.Silver;
-            }
-            else if ((int)_groundType == 2)
-            {
-                _groundType = GroundType.gold;
-            }
+            _groundType = GroundType.Copper;
+        }
+        else if ((int)_groundType == 1)
+        {
+            _groundType = GroundType.Silver;
+        }
+        else if ((int)_groundType == 2)
+        {
+            _groundType = GroundType.gold;
         }
 
-        selfGc.matchController.ChangeSprite();
+		isChanged = true;
+
+		selfGc.matchController.ChangeSprite(_groundType);
         _layer = 0;
     }
 
+	public void ChangeType(int? idx = null)
+	{
+		charaIdx = idx;
+
+		_groundType = GroundType.Chara;
+
+		isChanged = true;
+		_layer = 0;
+	}
+
+	public void ChangeActive(){
+		isActived = true;
+		isChanged = true;
+	}
+
     public void PrevType() {
-        switch ((int)_groundType) {
-            case 10:
-                _groundType = GroundType.None;
-                charaIdx = null;
-                break;
-            case 3:
-                _groundType = GroundType.Silver;
-                break;
-            case 2:
-                _groundType = GroundType.Copper;
-                break;
-        }
+		if (isChanged) {
+			switch ((int)_groundType) {
+			case 3:
+				_groundType = GroundType.Silver;
+				break;
+			case 2:
+				_groundType = GroundType.Copper;
+				break;
+			}
+			isChanged = false;
+			isActived = false;
+
+			selfGc.matchController.ChangeSprite(_groundType);
+		}
     }
 
     private bool HasDamage(RaycastHit2D hit)
