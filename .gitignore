@@ -1,3 +1,6 @@
 *Library*
 *Temp*
-*DS_Store
+*DS_Store*
+*.csproj*
+*.vs*
+*.sln
