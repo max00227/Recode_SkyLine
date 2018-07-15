@@ -162,7 +162,6 @@ public class FightWnd : MonoBehaviour {
 
         if (norGcs.Count >= 37)
         {
-            Debug.Log("37");
             randomList = RandomList((CreateGround - 1) + (int)Mathf.Ceil(resetGroundCount / 2), dirCenter.randomList);
         }
         else
@@ -578,7 +577,8 @@ public class FightWnd : MonoBehaviour {
 			image.GetComponent<RectTransform> ().SetParent (CharaGroup);
 			if (position != null) {
 				image.transform.localPosition = (Vector3)position;
-			}
+                image.transform.localScale = Vector3.one;
+            }
 			image.sprite = CharaSprite [(int)charaIdx];
 			image.gameObject.SetActive (true);
 				Group.Push (image);
