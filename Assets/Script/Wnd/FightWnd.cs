@@ -4,7 +4,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using model.data;
 using System;
+using System.IO;
 using System.Linq;
+using UnityEngine.Profiling;
 
 public class FightWnd : MonoBehaviour {
 	[SerializeField]
@@ -52,7 +54,7 @@ public class FightWnd : MonoBehaviour {
 	Image startCharaImage;
 	Image endCharaImage;
 
-    Stack<GroundController> charaGc;
+    LinkedList<GroundController> charaGc;
 
 	int resetGroundCount;
 
@@ -126,6 +128,34 @@ public class FightWnd : MonoBehaviour {
 			CheckGround ();
 			ChangeLayer ();
             NextRound(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            foreach (KeyValuePair<int, List<RaycastData>> kv in recCharaDamages) {
+                foreach (var v in kv.Value) {
+                    Debug.Log(v.start.name + " :" + v.end.name);
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            foreach (var v in charaGc)
+            {
+                Debug.Log(v.name + " : " + v.isActived + " , " + v._groundType+" , "+(int)v.charaIdx);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
+            {
+                foreach (var v in kv.Value)
+                {
+                    Debug.Log(v.start.name + " :" + v.end.name);
+                }
+            }
         }
 
         if (Input.GetKeyDown (KeyCode.Mouse0)) {
@@ -247,7 +277,7 @@ public class FightWnd : MonoBehaviour {
 						if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
 						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
-                            charaGc.Push(startGc);
+                            charaGc.AddLast(startGc);
 							startGc.ChangeChara(charaIdx);
 
 							startCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
@@ -277,34 +307,40 @@ public class FightWnd : MonoBehaviour {
 
 
 						if (endGc != r.gameObject.GetComponent<GroundController> ().matchController) {
-
-							foreach (GroundController gc in charaGc) {
+                            foreach (GroundController gc in charaGc) {
 								gc.OnPrevType ();
 							}
 
-							if (endGc != null && charaGc.Peek () == endGc) {
+							if (endGc != null && charaGc.Last.Value == endGc) {
 								endGc.ResetType ();
-								charaGc.Pop ();
+								charaGc.RemoveLast ();
 							}
-								
-							if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0 || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
-								endGc = r.gameObject.GetComponent<GroundController> ().matchController;
 
-								Vector2 dir = ConvertDirNormalized (startGc.transform.localPosition, endGc.transform.localPosition);
+                            if ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 0 || (int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 99)
+                            {
+                                endGc = r.gameObject.GetComponent<GroundController>().matchController;
 
-								if (IsCorrectEnd (dir)) {
-									endGc.ChangeChara (charaIdx);
-									charaGc.Push (endGc);
-									CheckGround ();
-									spaceCorrect = true;
-								} else {
-									ResetDamage ();
-									spaceCorrect = false;
-								}
-							} else {
-								endGc = null;
-								spaceCorrect = false;
-							}
+                                Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, endGc.transform.localPosition);
+
+                                if (IsCorrectEnd(dir))
+                                {
+                                    endGc.ChangeChara(charaIdx);
+                                    charaGc.AddLast(endGc);
+
+                                    CheckGround();
+                                    spaceCorrect = true;
+                                }
+                                else
+                                {
+                                    ResetDamage();
+                                    spaceCorrect = false;
+                                }
+                            }
+                            else
+                            {
+                                endGc = null;
+                                spaceCorrect = false;
+                            }
 						} 
 						else {
 							if (endGc == startGc) {
@@ -342,7 +378,7 @@ public class FightWnd : MonoBehaviour {
 						PopImage (Group);
 						startCharaImage = endCharaImage = null;
 						startGc.ResetType ();
-                        charaGc.Pop();
+                        charaGc.RemoveLast();
                         ResetDamage();
 
                         Debug.Log("End Error");
@@ -457,7 +493,7 @@ public class FightWnd : MonoBehaviour {
                         foreach (var recData in recCharaDamages[kv.Key]) {
                             if (data.start != recData.start || data.end != recData.end)
                             {
-                                Debug.Log(data.damage);
+                                //Debug.Log(data.damage);
                             }
                         }
                     }
@@ -508,7 +544,7 @@ public class FightWnd : MonoBehaviour {
 		recCharaDamages = new Dictionary<int, List<RaycastData>> ();
 
 		spaceCorrect = false;
-		charaGc = new Stack<GroundController> ();
+		charaGc = new LinkedList<GroundController> ();
 
         charaIdx = null;
 		startCharaImage = endCharaImage = null;

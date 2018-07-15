@@ -78,7 +78,6 @@ public class GroundController : MonoBehaviour
 
 	public void ChangeSprite(GroundType type)
     {
-		//Debug.Log (gameObject.name+", ChangeSprite : " + type);
         if (image != null)
         {
 			if ((int)type == 99)
@@ -143,11 +142,14 @@ public class GroundController : MonoBehaviour
         {
             hits = GetRaycastHits(transform.localPosition, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
 
+            if (hits.Length == 0) {
+                continue;
+            }
             List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
             for (int j = 0; j < hits.Length; j++)
             {
                 hitGcs.Add(hits[j]);
-                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0)
+                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0 || (int)hits[j].transform.GetComponent<GroundController>()._groundType == 99)
                 {
                     break;
                 }
@@ -159,34 +161,35 @@ public class GroundController : MonoBehaviour
                     }
                     else
                     {
-                        if (j > 0)
+                        if (isPrev)
                         {
-                            if (isPrev)
+                            OnPrevType(hitGcs.ToArray());
+                        }
+                        else
+                        {
+                            int damage = CalculateDamage(hitGcs.ToArray());
+
+                            if (damage > 0)
                             {
-                                OnPrevType(hitGcs.ToArray());
+                                RaycastData data = new RaycastData();
+
+                                data.start = GetComponent<GroundController>();
+                                data.end = hits[j].transform.GetComponent<GroundController>();
+                                data.damage = damage;
+                                dataList.Add(data);
+
+                                hasActived = true;
                             }
-                            else
+
+                            if (j > 0)
                             {
-                                int damage = CalculateDamage(hitGcs.ToArray());
-
-                                if (damage > 0)
-                                {
-                                    RaycastData data = new RaycastData();
-
-                                    data.start = GetComponent<GroundController>();
-                                    data.end = hits[j].transform.GetComponent<GroundController>();
-                                    data.damage = damage;
-                                    dataList.Add(data);
-
-                                    hasActived = true;
-                                }
-
                                 if (hitGcs[hitGcs.Count - 1].collider.GetComponent<GroundController>().isActived)
                                 {
                                     hasActived = true;
                                 }
                             }
                         }
+
                         break;
                     }
                 }
