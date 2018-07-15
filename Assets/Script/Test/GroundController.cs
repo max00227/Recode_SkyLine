@@ -21,7 +21,6 @@ public class GroundController : MonoBehaviour
     [HideInInspector]
     public bool isActived;
 
-	private bool activeChange;
 
     [HideInInspector]
     public bool raycasted;
@@ -36,11 +35,16 @@ public class GroundController : MonoBehaviour
     [SerializeField]
     Sprite[] GetSprites;
 
-    [SerializeField]
-    bool activeLock;
+    
+    private bool activeLock;
 
 	public bool testRaycasted;
-	 
+
+    int goldDamage = 75;
+
+    public delegate void PlusDamage(PlusDamageData plusDamageData);
+
+    public PlusDamage plusDamage;
 
     // Use this for initialization
     void Awake()
@@ -49,7 +53,7 @@ public class GroundController : MonoBehaviour
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
-		isActived = activeChange = isChanged = activeLock = raycasted = false;
+		isActived = isChanged = activeLock = raycasted = false;
 		testRaycasted = false;
     }
 
@@ -58,7 +62,7 @@ public class GroundController : MonoBehaviour
     {
         _groundType = defaultType;
 
-		isActived = activeChange = isChanged = activeLock = raycasted = false;
+		isActived = isChanged = activeLock = raycasted = false;
 
         charaIdx = null;
 
@@ -111,7 +115,7 @@ public class GroundController : MonoBehaviour
         }
     }
 
-	public List<RaycastData> OnChangeType(){
+	public Dictionary<int, List<RaycastData>> OnChangeType(){
 		return RaycastRound();	
 	}
 
@@ -119,92 +123,119 @@ public class GroundController : MonoBehaviour
 		RaycastRound (true);
 	}
 
+    private Dictionary<int, List<RaycastData>> OnPrevType(RaycastHit2D[] hits)
+    {
+        foreach (var hit in hits)
+        {
+            hit.collider.GetComponent<GroundController>().PrevType();
+        }
 
+        return null;
+    }
 
-
-	private List<RaycastData> RaycastRound(bool isPrev = false)
+    private Dictionary <int,List<RaycastData>> RaycastRound(bool isPrev = false)
 	{
 		RaycastHit2D[] hits;
-		List<RaycastData> dataList = new List<RaycastData> ();
+        Dictionary<int, List<RaycastData>> dataDic = new Dictionary<int, List<RaycastData>>();
+        List<RaycastData> dataList = new List<RaycastData> ();
 		bool hasActived = false;
-		for (int i = 0; i < 6; i++) {
-			hits = GetRaycastHits (transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
+        for (int i = 0; i < 6; i++)
+        {
+            hits = GetRaycastHits(transform.localPosition, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
 
-			List<RaycastHit2D> hitGcs = new List<RaycastHit2D> ();
-			for (int j = 0; j < hits.Length; j++) {
-				hitGcs.Add (hits [j]);
-				if ((int)hits [j].transform.GetComponent<GroundController> ()._groundType == 10) {
+            List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
+            for (int j = 0; j < hits.Length; j++)
+            {
+                hitGcs.Add(hits[j]);
+                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0)
+                {
+                    break;
+                }
+                else if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 10)
+                {
                     if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
                     {
                         break;
                     }
-                    else {
-						if (j > 0) {
-							RaycastData data = new RaycastData ();
+                    else
+                    {
+                        if (j > 0)
+                        {
+                            if (isPrev)
+                            {
+                                OnPrevType(hitGcs.ToArray());
+                            }
+                            else
+                            {
+                                int damage = CalculateDamage(hitGcs.ToArray());
 
-							data.start = GetComponent<GroundController> ();
-							data.end = hits [j].transform.GetComponent<GroundController> ();
-							data.damage = CalculateDamage (hitGcs.ToArray (), isPrev);
-							data.charaIdx = (int)charaIdx;
-							dataList.Add (data);
+                                if (damage > 0)
+                                {
+                                    RaycastData data = new RaycastData();
 
-							if (data.damage > 0) {
-								hasActived = true;
-								OnActived (hitGcs[hitGcs.Count-1].collider.GetComponent<GroundController>());
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
+                                    data.start = GetComponent<GroundController>();
+                                    data.end = hits[j].transform.GetComponent<GroundController>();
+                                    data.damage = damage;
+                                    dataList.Add(data);
 
-		if (hasActived) {
-			OnActived ();
-		}
+                                    hasActived = true;
+                                }
 
+                                if (hitGcs[hitGcs.Count - 1].collider.GetComponent<GroundController>().isActived)
+                                {
+                                    hasActived = true;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (dataList.Count > 0) {
+            dataDic.Add((int)charaIdx, dataList);
+        }
 		if (!isPrev) {
-			OnRaycasted ();
+            OnRaycasted (hasActived);
 		}
-		return dataList;
+
+		return dataDic;
 	}
 
+    private int CalculateDamage(RaycastHit2D[] hits)
+    {
+        int extraDamage = 0;
 
-	private int CalculateDamage(RaycastHit2D[] hits, bool isPrev=false)
-	{
-		int extraDamage = 0;
-		if (isPrev) {
-			foreach (var hit in hits) {
-				hit.collider.GetComponent<GroundController> ().PrevType ();
-			}
-		} else { 
-			if (Array.TrueForAll (hits, HasDamage)) {
-				bool hasChange = !(hits [hits.Length - 1].collider.GetComponent<GroundController> ().isActived == true && isActived == true);
-				bool according = hits [hits.Length - 1].collider.GetComponent<GroundController> ().raycasted;
-				foreach (var hit in hits) {
-					if ((int)hit.collider.GetComponent<GroundController> ()._groundType != 10) {
-						if (!according) {
-							if (hasChange) {
-								hit.collider.GetComponent<GroundController> ().ChangeType ();
-							}
+        bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
 
-							switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
-							case 2:
-								extraDamage = extraDamage + 50;
-								break;
-							case 3:
-								extraDamage = extraDamage + 75;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		return extraDamage;
-	}
+        foreach (var hit in hits)
+        {
+            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
+            {
+                if (!hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted)
+                {
+                    if (hasChange)
+                    {
+                        hit.collider.GetComponent<GroundController>().ChangeType(charaIdx);
+                    }
 
-    public void ChangeType()
+                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
+                    {
+                        case 2:
+                            extraDamage = extraDamage + 50;
+                            break;
+                        case 3:
+                            extraDamage = extraDamage + goldDamage;
+                            break;
+                    }
+                }
+            }
+        }
+        return extraDamage;
+    }
+
+    public void ChangeType(int? idx = null)
     {
         if ((int)_groundType == 0)
         {
@@ -212,10 +243,12 @@ public class GroundController : MonoBehaviour
         }
         else if ((int)_groundType == 1)
         {
+            charaIdx = idx;
             _groundType = GroundType.Silver;
         }
         else if ((int)_groundType == 2)
         {
+            OnPlusDamage();
             _groundType = GroundType.gold;
         }
 
@@ -225,7 +258,16 @@ public class GroundController : MonoBehaviour
         _layer = 0;
     }
 
-	public void ChangeType(int? idx = null)
+    public void OnRaycasted(bool hasAcitve)
+    {
+        if (hasAcitve)
+        {
+            isActived = true;
+        }
+        raycasted = true;
+    }
+
+    public void ChangeChara(int? idx = null)
 	{
 		charaIdx = idx;
 
@@ -234,22 +276,6 @@ public class GroundController : MonoBehaviour
 		isChanged = true;
 		_layer = 0;
 	}
-
-	public void OnActived(GroundController lastHit=null){
-		if (lastHit != null) {
-			lastHit.OnActived ();
-		} else {
-			isActived = true;
-			activeChange = true;
-		}
-	}
-
-	public void OnRaycasted(){
-		raycasted = true;
-		isChanged = true;
-	}
-
-
 
     public void PrevType() {
 		if (isChanged) {
@@ -262,33 +288,32 @@ public class GroundController : MonoBehaviour
 				break;
 			}
 			isChanged = false;
-            raycasted = false;
 
-			if (!activeLock && activeChange)
-            {
-                isActived = false;
-            }
 			selfGc.matchController.ChangeSprite(_groundType);
 		}
+
+        raycasted = false;
+
+        if (!activeLock)
+        {
+            isActived = false;
+        }
     }
 
-    private bool HasDamage(RaycastHit2D hit)
-    {
-        if ((int)hit.collider.GetComponent<GroundController>()._groundType == 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
     private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis)
     {
         LayerMask mask = 1 << 8;
         RaycastHit2D[] hits = Physics2D.RaycastAll(org, dir, dis, mask);
 
         return hits;
+    }
+
+    private void OnPlusDamage() {
+        PlusDamageData data = new PlusDamageData();
+        data.gc = matchController;
+        data.charaIdx = (int)charaIdx;
+
+        plusDamage.Invoke(data);
     }
 
 	#region TEST
@@ -299,14 +324,16 @@ public class GroundController : MonoBehaviour
 	private void TestRaycastRound()
 	{
 		RaycastHit2D[] hits;
-		bool hasActived = false;
 		for (int i = 0; i < 6; i++) {
 			hits = GetRaycastHits (transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
 
 			List<RaycastHit2D> hitGcs = new List<RaycastHit2D> ();
 			for (int j = 0; j < hits.Length; j++) {
 				hitGcs.Add (hits [j]);
-				if ((int)hits [j].transform.GetComponent<GroundController> ()._groundType == 10) {
+                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0) {
+                    break;
+                }
+				else if ((int)hits [j].transform.GetComponent<GroundController> ()._groundType == 10) {
 					if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
 					{
 						break;
@@ -332,30 +359,32 @@ public class GroundController : MonoBehaviour
 		testRaycasted = true;
 	}
 
-	private int TestCalculateDamage(RaycastHit2D[] hits)
-	{
-		int extraDamage = 0;
-		if (Array.TrueForAll (hits, HasDamage)) {
-			bool hasChange = !(hits [hits.Length - 1].collider.GetComponent<GroundController> ().isActived == true && isActived == true);
-			bool according = hits [hits.Length - 1].collider.GetComponent<GroundController> ().testRaycasted;
-			foreach (var hit in hits) {
-				if ((int)hit.collider.GetComponent<GroundController> ()._groundType != 10) {
-					if (!according) {
+    private int TestCalculateDamage(RaycastHit2D[] hits)
+    {
+        int extraDamage = 0;
+        bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
+        bool according = hits[hits.Length - 1].collider.GetComponent<GroundController>().testRaycasted;
+        foreach (var hit in hits)
+        {
+            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
+            {
+                if (!according)
+                {
 
-						switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
-						case 2:
-							extraDamage = extraDamage + 50;
-							break;
-						case 3:
-							extraDamage = extraDamage + 75;
-							break;
-						}
-					}
-				}
-			}
-		}
-		return extraDamage;
-	}
+                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
+                    {
+                        case 2:
+                            extraDamage = extraDamage + 50;
+                            break;
+                        case 3:
+                            extraDamage = extraDamage + 75;
+                            break;
+                    }
+                }
+            }
+        }
+        return extraDamage;
+    }
 
 	#endregion
 }

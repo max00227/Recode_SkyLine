@@ -47,7 +47,7 @@ public class FightWnd : MonoBehaviour {
 	[SerializeField]
 	Image charaImage;
 
-	int charaIdx;
+	int? charaIdx;
 
 	Image startCharaImage;
 	Image endCharaImage;
@@ -65,9 +65,13 @@ public class FightWnd : MonoBehaviour {
 
     private bool spaceCorrect;
 
-    Dictionary<int, List<int>> charaDamages;
+    Dictionary<int, List<RaycastData>> recCharaDamages;
+
+    Dictionary<int, List<RaycastData>> charaDamages;
 
     List<GroundController[]> raycasted;
+
+    List<PlusDamageData> plusDamages;
 
 	// Use this for initialization
 	void Start () {
@@ -84,15 +88,29 @@ public class FightWnd : MonoBehaviour {
 
 		resetGroundCount = 0;
 
-        ResetGround(true);
-
-		CreateGround = 3;
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType == 0) {
+                gc.matchController.plusDamage += OnPlusDamage;
 				norGcs.Add (gc.matchController);
 			}
 		}
-	}
+
+        if (norGcs.Count == 37)
+        {
+            CreateGround = 3;
+        }
+        else
+        {
+            CreateGround = 2;
+        }
+
+        ResetGround(true);
+    }
+
+
+    private void OnPlusDamage(PlusDamageData plusDamage) {
+        plusDamages.Add(plusDamage);
+    }
 
     // Update is called once per frame
     void Update() {
@@ -140,9 +158,20 @@ public class FightWnd : MonoBehaviour {
 
 		RaycastHit2D[] hits;
 
-		List<int> randomList = RandomList (2 + (int)Mathf.Ceil (resetGroundCount / 2), dirCenter.randomList);
+        List<int> randomList = new List<int>();
 
-		dirCenter.gc.matchController.ChangeType ();
+        if (norGcs.Count >= 37)
+        {
+            Debug.Log("37");
+            randomList = RandomList((CreateGround - 1) + (int)Mathf.Ceil(resetGroundCount / 2), dirCenter.randomList);
+        }
+        else
+        {
+            randomList = RandomList(CreateGround + (int)Mathf.Ceil(resetGroundCount / 2), dirCenter.randomList);
+        }
+
+
+        dirCenter.gc.matchController.ChangeType ();
 
         if (randomList.Count>0){
 			foreach (int randomI in randomList) {
@@ -220,7 +249,7 @@ public class FightWnd : MonoBehaviour {
 						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
                             charaGc.Push(startGc);
-							startGc.ChangeType(charaIdx);
+							startGc.ChangeChara(charaIdx);
 
 							startCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
 							endCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
@@ -264,12 +293,8 @@ public class FightWnd : MonoBehaviour {
 
 								Vector2 dir = ConvertDirNormalized (startGc.transform.localPosition, endGc.transform.localPosition);
 
-								if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
-									isResetGround = true;
-								}
-
 								if (IsCorrectEnd (dir)) {
-									endGc.ChangeType (charaIdx);
+									endGc.ChangeChara (charaIdx);
 									charaGc.Push (endGc);
 									CheckGround ();
 									spaceCorrect = true;
@@ -300,8 +325,11 @@ public class FightWnd : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult ();
 			if (result.Count > 0) {
 				foreach (var r in result) {
-                    if (spaceCorrect == true)
+                    if (spaceCorrect == true && r.gameObject.tag == "fightG")
                     {
+                        if ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 99) {
+                            isResetGround = true;
+                        }
 						RoundEnd();
 						if (isResetGround) {
 							ResetGround ();
@@ -315,6 +343,9 @@ public class FightWnd : MonoBehaviour {
 						PopImage (Group);
 						startCharaImage = endCharaImage = null;
 						startGc.ResetType ();
+                        charaGc.Pop();
+                        ResetDamage();
+
                         Debug.Log("End Error");
                     }
 				}
@@ -332,34 +363,48 @@ public class FightWnd : MonoBehaviour {
 	}
 
     private void CheckGround() {
-		charaDamages = new Dictionary<int, List<int>> ();
-        
+        charaDamages = new Dictionary<int, List<RaycastData>> ();
+        plusDamages = new List<PlusDamageData>();
+
 		foreach (GroundController gc in charaGc) {
 			gc.raycasted = false;
 		}
 		foreach (GroundController gc in charaGc) {
 			ResponseData(gc.OnChangeType());
 		}
+
         ChangeCharaDamage ();
     }
 		
-	private void ResponseData(List<RaycastData> raycastData){
-		foreach (RaycastData data in raycastData) {
-			if (charaDamages.Count == 0) {
-				for (int i = 0; i < 5; i++) {
-					charaDamages.Add (i, new List<int> ());
-				}
-			}
-			charaDamages [data.charaIdx].Add (data.damage);
+	private void ResponseData(Dictionary<int, List<RaycastData>> raycastData){
+        if (charaDamages.Count == 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                charaDamages.Add(i, new List<RaycastData>());
+            }
+        }
+
+        foreach (KeyValuePair<int,List<RaycastData>> kv in raycastData) {
+            foreach (var data in raycastData[kv.Key])
+            {
+                charaDamages[kv.Key].Add(data);
+            }
 		}
 	}
 
     private void ChangeCharaDamage()
     {
-        foreach (KeyValuePair<int, List<int>> kv in charaDamages)
+        foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
         {
-			int sumDamage = kv.Value.Take (kv.Value.Count).Sum ();
-			damageTxt [kv.Key].text = sumDamage.ToString ();
+            int sumDamage = 0;
+            foreach (var data in charaDamages[kv.Key])
+            {
+                sumDamage = sumDamage + data.damage;
+            }
+
+            damageTxt [kv.Key].text = sumDamage.ToString ();
+
 			if (sumDamage != charaDamage [kv.Key]) {
 				damageTxt [kv.Key].color = Color.red;
 			} 
@@ -371,15 +416,55 @@ public class FightWnd : MonoBehaviour {
 
     private void RoundEnd()
     {
+        bool damageChange = false;
 		if (charaDamages.Count > 0) {
-			foreach (KeyValuePair<int, List<int>> kv in charaDamages) {
-				charaDamage [kv.Key] = kv.Value.Take (kv.Value.Count).Sum ();
+			foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages) {
+                int sumDamage = 0;
+                foreach (var data in charaDamages[kv.Key])
+                {
+                    sumDamage = sumDamage + data.damage;
+                }
+
+                if (charaDamage[kv.Key] != sumDamage)
+                {
+                    damageChange = true;
+                    charaDamage[kv.Key] = sumDamage;
+                }
 			}
 		}
+
+        if (damageChange)
+        {
+            CheckDamage();
+        }
+        recCharaDamages = charaDamages;
 
 		foreach (GroundController gc in norGcs) {
 			gc.SetType();
 		}
+
+        charaIdx = null;
+        startCharaImage = endCharaImage = null;
+    }
+
+    private void CheckDamage() {
+        if (recCharaDamages.Count > 0)
+        {
+            foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
+            {
+                if (kv.Value.Count > recCharaDamages[kv.Key].Count)
+                {
+                    foreach (var data in kv.Value) {
+                        foreach (var recData in recCharaDamages[kv.Key]) {
+                            if (data.start != recData.start || data.end != recData.end)
+                            {
+                                Debug.Log(data.damage);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void ResetDamage() {
@@ -420,11 +505,13 @@ public class FightWnd : MonoBehaviour {
 			damageTxt [i].color = Color.black;
 		}
 
-		charaDamages = new Dictionary<int, List<int>> ();
+		charaDamages = new Dictionary<int, List<RaycastData>> ();
+		recCharaDamages = new Dictionary<int, List<RaycastData>> ();
 
 		spaceCorrect = false;
 		charaGc = new Stack<GroundController> ();
 
+        charaIdx = null;
 		startCharaImage = endCharaImage = null;
 
 		isResetGround = false;
@@ -531,5 +618,9 @@ public struct RaycastData {
     public GroundController start;
     public GroundController end;
     public int damage;
-	public int charaIdx;
+}
+
+public struct PlusDamageData {
+    public int charaIdx;
+    public GroundController gc;
 }
