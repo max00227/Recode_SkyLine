@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -22,7 +23,10 @@ public class FightWnd : MonoBehaviour {
 	Transform CharaGroup;
 
 	[SerializeField]
-	Transform CharaPool;
+	Transform rayGroup;
+
+	[SerializeField]
+	Transform imagePool;
 
 	GroundController[] allGcs;
 
@@ -42,12 +46,15 @@ public class FightWnd : MonoBehaviour {
 
 	int ResetCount;
 
-	Stack<Image> Group = new Stack<Image> ();
+	Stack<Image> _charaGroup = new Stack<Image> ();
 
-	Stack<Image> Pool = new Stack<Image> ();
+	Stack<Image> _imagePool = new Stack<Image> ();
+
+	Stack<Image> _rayGroup = new Stack<Image> ();
+
 
 	[SerializeField]
-	Image charaImage;
+	Image spriteImage;
 
 	int? charaIdx;
 
@@ -59,6 +66,8 @@ public class FightWnd : MonoBehaviour {
 	int resetGroundCount;
 
     public Sprite[] CharaSprite;
+
+	public Sprite lineSprite;
 
     int[] charaDamage;
 
@@ -78,12 +87,13 @@ public class FightWnd : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		for (int i = 0; i < 32; i++) {
-			Image _charaImage = Instantiate (charaImage) as Image;
-			_charaImage.GetComponent<RectTransform> ().SetParent (CharaPool);
-			_charaImage.transform.localPosition = Vector3.zero;
-			_charaImage.gameObject.SetActive (false);
-			Pool.Push (_charaImage);
+			Image _image = Instantiate (spriteImage) as Image;
+			_image.GetComponent<RectTransform> ().SetParent (imagePool);
+			_image.transform.localPosition = Vector3.zero;
+			_image.gameObject.SetActive (false);
+			_imagePool.Push (_image);
 		}
+			
 
 		allGcs = groundPool.GetComponentsInChildren<GroundController> ();
 		norGcs = new List<GroundController> ();
@@ -280,8 +290,8 @@ public class FightWnd : MonoBehaviour {
                             charaGc.AddLast(startGc);
 							startGc.ChangeChara(charaIdx);
 
-							startCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
-							endCharaImage = PopImage (Pool, r.gameObject.transform.localPosition);
+							startCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
+							endCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
 
 							if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
 								isResetGround = true;
@@ -374,8 +384,8 @@ public class FightWnd : MonoBehaviour {
 						NextRound ();
                     }
                     else {
-						PopImage (Group);
-						PopImage (Group);
+						PopImage (CharaGroup);
+						PopImage (CharaGroup);
 						startCharaImage = endCharaImage = null;
 						startGc.ResetType ();
                         charaGc.RemoveLast();
@@ -459,20 +469,16 @@ public class FightWnd : MonoBehaviour {
                 {
                     sumDamage = sumDamage + data.damage;
                 }
-
-                if (charaDamage[kv.Key] != sumDamage)
-                {
-                    damageChange = true;
-                    charaDamage[kv.Key] = sumDamage;
-                }
+					
+                charaDamage[kv.Key] = sumDamage;
 			}
 		}
 
-        if (damageChange)
-        {
-            CheckDamage();
-        }
-        recCharaDamages = charaDamages;
+        
+		StartCoroutine(CheckDamage());
+		//OldCheckDamage();
+
+        
 
 		foreach (GroundController gc in norGcs) {
 			gc.SetType();
@@ -482,24 +488,51 @@ public class FightWnd : MonoBehaviour {
         startCharaImage = endCharaImage = null;
     }
 
-    private void CheckDamage() {
-        if (recCharaDamages.Count > 0)
-        {
-            foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
-            {
-                if (kv.Value.Count > recCharaDamages[kv.Key].Count)
-                {
-                    foreach (var data in kv.Value) {
-                        foreach (var recData in recCharaDamages[kv.Key]) {
-                            if (data.start != recData.start || data.end != recData.end)
-                            {
-                                //Debug.Log(data.damage);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+	private void OldCheckDamage() {
+		foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages) {
+			if (kv.Value.Count > recCharaDamages [kv.Key].Count) {
+				foreach (var data in kv.Value) {
+					if (recCharaDamages [kv.Key].Count > 0) {
+						foreach (var recData in recCharaDamages[kv.Key]) {
+						
+							if (data.start != recData.start || data.end != recData.end) {
+								Debug.Log (data.damage);
+							}
+						}
+					} else {
+						Debug.Log (data.damage);
+					}
+				}
+			}
+		}
+	}
+
+	private IEnumerator CheckDamage() {
+		foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages) {
+			if (kv.Value.Count > recCharaDamages [kv.Key].Count) {
+				foreach (var data in kv.Value) {
+					if (recCharaDamages [kv.Key].Count > 0) {
+						foreach (var recData in recCharaDamages[kv.Key]) {
+
+							if (data.start != recData.start || data.end != recData.end) {
+								Image line = PopImage (rayGroup, false, data.start.matchController.transform.localPosition);
+								line.GetComponent<LineConnecter> ().SetConnect (data.start.matchController.transform.localPosition, data.end.matchController.transform.localPosition);		
+								Debug.Log ("Plus : "+data.damage);
+								yield return new WaitForSeconds (1f);
+							}
+						}
+					} else {
+						Debug.Log (data.start.name);
+						Image line = PopImage (rayGroup, false, data.start.matchController.transform.localPosition);
+						line.GetComponent<LineConnecter> ().SetConnect (data.start.matchController.transform.localPosition, data.end.matchController.transform.localPosition);
+						Debug.Log ("New : "+data.damage);
+						yield return new WaitForSeconds (1f);
+					}
+				}
+			}
+		}
+		recCharaDamages = charaDamages;
+		Debug.Log ("CheckEnd");
     }
 
     private void ResetDamage() {
@@ -543,6 +576,10 @@ public class FightWnd : MonoBehaviour {
 		charaDamages = new Dictionary<int, List<RaycastData>> ();
 		recCharaDamages = new Dictionary<int, List<RaycastData>> ();
 
+		for (int i = 0; i < 6; i++) {
+			recCharaDamages.Add (i, new List<RaycastData> ());
+		}
+
 		spaceCorrect = false;
 		charaGc = new LinkedList<GroundController> ();
 
@@ -550,8 +587,8 @@ public class FightWnd : MonoBehaviour {
 		startCharaImage = endCharaImage = null;
 
 		isResetGround = false;
-		while (Group.Count > 0) {
-			PopImage (Group);
+		while (_charaGroup.Count > 0) {
+			PopImage (CharaGroup);
 		}
 
 		if (isInit == false) {
@@ -607,24 +644,50 @@ public class FightWnd : MonoBehaviour {
 		return ListT;
 	}
 
-	private Image PopImage(Stack<Image> stack,Vector3? position = null){
-		Image image = stack.Pop ();
-		if (stack == Pool) {
-			image.GetComponent<RectTransform> ().SetParent (CharaGroup);
+	private Image PopImage(Transform target = null,bool isPush = true,Vector3? position = null){
+		Image image;
+		if (!isPush) {
+
+			image = _imagePool.Pop ();
+
+			if (target == CharaGroup) {
+				image.GetComponent<RectTransform> ().SetParent (CharaGroup);
+				_charaGroup.Push (image);
+				image.sprite = CharaSprite [(int)charaIdx];
+			} 
+			else {
+				image.GetComponent<RectTransform> ().SetParent (rayGroup);
+				_rayGroup.Push (image);
+				image.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0);
+				image.gameObject.AddComponent<LineConnecter> ();
+				image.type = Image.Type.Sliced;
+
+				image.sprite = lineSprite;
+			}
 			if (position != null) {
 				image.transform.localPosition = (Vector3)position;
-                image.transform.localScale = Vector3.one;
-            }
-			image.sprite = CharaSprite [(int)charaIdx];
+                
+			}
+			image.transform.localScale = Vector3.one;
+			image.SetNativeSize ();
+
 			image.gameObject.SetActive (true);
-				Group.Push (image);
+
 			return image;
 		} else {
-			image.GetComponent<RectTransform> ().SetParent (CharaPool);
+			if (target = CharaGroup) {
+				image = _charaGroup.Pop ();
+			} else {
+				image = _rayGroup.Pop ();
+				Destroy (image.GetComponent<LineConnecter> ());
+			}
+			image.type = Image.Type.Simple;
+			image.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0.5f);
+			image.GetComponent<RectTransform> ().SetParent (imagePool);
 			image.transform.localPosition = Vector3.zero;
 			image.gameObject.SetActive (false);
 			image.sprite = null;
-			Pool.Push (image);
+			_imagePool.Push (image);
 			return null;
 		}
 	}
