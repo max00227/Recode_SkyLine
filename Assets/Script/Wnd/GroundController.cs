@@ -11,8 +11,6 @@ public class GroundController : MonoBehaviour
 
     public GroundController matchController;
 
-    GroundController selfGc;
-
     public int? charaIdx;
 
     [HideInInspector]
@@ -35,7 +33,8 @@ public class GroundController : MonoBehaviour
     [SerializeField]
     Sprite[] GetSprites;
 
-    
+	public GroundType _prevType = GroundType.None;
+
     private bool activeLock;
 
 	public bool testRaycasted;
@@ -49,7 +48,6 @@ public class GroundController : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        selfGc = GetComponent<GroundController>();
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
@@ -70,13 +68,13 @@ public class GroundController : MonoBehaviour
 
         if (image != null)
         {
-			ChangeSprite(_groundType);
+			matchController.ChangeSprite(_groundType);
         }
 
 		testRaycasted = false;
     }
 
-	public void ChangeSprite(GroundType type)
+	public void ChangeSprite(GroundType? type)
     {
         if (image != null)
         {
@@ -91,11 +89,31 @@ public class GroundController : MonoBehaviour
         }
     }
 
+	public void ChangeSprite()
+	{
+		if (image != null)
+		{
+			if (image.sprite == GetSprites[1])
+			{
+				image.sprite = GetSprites[2];
+			}
+			else if (image.sprite == GetSprites[2])
+			{
+				image.sprite = GetSprites[3];
+			}
+		}
+	}
+
     public void SetType()
     {
         if (isActived) {
             activeLock = true;
         }
+
+		if (isChanged == true) {
+			matchController.ChangeSprite (_prevType);
+		}
+
         raycasted = false;
 		isChanged = false;
 		if ((int)_groundType == 0) {
@@ -104,6 +122,8 @@ public class GroundController : MonoBehaviour
 		else {
 			_layer = 0;
 		}
+
+
     }
 
     public void UpLayer()
@@ -173,9 +193,13 @@ public class GroundController : MonoBehaviour
                             {
                                 RaycastData data = new RaycastData();
 
-                                data.start = GetComponent<GroundController>();
-                                data.end = hits[j].transform.GetComponent<GroundController>();
+								data.start = GetComponent<GroundController>().matchController;
+								data.end = hits[j].transform.GetComponent<GroundController>().matchController;
                                 data.damage = damage;
+								data.hits = new List<GroundController> ();
+								for(int h = 0;h<hitGcs.Count-1;h++){
+									data.hits.Add (hitGcs [h].collider.GetComponent<GroundController> ().matchController);
+								}
                                 dataList.Add(data);
 
                                 hasActived = true;
@@ -240,24 +264,25 @@ public class GroundController : MonoBehaviour
 
     public void ChangeType(int? idx = null)
     {
-        if ((int)_groundType == 0)
-        {
-            _groundType = GroundType.Copper;
-        }
-        else if ((int)_groundType == 1)
-        {
-            charaIdx = idx;
-            _groundType = GroundType.Silver;
-        }
-        else if ((int)_groundType == 2)
-        {
-            OnPlusDamage();
-            _groundType = GroundType.gold;
-        }
+		if (isChanged == false) {
+			_prevType = _groundType;
+		}
 
-		isChanged = true;
-
-		selfGc.matchController.ChangeSprite(_groundType);
+		if ((int)_groundType == 0) {
+			_groundType = GroundType.Copper;
+		} 
+		else {
+			if ((int)_groundType == 1) {
+				charaIdx = idx;
+				_groundType = GroundType.Silver;
+			} else if ((int)_groundType == 2) {
+				OnPlusDamage ();
+				_groundType = GroundType.gold;
+			}
+			isChanged = true;
+		}
+			
+		matchController.ChangeSprite(_groundType);
         _layer = 0;
     }
 
@@ -276,23 +301,17 @@ public class GroundController : MonoBehaviour
 
 		_groundType = GroundType.Chara;
 
-		isChanged = true;
+		//isChanged = true;
 		_layer = 0;
 	}
 
     public void PrevType() {
 		if (isChanged) {
-			switch ((int)_groundType) {
-			case 3:
-				_groundType = GroundType.Silver;
-				break;
-			case 2:
-				_groundType = GroundType.Copper;
-				break;
-			}
+			_groundType = _prevType;
+
 			isChanged = false;
 
-			selfGc.matchController.ChangeSprite(_groundType);
+			matchController.ChangeSprite(_groundType);
 		}
 
         raycasted = false;
