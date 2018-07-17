@@ -84,8 +84,18 @@ public class FightWnd : MonoBehaviour {
 
     List<PlusDamageData> plusDamages;
 
-	// Use this for initialization
-	void Start () {
+    [SerializeField]
+    ReversalGrounds reversalGrounds;
+
+
+    [SerializeField]
+    Transform reversalGroup;
+
+    Queue<ReversalGrounds> reversalPool = new Queue<ReversalGrounds>();
+    //Queue<ReversalGrounds> _reversalGroup = new Queue<ReversalGrounds>();
+
+    // Use this for initialization
+    void Start () {
 		for (int i = 0; i < 32; i++) {
 			Image _image = Instantiate (spriteImage) as Image;
 			_image.GetComponent<RectTransform> ().SetParent (imagePool);
@@ -93,9 +103,17 @@ public class FightWnd : MonoBehaviour {
 			_image.gameObject.SetActive (false);
 			_imagePool.Push (_image);
 		}
-			
 
-		allGcs = groundPool.GetComponentsInChildren<GroundController> ();
+        for (int i = 0; i < 8; i++)
+        {
+            ReversalGrounds reversal = Instantiate(reversalGrounds) as ReversalGrounds;
+            reversal.GetComponent<RectTransform>().SetParent(reversalGroup);
+            reversal.onRecycle += RecycleRevesal;
+            reversalPool.Enqueue(reversal);
+        }
+
+
+        allGcs = groundPool.GetComponentsInChildren<GroundController> ();
 		norGcs = new List<GroundController> ();
 
 		resetGroundCount = 0;
@@ -117,6 +135,13 @@ public class FightWnd : MonoBehaviour {
         }
 
         ResetGround(true);
+    }
+
+    private void RecycleRevesal(ReversalGrounds rg) {
+        Debug.Log(reversalPool.Count);
+        reversalPool.Enqueue(rg);
+        Debug.Log(reversalPool.Count);
+
     }
 
 
@@ -556,26 +581,29 @@ public class FightWnd : MonoBehaviour {
 							}
  						}
 						if (hasNew == true) {
-							//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
-							//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
-							foreach (var v in data.hits) {
+                            //Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
+                            //line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
+                            /*foreach (var v in data.hits) {
 								v.ChangeSprite ();
 								yield return new WaitForSeconds (0.5f);
-							}
-							//Debug.Log ("Plus : "+data.damage);
-							yield return new WaitForSeconds (0.05f);
+							}*/
+                            reversalPool.Dequeue().SetReversal(data.hits);
+                            Debug.Log(reversalPool.Count);
+                            //Debug.Log ("Plus : "+data.damage);
+                            yield return new WaitForSeconds (0.05f);
 						}
 
 					} 
 					else {
-						//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
-						foreach (var v in data.hits) {
+                        //Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
+                        /*foreach (var v in data.hits) {
 							v.ChangeSprite ();
 							yield return new WaitForSeconds (0.5f);
-						}
-						//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
-						//Debug.Log ("New : " + data.damage);
-						yield return new WaitForSeconds (0.05f);
+						}*/
+                        reversalPool.Dequeue().SetReversal(data.hits);
+                        //line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
+                        //Debug.Log ("New : " + data.damage);
+                        yield return new WaitForSeconds (0.05f);
 					}
 				}
 			}
@@ -776,3 +804,6 @@ public struct PlusDamageData {
     public int charaIdx;
     public GroundController gc;
 }
+
+
+
