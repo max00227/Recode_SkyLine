@@ -38,7 +38,7 @@ public class DataReciever : MonoBehaviour {
 				
 			CharaLargeData charaData = MasterDataManager.GetCharaData (Int32.Parse (data ["id"].ToString ()));
 
-			Dictionary<string ,int> ability = AbilityConvert.GetCharaAbility (charaData, Int32.Parse (data ["lv"].ToString ()));
+			Dictionary<string ,int> ability = ParameterConvert.GetCharaAbility (charaData, Int32.Parse (data ["lv"].ToString ()));
 			foreach (KeyValuePair<string, int> kv in ability) {
 				Debug.Log (kv.Key + " , " + kv.Value);
 			}

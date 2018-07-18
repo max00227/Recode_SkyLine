@@ -34,11 +34,9 @@ public class LineConnecter : MonoBehaviour {
 	public void SetConnect(Vector3 start, Vector3 end){
 		rectTransform = GetComponent<RectTransform>();
 		rectTransform.Rotate (Vector3.back * (Mathf.Atan2 (end.x - start.x, end.y - start.y) * Mathf.Rad2Deg));
-		//GetComponent<RectTransform>().Rotate (Vector3.back * (Mathf.Atan2 (end.x - start.x, end.y - start.y) * Mathf.Rad2Deg));
 		dist = Vector3.Distance (start, end);
 
 		connectTime = 0;
 		setComplete = true;
-		//transform.localRotation = Vector3.forward * (Mathf.Atan2 (end.x - start.x, end.y - start.y) * Mathf.Rad2Deg);
 	}
 }

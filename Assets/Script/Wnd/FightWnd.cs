@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using model.data;
 using System;
-using System.IO;
-using System.Linq;
 using UnityEngine.Profiling;
 
 public class FightWnd : MonoBehaviour {
@@ -35,8 +33,6 @@ public class FightWnd : MonoBehaviour {
 	GroundController endGc;
 
 	bool isResetGround=false;
-
-    //Dictionary<int, List<GroundSpace>> groundSpaces;
 
     private CharaLargeData[] characters;
 
@@ -69,34 +65,38 @@ public class FightWnd : MonoBehaviour {
 
 	public Sprite lineSprite;
 
-    int[] charaDamage;
+	int[] recCharaDamages;
+
+    int[] charaDamages;
 
     [SerializeField]
     public Text[] damageTxt;
 
     private bool spaceCorrect;
 
-    Dictionary<int, List<RaycastData>> recCharaDamages;
+	bool hasDamage;
 
-    Dictionary<int, List<RaycastData>> charaDamages;
+    List<RaycastData> recAllDamages;
+
+    List<RaycastData> allDamages;
 
     List<GroundController[]> raycasted;
 
     List<PlusDamageData> plusDamages;
 
+	Dictionary<int, int> charaMaxDamage;
+
     [SerializeField]
     ReversalGrounds reversalGrounds;
-
 
     [SerializeField]
     Transform reversalGroup;
 
     Queue<ReversalGrounds> reversalPool = new Queue<ReversalGrounds>();
-    //Queue<ReversalGrounds> _reversalGroup = new Queue<ReversalGrounds>();
 
     // Use this for initialization
     void Start () {
-		for (int i = 0; i < 32; i++) {
+		for (int i = 0; i < 16; i++) {
 			Image _image = Instantiate (spriteImage) as Image;
 			_image.GetComponent<RectTransform> ().SetParent (imagePool);
 			_image.transform.localPosition = Vector3.zero;
@@ -108,7 +108,7 @@ public class FightWnd : MonoBehaviour {
         {
             ReversalGrounds reversal = Instantiate(reversalGrounds) as ReversalGrounds;
             reversal.GetComponent<RectTransform>().SetParent(reversalGroup);
-            reversal.onRecycle += RecycleRevesal;
+            reversal.onRecycle = RecycleRevesal;
             reversalPool.Enqueue(reversal);
         }
 
@@ -120,7 +120,7 @@ public class FightWnd : MonoBehaviour {
 
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType == 0) {
-                gc.matchController.plusDamage += OnPlusDamage;
+                gc.matchController.plusDamage = OnPlusDamage;
 				norGcs.Add (gc.matchController);
 			}
 		}
@@ -138,22 +138,27 @@ public class FightWnd : MonoBehaviour {
     }
 
     private void RecycleRevesal(ReversalGrounds rg) {
-        Debug.Log(reversalPool.Count);
         reversalPool.Enqueue(rg);
-        Debug.Log(reversalPool.Count);
-
+		if (reversalPool.Count == 8) {
+			recAllDamages = allDamages;
+			NextRound ();
+		}
     }
 
 
     private void OnPlusDamage(PlusDamageData plusDamage) {
 		Debug.Log (plusDamage.gc.name + " : " + plusDamage.charaIdx);
-        plusDamages.Add(plusDamage);
+		plusDamages.Add(plusDamage);
     }
+
+	private void OnProtection(int guardian, int target){
+		//Debug.Log ("Guardian : " + guardian + " , Target" + target);
+	}
 
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.G)) {
-			RoundStart(new DirectGroundController());
+			RoundStart();
         }
 
         if (Input.GetKeyDown(KeyCode.R)) {
@@ -164,42 +169,10 @@ public class FightWnd : MonoBehaviour {
 			CheckGround ();
 			ChangeLayer ();
             NextRound(false);
-        }
-
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            foreach (KeyValuePair<int, List<RaycastData>> kv in recCharaDamages) {
-                foreach (var v in kv.Value) {
-                    Debug.Log(v.start.name + " :" + v.end.name);
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            foreach (var v in charaGc)
-            {
-                Debug.Log(v.name + " : " + v.isActived + " , " + v._groundType+" , "+(int)v.charaIdx);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
-            {
-                foreach (var v in kv.Value)
-                {
-                    Debug.Log(v.start.name + " :" + v.end.name);
-                }
-            }
-        }
+        }	
 
         if (Input.GetKeyDown (KeyCode.Mouse0)) {
 			TouchDown ();
-		}
-
-		if (Input.GetKeyDown (KeyCode.Y)) {
-			testCheckGround ();
 		}
 
         if (Input.GetKey(KeyCode.Mouse0))
@@ -212,14 +185,17 @@ public class FightWnd : MonoBehaviour {
 		}
 	}
 
-    void SetChara() {
+    void SetCharaData() {
         //foreach()
     }
 
 
-	void RoundStart(DirectGroundController dirCenter){
-		if (dirCenter.gc == null) {
+	void RoundStart(bool isCenter = true){
+		DirectGroundController dirCenter;
+		if (isCenter) {
 			dirCenter = center;
+		} else {
+			dirCenter = angleGc [UnityEngine.Random.Range (0, 7)];
 		}
 
 		RaycastHit2D[] hits;
@@ -295,6 +271,8 @@ public class FightWnd : MonoBehaviour {
 			nextRoundGc.Add (maxLayerGc);
 		}
 
+		hasDamage = false;
+
 		if (nextRoundGc != null && nextRoundGc.Count > 0) {
 			foreach (GroundController gc in nextRoundGc) {
 				gc.ChangeType ();
@@ -313,8 +291,10 @@ public class FightWnd : MonoBehaviour {
 						if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
 						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
+							startGc.onProtection = OnProtection;
+
                             charaGc.AddLast(startGc);
-							startGc.ChangeChara(charaIdx);
+							startGc.ChangeChara ((int)charaIdx, (int)charaIdx + 1);
 
 							startCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
 							endCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
@@ -324,7 +304,6 @@ public class FightWnd : MonoBehaviour {
 							}
 						} else {
 							startGc.PrevType ();
-							Debug.Log ("Start Error");
 						}
 					}
 				}
@@ -340,7 +319,6 @@ public class FightWnd : MonoBehaviour {
                     if (r.gameObject.tag == "fightG")
                     {
 						endCharaImage.transform.localPosition = r.gameObject.transform.localPosition;
-
 
 						if (endGc != r.gameObject.GetComponent<GroundController> ().matchController) {
                             foreach (GroundController gc in charaGc) {
@@ -363,7 +341,8 @@ public class FightWnd : MonoBehaviour {
 
                                 if (IsCorrectEnd(dir))
                                 {
-                                    endGc.ChangeChara(charaIdx);
+									endGc.ChangeChara ((int)charaIdx, (int)charaIdx + 1);
+									endGc.onProtection = OnProtection;
                                     charaGc.AddLast(endGc);
 
                                     CheckGround();
@@ -379,12 +358,14 @@ public class FightWnd : MonoBehaviour {
                             else
                             {
                                 endGc = null;
+								ResetDamage();
                                 spaceCorrect = false;
                             }
 						} 
 						else {
 							if (endGc == startGc) {
 								endGc = null;
+								ResetDamage();
 								spaceCorrect = false;
 							}
 						}
@@ -412,7 +393,11 @@ public class FightWnd : MonoBehaviour {
 							return;
 						}
 						ChangeLayer ();
-						NextRound ();
+
+						if (!hasDamage) {
+							NextRound ();
+							recAllDamages = allDamages;
+						}
                     }
                     else {
 						PopImage (CharaGroup);
@@ -421,8 +406,6 @@ public class FightWnd : MonoBehaviour {
 						startGc.ResetType ();
                         charaGc.RemoveLast();
                         ResetDamage();
-
-                        Debug.Log("End Error");
                     }
 				}
 			}
@@ -439,8 +422,9 @@ public class FightWnd : MonoBehaviour {
 	}
 
     private void CheckGround() {
-        charaDamages = new Dictionary<int, List<RaycastData>> ();
+		allDamages = new List<RaycastData> ();
         plusDamages = new List<PlusDamageData>();
+		hasDamage = false;
 
 		foreach (GroundController gc in charaGc) {
 			gc.raycasted = false;
@@ -452,172 +436,81 @@ public class FightWnd : MonoBehaviour {
         ChangeCharaDamage ();
     }
 		
-	private void ResponseData(Dictionary<int, List<RaycastData>> raycastData){
-        if (charaDamages.Count == 0)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                charaDamages.Add(i, new List<RaycastData>());
-            }
-        }
-
-        foreach (KeyValuePair<int,List<RaycastData>> kv in raycastData) {
-            foreach (var data in raycastData[kv.Key])
-            {
-                charaDamages[kv.Key].Add(data);
-            }
+	private void ResponseData(List<RaycastData> raycastData){
+        foreach (var data in raycastData) {
+			allDamages.Add (data);
 		}
 	}
 
 	private void ChangeCharaDamage()
 	{
-		foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
+		charaDamages = new int[5]{ 0, 0, 0, 0, 0 };
+		foreach (var data in allDamages)
 		{
-			int sumDamage = 0;
-			foreach (var data in charaDamages[kv.Key])
-			{
-				sumDamage = sumDamage + data.damage;
+			if (charaMaxDamage [data.charaIdx] < data.damage) {
+				charaMaxDamage [data.charaIdx] = data.damage;
 			}
-
-			if (sumDamage != charaDamage [kv.Key]) {
-				damageTxt [kv.Key].text = sumDamage.ToString();
-				damageTxt [kv.Key].color = Color.red;
-			} 
-			else {
-				damageTxt [kv.Key].color = Color.black;
-			}
-		}
-	}
-
-	private void ChangeCharaDamage(bool add_Plus)
-    {
-		List<int> damages = new List<int> ();
-		for (int i = 0; i < 5; i++) {
-			damages.Add (0);
-		}
-        foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages)
-        {
-            int sumDamage = 0;
-            foreach (var data in charaDamages[kv.Key])
-            {
-                sumDamage = sumDamage + data.damage;
-            }
-				
-			damages [kv.Key] = sumDamage;
-        }
-
-		foreach (var plus in plusDamages) {
-			damages [plus.charaIdx] += 25;
+			charaDamages [data.charaIdx] = charaDamages [data.charaIdx] + data.damage;
 		}
 
-		for (int i = 0; i < 5; i++) {
-			if (damages[i] != charaDamage [i]) {
-				damageTxt [i].text = damages [i].ToString();
+		for (int i =0;i<charaDamages.Length;i++) {
+			damageTxt [i].text = charaDamages[i].ToString ();
+			if (recCharaDamages[i] != charaDamages [i]) {
+				hasDamage = true;
 				damageTxt [i].color = Color.red;
-			} 
-			else {
+			} else {
 				damageTxt [i].color = Color.black;
 			}
 		}
-    }
-
+	}
+		
     private void RoundEnd()
     {
-        bool damageChange = false;
-		if (charaDamages.Count > 0) {
-			foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages) {
-                int sumDamage = 0;
-                foreach (var data in charaDamages[kv.Key])
-                {
-                    sumDamage = sumDamage + data.damage;
-                }
-					
-                charaDamage[kv.Key] = sumDamage;
-			}
-		}
+		recCharaDamages = charaDamages;
 
 		foreach (GroundController gc in norGcs) {
 			gc.SetType();
 		}
 
-        
-		StartCoroutine(CheckDamage());
-		//OldCheckDamage();
-
+		if (hasDamage) {
+			StartCoroutine (CheckDamage ());
+		}
 
         charaIdx = null;
         startCharaImage = endCharaImage = null;
     }
 
-	private void OldCheckDamage() {
-		foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages) {
-			if (kv.Value.Count > recCharaDamages [kv.Key].Count) {
-				foreach (var data in kv.Value) {
-					if (recCharaDamages [kv.Key].Count > 0) {
-						foreach (var recData in recCharaDamages[kv.Key]) {
-						
-							if (data.start != recData.start || data.end != recData.end) {
-								Debug.Log (data.damage);
-							}
-						}
-					} else {
-						Debug.Log (data.damage);
-					}
-				}
-			}
-		}
-	}
-
 	private IEnumerator CheckDamage() {
-		foreach (KeyValuePair<int, List<RaycastData>> kv in charaDamages) {
-			if (kv.Value.Count > recCharaDamages [kv.Key].Count) {
-				foreach (var data in kv.Value) {
-					if (recCharaDamages [kv.Key].Count > 0) {
-						bool hasNew = true;
-						foreach (var recData in recCharaDamages[kv.Key]) {
-							if (data.start == recData.start && data.end == recData.end) {
-								hasNew = false;
-								break;
-							}
- 						}
-						if (hasNew == true) {
-                            //Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
-                            //line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
-                            /*foreach (var v in data.hits) {
-								v.ChangeSprite ();
-								yield return new WaitForSeconds (0.5f);
-							}*/
-                            reversalPool.Dequeue().SetReversal(data.hits);
-                            Debug.Log(reversalPool.Count);
-                            //Debug.Log ("Plus : "+data.damage);
-                            yield return new WaitForSeconds (0.05f);
+		if (allDamages.Count > recAllDamages.Count) {
+			foreach (var data in allDamages) {
+				if (recAllDamages.Count > 0) {
+					bool hasNew = true;
+					foreach (var recData in recAllDamages) {
+						if (data.start == recData.start && data.end == recData.end) {
+							hasNew = false;
+							break;
 						}
-
-					} 
-					else {
-                        //Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
-                        /*foreach (var v in data.hits) {
-							v.ChangeSprite ();
-							yield return new WaitForSeconds (0.5f);
-						}*/
-                        reversalPool.Dequeue().SetReversal(data.hits);
-                        //line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
-                        //Debug.Log ("New : " + data.damage);
-                        yield return new WaitForSeconds (0.05f);
 					}
+					if (hasNew == true) {
+						//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
+						//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
+						reversalPool.Dequeue ().SetReversal (data.hits);
+						yield return new WaitForSeconds (0.2f*(data.hits.Count-1));
+					}
+
+				} else {
+					//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
+					//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
+					reversalPool.Dequeue ().SetReversal (data.hits);
+					yield return new WaitForSeconds (0.2f * (data.hits.Count-1));
 				}
 			}
 		}
-		recCharaDamages = charaDamages;
-		/*while (_rayGroup.Count > 0) {
-			PopImage (rayGroup);
-		}*/
-		Debug.Log ("CheckEnd");
     }
 
     private void ResetDamage() {
-        for (int i = 0; i < charaDamage.Length; i++) {
-            damageTxt[i].text = charaDamage[i].ToString();
+        for (int i = 0; i < recCharaDamages.Length; i++) {
+			damageTxt[i].text = recCharaDamages[i].ToString();
 			damageTxt [i].color = Color.black;
         }
     }
@@ -647,17 +540,18 @@ public class FightWnd : MonoBehaviour {
 			gc.matchController.ResetType ();
 		}
 
-		charaDamage = new int[5] { 0, 0, 0, 0, 0 };
-		for (int i = 0; i < charaDamage.Length; i++) {
-			damageTxt [i].text = charaDamage [i].ToString ();
+		recCharaDamages = new int[5] { 0, 0, 0, 0, 0 };
+		for (int i = 0; i < recCharaDamages.Length; i++) {
+			damageTxt [i].text = recCharaDamages [i].ToString ();
 			damageTxt [i].color = Color.black;
 		}
 
-		charaDamages = new Dictionary<int, List<RaycastData>> ();
-		recCharaDamages = new Dictionary<int, List<RaycastData>> ();
+		allDamages = new List<RaycastData> ();
+		recAllDamages = new List<RaycastData> ();
+		charaMaxDamage = new Dictionary<int, int> ();
 
-		for (int i = 0; i < 6; i++) {
-			recCharaDamages.Add (i, new List<RaycastData> ());
+		for (int i = 0; i < 5; i++) {
+			charaMaxDamage.Add (i, 0);
 		}
 
 		spaceCorrect = false;
@@ -665,6 +559,8 @@ public class FightWnd : MonoBehaviour {
 
         charaIdx = null;
 		startCharaImage = endCharaImage = null;
+
+		hasDamage = false;
 
 		isResetGround = false;
 		while (_charaGroup.Count > 0) {
@@ -674,7 +570,7 @@ public class FightWnd : MonoBehaviour {
 		if (isInit == false) {
 			resetGroundCount++;
 		}
-		RoundStart (new DirectGroundController ());
+		RoundStart ();
 	}
 
     private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
@@ -797,6 +693,7 @@ public struct RaycastData {
     public GroundController start;
     public GroundController end;
 	public List<GroundController> hits;
+	public int charaIdx;
     public int damage;
 }
 
@@ -804,6 +701,3 @@ public struct PlusDamageData {
     public int charaIdx;
     public GroundController gc;
 }
-
-
-

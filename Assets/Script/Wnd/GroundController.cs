@@ -45,6 +45,20 @@ public class GroundController : MonoBehaviour
 
     public PlusDamage plusDamage;
 
+	public delegate void OnReversed (GroundController groundController);
+
+	public OnReversed onReversed;
+
+	public delegate void OnReversing (int damage);
+
+	public OnReversing onReversing;
+
+	public delegate void OnProtection (int Guardian, int target);
+
+	public OnProtection onProtection;
+
+	public int charaJob;
+
     // Use this for initialization
     void Awake()
     {
@@ -95,13 +109,16 @@ public class GroundController : MonoBehaviour
 		{
 			if (image.sprite == GetSprites[1])
 			{
+				onReversing.Invoke (50);
 				image.sprite = GetSprites[2];
 			}
 			else if (image.sprite == GetSprites[2])
 			{
+				onReversing.Invoke (25);
 				image.sprite = GetSprites[3];
 			}
 		}
+		onReversed.Invoke (this);
 	}
 
     public void SetType()
@@ -134,7 +151,7 @@ public class GroundController : MonoBehaviour
         }
     }
 
-	public Dictionary<int, List<RaycastData>> OnChangeType(){
+	public List<RaycastData> OnChangeType(){
 		return RaycastRound();	
 	}
 
@@ -152,10 +169,9 @@ public class GroundController : MonoBehaviour
         return null;
     }
 
-    private Dictionary <int,List<RaycastData>> RaycastRound(bool isPrev = false)
+	private List<RaycastData> RaycastRound(bool isPrev = false)
 	{
 		RaycastHit2D[] hits;
-        Dictionary<int, List<RaycastData>> dataDic = new Dictionary<int, List<RaycastData>>();
         List<RaycastData> dataList = new List<RaycastData> ();
 		bool hasActived = false;
         for (int i = 0; i < 6; i++)
@@ -165,18 +181,24 @@ public class GroundController : MonoBehaviour
             if (hits.Length == 0) {
                 continue;
             }
+
+			bool hitNone = false;
             List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
             for (int j = 0; j < hits.Length; j++)
             {
                 hitGcs.Add(hits[j]);
                 if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0 || (int)hits[j].transform.GetComponent<GroundController>()._groundType == 99)
                 {
-                    break;
+					hitNone = true;
                 }
                 else if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 10)
                 {
+					
                     if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
                     {
+						if (charaJob == 3 && hits [j].transform.GetComponent<GroundController> ().charaJob != 3) {
+							onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
+						}
                         break;
                     }
                     else
@@ -187,31 +209,31 @@ public class GroundController : MonoBehaviour
                         }
                         else
                         {
-                            int damage = CalculateDamage(hitGcs.ToArray());
+							if (!hitNone) {
+								int damage = CalculateDamage (hitGcs.ToArray ());
 
-                            if (damage > 0)
-                            {
-                                RaycastData data = new RaycastData();
+								if (damage > 0) {
+									RaycastData data = new RaycastData ();
 
-								data.start = GetComponent<GroundController>().matchController;
-								data.end = hits[j].transform.GetComponent<GroundController>().matchController;
-                                data.damage = damage;
-								data.hits = new List<GroundController> ();
-								for(int h = 0;h<hitGcs.Count-1;h++){
-									data.hits.Add (hitGcs [h].collider.GetComponent<GroundController> ().matchController);
+									data.start = GetComponent<GroundController> ().matchController;
+									data.end = hits [j].transform.GetComponent<GroundController> ().matchController;
+									data.damage = damage;
+									data.hits = new List<GroundController> ();
+									data.charaIdx = (int)charaIdx;
+									for (int h = 0; h < hitGcs.Count - 1; h++) {
+										data.hits.Add (hitGcs [h].collider.GetComponent<GroundController> ().matchController);
+									}
+									dataList.Add (data);
+
+									hasActived = true;
 								}
-                                dataList.Add(data);
 
-                                hasActived = true;
-                            }
-
-                            if (j > 0)
-                            {
-                                if (hitGcs[hitGcs.Count - 1].collider.GetComponent<GroundController>().isActived)
-                                {
-                                    hasActived = true;
-                                }
-                            }
+								if (j > 0) {
+									if (hits [j].collider.GetComponent<GroundController> ().isActived) {
+										hasActived = true;
+									}
+								}
+							}
                         }
 
                         break;
@@ -220,14 +242,11 @@ public class GroundController : MonoBehaviour
             }
         }
 
-        if (dataList.Count > 0) {
-            dataDic.Add((int)charaIdx, dataList);
-        }
 		if (!isPrev) {
             OnRaycasted (hasActived);
 		}
 
-		return dataDic;
+		return dataList;
 	}
 
     private int CalculateDamage(RaycastHit2D[] hits)
@@ -295,10 +314,10 @@ public class GroundController : MonoBehaviour
         raycasted = true;
     }
 
-    public void ChangeChara(int? idx = null)
+	public void ChangeChara(int idx, int job=0)
 	{
 		charaIdx = idx;
-
+		charaJob = job;
 		_groundType = GroundType.Chara;
 
 		//isChanged = true;
@@ -384,7 +403,7 @@ public class GroundController : MonoBehaviour
     private int TestCalculateDamage(RaycastHit2D[] hits)
     {
         int extraDamage = 0;
-        bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
+		bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
         bool according = hits[hits.Length - 1].collider.GetComponent<GroundController>().testRaycasted;
         foreach (var hit in hits)
         {
