@@ -34,7 +34,11 @@ public class FightWnd : MonoBehaviour {
 
 	bool isResetGround=false;
 
-    private CharaLargeData[] characters;
+	private CharaLargeData[] characters;
+
+	private MonsterLargeData[] monsters;
+
+	private int[] monsterCdTimes;
 
 	List<GroundController> norGcs;
 
@@ -65,9 +69,9 @@ public class FightWnd : MonoBehaviour {
 
 	public Sprite lineSprite;
 
-	int[] recCharaDamages;
+	int[] recCharaRatios;
 
-    int[] charaDamages;
+	int[] charaRatios;
 
     [SerializeField]
     public Text[] damageTxt;
@@ -76,15 +80,15 @@ public class FightWnd : MonoBehaviour {
 
 	bool hasDamage;
 
-    List<RaycastData> recAllDamages;
+    List<RaycastData> recAllRatios;
 
-    List<RaycastData> allDamages;
+	List<RaycastData> allRatios;
 
     List<GroundController[]> raycasted;
 
-    List<PlusDamageData> plusDamages;
+	List<PlusRatioData> plusRatios;
 
-	Dictionary<int, int> charaMaxDamage;
+	Dictionary<int, int> charaMaxRatio;
 
     [SerializeField]
     ReversalGrounds reversalGrounds;
@@ -93,6 +97,11 @@ public class FightWnd : MonoBehaviour {
     Transform reversalGroup;
 
     Queue<ReversalGrounds> reversalPool = new Queue<ReversalGrounds>();
+	Queue<ReversalGrounds> reversingPool = new Queue<ReversalGrounds>();
+
+	void SetData() {
+		//foreach()
+	}
 
     // Use this for initialization
     void Start () {
@@ -104,11 +113,14 @@ public class FightWnd : MonoBehaviour {
 			_imagePool.Push (_image);
 		}
 
+		int c = 0;
         for (int i = 0; i < 8; i++)
         {
             ReversalGrounds reversal = Instantiate(reversalGrounds) as ReversalGrounds;
             reversal.GetComponent<RectTransform>().SetParent(reversalGroup);
-            reversal.onRecycle = RecycleRevesal;
+			reversal.transform.localPosition = Vector3.zero;
+			reversal.name = c.ToString ();
+			c++;
             reversalPool.Enqueue(reversal);
         }
 
@@ -120,8 +132,8 @@ public class FightWnd : MonoBehaviour {
 
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType == 0) {
-                gc.matchController.plusDamage = OnPlusDamage;
-				norGcs.Add (gc.matchController);
+				gc.plusRatio = OnPlusRatio;
+				norGcs.Add (gc);
 			}
 		}
 
@@ -138,17 +150,22 @@ public class FightWnd : MonoBehaviour {
     }
 
     private void RecycleRevesal(ReversalGrounds rg) {
-        reversalPool.Enqueue(rg);
-		if (reversalPool.Count == 8) {
-			recAllDamages = allDamages;
-			NextRound ();
+		reversalPool.Enqueue (rg);
+		rg.onRecycle = null;
+		if (reversalPool.Count == 8 && reversingPool.Count == 0) {
+			recAllRatios = allRatios;
+			if (isResetGround) {
+				ResetGround ();
+			} else {
+				NextRound ();
+			}
 		}
     }
 
 
-    private void OnPlusDamage(PlusDamageData plusDamage) {
+	private void OnPlusRatio(PlusRatioData plusDamage) {
 		Debug.Log (plusDamage.gc.name + " : " + plusDamage.charaIdx);
-		plusDamages.Add(plusDamage);
+		plusRatios.Add(plusDamage);
     }
 
 	private void OnProtection(int guardian, int target){
@@ -184,10 +201,6 @@ public class FightWnd : MonoBehaviour {
 			TouchUp ();
 		}
 	}
-
-    void SetCharaData() {
-        //foreach()
-    }
 
 
 	void RoundStart(bool isCenter = true){
@@ -231,50 +244,59 @@ public class FightWnd : MonoBehaviour {
     /// </summary>
     /// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
-		List<GroundController> nextRoundGc = new List<GroundController> ();
+		List<GroundController> nextRoundGcs = new List<GroundController>();
 		List<GroundController> layerList = new List<GroundController> ();
-		GroundController maxLayerGc = null;
+		List<GroundController> maxLayerGcs = new List<GroundController>();
+
+		foreach (var v in damageTxt) {
+			v.color = Color.black;
+		}
 
         int noneCount = 1;
 		for (int i = 7; i > 0; i--) {
 			foreach (GroundController gc in norGcs) {
-				if (maxLayerGc == null) {
-                    if (gc._layer == i) {
-						layerList.Add (gc);
-					}
-				} else {
-                    if (gc._layer >= i && gc != maxLayerGc) {
-						if (i == 1) {
-							noneCount++;
-						}
+				if (maxLayerGcs.Count < 2) {
+					if (gc._layer == i) {
 						layerList.Add (gc);
 					}
 				}
 			}
 				
-			if (maxLayerGc == null) {
-                if (layerList.Count == 1) {
-					maxLayerGc = layerList [0];
-				} else if (layerList.Count > 1) {
-					maxLayerGc = RandomList (1, layerList.ToArray ()) [0];
-				}
-				layerList = new List<GroundController> ();
+			foreach(var gc in RandomList (2 - maxLayerGcs.Count, layerList.ToArray ())){
+				maxLayerGcs.Add (gc); 
+			}
+			layerList = new List<GroundController> ();
+			if (maxLayerGcs.Count == 2) {
+				break;
 			}
 		}
 
-		if (layerList.Count > 0) {
-			foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-1+(int)Mathf.Ceil(resetGroundCount/2), layerList.ToArray(),noneCount)) {
-				nextRoundGc.Add (gc);
+
+		for (int i = 7; i > 0; i--) {
+			foreach (GroundController gc in norGcs) {
+				if (gc._layer >= i && !maxLayerGcs.Contains (gc)) {
+					if (i == 1) {
+						noneCount++;
+					}
+					layerList.Add (gc);
+				}
 			}
 		}
-		if (maxLayerGc != null) {
-			nextRoundGc.Add (maxLayerGc);
+
+		if (maxLayerGcs.Count > 0) {
+			nextRoundGcs = maxLayerGcs;
+		}
+
+		if (layerList.Count > 0) {
+			foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-2+(int)Mathf.Ceil(resetGroundCount/2), layerList.ToArray(),noneCount)) {
+				nextRoundGcs.Add (gc);
+			}
 		}
 
 		hasDamage = false;
 
-		if (nextRoundGc != null && nextRoundGc.Count > 0) {
-			foreach (GroundController gc in nextRoundGc) {
+		if (nextRoundGcs.Count > 0) {
+			foreach (GroundController gc in nextRoundGcs) {
 				gc.ChangeType ();
 			}
 		} else {
@@ -291,7 +313,10 @@ public class FightWnd : MonoBehaviour {
 						if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
 						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
-							startGc.onProtection = OnProtection;
+
+							/*if (characters [(int)charaIdx].job == 3) {
+								endGc.onProtection = OnProtection;
+							}*/
 
                             charaGc.AddLast(startGc);
 							startGc.ChangeChara ((int)charaIdx, (int)charaIdx + 1);
@@ -326,7 +351,6 @@ public class FightWnd : MonoBehaviour {
 							}
 
 							if (endGc != null) {
-								Debug.Log (charaGc.Count);
 								if (charaGc.Last.Value == endGc) {
 									endGc.ResetType ();
 									charaGc.RemoveLast ();
@@ -342,7 +366,9 @@ public class FightWnd : MonoBehaviour {
                                 if (IsCorrectEnd(dir))
                                 {
 									endGc.ChangeChara ((int)charaIdx, (int)charaIdx + 1);
-									endGc.onProtection = OnProtection;
+									/*if (characters [(int)charaIdx].job == 3) {
+										endGc.onProtection = OnProtection;
+									}*/
                                     charaGc.AddLast(endGc);
 
                                     CheckGround();
@@ -384,19 +410,20 @@ public class FightWnd : MonoBehaviour {
 				foreach (var r in result) {
                     if (spaceCorrect == true && r.gameObject.tag == "fightG")
                     {
-                        if ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 99) {
+                        if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99) {
                             isResetGround = true;
                         }
 						RoundEnd();
-						if (isResetGround) {
-							ResetGround ();
-							return;
-						}
+
 						ChangeLayer ();
 
 						if (!hasDamage) {
+							if (isResetGround) {
+								ResetGround ();
+								return;
+							}
 							NextRound ();
-							recAllDamages = allDamages;
+							recAllRatios = allRatios;
 						}
                     }
                     else {
@@ -422,8 +449,8 @@ public class FightWnd : MonoBehaviour {
 	}
 
     private void CheckGround() {
-		allDamages = new List<RaycastData> ();
-        plusDamages = new List<PlusDamageData>();
+		allRatios = new List<RaycastData> ();
+		plusRatios = new List<PlusRatioData>();
 		hasDamage = false;
 
 		foreach (GroundController gc in charaGc) {
@@ -433,30 +460,32 @@ public class FightWnd : MonoBehaviour {
 			ResponseData(gc.OnChangeType());
 		}
 
-        ChangeCharaDamage ();
+		if (recAllRatios.Count != allRatios.Count) {
+			hasDamage = true;
+		}
+		ChangeCharaRatio ();
     }
 		
 	private void ResponseData(List<RaycastData> raycastData){
         foreach (var data in raycastData) {
-			allDamages.Add (data);
+			allRatios.Add (data);
 		}
 	}
 
-	private void ChangeCharaDamage()
+	private void ChangeCharaRatio()
 	{
-		charaDamages = new int[5]{ 0, 0, 0, 0, 0 };
-		foreach (var data in allDamages)
+		charaRatios = new int[5]{ 0, 0, 0, 0, 0 };
+		foreach (var data in allRatios)
 		{
-			if (charaMaxDamage [data.charaIdx] < data.damage) {
-				charaMaxDamage [data.charaIdx] = data.damage;
+			if (charaMaxRatio [data.charaIdx] < data.ratio) {
+				charaMaxRatio [data.charaIdx] = data.ratio;
 			}
-			charaDamages [data.charaIdx] = charaDamages [data.charaIdx] + data.damage;
+			charaRatios [data.charaIdx] = charaRatios [data.charaIdx] + data.ratio;
 		}
 
-		for (int i =0;i<charaDamages.Length;i++) {
-			damageTxt [i].text = charaDamages[i].ToString ();
-			if (recCharaDamages[i] != charaDamages [i]) {
-				hasDamage = true;
+		for (int i =0;i<charaRatios.Length;i++) {
+			damageTxt [i].text = charaRatios[i].ToString ();
+			if (recCharaRatios[i] != charaRatios [i]) {
 				damageTxt [i].color = Color.red;
 			} else {
 				damageTxt [i].color = Color.black;
@@ -466,26 +495,26 @@ public class FightWnd : MonoBehaviour {
 		
     private void RoundEnd()
     {
-		recCharaDamages = charaDamages;
+		recCharaRatios = charaRatios;
 
 		foreach (GroundController gc in norGcs) {
 			gc.SetType();
 		}
 
 		if (hasDamage) {
-			StartCoroutine (CheckDamage ());
+			StartCoroutine (CheckRatio ());
 		}
 
         charaIdx = null;
         startCharaImage = endCharaImage = null;
     }
 
-	private IEnumerator CheckDamage() {
-		if (allDamages.Count > recAllDamages.Count) {
-			foreach (var data in allDamages) {
-				if (recAllDamages.Count > 0) {
+	private IEnumerator CheckRatio() {
+		if (allRatios.Count > recAllRatios.Count) {
+			foreach (var data in allRatios) {
+				if (recAllRatios.Count > 0) {
 					bool hasNew = true;
-					foreach (var recData in recAllDamages) {
+					foreach (var recData in recAllRatios) {
 						if (data.start == recData.start && data.end == recData.end) {
 							hasNew = false;
 							break;
@@ -494,23 +523,37 @@ public class FightWnd : MonoBehaviour {
 					if (hasNew == true) {
 						//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
 						//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
-						reversalPool.Dequeue ().SetReversal (data.hits);
-						yield return new WaitForSeconds (0.2f*(data.hits.Count-1));
+						//reversalPool.Dequeue ().SetReversal (data.hits);
+						//yield return new WaitForSeconds (0.01f * (data.hits.Count - 1));
+						ReversalGrounds rg = reversalPool.Dequeue ();
+						rg.SetReversal (data.hits);
+						rg.onRecycle = RecycleRevesal;
+						reversingPool.Enqueue(rg);
 					}
 
 				} else {
 					//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
 					//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
-					reversalPool.Dequeue ().SetReversal (data.hits);
-					yield return new WaitForSeconds (0.2f * (data.hits.Count-1));
+					//reversalPool.Dequeue ().SetReversal (data.hits);
+					//yield return new WaitForSeconds (0.01f * (data.hits.Count-1));
+					ReversalGrounds rg = reversalPool.Dequeue ();
+					rg.SetReversal (data.hits);
+					rg.onRecycle = RecycleRevesal;
+					reversingPool.Enqueue(rg);
 				}
 			}
 		}
-    }
+
+		while (reversingPool.Count > 0) {
+			ReversalGrounds rg = reversingPool.Dequeue();
+			rg.Run ();
+			yield return new WaitForSeconds (0.1f*(rg.reversalGrounds.Count-1));
+		}
+	}
 
     private void ResetDamage() {
-        for (int i = 0; i < recCharaDamages.Length; i++) {
-			damageTxt[i].text = recCharaDamages[i].ToString();
+		for (int i = 0; i < recCharaRatios.Length; i++) {
+			damageTxt[i].text = recCharaRatios[i].ToString();
 			damageTxt [i].color = Color.black;
         }
     }
@@ -537,21 +580,20 @@ public class FightWnd : MonoBehaviour {
 	private void ResetGround(bool isInit=false){
 		foreach (GroundController gc in allGcs) {
 			gc.ResetType ();
-			gc.matchController.ResetType ();
 		}
 
-		recCharaDamages = new int[5] { 0, 0, 0, 0, 0 };
-		for (int i = 0; i < recCharaDamages.Length; i++) {
-			damageTxt [i].text = recCharaDamages [i].ToString ();
+		recCharaRatios = new int[5] { 0, 0, 0, 0, 0 };
+		for (int i = 0; i < recCharaRatios.Length; i++) {
+			damageTxt [i].text = recCharaRatios [i].ToString ();
 			damageTxt [i].color = Color.black;
 		}
 
-		allDamages = new List<RaycastData> ();
-		recAllDamages = new List<RaycastData> ();
-		charaMaxDamage = new Dictionary<int, int> ();
+		allRatios = new List<RaycastData> ();
+		recAllRatios = new List<RaycastData> ();
+		charaMaxRatio = new Dictionary<int, int> ();
 
 		for (int i = 0; i < 5; i++) {
-			charaMaxDamage.Add (i, 0);
+			charaMaxRatio.Add (i, 0);
 		}
 
 		spaceCorrect = false;
@@ -623,7 +665,6 @@ public class FightWnd : MonoBehaviour {
 	private Image PopImage(Transform target = null,bool isPush = true,Vector3? position = null){
 		Image image;
 		if (!isPush) {
-
 			image = _imagePool.Pop ();
 
 			if (target == CharaGroup) {
@@ -651,6 +692,8 @@ public class FightWnd : MonoBehaviour {
 
 			return image;
 		} else {
+			Debug.Log ("Push");
+
 			if (target == CharaGroup) {
 				image = _charaGroup.Pop ();
 			} else {
@@ -694,10 +737,10 @@ public struct RaycastData {
     public GroundController end;
 	public List<GroundController> hits;
 	public int charaIdx;
-    public int damage;
+    public int ratio;
 }
 
-public struct PlusDamageData {
+public struct PlusRatioData {
     public int charaIdx;
     public GroundController gc;
 }

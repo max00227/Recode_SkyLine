@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class TweenTool : MonoBehaviour {
 
+	public enum TweenType{
+		Position,
+		Rotation,
+		Scale
+	}
+
 
 	[SerializeField]
-	Vector2 from;
+	TweenType tweentype; 
 
 	[SerializeField]
-	Vector2 to;
+	Vector3 from;
+
+	[SerializeField]
+	Vector3 to;
 
 	[SerializeField]
 	AnimationCurve animationCurve = new AnimationCurve(new Keyframe(0f, 0f, 0f, 1f), new Keyframe(1f, 1f, 1f, 0f));
@@ -18,15 +27,19 @@ public class TweenTool : MonoBehaviour {
 	float TweenTime = 1;
 
 	[SerializeField]
+	bool isRoop;
+
+	[SerializeField]
 	bool isPopupWnd=true;
 
+	[HideInInspector]
 	public GameObject showGameObject;
 
 	bool isRun = false;
 
 	bool runForward = true;
 
-	Vector2 orginPos;
+	Vector3 orginV3;
 
 	float oriTime = 0;
 
@@ -47,6 +60,32 @@ public class TweenTool : MonoBehaviour {
 		oriTime = isForward?0:TweenTime;
 		isRun = true;
 	}
+
+	void Stop(){
+		isRun = false;
+		if (tweentype == TweenType.Position) {
+			transform.localPosition = orginV3 ;
+		} 
+		else if (tweentype == TweenType.Rotation) {
+			transform.Rotate (orginV3);
+		}
+		else {
+			transform.localScale = orginV3;
+		}
+	}
+
+
+	void Start(){
+		if (tweentype == TweenType.Position) {
+			orginV3 = transform.localPosition;
+		} 
+		else if (tweentype == TweenType.Rotation) {
+			orginV3 = transform.localEulerAngles;
+		}
+		else {
+			orginV3 = transform.localScale;
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -60,7 +99,17 @@ public class TweenTool : MonoBehaviour {
 				oriTime = oriTime - Time.deltaTime;
 			}
 
-			transform.localPosition = from + (to - from) * animationCurve.Evaluate (oriTime / TweenTime);
+			Vector3 deltaV3 = from + (to - from) * animationCurve.Evaluate (oriTime / TweenTime);
+
+			if (tweentype == TweenType.Position) {
+				transform.localPosition = deltaV3;
+			} 
+			else if (tweentype == TweenType.Rotation) {
+				transform.Rotate (deltaV3);
+			}
+			else {
+				transform.localScale = deltaV3;
+			}
 
 			if (runForward) {
 				if (oriTime >= TweenTime) {

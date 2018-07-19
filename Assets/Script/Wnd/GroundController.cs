@@ -39,17 +39,17 @@ public class GroundController : MonoBehaviour
 
 	public bool testRaycasted;
 
-    int goldDamage = 75;
+    int goldRatio = 75;
 
-    public delegate void PlusDamage(PlusDamageData plusDamageData);
+	public delegate void PlusRatio(PlusRatioData plusRatioData);
 
-    public PlusDamage plusDamage;
+    public PlusRatio plusRatio;
 
 	public delegate void OnReversed (GroundController groundController);
 
 	public OnReversed onReversed;
 
-	public delegate void OnReversing (int damage);
+	public delegate void OnReversing (int ratio, GroundController groundController);
 
 	public OnReversing onReversing;
 
@@ -80,15 +80,12 @@ public class GroundController : MonoBehaviour
 
 		_layer = (int)_groundType == 0 ? 1 : 0;
 
-        if (image != null)
-        {
-			matchController.ChangeSprite(_groundType);
-        }
+		ResetSprite (_groundType);
 
 		testRaycasted = false;
     }
 
-	public void ChangeSprite(GroundType? type)
+	public void ChangeSprite(GroundType type)
     {
         if (image != null)
         {
@@ -109,16 +106,28 @@ public class GroundController : MonoBehaviour
 		{
 			if (image.sprite == GetSprites[1])
 			{
-				onReversing.Invoke (50);
+				Reversing (50);
 				image.sprite = GetSprites[2];
 			}
 			else if (image.sprite == GetSprites[2])
 			{
-				onReversing.Invoke (25);
+				Reversing (25);
 				image.sprite = GetSprites[3];
 			}
 		}
-		onReversed.Invoke (this);
+		if (onReversed != null) {
+			onReversed.Invoke (this);
+		}
+	}
+
+	private void Reversing(int ratio){
+		if (onReversing != null) {
+			onReversing.Invoke (25, this);
+		}
+	}
+
+	public void ResetSprite(GroundType type){
+		matchController.ChangeSprite (type);
 	}
 
     public void SetType()
@@ -139,8 +148,6 @@ public class GroundController : MonoBehaviour
 		else {
 			_layer = 0;
 		}
-
-
     }
 
     public void UpLayer()
@@ -196,8 +203,11 @@ public class GroundController : MonoBehaviour
 					
                     if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
                     {
-						if (charaJob == 3 && hits [j].transform.GetComponent<GroundController> ().charaJob != 3) {
-							onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
+						if (hits [j].transform.GetComponent<GroundController> ().charaJob != 3) {
+							if (onProtection != null) {
+								onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
+								onProtection = null;
+							}
 						}
                         break;
                     }
@@ -210,14 +220,14 @@ public class GroundController : MonoBehaviour
                         else
                         {
 							if (!hitNone) {
-								int damage = CalculateDamage (hitGcs.ToArray ());
+								int ratio = CalculateRatio (hitGcs.ToArray ());
 
-								if (damage > 0) {
+								if (ratio > 0) {
 									RaycastData data = new RaycastData ();
 
 									data.start = GetComponent<GroundController> ().matchController;
 									data.end = hits [j].transform.GetComponent<GroundController> ().matchController;
-									data.damage = damage;
+									data.ratio = ratio;
 									data.hits = new List<GroundController> ();
 									data.charaIdx = (int)charaIdx;
 									for (int h = 0; h < hitGcs.Count - 1; h++) {
@@ -249,9 +259,9 @@ public class GroundController : MonoBehaviour
 		return dataList;
 	}
 
-    private int CalculateDamage(RaycastHit2D[] hits)
+    private int CalculateRatio(RaycastHit2D[] hits)
     {
-        int extraDamage = 0;
+        int extraRatio = 0;
 
         bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
 
@@ -266,19 +276,18 @@ public class GroundController : MonoBehaviour
                         hit.collider.GetComponent<GroundController>().ChangeType(charaIdx);
                     }
 
-                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
-                    {
-                        case 2:
-                            extraDamage = extraDamage + 50;
-                            break;
-                        case 3:
-                            extraDamage = extraDamage + goldDamage;
-                            break;
-                    }
+					switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
+					case 2:
+						extraRatio = extraRatio + 50;
+						break;
+					case 3:
+						extraRatio = extraRatio + goldRatio;
+						break;
+					}
                 }
             }
         }
-        return extraDamage;
+		return extraRatio;
     }
 
     public void ChangeType(int? idx = null)
@@ -295,7 +304,7 @@ public class GroundController : MonoBehaviour
 				charaIdx = idx;
 				_groundType = GroundType.Silver;
 			} else if ((int)_groundType == 2) {
-				OnPlusDamage ();
+				OnPlusRatio ();
 				_groundType = GroundType.gold;
 			}
 			isChanged = true;
@@ -349,12 +358,12 @@ public class GroundController : MonoBehaviour
         return hits;
     }
 
-    private void OnPlusDamage() {
-        PlusDamageData data = new PlusDamageData();
+    private void OnPlusRatio() {
+		PlusRatioData data = new PlusRatioData();
         data.gc = matchController;
         data.charaIdx = (int)charaIdx;
 
-        plusDamage.Invoke(data);
+        plusRatio.Invoke(data);
     }
 
 	#region TEST
@@ -382,9 +391,9 @@ public class GroundController : MonoBehaviour
 					else {
 						if (j > 0) {
 
-							int damage = TestCalculateDamage (hitGcs.ToArray ());
-							if (damage > 0) {
-								Debug.Log (gameObject.name + " , " + hitGcs [hitGcs.Count - 1].collider.name + " : " + damage);
+							int ratio = TestCalculateRatio (hitGcs.ToArray ());
+							if (ratio > 0) {
+								Debug.Log (gameObject.name + " , " + hitGcs [hitGcs.Count - 1].collider.name + " : " + ratio);
 							}
 						}
 						break;
@@ -400,9 +409,9 @@ public class GroundController : MonoBehaviour
 		testRaycasted = true;
 	}
 
-    private int TestCalculateDamage(RaycastHit2D[] hits)
+	private int TestCalculateRatio(RaycastHit2D[] hits)
     {
-        int extraDamage = 0;
+        int extraRatio = 0;
 		bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
         bool according = hits[hits.Length - 1].collider.GetComponent<GroundController>().testRaycasted;
         foreach (var hit in hits)
@@ -412,19 +421,18 @@ public class GroundController : MonoBehaviour
                 if (!according)
                 {
 
-                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
-                    {
-                        case 2:
-                            extraDamage = extraDamage + 50;
-                            break;
-                        case 3:
-                            extraDamage = extraDamage + 75;
-                            break;
-                    }
+					switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
+					case 2:
+						extraRatio = extraRatio + 50;
+						break;
+					case 3:
+						extraRatio = extraRatio + 75;
+						break;
+					}
                 }
             }
         }
-        return extraDamage;
+		return extraRatio;
     }
 
 	#endregion
