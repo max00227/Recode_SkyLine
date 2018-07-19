@@ -206,7 +206,6 @@ public class GroundController : MonoBehaviour
 						if (hits [j].transform.GetComponent<GroundController> ().charaJob != 3) {
 							if (onProtection != null) {
 								onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
-								onProtection = null;
 							}
 						}
                         break;

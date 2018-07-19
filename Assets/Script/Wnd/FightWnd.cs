@@ -523,7 +523,6 @@ public class FightWnd : MonoBehaviour {
 					if (hasNew == true) {
 						//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
 						//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
-						//reversalPool.Dequeue ().SetReversal (data.hits);
 						//yield return new WaitForSeconds (0.01f * (data.hits.Count - 1));
 						ReversalGrounds rg = reversalPool.Dequeue ();
 						rg.SetReversal (data.hits);
@@ -534,7 +533,6 @@ public class FightWnd : MonoBehaviour {
 				} else {
 					//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
 					//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
-					//reversalPool.Dequeue ().SetReversal (data.hits);
 					//yield return new WaitForSeconds (0.01f * (data.hits.Count-1));
 					ReversalGrounds rg = reversalPool.Dequeue ();
 					rg.SetReversal (data.hits);

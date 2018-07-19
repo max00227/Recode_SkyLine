@@ -44,7 +44,6 @@ public class ReversalGrounds : MonoBehaviour {
                     reversalGrounds[reversedCount].ChangeSprite();
 
                     reversedCount++;
-                    //reversalTime = 0.75f;
 					reversalTime = 0.75f;
                 }
             }
