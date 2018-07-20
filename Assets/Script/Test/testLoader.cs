@@ -8,7 +8,9 @@ using WndEditor;
 
 public class testLoader : MonoBehaviour {
 	string path = "/ClientData/ClientData.txt";
+	string teamDataPath = "/ClientData/TeamData.txt";
 
+	static string json = "";
 	[SerializeField]
 	ParameterReciever reciever; 
 
@@ -21,14 +23,22 @@ public class testLoader : MonoBehaviour {
 	int[] ia = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
 	// Use this for initialization
-	void Start () {
-		container.SetListItemTest(10);
-		TutorialManager.Instance.SetTutorialStep (process.step);
+	void Awake () {
+		//container.SetListItemTest(10);
+		//TutorialManager.Instance.SetTutorialStep (process.step);
 
-		/*test.ClientDataLoader.readClientData();
-		StreamReader sr = new StreamReader (Application.dataPath + "/ClientData/testData.txt");
-		string js = sr.ReadToEnd ();
-		reciever.ResolveReq (js);*/
+		test.ClientDataLoader.readClientData();
+		StreamReader sr = new StreamReader (Application.dataPath + teamDataPath);
+		json = sr.ReadToEnd();
+
+		MyUserLargeData userData = JsonConversionExtensions.ConvertJson<MyUserLargeData>(json);
+		MyUserData.UpdataUserdata (userData);
+		Debug.Log (MyUserData.GetTeamListData().Count);
+		//Debug.Log (largeData.TeamListData.team);
+
+		/*StreamReader sr = new StreamReader (Application.dataPath + path);
+		string js = sr.ReadToEnd ();*/
+		//reciever.ResolveReq (js);
 		//int[] nia = new int[5];
 		//Array.Copy (ia, 1, nia, 0, 5);
 

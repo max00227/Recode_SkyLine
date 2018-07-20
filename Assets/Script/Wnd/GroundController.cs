@@ -57,7 +57,7 @@ public class GroundController : MonoBehaviour
 
 	public OnProtection onProtection;
 
-	public int charaJob;
+	private int charaJob;
 
     // Use this for initialization
     void Awake()
@@ -77,6 +77,10 @@ public class GroundController : MonoBehaviour
 		isActived = isChanged = activeLock = raycasted = false;
 
         charaIdx = null;
+
+		charaJob = 0;
+
+		onProtection = null;
 
 		_layer = (int)_groundType == 0 ? 1 : 0;
 
@@ -322,13 +326,12 @@ public class GroundController : MonoBehaviour
         raycasted = true;
     }
 
-	public void ChangeChara(int idx, int job=0)
+	public void ChangeChara(int idx, int job)
 	{
 		charaIdx = idx;
-		charaJob = job;
 		_groundType = GroundType.Chara;
+		charaJob = job;
 
-		//isChanged = true;
 		_layer = 0;
 	}
 

@@ -10,7 +10,6 @@ public class DataUtil{
 		if (list != null) {
 			foreach (T item in list) {
 				if (item.id == id) {
-					
 					return item;
 				}
 			}

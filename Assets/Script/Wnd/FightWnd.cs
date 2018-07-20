@@ -100,7 +100,10 @@ public class FightWnd : MonoBehaviour {
 	Queue<ReversalGrounds> reversingPool = new Queue<ReversalGrounds>();
 
 	void SetData() {
-		//foreach()
+		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
+			characters[i] = MasterDataManager.GetCharaData (MyUserData.GetTeamData(0).Team[i].id);
+			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
+		}
 	}
 
     // Use this for initialization
@@ -146,6 +149,10 @@ public class FightWnd : MonoBehaviour {
             CreateGround = 2;
         }
 
+		characters = new CharaLargeData[5];
+		monsters = new MonsterLargeData[5];
+
+		SetData ();
         ResetGround(true);
     }
 
@@ -314,12 +321,12 @@ public class FightWnd : MonoBehaviour {
 						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
 
-							/*if (characters [(int)charaIdx].job == 3) {
+							if (characters [(int)charaIdx].job == 3) {
 								endGc.onProtection = OnProtection;
-							}*/
+							}
 
                             charaGc.AddLast(startGc);
-							startGc.ChangeChara ((int)charaIdx, (int)charaIdx + 1);
+							startGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job);
 
 							startCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
 							endCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
@@ -365,10 +372,12 @@ public class FightWnd : MonoBehaviour {
 
                                 if (IsCorrectEnd(dir))
                                 {
-									endGc.ChangeChara ((int)charaIdx, (int)charaIdx + 1);
-									/*if (characters [(int)charaIdx].job == 3) {
+									endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job);
+
+									if (characters [(int)charaIdx].job == 3) {
 										endGc.onProtection = OnProtection;
-									}*/
+									}
+
                                     charaGc.AddLast(endGc);
 
                                     CheckGround();
@@ -589,6 +598,7 @@ public class FightWnd : MonoBehaviour {
 		allRatios = new List<RaycastData> ();
 		recAllRatios = new List<RaycastData> ();
 		charaMaxRatio = new Dictionary<int, int> ();
+
 
 		for (int i = 0; i < 5; i++) {
 			charaMaxRatio.Add (i, 0);

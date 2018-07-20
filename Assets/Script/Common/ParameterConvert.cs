@@ -9,7 +9,6 @@ public class ParameterConvert {
 		Dictionary<string, int> charaAbility = new Dictionary<string, int>();
 	
 		float radio = Mathf.Pow (charaLv, 0.7f) + Mathf.Ceil (charaLv / 10)*0.5f;
-		Debug.Log (radio);
 
 		charaAbility.Add ("Atk", (int)Mathf.Ceil (data.atk * radio));
 		charaAbility.Add ("Def", (int)Mathf.Ceil (data.def * radio));

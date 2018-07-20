@@ -29,8 +29,20 @@ public static class MasterDataManager {
 		}
 	}
 
+	public static List<MonsterLargeData> monsterLargeData;
+
+	public static List<MonsterLargeData> GetMonsterLargeData{
+		get{ 
+			return monsterLargeData;
+		}
+	}
+
 	public static CharaLargeData GetCharaData(int id){
 		return DataUtil.GetById<CharaLargeData> (id, ref charaLargeData);
+	}
+
+	public static MonsterLargeData GetMonsterData(int id){
+		return DataUtil.GetById<MonsterLargeData> (id, ref monsterLargeData);
 	}
 
 	public static void UpdataMasterdata(ClientLargeData clientData){
@@ -39,6 +51,8 @@ public static class MasterDataManager {
 		skillLargeData = clientData.Skill;
 
 		ruleLargeData = clientData.Rule;
+
+		monsterLargeData = clientData.monster;
 	}
 }
 
