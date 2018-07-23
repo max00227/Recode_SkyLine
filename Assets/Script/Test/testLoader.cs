@@ -33,7 +33,6 @@ public class testLoader : MonoBehaviour {
 
 		MyUserLargeData userData = JsonConversionExtensions.ConvertJson<MyUserLargeData>(json);
 		MyUserData.UpdataUserdata (userData);
-		Debug.Log (MyUserData.GetTeamListData().Count);
 		//Debug.Log (largeData.TeamListData.team);
 
 		/*StreamReader sr = new StreamReader (Application.dataPath + path);

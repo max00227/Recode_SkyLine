@@ -30,7 +30,7 @@ public class TweenTool : MonoBehaviour {
 	bool isRoop;
 
 	[SerializeField]
-	bool isPopupWnd=true;
+	bool isPopupWnd = false;
 
 	[HideInInspector]
 	public GameObject showGameObject;

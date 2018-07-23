@@ -59,13 +59,17 @@ public class GroundController : MonoBehaviour
 
 	private int charaJob;
 
+	public GroundController pairGc;
+
+	public bool isRuined;
+
     // Use this for initialization
     void Awake()
     {
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
-		isActived = isChanged = activeLock = raycasted = false;
+		isActived = isChanged = activeLock = raycasted = isRuined =  false;
 		testRaycasted = false;
     }
 
@@ -74,7 +78,7 @@ public class GroundController : MonoBehaviour
     {
         _groundType = defaultType;
 
-		isActived = isChanged = activeLock = raycasted = false;
+		isActived = isChanged = activeLock = raycasted = isRuined =  false;
 
         charaIdx = null;
 
@@ -85,6 +89,8 @@ public class GroundController : MonoBehaviour
 		_layer = (int)_groundType == 0 ? 1 : 0;
 
 		ResetSprite (_groundType);
+
+		pairGc = null;
 
 		testRaycasted = false;
     }
@@ -134,7 +140,7 @@ public class GroundController : MonoBehaviour
 		matchController.ChangeSprite (type);
 	}
 
-    public void SetType()
+	public void SetType(bool isNext)
     {
         if (isActived) {
             activeLock = true;
@@ -146,6 +152,10 @@ public class GroundController : MonoBehaviour
 
         raycasted = false;
 		isChanged = false;
+
+		if (isNext) {
+			isRuined = false;	
+		}
 		if ((int)_groundType == 0) {
 			_layer = 1;
 		} 
@@ -158,7 +168,7 @@ public class GroundController : MonoBehaviour
     {
         if ((int)_groundType == 0)
         {
-            _layer++;
+			_layer ++;
         }
     }
 
@@ -168,6 +178,10 @@ public class GroundController : MonoBehaviour
 
 	public void OnPrevType(){
 		RaycastRound (true);
+	}
+
+	public void OnRuined(){
+		isRuined = true;
 	}
 
     private Dictionary<int, List<RaycastData>> OnPrevType(RaycastHit2D[] hits)
@@ -326,11 +340,15 @@ public class GroundController : MonoBehaviour
         raycasted = true;
     }
 
-	public void ChangeChara(int idx, int job)
+	public void ChangeChara(int idx, int job, GroundController pair, bool isAct = false)
 	{
 		charaIdx = idx;
 		_groundType = GroundType.Chara;
 		charaJob = job;
+
+		isActived = isAct;
+
+		pairGc = pair;
 
 		_layer = 0;
 	}

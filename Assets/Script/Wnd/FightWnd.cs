@@ -46,7 +46,7 @@ public class FightWnd : MonoBehaviour {
 
 	int ResetCount;
 
-	Stack<Image> _charaGroup = new Stack<Image> ();
+	List<CharaImageData> _charaGroup = new List<CharaImageData> ();
 
 	Stack<Image> _imagePool = new Stack<Image> ();
 
@@ -98,6 +98,12 @@ public class FightWnd : MonoBehaviour {
 
     Queue<ReversalGrounds> reversalPool = new Queue<ReversalGrounds>();
 	Queue<ReversalGrounds> reversingPool = new Queue<ReversalGrounds>();
+
+	bool isRuined;
+
+	GroundController ruinGc;
+
+	GroundController errorEnd;
 
 	void SetData() {
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
@@ -193,7 +199,19 @@ public class FightWnd : MonoBehaviour {
 			CheckGround ();
 			ChangeLayer ();
             NextRound(false);
-        }	
+        }
+
+		if (Input.GetKeyDown(KeyCode.Y)) {
+			foreach (var v in charaGc) {
+				Debug.Log (v.name);
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.U)) {
+			foreach (var v in _charaGroup) {
+				Debug.Log (v.linkGc.name);
+			}
+		}
 
         if (Input.GetKeyDown (KeyCode.Mouse0)) {
 			TouchDown ();
@@ -255,6 +273,8 @@ public class FightWnd : MonoBehaviour {
 		List<GroundController> layerList = new List<GroundController> ();
 		List<GroundController> maxLayerGcs = new List<GroundController>();
 
+		int focusCount = 1;
+
 		foreach (var v in damageTxt) {
 			v.color = Color.black;
 		}
@@ -262,18 +282,18 @@ public class FightWnd : MonoBehaviour {
         int noneCount = 1;
 		for (int i = 7; i > 0; i--) {
 			foreach (GroundController gc in norGcs) {
-				if (maxLayerGcs.Count < 2) {
+				if (maxLayerGcs.Count < focusCount) {
 					if (gc._layer == i) {
 						layerList.Add (gc);
 					}
 				}
 			}
 				
-			foreach(var gc in RandomList (2 - maxLayerGcs.Count, layerList.ToArray ())){
+			foreach(var gc in RandomList (focusCount - maxLayerGcs.Count, layerList.ToArray ())){
 				maxLayerGcs.Add (gc); 
 			}
 			layerList = new List<GroundController> ();
-			if (maxLayerGcs.Count == 2) {
+			if (maxLayerGcs.Count == focusCount) {
 				break;
 			}
 		}
@@ -295,7 +315,7 @@ public class FightWnd : MonoBehaviour {
 		}
 
 		if (layerList.Count > 0) {
-			foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-2+(int)Mathf.Ceil(resetGroundCount/2), layerList.ToArray(),noneCount)) {
+			foreach (var gc in RandomList ((CreateGround*(Convert.ToInt32(!isSpace)+1))-focusCount+(int)Mathf.Ceil(resetGroundCount/2), layerList.ToArray(),noneCount)) {
 				nextRoundGcs.Add (gc);
 			}
 		}
@@ -312,36 +332,52 @@ public class FightWnd : MonoBehaviour {
 	}
 
 	private void TouchDown(){
-		if (charaIdx != null) {
 			var result = CanvasManager.Instance.GetRaycastResult ();
-			if (result.Count > 0) {
-				foreach (var r in result) {
-					if (r.gameObject.tag == "fightG") {
-						if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
-						   || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
-							startGc = r.gameObject.GetComponent<GroundController> ().matchController;
-
+		if (result.Count > 0) {
+			foreach (var r in result) {
+				if (r.gameObject.tag == "fightG") {
+					
+					if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
+					    || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
+						startGc = r.gameObject.GetComponent<GroundController> ().matchController;
+						if (charaIdx != null) {
 							if (characters [(int)charaIdx].job == 3) {
 								endGc.onProtection = OnProtection;
 							}
 
-                            charaGc.AddLast(startGc);
-							startGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job);
+							charaGc.AddLast (startGc);
+							startGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, null);
 
-							startCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
-							endCharaImage = PopImage (CharaGroup, false, r.gameObject.transform.localPosition);
+							startCharaImage = PopImage (_imagePool, startGc, r.gameObject.transform.localPosition);
+							endCharaImage = PopImage (_imagePool, null, r.gameObject.transform.localPosition);
 
 							if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
 								isResetGround = true;
 							}
-						} else {
-							startGc.PrevType ();
+						} 
+					} else if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 10 && CanRuin) {
+						if (r.gameObject.GetComponent<GroundController> ().matchController.isActived
+						    && r.gameObject.GetComponent<GroundController> ().matchController.pairGc.isActived
+							&& !r.gameObject.GetComponent<GroundController> ().matchController.isRuined
+							&& !r.gameObject.GetComponent<GroundController> ().matchController.pairGc.isRuined) {
+							isRuined = true;
+							ruinGc = r.gameObject.GetComponent<GroundController> ().matchController;
+							foreach (var data in _charaGroup) {
+								if (data.linkGc == ruinGc) {
+									endCharaImage = data.image;	
+								}
+							}
+							endGc = ruinGc;
+							charaIdx = endGc.charaIdx;
+							startGc = endGc.pairGc;
 						}
 					}
 				}
 			}
 		}
 	}
+
+	private bool CanRuin = true;
 
 	private void TouchDrap(){
 		if (endCharaImage != null) {
@@ -358,33 +394,52 @@ public class FightWnd : MonoBehaviour {
 							}
 
 							if (endGc != null) {
-								if (charaGc.Last.Value == endGc) {
+								if (!isRuined) {
+									if (charaGc.Last.Value == endGc) {
+										endGc.ResetType ();
+										charaGc.RemoveLast ();
+									}
+								} 
+								else {
 									endGc.ResetType ();
-									charaGc.RemoveLast ();
 								}
 							}
 
                             if ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 0 || (int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 99)
                             {
-                                endGc = r.gameObject.GetComponent<GroundController>().matchController;
+								GroundController checkGc = r.gameObject.GetComponent<GroundController>().matchController;
 
-                                Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, endGc.transform.localPosition);
+								Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
 
                                 if (IsCorrectEnd(dir))
                                 {
-									endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job);
+									endGc = r.gameObject.GetComponent<GroundController>().matchController;
+									if (isRuined) {
+										endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc, isRuined);
+										if (charaGc.Contains (ruinGc)) {
+											charaGc.Find (ruinGc).Value = endGc;
+										}
+									} 
+									else {
+										endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc);
+									}
 
 									if (characters [(int)charaIdx].job == 3) {
 										endGc.onProtection = OnProtection;
 									}
 
-                                    charaGc.AddLast(endGc);
+									if (!isRuined) {
+										charaGc.AddLast (endGc);
+									}
 
                                     CheckGround();
                                     spaceCorrect = true;
                                 }
                                 else
                                 {
+									if (endGc != null) {
+										errorEnd = endGc;
+									}
 									endGc = null;
                                     ResetDamage();
                                     spaceCorrect = false;
@@ -392,13 +447,19 @@ public class FightWnd : MonoBehaviour {
                             }
                             else
                             {
-                                endGc = null;
+								if (endGc != null) {
+									errorEnd = endGc;
+								}
+								endGc = null;
 								ResetDamage();
                                 spaceCorrect = false;
                             }
 						} 
 						else {
 							if (endGc == startGc) {
+								if (endGc != null) {
+									errorEnd = endGc;
+								}
 								endGc = null;
 								ResetDamage();
 								spaceCorrect = false;
@@ -422,26 +483,55 @@ public class FightWnd : MonoBehaviour {
                         if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99) {
                             isResetGround = true;
                         }
-						RoundEnd();
 
-						ChangeLayer ();
+						startGc.pairGc = endGc;
 
-						if (!hasDamage) {
-							if (isResetGround) {
-								ResetGround ();
-								return;
+						for (int i = 0; i < _charaGroup.Count; i++) {
+							if (_charaGroup [i].image == endCharaImage) {
+								CharaImageData imageData = new CharaImageData ();
+								imageData.image = endCharaImage;
+								imageData.linkGc = endGc;
+								_charaGroup [i] = imageData;
 							}
-							NextRound ();
-							recAllRatios = allRatios;
 						}
+
+
+
+						if (!isRuined) {
+							ChangeLayer ();
+							if (!hasDamage) {
+								if (isResetGround) {
+									ResetGround ();
+									return;
+								}
+								NextRound ();
+								recAllRatios = allRatios;
+							}
+						} 
+						else {
+							startGc.OnRuined ();
+							endGc.OnRuined ();
+						}
+
+						RoundEnd();
                     }
                     else {
-						PopImage (CharaGroup);
-						PopImage (CharaGroup);
-						startCharaImage = endCharaImage = null;
-						startGc.ResetType ();
-                        charaGc.RemoveLast();
-                        ResetDamage();
+						if (!isRuined) {
+							PopImage ();
+							PopImage ();
+							startCharaImage = endCharaImage = null;
+							startGc.ResetType ();
+							charaGc.RemoveLast ();
+							ResetDamage ();
+						} 
+						else {
+							if (charaGc.Contains (errorEnd)) {
+								charaGc.Find (errorEnd).Value = ruinGc;
+							}
+							endCharaImage.transform.localPosition = ruinGc.matchController.transform.localPosition;
+							ruinGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc, isRuined);
+							isRuined = false;
+						}
                     }
 				}
 			}
@@ -507,15 +597,19 @@ public class FightWnd : MonoBehaviour {
 		recCharaRatios = charaRatios;
 
 		foreach (GroundController gc in norGcs) {
-			gc.SetType();
+			gc.SetType(isRuined);
 		}
 
-		if (hasDamage) {
-			StartCoroutine (CheckRatio ());
+		if (!isRuined) {
+			if (hasDamage) {
+				StartCoroutine (CheckRatio ());
+			}
 		}
+		isRuined = false;
 
         charaIdx = null;
         startCharaImage = endCharaImage = null;
+		startGc = endGc = ruinGc = null;
     }
 
 	private IEnumerator CheckRatio() {
@@ -530,9 +624,6 @@ public class FightWnd : MonoBehaviour {
 						}
 					}
 					if (hasNew == true) {
-						//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
-						//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);		
-						//yield return new WaitForSeconds (0.01f * (data.hits.Count - 1));
 						ReversalGrounds rg = reversalPool.Dequeue ();
 						rg.SetReversal (data.hits);
 						rg.onRecycle = RecycleRevesal;
@@ -540,9 +631,6 @@ public class FightWnd : MonoBehaviour {
 					}
 
 				} else {
-					//Image line = PopImage (rayGroup, false, data.start.transform.localPosition);
-					//line.GetComponent<LineConnecter> ().SetConnect (data.start.transform.localPosition, data.end.transform.localPosition);
-					//yield return new WaitForSeconds (0.01f * (data.hits.Count-1));
 					ReversalGrounds rg = reversalPool.Dequeue ();
 					rg.SetReversal (data.hits);
 					rg.onRecycle = RecycleRevesal;
@@ -614,7 +702,7 @@ public class FightWnd : MonoBehaviour {
 
 		isResetGround = false;
 		while (_charaGroup.Count > 0) {
-			PopImage (CharaGroup);
+			PopImage ();
 		}
 
 		if (isInit == false) {
@@ -670,46 +758,29 @@ public class FightWnd : MonoBehaviour {
 		return ListT;
 	}
 
-	private Image PopImage(Transform target = null,bool isPush = true,Vector3? position = null){
+	private Image PopImage(Stack<Image> pool = null, GroundController linkGc = null, Vector3? position = null){
 		Image image;
-		if (!isPush) {
-			image = _imagePool.Pop ();
+		if (pool != null) {
+			image = pool.Pop ();
+			image.GetComponent<RectTransform> ().SetParent (CharaGroup);
+			image.sprite = CharaSprite [(int)charaIdx];
 
-			if (target == CharaGroup) {
-				image.GetComponent<RectTransform> ().SetParent (CharaGroup);
-				_charaGroup.Push (image);
-				image.sprite = CharaSprite [(int)charaIdx];
-			} 
-			else {
-				image.GetComponent<RectTransform> ().SetParent (rayGroup);
-				_rayGroup.Push (image);
-				image.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0);
-				image.gameObject.AddComponent<LineConnecter> ();
-				image.type = Image.Type.Sliced;
-
-				image.sprite = lineSprite;
-			}
 			if (position != null) {
 				image.transform.localPosition = (Vector3)position;
                 
 			}
+			CharaImageData imageData = new CharaImageData ();
 			image.transform.localScale = Vector3.one;
 			image.SetNativeSize ();
 
 			image.gameObject.SetActive (true);
-
+			imageData.image = image;
+			imageData.linkGc = linkGc;
+			_charaGroup.Add (imageData);
 			return image;
 		} else {
-			Debug.Log ("Push");
-
-			if (target == CharaGroup) {
-				image = _charaGroup.Pop ();
-			} else {
-				image = _rayGroup.Pop ();
-				Destroy (image.GetComponent<LineConnecter> ());
-			}
-			image.type = Image.Type.Simple;
-			image.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0.5f);
+			image = _charaGroup [_charaGroup.Count - 1].image;
+			_charaGroup.RemoveRange (_charaGroup.Count - 1, 1);
 			image.GetComponent<RectTransform> ().SetParent (imagePool);
 			image.transform.localPosition = Vector3.zero;
 			image.gameObject.SetActive (false);
@@ -751,4 +822,9 @@ public struct RaycastData {
 public struct PlusRatioData {
     public int charaIdx;
     public GroundController gc;
+}
+
+public struct CharaImageData{
+	public Image image;
+	public GroundController linkGc;
 }
