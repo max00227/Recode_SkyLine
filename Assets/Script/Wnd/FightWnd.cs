@@ -50,9 +50,6 @@ public class FightWnd : MonoBehaviour {
 
 	Stack<Image> _imagePool = new Stack<Image> ();
 
-	Stack<Image> _rayGroup = new Stack<Image> ();
-
-
 	[SerializeField]
 	Image spriteImage;
 
@@ -69,9 +66,9 @@ public class FightWnd : MonoBehaviour {
 
 	public Sprite lineSprite;
 
-	int[] recCharaRatios;
+	int[] recJobRatios;
 
-	int[] charaRatios;
+	int[] jobRatios;
 
     [SerializeField]
     public Text[] damageTxt;
@@ -88,7 +85,7 @@ public class FightWnd : MonoBehaviour {
 
 	List<PlusRatioData> plusRatios;
 
-	Dictionary<int, int> charaMaxRatio;
+	Dictionary<int, int> jobMaxRatio;
 
     [SerializeField]
     ReversalGrounds reversalGrounds;
@@ -100,6 +97,8 @@ public class FightWnd : MonoBehaviour {
 	Queue<ReversalGrounds> reversingPool = new Queue<ReversalGrounds>();
 
 	bool isRuined;
+
+	bool ruining;
 
 	GroundController ruinGc;
 
@@ -177,7 +176,6 @@ public class FightWnd : MonoBehaviour {
 
 
 	private void OnPlusRatio(PlusRatioData plusDamage) {
-		Debug.Log (plusDamage.gc.name + " : " + plusDamage.charaIdx);
 		plusRatios.Add(plusDamage);
     }
 
@@ -355,12 +353,12 @@ public class FightWnd : MonoBehaviour {
 								isResetGround = true;
 							}
 						} 
-					} else if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 10 && CanRuin) {
+					} else if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 10 && CanRuin && !isRuined) {
 						if (r.gameObject.GetComponent<GroundController> ().matchController.isActived
 						    && r.gameObject.GetComponent<GroundController> ().matchController.pairGc.isActived
 							&& !r.gameObject.GetComponent<GroundController> ().matchController.isRuined
 							&& !r.gameObject.GetComponent<GroundController> ().matchController.pairGc.isRuined) {
-							isRuined = true;
+							ruining = true;
 							ruinGc = r.gameObject.GetComponent<GroundController> ().matchController;
 							foreach (var data in _charaGroup) {
 								if (data.linkGc == ruinGc) {
@@ -394,7 +392,7 @@ public class FightWnd : MonoBehaviour {
 							}
 
 							if (endGc != null) {
-								if (!isRuined) {
+								if (!ruining) {
 									if (charaGc.Last.Value == endGc) {
 										endGc.ResetType ();
 										charaGc.RemoveLast ();
@@ -414,8 +412,8 @@ public class FightWnd : MonoBehaviour {
                                 if (IsCorrectEnd(dir))
                                 {
 									endGc = r.gameObject.GetComponent<GroundController>().matchController;
-									if (isRuined) {
-										endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc, isRuined);
+									if (ruining) {
+										endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc, ruining);
 										if (charaGc.Contains (ruinGc)) {
 											charaGc.Find (ruinGc).Value = endGc;
 										}
@@ -428,7 +426,7 @@ public class FightWnd : MonoBehaviour {
 										endGc.onProtection = OnProtection;
 									}
 
-									if (!isRuined) {
+									if (!ruining) {
 										charaGc.AddLast (endGc);
 									}
 
@@ -496,27 +494,30 @@ public class FightWnd : MonoBehaviour {
 						}
 
 
-
-						if (!isRuined) {
-							ChangeLayer ();
+						if (!ruining) {
 							if (!hasDamage) {
 								if (isResetGround) {
 									ResetGround ();
 									return;
 								}
+								ChangeLayer ();
+
 								NextRound ();
 								recAllRatios = allRatios;
 							}
 						} 
 						else {
-							startGc.OnRuined ();
-							endGc.OnRuined ();
+							if (endGc != ruinGc) {
+								startGc.OnRuined ();
+								endGc.OnRuined ();
+								isRuined = true;
+							}
 						}
 
 						RoundEnd();
                     }
                     else {
-						if (!isRuined) {
+						if (!ruining) {
 							PopImage ();
 							PopImage ();
 							startCharaImage = endCharaImage = null;
@@ -529,8 +530,8 @@ public class FightWnd : MonoBehaviour {
 								charaGc.Find (errorEnd).Value = ruinGc;
 							}
 							endCharaImage.transform.localPosition = ruinGc.matchController.transform.localPosition;
-							ruinGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc, isRuined);
-							isRuined = false;
+							ruinGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc, ruining);
+							ruining = false;
 						}
                     }
 				}
@@ -559,8 +560,31 @@ public class FightWnd : MonoBehaviour {
 			ResponseData(gc.OnChangeType());
 		}
 
-		if (recAllRatios.Count != allRatios.Count) {
-			hasDamage = true;
+		if (CanRuin) {
+			if (allRatios.Count != 0) {
+				foreach (var ratio in allRatios) {
+					if (recAllRatios.Count == 0) {
+						hasDamage = true;
+					} else {
+						foreach (var recRatio in recAllRatios) {
+							if (ratio.end != recRatio.end || ratio.ratio != recRatio.ratio) {
+								hasDamage = true;
+								break;
+							} else if (ratio.start != recRatio.start || ratio.ratio != recRatio.ratio) {
+								hasDamage = true;
+								break;
+							} else if (ratio.end != recRatio.end || ratio.start != recRatio.start) {
+								hasDamage = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+		} else {
+			if (allRatios.Count != recAllRatios.Count) {
+				hasDamage = true;
+			}
 		}
 		ChangeCharaRatio ();
     }
@@ -573,18 +597,17 @@ public class FightWnd : MonoBehaviour {
 
 	private void ChangeCharaRatio()
 	{
-		charaRatios = new int[5]{ 0, 0, 0, 0, 0 };
-		foreach (var data in allRatios)
-		{
-			if (charaMaxRatio [data.charaIdx] < data.ratio) {
-				charaMaxRatio [data.charaIdx] = data.ratio;
+		jobRatios = new int[5]{ 0, 0, 0, 0, 0 };
+		foreach (var data in allRatios) {
+			if (jobMaxRatio [data.CharaJob-1] < data.ratio) {
+				jobMaxRatio [data.CharaJob-1] = data.ratio;
 			}
-			charaRatios [data.charaIdx] = charaRatios [data.charaIdx] + data.ratio;
+			jobRatios [data.CharaJob-1] = jobRatios [data.CharaJob-1] + data.ratio;
 		}
 
-		for (int i =0;i<charaRatios.Length;i++) {
-			damageTxt [i].text = charaRatios[i].ToString ();
-			if (recCharaRatios[i] != charaRatios [i]) {
+		for (int i = 0; i < characters.Length; i++) {
+			damageTxt [i].text = jobRatios [characters [i].job-1].ToString ();
+			if (recJobRatios [characters [i].job-1] != jobRatios [characters [i].job-1]) {
 				damageTxt [i].color = Color.red;
 			} else {
 				damageTxt [i].color = Color.black;
@@ -594,18 +617,18 @@ public class FightWnd : MonoBehaviour {
 		
     private void RoundEnd()
     {
-		recCharaRatios = charaRatios;
+		recJobRatios = jobRatios;
 
 		foreach (GroundController gc in norGcs) {
-			gc.SetType(isRuined);
+			gc.SetType(!ruining);
 		}
 
-		if (!isRuined) {
+		if (!ruining) {
 			if (hasDamage) {
 				StartCoroutine (CheckRatio ());
 			}
 		}
-		isRuined = false;
+		ruining = false;
 
         charaIdx = null;
         startCharaImage = endCharaImage = null;
@@ -647,8 +670,8 @@ public class FightWnd : MonoBehaviour {
 	}
 
     private void ResetDamage() {
-		for (int i = 0; i < recCharaRatios.Length; i++) {
-			damageTxt[i].text = recCharaRatios[i].ToString();
+		for (int i = 0; i < characters.Length; i++) {
+			damageTxt[i].text = recJobRatios[characters[i].job-1].ToString();
 			damageTxt [i].color = Color.black;
         }
     }
@@ -677,19 +700,19 @@ public class FightWnd : MonoBehaviour {
 			gc.ResetType ();
 		}
 
-		recCharaRatios = new int[5] { 0, 0, 0, 0, 0 };
-		for (int i = 0; i < recCharaRatios.Length; i++) {
-			damageTxt [i].text = recCharaRatios [i].ToString ();
+		recJobRatios = new int[5] { 0, 0, 0, 0, 0 };
+		for (int i = 0; i < damageTxt.Length; i++) {
+			damageTxt [i].text = "0";
 			damageTxt [i].color = Color.black;
 		}
 
 		allRatios = new List<RaycastData> ();
 		recAllRatios = new List<RaycastData> ();
-		charaMaxRatio = new Dictionary<int, int> ();
+		jobMaxRatio = new Dictionary<int, int> ();
 
 
 		for (int i = 0; i < 5; i++) {
-			charaMaxRatio.Add (i, 0);
+			jobMaxRatio.Add (i, 0);
 		}
 
 		spaceCorrect = false;
@@ -815,7 +838,7 @@ public struct RaycastData {
     public GroundController start;
     public GroundController end;
 	public List<GroundController> hits;
-	public int charaIdx;
+	public int CharaJob;
     public int ratio;
 }
 

@@ -69,7 +69,7 @@ public class GroundController : MonoBehaviour
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
-		isActived = isChanged = activeLock = raycasted = isRuined =  false;
+		isActived = isChanged = activeLock = raycasted = isRuined = false;
 		testRaycasted = false;
     }
 
@@ -78,7 +78,7 @@ public class GroundController : MonoBehaviour
     {
         _groundType = defaultType;
 
-		isActived = isChanged = activeLock = raycasted = isRuined =  false;
+		isActived = isChanged = activeLock = raycasted = false;
 
         charaIdx = null;
 
@@ -219,14 +219,11 @@ public class GroundController : MonoBehaviour
                 else if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 10)
                 {
 					
-                    if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
+					if (hits[j].transform.GetComponent<GroundController>().charaJob != charaJob)
                     {
-						if (hits [j].transform.GetComponent<GroundController> ().charaJob != 3) {
-							if (onProtection != null) {
-								onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
-							}
+						if (onProtection != null) {
+							onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
 						}
-                        break;
                     }
                     else
                     {
@@ -246,7 +243,9 @@ public class GroundController : MonoBehaviour
 									data.end = hits [j].transform.GetComponent<GroundController> ().matchController;
 									data.ratio = ratio;
 									data.hits = new List<GroundController> ();
-									data.charaIdx = (int)charaIdx;
+									if (charaJob != 0) {
+										data.CharaJob = charaJob;
+									}
 									for (int h = 0; h < hitGcs.Count - 1; h++) {
 										data.hits.Add (hitGcs [h].collider.GetComponent<GroundController> ().matchController);
 									}
