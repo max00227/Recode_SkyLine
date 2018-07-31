@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using System.IO;
 
-public class TextBG : MonoBehaviour {
+public class fightBGMaker : MonoBehaviour {
     int groundRadio = 4;
     int maxHoriCount;
     int spacing = 3;
@@ -220,18 +220,6 @@ public class TextBG : MonoBehaviour {
 		}
 	}
 
-	[MenuItem("MyProject/CloseCollider")]
-	public static void CloseCollider(){
-		GameObject selGO = Selection.activeGameObject;
-		GroundController[] gc = selGO.transform.GetChild (1).GetComponentsInChildren<GroundController> ();
-
-		for (int i = 0; i < gc.Length; i++) {
-			if ((int)gc [i]._groundType == 99) {
-				gc[i].gameObject.AddComponent<PolygonCollider2D>();
-			}
-		}
-	}
-
 	[MenuItem("MyProject/SetSprite")]
 	public static void SetSprite(){
 		GameObject selGO = Selection.activeGameObject;
@@ -255,6 +243,18 @@ public class TextBG : MonoBehaviour {
 			for (int i = 0; i < gc.Length; i++) {
 				gc [i].matchController = uiGC [i];
 				uiGC [i].matchController = gc [i];
+			}
+		}
+	}
+
+	[MenuItem("MyProject/SetLightText")]
+	public static void SetLightText(){
+		GameObject selGO = Selection.activeGameObject;
+		GroundController[] uiGC = selGO.transform.GetChild (0).GetComponentsInChildren<GroundController> ();
+
+		foreach (var gc in uiGC) {
+			for (int i = 0; i < 3; i++) {
+				gc.lightText [i] = gc.transform.GetChild (i).GetComponent<Image>();
 			}
 		}
 	}
