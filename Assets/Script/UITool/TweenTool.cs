@@ -42,6 +42,7 @@ public class TweenTool : MonoBehaviour {
 	Vector3 orginV3;
 
 	float oriTime = 0;
+	float recTime;
 
 
 	// Use this for initialization
@@ -57,7 +58,7 @@ public class TweenTool : MonoBehaviour {
 
 	void Play (bool isForward) {
 		runForward = isForward;
-		oriTime = isForward?0:TweenTime;
+		recTime = Time.realtimeSinceStartup;
 		isRun = true;
 	}
 
@@ -94,9 +95,9 @@ public class TweenTool : MonoBehaviour {
 				showGameObject.SetActive (true);
 			}
 			if (runForward) {
-				oriTime = oriTime + Time.deltaTime;
+				oriTime = Time.realtimeSinceStartup - recTime;
 			} else {
-				oriTime = oriTime - Time.deltaTime;
+				oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
 			}
 
 			Vector3 deltaV3 = from + (to - from) * animationCurve.Evaluate (oriTime / TweenTime);

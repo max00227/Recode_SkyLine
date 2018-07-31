@@ -367,6 +367,10 @@ public class TutorialManager: Singleton<TutorialManager>
 			nBtn.gameObject.SetActive (true);
 		}
 
+		if (process._tutorialType == TutorialType.Talk && nProcess._tutorialType != TutorialType.Talk) {
+			Time.timeScale = 1;
+		}
+
 		if (nProcess._tutorialType == TutorialType.Talk) {
 			SetMaskAndBtnHiglight (process, nProcess);
 			TalkManager.Instance.TalkStart ();

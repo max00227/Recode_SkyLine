@@ -43,6 +43,7 @@ public class TalkManager : Singleton<TalkManager> {
 
 			talkQueue.Enqueue (data);
 		}
+		Time.timeScale = 0;
 	}
 
 	void SetTalkData(int CharId,int ContentId, int Pos, int talkOrder = 0){
@@ -103,12 +104,13 @@ public class TalkManager : Singleton<TalkManager> {
 
 
 	private float timer;
+	private float recTime;
 	private string words;
 
 	public void SetTalkContent(string content){
 		//myEvent = new UnityEvent();
 		words = content;
-		timer = 0;
+		recTime = Time.realtimeSinceStartup;
 		isActive = true;
 	}
 
@@ -119,7 +121,7 @@ public class TalkManager : Singleton<TalkManager> {
 			try
 			{
 				talkText.text = words.Substring(0, (int)((1/charsPerSecond) * timer));
-				timer += Time.deltaTime;
+				timer = Time.realtimeSinceStartup - recTime;
 			}
 			catch (Exception)
 			{
