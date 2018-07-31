@@ -30,10 +30,6 @@ public class GroundSEController : MonoBehaviour {
 		tweenTool = GetComponent<TweenTool> ();
 	}
 
-	public GroundSEController New() {
-		return new GroundSEController();
-	}
-
 	// Update is called once per frame
 	void Update () {
 		if (setComplete && isRun) {

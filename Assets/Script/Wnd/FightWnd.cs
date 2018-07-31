@@ -87,15 +87,18 @@ public class FightWnd : MonoBehaviour {
 
 	Dictionary<int, int> jobMaxRatio;
 
+	#region GroundShow 格子轉換效果
     [SerializeField]
-    ReversalGrounds reversalGrounds;
+	GroundSEController showGrounds;
 
     [SerializeField]
-    Transform reversalGroup;
+    Transform showGroup;
 
-    Queue<ReversalGrounds> reversalPool = new Queue<ReversalGrounds>();
-	Queue<ReversalGrounds> reversingPool = new Queue<ReversalGrounds>();
+	Queue<GroundSEController> SEPool = new Queue<GroundSEController>();
+	Queue<GroundSEController> SEingPool = new Queue<GroundSEController>();
+	#endregion
 
+	#region Ruining Chara移動激活格用
 	bool isRuined;
 
 	bool ruining;
@@ -103,6 +106,19 @@ public class FightWnd : MonoBehaviour {
 	GroundController ruinGc;
 
 	GroundController errorEnd;
+	#endregion
+
+	#region CharaButton 角色選去按鈕用
+	bool onPress = false;
+	private float lastIsDownTime;
+	private float delay = 1f;
+	bool charaDetail = false;
+	#endregion
+
+	#region InstantItemCount 遊玩中產生物件宣告
+	int showItemCount = 16;
+	int imageItem = 32;
+	#endregion
 
 	void SetData() {
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
@@ -113,7 +129,7 @@ public class FightWnd : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < imageItem; i++) {
 			Image _image = Instantiate (spriteImage) as Image;
 			_image.GetComponent<RectTransform> ().SetParent (imagePool);
 			_image.transform.localPosition = Vector3.zero;
@@ -121,15 +137,12 @@ public class FightWnd : MonoBehaviour {
 			_imagePool.Push (_image);
 		}
 
-		int c = 0;
-        for (int i = 0; i < 8; i++)
+		for (int i = 0; i < showItemCount; i++)
         {
-            ReversalGrounds reversal = Instantiate(reversalGrounds) as ReversalGrounds;
-            reversal.GetComponent<RectTransform>().SetParent(reversalGroup);
-			reversal.transform.localPosition = Vector3.zero;
-			reversal.name = c.ToString ();
-			c++;
-            reversalPool.Enqueue(reversal);
+			GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
+			showItem.GetComponent<RectTransform>().SetParent(showGroup);
+			showItem.transform.localPosition = Vector3.zero;
+			SEPool.Enqueue(showItem);
         }
 
 
@@ -161,10 +174,10 @@ public class FightWnd : MonoBehaviour {
         ResetGround(true);
     }
 
-    private void RecycleRevesal(ReversalGrounds rg) {
-		reversalPool.Enqueue (rg);
+	private void RecycleShowItem(GroundSEController rg) {
+		SEPool.Enqueue (rg);
 		rg.onRecycle = null;
-		if (reversalPool.Count == 8 && reversingPool.Count == 0) {
+		if (SEPool.Count == showItemCount && SEingPool.Count == 0) {
 			recAllRatios = allRatios;
 			if (isResetGround) {
 				ResetGround ();
@@ -211,6 +224,12 @@ public class FightWnd : MonoBehaviour {
 			}
 		}
 
+		if (Input.GetKeyDown(KeyCode.O)) {
+			foreach (var v in recAllRatios) {
+				Debug.Log (v.start+" : "+v.end);
+			}
+		}
+
         if (Input.GetKeyDown (KeyCode.Mouse0)) {
 			TouchDown ();
 		}
@@ -223,6 +242,41 @@ public class FightWnd : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.Mouse0)) {
 			TouchUp ();
 		}
+
+		if (onPress) {
+			// 当前时间 -  按钮最后一次被按下的时间 > 延迟时间0.2秒
+			if (Time.time - lastIsDownTime > delay && !charaDetail) {
+				SetCharaDetail ((int)charaIdx);
+				charaIdx = null;
+				charaDetail = true;
+			}
+		}
+
+	}
+
+	public void OnPressDown(int selIdx){
+		onPress = true;
+		SelectChara (selIdx);
+		lastIsDownTime = Time.time;
+
+	}
+
+
+	public void OnPressUp(){
+		charaDetail = false;
+		onPress = false;
+	}
+
+	public void OnPressExit(){
+		charaDetail = false;
+		if (onPress) {
+			charaIdx = null;
+		}
+		onPress = false;
+	}
+
+	void SetCharaDetail(int selIdx){
+		
 	}
 
 
@@ -333,7 +387,7 @@ public class FightWnd : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult ();
 		if (result.Count > 0) {
 			foreach (var r in result) {
-				if (r.gameObject.tag == "fightG") {
+				if (r.gameObject.CompareTag("fightG")) {
 					
 					if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
 					    || (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
@@ -382,7 +436,7 @@ public class FightWnd : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult ();
 			if (result.Count > 0) {
 				foreach (var r in result) {
-                    if (r.gameObject.tag == "fightG")
+					if (r.gameObject.CompareTag("fightG"))
                     {
 						endCharaImage.transform.localPosition = r.gameObject.transform.localPosition;
 
@@ -409,7 +463,7 @@ public class FightWnd : MonoBehaviour {
 
 								Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
 
-                                if (IsCorrectEnd(dir))
+								if (IsCorrectDir(dir) != 0)
                                 {
 									endGc = r.gameObject.GetComponent<GroundController>().matchController;
 									if (ruining) {
@@ -476,7 +530,7 @@ public class FightWnd : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult ();
 			if (result.Count > 0) {
 				foreach (var r in result) {
-                    if (spaceCorrect == true && r.gameObject.tag == "fightG")
+					if (spaceCorrect == true && r.gameObject.CompareTag("fightG"))
                     {
                         if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99) {
                             isResetGround = true;
@@ -511,6 +565,7 @@ public class FightWnd : MonoBehaviour {
 								startGc.OnRuined ();
 								endGc.OnRuined ();
 								isRuined = true;
+								recAllRatios = allRatios;
 							}
 						}
 
@@ -538,15 +593,6 @@ public class FightWnd : MonoBehaviour {
 			}
 		}
     }
-
-	private void testCheckGround() {
-		foreach (GroundController gc in charaGc) {
-			gc.testRaycasted = false;
-		}
-		foreach (GroundController gc in charaGc) {
-			gc.OnTestChangeType();
-		}
-	}
 
     private void CheckGround() {
 		allRatios = new List<RaycastData> ();
@@ -647,25 +693,31 @@ public class FightWnd : MonoBehaviour {
 						}
 					}
 					if (hasNew == true) {
-						ReversalGrounds rg = reversalPool.Dequeue ();
-						rg.SetReversal (data.hits);
-						rg.onRecycle = RecycleRevesal;
-						reversingPool.Enqueue(rg);
+						GroundSEController rg = SEPool.Dequeue ();
+						rg.SetGroundSE (data.hits);//特效(翻轉或亮燈)
+						rg.onRecycle = RecycleShowItem;
+						SEingPool.Enqueue (rg);
+					} 
+					else {
+						Vector2 dir = ConvertDirNormalized(data.start.transform.localPosition, data.end.transform.localPosition);
+						GroundSEController rg = SEPool.Dequeue ();
+						rg.SetGroundSE (data.hits, IsCorrectDir (dir), data.start.charaJob);
+						SEingPool.Enqueue (rg);
 					}
 
 				} else {
-					ReversalGrounds rg = reversalPool.Dequeue ();
-					rg.SetReversal (data.hits);
-					rg.onRecycle = RecycleRevesal;
-					reversingPool.Enqueue(rg);
+					GroundSEController rg = SEPool.Dequeue ();
+					rg.SetGroundSE (data.hits);
+					rg.onRecycle = RecycleShowItem;
+					SEingPool.Enqueue(rg);
 				}
 			}
 		}
 
-		while (reversingPool.Count > 0) {
-			ReversalGrounds rg = reversingPool.Dequeue();
+		while (SEingPool.Count > 0) {
+			GroundSEController rg = SEingPool.Dequeue();
 			rg.Run ();
-			yield return new WaitForSeconds (0.1f*(rg.reversalGrounds.Count-1));
+			yield return new WaitForSeconds (0.1f*(rg.seGrounds.Count-1));
 		}
 	}
 
@@ -676,19 +728,26 @@ public class FightWnd : MonoBehaviour {
         }
     }
 
-	public bool IsCorrectEnd(Vector2 dirNormalized) {
-		if (Mathf.Round(Mathf.Abs(dirNormalized.x * 10)) == 5 && Mathf.Round(Mathf.Abs(dirNormalized.y * 10)) == 9)
+	public int IsCorrectDir(Vector2 dirNormalized) {
+		if ((Mathf.Round(dirNormalized.x * 10) == 5 && Mathf.Round(dirNormalized.y * 10) == -9)
+			||(Mathf.Round(dirNormalized.x * 10) == -5 && Mathf.Round(dirNormalized.y * 10) == 9))
 		{
-			return true;
+			return 1;
+		}
+		else if ((Mathf.Round(dirNormalized.x * 10) == -5 && Mathf.Round(dirNormalized.y * 10) == -9)
+			||(Mathf.Round(dirNormalized.x * 10) == 5 && Mathf.Round(dirNormalized.y * 10) == 9))
+		{
+			return 2;
 		}
 		else if (Mathf.Round(Mathf.Abs(dirNormalized.x * 10)) == 10 && Mathf.Round(Mathf.Abs(dirNormalized.y * 10)) == 0)
 		{
-			return true;
+			return 3;
 		}
 		else {
-			return false;
+			return 0;
 		}
 	}
+
 
 	public Vector2 ConvertDirNormalized(Vector2 org, Vector2 dir){
 

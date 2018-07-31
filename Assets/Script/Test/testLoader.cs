@@ -65,7 +65,7 @@ public class testLoader : MonoBehaviour {
 	}
 	public void WndTest3(GameObject go){
 		if (TutorialManager.Instance.focusGameObject == go) {
-			Debug.Log ("testWnd3");
+			WindowManager.Instance.PopupWnd("testWnd3");
 		}
 	}
 

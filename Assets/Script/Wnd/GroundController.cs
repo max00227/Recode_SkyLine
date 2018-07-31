@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GroundController : MonoBehaviour
 {
@@ -45,23 +46,29 @@ public class GroundController : MonoBehaviour
 
     public PlusRatio plusRatio;
 
-	public delegate void OnReversed (GroundController groundController);
+	public delegate void OnShowed (GroundController groundController);
 
-	public OnReversed onReversed;
+	public OnShowed onShowed;
 
-	public delegate void OnReversing (int ratio, GroundController groundController);
+	public delegate void OnShowing (int ratio, GroundController groundController);
 
-	public OnReversing onReversing;
+	public OnShowing onShowing;
 
 	public delegate void OnProtection (int Guardian, int target);
 
 	public OnProtection onProtection;
 
-	private int charaJob;
+	[HideInInspector]
+	public int charaJob;
 
 	public GroundController pairGc;
 
 	public bool isRuined;
+
+	public Image[] lightText;
+
+	[SerializeField]
+	Color[] lightColor;
 
     // Use this for initialization
     void Awake()
@@ -125,14 +132,24 @@ public class GroundController : MonoBehaviour
 				image.sprite = GetSprites[3];
 			}
 		}
-		if (onReversed != null) {
-			onReversed.Invoke (this);
+		if (onShowed != null) {
+			onShowed.Invoke (this);
+		}
+	}
+
+	public void OnLight(int dir, int colorIdx){
+		if (lightText.Length != 0) {
+			lightText [dir - 1].color = lightColor [colorIdx];
+			lightText [dir - 1].gameObject.SetActive (true);
+		}
+		if (onShowed != null) {
+			onShowed.Invoke (this);
 		}
 	}
 
 	private void Reversing(int ratio){
-		if (onReversing != null) {
-			onReversing.Invoke (25, this);
+		if (onShowing != null) {
+			onShowing.Invoke (25, this);
 		}
 	}
 
@@ -162,6 +179,10 @@ public class GroundController : MonoBehaviour
 		else {
 			_layer = 0;
 		}
+
+		/*foreach (var img in lightText) {
+			img.gameObject.SetActive (false);
+		}*/
     }
 
     public void UpLayer()
@@ -384,75 +405,4 @@ public class GroundController : MonoBehaviour
 
         plusRatio.Invoke(data);
     }
-
-	#region TEST
-	public void OnTestChangeType(){
-		TestRaycastRound();	
-	}
-
-	private void TestRaycastRound()
-	{
-		RaycastHit2D[] hits;
-		for (int i = 0; i < 6; i++) {
-			hits = GetRaycastHits (transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
-
-			List<RaycastHit2D> hitGcs = new List<RaycastHit2D> ();
-			for (int j = 0; j < hits.Length; j++) {
-				hitGcs.Add (hits [j]);
-                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0) {
-                    break;
-                }
-				else if ((int)hits [j].transform.GetComponent<GroundController> ()._groundType == 10) {
-					if (hits[j].transform.GetComponent<GroundController>().charaIdx != charaIdx)
-					{
-						break;
-					}
-					else {
-						if (j > 0) {
-
-							int ratio = TestCalculateRatio (hitGcs.ToArray ());
-							if (ratio > 0) {
-								Debug.Log (gameObject.name + " , " + hitGcs [hitGcs.Count - 1].collider.name + " : " + ratio);
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
-			
-		OnTestRaycasted ();
-	}
-
-	public void OnTestRaycasted(){
-		testRaycasted = true;
-	}
-
-	private int TestCalculateRatio(RaycastHit2D[] hits)
-    {
-        int extraRatio = 0;
-		bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
-        bool according = hits[hits.Length - 1].collider.GetComponent<GroundController>().testRaycasted;
-        foreach (var hit in hits)
-        {
-            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
-            {
-                if (!according)
-                {
-
-					switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
-					case 2:
-						extraRatio = extraRatio + 50;
-						break;
-					case 3:
-						extraRatio = extraRatio + 75;
-						break;
-					}
-                }
-            }
-        }
-		return extraRatio;
-    }
-
-	#endregion
 }
