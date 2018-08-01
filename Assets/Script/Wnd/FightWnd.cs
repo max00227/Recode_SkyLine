@@ -230,17 +230,31 @@ public class FightWnd : MonoBehaviour {
 			}
 		}
 
-        if (Input.GetKeyDown (KeyCode.Mouse0)) {
+		if (Input.GetKeyDown (KeyCode.Mouse0)) {
 			TouchDown ();
 		}
 
-        if (Input.GetKey(KeyCode.Mouse0))
+		if (Input.GetKey(KeyCode.Mouse0))
         {
             TouchDrap ();
         }
 
 		if (Input.GetKeyUp (KeyCode.Mouse0)) {
 			TouchUp ();
+		}
+
+		if (Input.touchCount == 1) {
+			if (Input.GetTouch (0).phase == TouchPhase.Began) {
+				TouchDown (true);
+			}
+
+			if (Input.GetTouch (0).phase == TouchPhase.Stationary) {
+				TouchDrap (true);
+			}
+
+			if (Input.GetTouch (0).phase == TouchPhase.Ended) {
+				TouchUp (true);
+			}
 		}
 
 		if (onPress) {
@@ -383,8 +397,8 @@ public class FightWnd : MonoBehaviour {
 		}
 	}
 
-	private void TouchDown(){
-			var result = CanvasManager.Instance.GetRaycastResult ();
+	private void TouchDown(bool isTouch = false){
+		var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 		if (result.Count > 0) {
 			foreach (var r in result) {
 				if (r.gameObject.CompareTag("fightG")) {
@@ -431,9 +445,9 @@ public class FightWnd : MonoBehaviour {
 
 	private bool CanRuin = true;
 
-	private void TouchDrap(){
+	private void TouchDrap(bool isTouch = false){
 		if (endCharaImage != null) {
-			var result = CanvasManager.Instance.GetRaycastResult ();
+			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 			if (result.Count > 0) {
 				foreach (var r in result) {
 					if (r.gameObject.CompareTag("fightG"))
@@ -525,9 +539,9 @@ public class FightWnd : MonoBehaviour {
 
    
 
-	private void TouchUp(){
+	private void TouchUp(bool isTouch = false){
 		if (endCharaImage != null) {
-			var result = CanvasManager.Instance.GetRaycastResult ();
+			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 			if (result.Count > 0) {
 				foreach (var r in result) {
 					if (spaceCorrect == true && r.gameObject.CompareTag("fightG"))

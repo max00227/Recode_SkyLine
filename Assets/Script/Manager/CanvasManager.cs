@@ -27,28 +27,39 @@ public class CanvasManager : Singleton<CanvasManager> {
 		
 	}
 
-	public List<RaycastResult> GetTutorialRaycastResult(Canvas _canvas){
+	public List<RaycastResult> GetTutorialRaycastResult(Canvas _canvas,bool isTouch = false){
 		List<RaycastResult> results = new List<RaycastResult> ();
 		Canvas mainCanvas = _canvas;
 
 
-        GraphicRaycaster m_Raycaster = mainCanvas.GetComponent<GraphicRaycaster>();
+		GraphicRaycaster m_Raycaster = mainCanvas.GetComponent<GraphicRaycaster> ();
 
-        PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current);
-        m_PointerEventData.position = Input.mousePosition;
+		PointerEventData m_PointerEventData = new PointerEventData (EventSystem.current);
 
-        EventSystem.current.RaycastAll(m_PointerEventData, results);
+		if (!isTouch) {
+			m_PointerEventData.position = Input.mousePosition;
+		} else {
+			m_PointerEventData.position = Input.GetTouch (0).position;
+		}
 
-        return results;
+		EventSystem.current.RaycastAll (m_PointerEventData, results);
+
+		return results;
 	}
 
-	public List<RaycastResult> GetRaycastResult(){
+	public List<RaycastResult> GetRaycastResult(bool isTouch = false){
 		List<RaycastResult> results = new List<RaycastResult> ();
 
         GraphicRaycaster m_Raycaster = mainCanvas.GetComponent<GraphicRaycaster> ();
 
 		PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current);
-		m_PointerEventData.position = Input.mousePosition;
+
+		if (!isTouch) {
+			m_PointerEventData.position = Input.mousePosition;
+		} 
+		else {
+			m_PointerEventData.position = Input.GetTouch(0).position;
+		}
 
         EventSystem.current.RaycastAll(m_PointerEventData, results);
 
