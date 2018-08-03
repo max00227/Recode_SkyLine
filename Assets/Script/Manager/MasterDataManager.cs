@@ -52,7 +52,7 @@ public static class MasterDataManager {
 
 		ruleLargeData = clientData.Rule;
 
-		//monsterLargeData = clientData.monster;
+		monsterLargeData = clientData.Monster;
 	}
 }
 

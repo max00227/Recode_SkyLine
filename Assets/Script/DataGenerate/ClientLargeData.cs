@@ -11,6 +11,6 @@ namespace model.data
 
 		public System.Collections.Generic.List<RuleLargeData> Rule{ get; set;}
 
-		//public System.Collections.Generic.List<MonsterLargeData> monster{ get; set;}
+		public System.Collections.Generic.List<MonsterLargeData> Monster{ get; set;}
     }
 }

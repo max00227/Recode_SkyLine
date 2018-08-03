@@ -85,7 +85,8 @@ public class FightWnd : MonoBehaviour {
 
 	List<PlusRatioData> plusRatios;
 
-	Dictionary<int, int> jobMaxRatio;
+	Dictionary<int, int> recActLevel;
+
 
 	#region GroundShow 格子轉換效果
     [SerializeField]
@@ -121,6 +122,19 @@ public class FightWnd : MonoBehaviour {
 	#endregion
 
 	void SetData() {
+		string enemyDataPath = "/ClientData/EnemyData.txt";
+
+		System.IO.StreamReader sr = new System.IO.StreamReader (Application.dataPath + enemyDataPath);
+		string json = sr.ReadToEnd();
+
+		EnemyLargeData enemyData = JsonConversionExtensions.ConvertJson<EnemyLargeData>(json);
+
+		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
+			monsters[i] = MasterDataManager.GetMonsterData (enemyData.TeamData[0].Team[i].id);
+			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
+		}
+
+
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
 			characters[i] = MasterDataManager.GetCharaData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
@@ -659,8 +673,13 @@ public class FightWnd : MonoBehaviour {
 	{
 		jobRatios = new int[5]{ 0, 0, 0, 0, 0 };
 		foreach (var data in allRatios) {
-			if (jobMaxRatio [data.CharaJob-1] < data.ratio) {
-				jobMaxRatio [data.CharaJob-1] = data.ratio;
+			if (data.hits.Count >= 5 && data.ratio > 250) {
+				ChangeActLevel (data.CharaJob, 3);
+			}
+			else if (data.hits.Count >= 3 && data.ratio > 150) {
+				ChangeActLevel (data.CharaJob, 2);
+			} else {
+				ChangeActLevel (data.CharaJob, 1);
 			}
 			jobRatios [data.CharaJob-1] = jobRatios [data.CharaJob-1] + data.ratio;
 		}
@@ -672,6 +691,12 @@ public class FightWnd : MonoBehaviour {
 			} else {
 				damageTxt [i].color = Color.black;
 			}
+		}
+	}
+
+	private void ChangeActLevel(int job, int level){
+		if (recActLevel [job - 1] < level) {
+			recActLevel [job - 1] = level;
 		}
 	}
 		
@@ -706,18 +731,11 @@ public class FightWnd : MonoBehaviour {
 							break;
 						}
 					}
-					if (hasNew == true) {
-						GroundSEController rg = SEPool.Dequeue ();
-						rg.SetGroundSE (data.hits);//特效(翻轉或亮燈)
-						rg.onRecycle = RecycleShowItem;
-						SEingPool.Enqueue (rg);
-					} 
-					else {
-						Vector2 dir = ConvertDirNormalized(data.start.transform.localPosition, data.end.transform.localPosition);
-						GroundSEController rg = SEPool.Dequeue ();
-						rg.SetGroundSE (data.hits, IsCorrectDir (dir), data.start.charaJob);
-						SEingPool.Enqueue (rg);
-					}
+
+					Vector2 dir = ConvertDirNormalized(data.start.transform.localPosition, data.end.transform.localPosition);
+					GroundSEController rg = SEPool.Dequeue ();
+					rg.SetGroundSE (data.hits, IsCorrectDir (dir), data.start.charaJob, hasNew);
+					SEingPool.Enqueue (rg);
 
 				} else {
 					GroundSEController rg = SEPool.Dequeue ();
@@ -781,11 +799,11 @@ public class FightWnd : MonoBehaviour {
 
 		allRatios = new List<RaycastData> ();
 		recAllRatios = new List<RaycastData> ();
-		jobMaxRatio = new Dictionary<int, int> ();
+		recActLevel = new Dictionary<int, int> ();
 
 
 		for (int i = 0; i < 5; i++) {
-			jobMaxRatio.Add (i, 0);
+			recActLevel.Add (i, 0);
 		}
 
 		spaceCorrect = false;

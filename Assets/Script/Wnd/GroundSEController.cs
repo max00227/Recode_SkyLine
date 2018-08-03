@@ -24,6 +24,8 @@ public class GroundSEController : MonoBehaviour {
 
 	public OnRecycle onRecycle;
 
+	bool reverse;
+
 	// Use this for initialization
 	void Start() {
 		damageTxt = GetComponent<Text> ();
@@ -41,12 +43,11 @@ public class GroundSEController : MonoBehaviour {
 				if (showTime <= 0) {
 					tweenTool.PlayForward ();
 
-					if (lightDir == 0) {
+					if (reverse) {
 						seGrounds [showedCount].ChangeSprite ();
 					} 
-					else {
-						//seGrounds [reversedCount].OnLight (lightDir, lightJob);
-					}
+						
+					//seGrounds [showedCount].OnLight (lightDir, lightJob);
 
 					showedCount++;
 					showTime = 0.75f;
@@ -60,7 +61,7 @@ public class GroundSEController : MonoBehaviour {
 		}
 	}
 
-	public void SetGroundSE(List<GroundController> grounds, int dir = 0, int job = 0)
+	public void SetGroundSE(List<GroundController> grounds, int dir = 0, int job = 0, bool hasReverse = false)
 	{
 		plusDamage = 0;
 		seGrounds = grounds;
@@ -75,6 +76,8 @@ public class GroundSEController : MonoBehaviour {
 
 		setComplete = true;
 		isRun = false;
+
+		reverse = hasReverse;
 	}
 
 	private void OnShowed(GroundController gc){

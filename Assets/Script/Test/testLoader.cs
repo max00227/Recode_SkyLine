@@ -10,6 +10,7 @@ public class testLoader : MonoBehaviour {
 	string path = "/ClientData/ClientData.txt";
 	string teamDataPath = "/ClientData/TeamData.txt";
 
+
 	static string json = "";
 	[SerializeField]
 	ParameterReciever reciever; 
@@ -31,7 +32,9 @@ public class testLoader : MonoBehaviour {
 		StreamReader sr = new StreamReader (Application.dataPath + teamDataPath);
 		json = sr.ReadToEnd();
 
+
 		MyUserLargeData userData = JsonConversionExtensions.ConvertJson<MyUserLargeData>(json);
+
 		MyUserData.UpdataUserdata (userData);
 		//Debug.Log (largeData.TeamListData.team);
 

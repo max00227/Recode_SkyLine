@@ -19,6 +19,22 @@ public class ParameterConvert {
 		return charaAbility;
 	}
 
+	public static Dictionary<string, int> GetMonsterAbility(MonsterLargeData data,int monsterLv){
+		Dictionary<string, int> monsterAbility = new Dictionary<string, int>();
+
+		float calculate = Mathf.Pow (monsterLv, 1 + (0.005f * monsterLv)) / 17;
+
+		float radio = calculate<0.7f?0.7f:calculate;
+
+		monsterAbility.Add ("Atk", (int)Mathf.Ceil (data.atk * radio));
+		monsterAbility.Add ("Def", (int)Mathf.Ceil (data.def * radio));
+		monsterAbility.Add ("MAtk", (int)Mathf.Ceil (data.mAtk * radio));
+		monsterAbility.Add ("MDef", (int)Mathf.Ceil (data.mDef * radio));
+		monsterAbility.Add ("Hp", (int)Mathf.Ceil (data.hp * radio));
+
+		return monsterAbility;
+	}
+
 	public static float JobRatioCalculation(int atkJob,int defJob){
 		if (atkJob == 1 && defJob == 2) {
 			return 1.5f;

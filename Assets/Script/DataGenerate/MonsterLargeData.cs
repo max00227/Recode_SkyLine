@@ -128,6 +128,7 @@
 		public System.Int32 act{ get; set;}
 
 
+
 	    public void Merge(System.Collections.Generic.Dictionary<string, int> data)
 	    {
 	        this.atk = data["Atk"];
