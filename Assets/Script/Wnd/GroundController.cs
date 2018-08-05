@@ -65,11 +65,6 @@ public class GroundController : MonoBehaviour
 
 	public bool isRuined;
 
-	public Image[] lightText;
-
-	[SerializeField]
-	Color[] lightColor;
-
     // Use this for initialization
     void Awake()
     {
@@ -131,16 +126,6 @@ public class GroundController : MonoBehaviour
 				Reversing (25);
 				image.sprite = GetSprites[3];
 			}
-		}
-		if (onShowed != null) {
-			onShowed.Invoke (this);
-		}
-	}
-
-	public void OnLight(int dir, int colorIdx){
-		if (lightText.Length != 0) {
-			lightText [dir - 1].color = lightColor [colorIdx];
-			lightText [dir - 1].gameObject.SetActive (true);
 		}
 		if (onShowed != null) {
 			onShowed.Invoke (this);

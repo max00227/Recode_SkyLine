@@ -585,7 +585,6 @@ public class FightWnd : MonoBehaviour {
 								ChangeLayer ();
 
 								NextRound ();
-								recAllRatios = allRatios;
 							}
 						} 
 						else {
@@ -593,7 +592,6 @@ public class FightWnd : MonoBehaviour {
 								startGc.OnRuined ();
 								endGc.OnRuined ();
 								isRuined = true;
-								recAllRatios = allRatios;
 							}
 						}
 
@@ -718,32 +716,36 @@ public class FightWnd : MonoBehaviour {
         charaIdx = null;
         startCharaImage = endCharaImage = null;
 		startGc = endGc = ruinGc = null;
+
+        recAllRatios = allRatios;
     }
 
-	private IEnumerator CheckRatio() {
+    private IEnumerator CheckRatio() {
 		if (allRatios.Count > recAllRatios.Count) {
-			foreach (var data in allRatios) {
-				if (recAllRatios.Count > 0) {
-					bool hasNew = true;
-					foreach (var recData in recAllRatios) {
-						if (data.start == recData.start && data.end == recData.end) {
-							hasNew = false;
-							break;
-						}
-					}
+            foreach (var data in allRatios)
+            {
+                bool hasNew = true;
 
-					Vector2 dir = ConvertDirNormalized(data.start.transform.localPosition, data.end.transform.localPosition);
-					GroundSEController rg = SEPool.Dequeue ();
-					rg.SetGroundSE (data.hits, IsCorrectDir (dir), data.start.charaJob, hasNew);
-					SEingPool.Enqueue (rg);
+                if (recAllRatios.Count > 0)
+                {
+                    foreach (var recData in recAllRatios)
+                    {
+                        if (data.start == recData.start && data.end == recData.end)
+                        {
+                            hasNew = false;
+                            break;
+                        }
+                    }
+                }
 
-				} else {
-					GroundSEController rg = SEPool.Dequeue ();
-					rg.SetGroundSE (data.hits);
-					rg.onRecycle = RecycleShowItem;
-					SEingPool.Enqueue(rg);
-				}
-			}
+                if (hasNew == true)
+                {
+                    Vector2 dir = ConvertDirNormalized(data.start.transform.localPosition, data.end.transform.localPosition);
+                    GroundSEController rg = SEPool.Dequeue();
+                    rg.SetGroundSE(data.hits, IsCorrectDir(dir), data.start.charaJob);
+                    SEingPool.Enqueue(rg);
+                }
+            }
 		}
 
 		while (SEingPool.Count > 0) {

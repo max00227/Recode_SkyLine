@@ -246,16 +246,4 @@ public class fightBGMaker : MonoBehaviour {
 			}
 		}
 	}
-
-	[MenuItem("MyProject/SetLightText")]
-	public static void SetLightText(){
-		GameObject selGO = Selection.activeGameObject;
-		GroundController[] uiGC = selGO.transform.GetChild (0).GetComponentsInChildren<GroundController> ();
-
-		foreach (var gc in uiGC) {
-			for (int i = 0; i < 3; i++) {
-				gc.lightText [i] = gc.transform.GetChild (i).GetComponent<Image>();
-			}
-		}
-	}
 }
