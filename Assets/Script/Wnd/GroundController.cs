@@ -42,28 +42,39 @@ public class GroundController : MonoBehaviour
 
     int goldRatio = 75;
 
-	public delegate void PlusRatio(PlusRatioData plusRatioData);
+	public delegate void PlusRatio(ExtraRatioData plusRatioData);
 
     public PlusRatio plusRatio;
 
-	public delegate void OnShowed (GroundController groundController);
+	public delegate void OnShowed (GroundController groundController, int number);
 
-	public OnShowed onShowed;
+	//避免回傳時清除了別的GroundSEController的委派，分成三個
+	public OnShowed onShowedFst;
 
-	public delegate void OnShowing (int ratio, GroundController groundController);
+	public OnShowed onShowedSec;
 
-	public OnShowing onShowing;
+	public OnShowed onShowedThr;
 
-	public delegate void OnProtection (int Guardian, int target);
+	public delegate void OnShowing (int ratio, GroundController groundController, int number);
+
+	public OnShowing onShowingFst;
+
+	public OnShowing onShowingSec;
+
+	public OnShowing onShowingThr;
+
+	public delegate void OnProtection (int target);
 
 	public OnProtection onProtection;
 
 	[HideInInspector]
 	public int charaJob;
 
+	private List<int> charaJobs;
+
 	public GroundController pairGc;
 
-	public bool isRuined;
+	private bool isShowChange;
 
     // Use this for initialization
     void Awake()
@@ -71,7 +82,7 @@ public class GroundController : MonoBehaviour
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
-		isActived = isChanged = activeLock = raycasted = isRuined = false;
+		isActived = isChanged = activeLock = raycasted = false;
 		testRaycasted = false;
     }
 
@@ -95,6 +106,8 @@ public class GroundController : MonoBehaviour
 		pairGc = null;
 
 		testRaycasted = false;
+
+		charaJobs = new List<int> ();
     }
 
 	public void ChangeSprite(GroundType type)
@@ -112,29 +125,58 @@ public class GroundController : MonoBehaviour
         }
     }
 
-	public void ChangeSprite()
+	public void ChangeSprite(int number)
 	{
 		if (image != null)
 		{
 			if (image.sprite == GetSprites[1])
 			{
-				Reversing (50);
+				Reversing (50, number);
 				image.sprite = GetSprites[2];
 			}
 			else if (image.sprite == GetSprites[2])
 			{
-				Reversing (25);
+				Reversing (25, number);
 				image.sprite = GetSprites[3];
 			}
 		}
-		if (onShowed != null) {
-			onShowed.Invoke (this);
+		switch(number){
+		case 1:
+			if (onShowedFst != null) {
+				onShowedFst.Invoke (this, number);
+			}
+			break;
+		case 2:
+			if (onShowedSec != null) {
+				onShowedSec.Invoke (this, number);
+			}
+			break;
+		case 3:
+			if (onShowedThr != null) {
+				onShowedThr.Invoke (this, number);
+			}
+			break;
 		}
+		isShowChange = true;
 	}
 
-	private void Reversing(int ratio){
-		if (onShowing != null) {
-			onShowing.Invoke (25, this);
+	private void Reversing(int ratio, int number){
+		switch(number){
+		case 1:
+			if (onShowingFst != null) {
+				onShowingFst.Invoke (ratio, this, number);
+			}
+			break;
+		case 2:
+			if (onShowingSec != null) {
+				onShowingSec.Invoke (ratio, this, number);
+			}
+			break;
+		case 3:
+			if (onShowingThr != null) {
+				onShowingThr.Invoke (ratio, this, number);
+			}
+			break;
 		}
 	}
 
@@ -142,7 +184,7 @@ public class GroundController : MonoBehaviour
 		matchController.ChangeSprite (type);
 	}
 
-	public void SetType(bool isNext)
+	public void SetType(int jobIdx)
     {
         if (isActived) {
             activeLock = true;
@@ -155,19 +197,14 @@ public class GroundController : MonoBehaviour
         raycasted = false;
 		isChanged = false;
 
-		if (isNext) {
-			isRuined = false;	
-		}
 		if ((int)_groundType == 0) {
 			_layer = 1;
 		} 
 		else {
+			AddJob (jobIdx);
 			_layer = 0;
 		}
 
-		/*foreach (var img in lightText) {
-			img.gameObject.SetActive (false);
-		}*/
     }
 
     public void UpLayer()
@@ -179,15 +216,12 @@ public class GroundController : MonoBehaviour
     }
 
 	public List<RaycastData> OnChangeType(){
+		charaJobs = new List<int> ();
 		return RaycastRound();	
 	}
 
 	public void OnPrevType(){
 		RaycastRound (true);
-	}
-
-	public void OnRuined(){
-		isRuined = true;
 	}
 
     private Dictionary<int, List<RaycastData>> OnPrevType(RaycastHit2D[] hits)
@@ -228,7 +262,7 @@ public class GroundController : MonoBehaviour
 					if (hits[j].transform.GetComponent<GroundController>().charaJob != charaJob)
                     {
 						if (onProtection != null) {
-							onProtection.Invoke ((int)charaIdx, (int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
+							onProtection.Invoke ((int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
 						}
                     }
                     else
@@ -291,11 +325,12 @@ public class GroundController : MonoBehaviour
         {
             if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
             {
+				hit.collider.GetComponent<GroundController> ().raycasted = true;
                 if (!hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted)
                 {
                     if (hasChange)
                     {
-                        hit.collider.GetComponent<GroundController>().ChangeType(charaIdx);
+                        hit.collider.GetComponent<GroundController>().ChangeType();
                     }
 
 					switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
@@ -312,7 +347,7 @@ public class GroundController : MonoBehaviour
 		return extraRatio;
     }
 
-    public void ChangeType(int? idx = null)
+	public void ChangeType()
     {
 		if (isChanged == false) {
 			_prevType = _groundType;
@@ -322,13 +357,18 @@ public class GroundController : MonoBehaviour
 			_groundType = GroundType.Copper;
 		} 
 		else {
+			int upRatio = 0;
 			if ((int)_groundType == 1) {
-				charaIdx = idx;
+				upRatio = 50;
 				_groundType = GroundType.Silver;
 			} else if ((int)_groundType == 2) {
-				OnPlusRatio ();
+				upRatio = 25;
 				_groundType = GroundType.gold;
+				if (raycasted == true) {
+					OnPlusRatio (upRatio);
+				}
 			}
+
 			isChanged = true;
 		}
 			
@@ -383,10 +423,18 @@ public class GroundController : MonoBehaviour
         return hits;
     }
 
-    private void OnPlusRatio() {
-		PlusRatioData data = new PlusRatioData();
+	public void AddJob(int job){
+		if (!charaJobs.Contains (job)) {
+			charaJobs.Add (job);
+		}
+	}
+
+	private void OnPlusRatio(int ratio) {
+		ExtraRatioData data = new ExtraRatioData();
         data.gc = matchController;
-        data.charaIdx = (int)charaIdx;
+		data.charaJobs = charaJobs;
+		data.ratio = ratio;
+
 
         plusRatio.Invoke(data);
     }

@@ -14,11 +14,9 @@ public class TweenTool : MonoBehaviour {
 	[SerializeField]
 	TweenType tweentype; 
 
-	[SerializeField]
-	Vector3 from;
+	public Vector3 from;
 
-	[SerializeField]
-	Vector3 to;
+	public Vector3 to;
 
 	[SerializeField]
 	AnimationCurve animationCurve = new AnimationCurve(new Keyframe(0f, 0f, 0f, 1f), new Keyframe(1f, 1f, 1f, 0f));
@@ -44,6 +42,9 @@ public class TweenTool : MonoBehaviour {
 	float oriTime = 0;
 	float recTime;
 
+	public delegate void RunFinish(TweenTool tt);
+
+	public RunFinish runFinish;
 
 	// Use this for initialization
 	public void PlayForward(){
@@ -115,6 +116,10 @@ public class TweenTool : MonoBehaviour {
 			if (runForward) {
 				if (oriTime >= TweenTime) {
 					isRun = false;
+
+					if (runFinish != null) {
+						runFinish.Invoke (this);
+					}
 				}
 			}
 			else {
@@ -123,10 +128,21 @@ public class TweenTool : MonoBehaviour {
 						showGameObject.SetActive (false);
 					}
 					isRun = false;
+					if (runFinish != null) {
+						runFinish.Invoke (this);
+					}
 				}
 			}
 		}
 	}
 
-	//void 
+	public void SetFromAndTo(Vector3 f, Vector3 t){
+		from = f;
+		to = t;
+	}
+
+
+	public void resetPosition(){
+		transform.localPosition = from;
+	} 
 }
