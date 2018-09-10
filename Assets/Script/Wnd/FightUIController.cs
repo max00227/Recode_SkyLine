@@ -20,7 +20,11 @@ public class FightUIController : MonoBehaviour {
 	[SerializeField]
 	Transform imagePool;
 
+	[SerializeField]
+	FightController fighcController;
+
 	GroundController[] allGcs;
+
 
 	List<GroundController> norGcs;
 
@@ -28,9 +32,9 @@ public class FightUIController : MonoBehaviour {
 
 	bool isResetGround=false;
 
-	private CharaLargeData[] characters;
+	//private CharaLargeData[] characters;
 
-	private MonsterLargeData[] monsters;
+	//private MonsterLargeData[] monsters;
 
 	private int[] monsterCdTimes = new int[5];
 
@@ -79,6 +83,8 @@ public class FightUIController : MonoBehaviour {
 
 	public Button[] charaButton;
 
+	public Button[] enemyButton;
+
 	private int energe;
 
 	private int spaceCount = 0;
@@ -86,6 +92,8 @@ public class FightUIController : MonoBehaviour {
 	bool fightStart;
 
 	int unCompleteCount;
+
+	int lockCount;
 
 	#region GroundShow 格子轉換效果
 	[SerializeField]
@@ -111,34 +119,14 @@ public class FightUIController : MonoBehaviour {
 	#endregion
 
 	void SetData() {
-		string enemyDataPath = "/ClientData/EnemyData.txt";
-
-		System.IO.StreamReader sr = new System.IO.StreamReader (Application.dataPath + enemyDataPath);
-		string json = sr.ReadToEnd();
-
-		EnemyLargeData enemyData = JsonConversionExtensions.ConvertJson<EnemyLargeData>(json);
-
-		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
-			monsters[i] = MasterDataManager.GetMonsterData (enemyData.TeamData[0].Team[i].id);
-			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
-		}
-
-
-		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
-			characters[i] = MasterDataManager.GetCharaData (MyUserData.GetTeamData(0).Team[i].id);
-			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
-		}
-
-		for (int i = 0; i < monsterCdTimes.Length; i++) {
-			monsterCdTimes [i] = 5;
-		}
-
+		fighcController.SetData ();
 		groundPool.SetController ();
 	}
 
 	// Use this for initialization
 	void Start () {
 		norGcs = new List<GroundController> ();
+		lockOrder = new LinkedList<int> ();
 
 		for (int i = 0; i < imageItem; i++) {
 			Image _image = Instantiate (spriteImage) as Image;
@@ -170,8 +158,7 @@ public class FightUIController : MonoBehaviour {
 
 		CreateGround = 3;
 
-		characters = new CharaLargeData[5];
-		monsters = new MonsterLargeData[5];
+		lockCount = 0;
 
 		fightStart = false;
 
@@ -250,8 +237,8 @@ public class FightUIController : MonoBehaviour {
 			org.Add (data.gc);
 			foreach (var jobIdx in data.charaJobs) {
 				recJobRatios [jobIdx - 1] += 25;
-				for (int i = 0; i < characters.Length; i++) {
-					if (characters [i].job == jobIdx) {
+				for (int i = 0; i < fighcController.characters.Length; i++) {
+					if (fighcController.characters [i].job == jobIdx) {
 						GroundSEController rg = SEPool.Dequeue ();
 						rg.SetExtraSE (org, charaButton [i].transform.localPosition, i);
 						rg.onRecycle = RecycleExtraItem;
@@ -434,8 +421,8 @@ public class FightUIController : MonoBehaviour {
 
 		for (int i = 0; i < jobRatios.Length; i++) {
 			if (jobRatios [i] != recJobRatios [i]) {
-				for (int j = 0; j < characters.Length; j++) {
-					if (characters [j].job == i + 1) {
+				for (int j = 0; j < fighcController.characters.Length; j++) {
+					if (fighcController.characters [j].job == i + 1) {
 						ratioTxt [j].SetShowUp (jobRatios [i]);
 						ratioTxt [j].onComplete = RecycleShowUp;
 						unCompleteCount++;
@@ -475,12 +462,12 @@ public class FightUIController : MonoBehaviour {
 						|| (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 						startGc = r.gameObject.GetComponent<GroundController> ().matchController;
 						if (charaIdx != null) {
-							if (characters [(int)charaIdx].job == 3) {
+							if (fighcController.characters [(int)charaIdx].job == 3) {
 								startGc.onProtection = OnProtection;
 							}
 
 							charaGc.AddLast (startGc);
-							startGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, null);
+							startGc.ChangeChara ((int)charaIdx, fighcController.characters [(int)charaIdx].job, null);
 
 							startCharaImage = PopImage (_imagePool, startGc, r.gameObject.transform.localPosition);
 							endCharaImage = PopImage (_imagePool, null, r.gameObject.transform.localPosition);
@@ -526,9 +513,9 @@ public class FightUIController : MonoBehaviour {
 								{
 									endGc = r.gameObject.GetComponent<GroundController>().matchController;
 
-									endGc.ChangeChara ((int)charaIdx, characters [(int)charaIdx].job, startGc);
+									endGc.ChangeChara ((int)charaIdx, fighcController.characters [(int)charaIdx].job, startGc);
 
-									if (characters [(int)charaIdx].job == 3) {
+									if (fighcController.characters [(int)charaIdx].job == 3) {
 										endGc.onProtection = OnProtection;
 									}
 
@@ -589,7 +576,7 @@ public class FightUIController : MonoBehaviour {
 						spaceCount++;
 
 						foreach (GroundController gc in norGcs) {
-							gc.SetJob(characters[(int)charaIdx].job);
+							gc.SetJob(fighcController.characters[(int)charaIdx].job);
 						}
 						if (onlyAdd) {
 							charaIdx = null;
@@ -656,10 +643,10 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		for (int i = 0; i < jobRatios.Length; i++) {
-			for (int j = 0; j < characters.Length; j++) {
-				if (characters [j].job == i + 1) {
+			for (int j = 0; j < fighcController.characters.Length; j++) {
+				if (fighcController.characters [j].job == i + 1) {
 					ratioTxt [j].SetRatio (jobRatios [i]);
-					if (recJobRatios [characters [i].job - 1] != jobRatios [characters [i].job - 1]) {
+					if (recJobRatios [fighcController.characters [i].job - 1] != jobRatios [fighcController.characters [i].job - 1]) {
 						ratioTxt [i].SetColor (Color.red);
 					} else {
 						ratioTxt [i].SetColor (Color.black);
@@ -710,8 +697,8 @@ public class FightUIController : MonoBehaviour {
 				if (hasNew == true)
 				{
 					List<Vector3> postions = new List<Vector3> ();
-					for (int i = 0; i < characters.Length; i++) {
-						if (characters [i].job == data.CharaJob) {
+					for (int i = 0; i < fighcController.characters.Length; i++) {
+						if (fighcController.characters [i].job == data.CharaJob) {
 							postions.Add (charaButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
 							ratioCount [i]++;
 						}
@@ -733,8 +720,8 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void ResetDamage() {
-		for (int i = 0; i < characters.Length; i++) {
-			ratioTxt [i].SetRatio (recJobRatios [characters [i].job - 1]);
+		for (int i = 0; i < fighcController.characters.Length; i++) {
+			ratioTxt [i].SetRatio (recJobRatios [fighcController.characters [i].job - 1]);
 			ratioTxt [i].SetColor (Color.black);
 		}
 	}
@@ -886,9 +873,34 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	public void SelectChara(int idx){
+	public void SelectChara (int idx){
 		if (!fightStart) {
 			charaIdx = idx;
+		}
+	}
+
+	LinkedList<int> lockOrder;
+
+	public void LockEnemy (int idx){
+		if (!fightStart) {
+			if (lockOrder.Count < 3) {
+				lockOrder = fighcController.LockOrder (idx);
+			} 
+			else {
+				lockOrder = fighcController.UnLockOrder ();
+			}
+		}
+		SetLockUI ();
+	}
+
+	private void SetLockUI(){
+		if (lockOrder.Count == 0) {
+			Debug.Log ("Un Lock");
+		} 
+		else {
+			foreach (var v in lockOrder) {
+				Debug.Log (v);
+			}
 		}
 	}
 }
