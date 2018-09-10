@@ -13,10 +13,7 @@ public class GroundSEController : MonoBehaviour {
 	float showDamage;
 	float plusSpeed;
 
-	List<Vector3> positions;
-
 	bool isRun;
-	TweenTool tweenTool;
 
 	SpecailEffectType seType;
 
@@ -26,7 +23,9 @@ public class GroundSEController : MonoBehaviour {
 
 	List<int> showNumber;
 
-	List<int> charaIdx;
+	int charaIdx;
+
+	Vector3 endPos;
 
 	public delegate void OnRecycle(GroundSEController rg);
 
@@ -37,10 +36,13 @@ public class GroundSEController : MonoBehaviour {
 	public OnExtraUp onExtraUp; 
 
 	[SerializeField]
-	private TweenTool extraLight;
+	private TweenPostion extraLight;
 
 	[SerializeField]
-	private Text damageTxt;
+	private GameObject damageTxts;
+
+	[SerializeField]
+	private Text[] damageTxt;
 
 	// Use this for initialization
 	void Start() {
@@ -51,18 +53,23 @@ public class GroundSEController : MonoBehaviour {
 		if (setComplete && isRun) {
 			showTime -= Time.deltaTime;
 			if ((int)seType == 1) {
-				damageTxt.gameObject.SetActive (true);
-				showDamage = LimitInt (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage);
-				damageTxt.text = "＋" + showDamage.ToString ();
+				damageTxts.SetActive (true);
+				showDamage = DataUtil.LimitInt (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage);
+				foreach (Text txt in damageTxt) {
+					txt.text = "＋" + showDamage.ToString ();
+				}
 				if (showedCount < seGrounds.Count) {
 					if (showTime <= 0) {
-						damageTxt.GetComponent<TweenTool>().PlayForward ();
+						foreach (Text txt in damageTxt) {
+							txt.GetComponent<TweenScale>().PlayForward ();
+						}
 
-						seGrounds [showedCount].ChangeSprite (showNumber[showedCount]);
+						//seGrounds [showedCount].ChangeSprite (showNumber[showedCount]);
+						StartCoroutine(seGrounds [showedCount].ChangeSpriteWait (showNumber[showedCount]));
 
 
 						showedCount++;
-						showTime = 0.75f;
+						showTime = 0.6f;
 					}
 				} else {
 					if (showTime <= 0) {
@@ -70,32 +77,25 @@ public class GroundSEController : MonoBehaviour {
 					}
 				}
 			} else {
-				if (showedCount < positions.Count) {
-					if (showTime <= 0) {
-
-						extraLight.runFinish = OnRunFinish;
-						extraLight.SetFromAndTo (seGrounds [0].transform.localPosition, positions [showedCount]);
-						extraLight.gameObject.SetActive (true);
-						extraLight.PlayForward ();
-					
-						showedCount++;
-						showTime = 0.6f;
-					}
-				}
-				else {
-					if (showTime <= 0) {
-						setComplete = false;
-					}
-				}
+				extraLight.runFinish = OnRunFinish;
+				extraLight.SetFromAndTo (seGrounds [0].transform.localPosition, endPos);
+				extraLight.gameObject.SetActive (true);
+				extraLight.PlayForward ();
+				setComplete = false;
 			}
 		}
 	}
 
-	public void SetReverseSE(List<GroundController> grounds)
+	public void SetReverseSE(List<GroundController> grounds, List<Vector3> positions)
 	{
 		showNumber = new List<int> ();
 		plusDamage = 0;
 		seGrounds = grounds;
+
+		for (int i = 0; i < positions.Count; i++) {
+			damageTxt [i].gameObject.SetActive (true);
+			damageTxt [i].transform.localPosition = positions [i];
+		}
 
 		foreach (var ground in seGrounds) {
 			if (ground.onShowedFst == null) {
@@ -130,10 +130,12 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
-	public void SetExtraSE(List<GroundController> grounds, List<Vector3> dir, List<int> idxs){
+	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs){
 		seGrounds = grounds;
 
-		positions = dir;
+		extraLight.transform.localPosition = dir;
+
+		endPos = dir;
 
 		showedCount = 0;
 		showTime = 0;
@@ -146,20 +148,18 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
-	private void OnRunFinish(TweenTool tt){
+
+	private void OnRunFinish(TweenPostion tp){
 		extraLight.gameObject.SetActive (false);
 		extraLight.resetPosition ();
-		onExtraUp.Invoke (charaIdx [showedCount - 1]);
-		tt.runFinish = null;
-		if (showedCount == positions.Count) {
-			if (onRecycle != null) {
-				onRecycle.Invoke (this);
-			}
+		onExtraUp.Invoke (charaIdx);
+		tp.runFinish = null;
+		if (onRecycle != null) {
+			onRecycle.Invoke (this);
 		}
 	}
 
 	private void OnShowed(GroundController gc, int number){
-		damageTxt.gameObject.SetActive (false);
 		switch(number){
 		case 1:
 			gc.onShowedFst = null;
@@ -172,11 +172,13 @@ public class GroundSEController : MonoBehaviour {
 			break;
 		}
 
-		if (gc == seGrounds [seGrounds.Count - 1] && number == showNumber [showedCount]) {
-			if (onRecycle != null) {
-				onRecycle.Invoke (this);
-			} else {
-				Debug.Log ("Null : " + seGrounds [0].name);
+		if (gc == seGrounds [seGrounds.Count - 1]) {
+			if (number == showNumber [showedCount-1]) {
+				if (onRecycle != null) {
+					onRecycle.Invoke (this);
+				} else {
+					Debug.Log ("Null : " + seGrounds [0].name);
+				}
 			}
 		}
 	}
@@ -203,14 +205,15 @@ public class GroundSEController : MonoBehaviour {
 		plusDamage += ratio;
 	}
 
-	private int LimitInt(int input, int limit){
-		if (input > limit) {
-			return limit;
-		}
-		return input;
-	}
-
 	public void Run(){
 		isRun = true;
+	}
+
+	public void CloseSE(){
+		extraLight.gameObject.SetActive (false);
+		foreach (Text txt in damageTxt) {
+			txt.gameObject.SetActive (false);
+		}
+		damageTxts.SetActive (false);
 	}
 }

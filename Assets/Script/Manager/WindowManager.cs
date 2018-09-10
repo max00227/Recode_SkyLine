@@ -71,8 +71,8 @@ public class WindowManager : Singleton<WindowManager> {
 		} 
 
 		if (isPopup) {
-			popupWndPool.GetComponent<TweenTool> ().showGameObject = window.gameObject;
-			popupWndPool.GetComponent<TweenTool> ().PlayForward ();
+			popupWndPool.GetComponent<TweenPostion> ().showGameObject = window.gameObject;
+			popupWndPool.GetComponent<TweenPostion> ().PlayForward ();
 		} 
 		else {
 			if (currentMainWnd != null) {
@@ -112,7 +112,7 @@ public class WindowManager : Singleton<WindowManager> {
 	}
 
 	public void ClosePopupWnd(){
-		popupWndPool.GetComponent<TweenTool> ().PlayReverse();
+		popupWndPool.GetComponent<TweenPostion> ().PlayReverse();
 		popupWndOpen = false;
 	}
 

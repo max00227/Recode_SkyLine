@@ -74,8 +74,6 @@ public class GroundController : MonoBehaviour
 
 	public GroundController pairGc;
 
-	private bool isShowChange;
-
     // Use this for initialization
     void Awake()
     {
@@ -125,6 +123,41 @@ public class GroundController : MonoBehaviour
         }
     }
 
+	public IEnumerator ChangeSpriteWait(int number)
+	{
+		if (image != null)
+		{
+			if (image.sprite == GetSprites[1])
+			{
+				Reversing (50, number);
+				image.sprite = GetSprites[2];
+			}
+			else if (image.sprite == GetSprites[2])
+			{
+				Reversing (75, number);
+				image.sprite = GetSprites[3];
+			}
+		}
+		yield return new WaitForSeconds (0.75f);
+		switch(number){
+		case 1:
+			if (onShowedFst != null) {
+				onShowedFst.Invoke (this, number);
+			}
+			break;
+		case 2:
+			if (onShowedSec != null) {
+				onShowedSec.Invoke (this, number);
+			}
+			break;
+		case 3:
+			if (onShowedThr != null) {
+				onShowedThr.Invoke (this, number);
+			}
+			break;
+		}
+	}
+
 	public void ChangeSprite(int number)
 	{
 		if (image != null)
@@ -136,7 +169,7 @@ public class GroundController : MonoBehaviour
 			}
 			else if (image.sprite == GetSprites[2])
 			{
-				Reversing (25, number);
+				Reversing (75, number);
 				image.sprite = GetSprites[3];
 			}
 		}
@@ -157,7 +190,6 @@ public class GroundController : MonoBehaviour
 			}
 			break;
 		}
-		isShowChange = true;
 	}
 
 	private void Reversing(int ratio, int number){
@@ -184,28 +216,37 @@ public class GroundController : MonoBehaviour
 		matchController.ChangeSprite (type);
 	}
 
-	public void SetType(int jobIdx)
+	/// <summary>
+	/// Sets the type.
+	/// </summary>
+	/// <param name="jobIdx">Job index.</param>
+	/// <param name="hasPre">是否止執行AddJob<c>true</c> has pre.</param>
+	public void SetType()
     {
-        if (isActived) {
-            activeLock = true;
-        }
+		if (isActived) {
+			activeLock = true;
+		}
 
-		if (isChanged == true) {
+		if (isChanged) {
 			matchController.ChangeSprite (_prevType);
 		}
 
-        raycasted = false;
+		raycasted = false;
 		isChanged = false;
 
 		if ((int)_groundType == 0) {
 			_layer = 1;
 		} 
 		else {
-			AddJob (jobIdx);
 			_layer = 0;
 		}
-
     }
+
+	public void SetJob(int jobIdx){
+		if ((int)_groundType > 0 && (int)_groundType < 10) {
+			AddJob (jobIdx);
+		}
+	}
 
     public void UpLayer()
     {

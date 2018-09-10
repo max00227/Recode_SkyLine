@@ -2,17 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TweenTool : MonoBehaviour {
-
-	public enum TweenType{
-		Position,
-		Rotation,
-		Scale
-	}
-
-
-	[SerializeField]
-	TweenType tweentype; 
+public class TweenPostion : MonoBehaviour {
 
 	public Vector3 from;
 
@@ -42,7 +32,7 @@ public class TweenTool : MonoBehaviour {
 	float oriTime = 0;
 	float recTime;
 
-	public delegate void RunFinish(TweenTool tt);
+	public delegate void RunFinish(TweenPostion tt);
 
 	public RunFinish runFinish;
 
@@ -65,28 +55,14 @@ public class TweenTool : MonoBehaviour {
 
 	void Stop(){
 		isRun = false;
-		if (tweentype == TweenType.Position) {
-			transform.localPosition = orginV3 ;
-		} 
-		else if (tweentype == TweenType.Rotation) {
-			transform.Rotate (orginV3);
-		}
-		else {
-			transform.localScale = orginV3;
-		}
+			
+		transform.localPosition = orginV3 ;
+
 	}
 
 
 	void Start(){
-		if (tweentype == TweenType.Position) {
-			orginV3 = transform.localPosition;
-		} 
-		else if (tweentype == TweenType.Rotation) {
-			orginV3 = transform.localEulerAngles;
-		}
-		else {
-			orginV3 = transform.localScale;
-		}
+		orginV3 = transform.localPosition;
 	}
 	
 	// Update is called once per frame
@@ -103,15 +79,8 @@ public class TweenTool : MonoBehaviour {
 
 			Vector3 deltaV3 = from + (to - from) * animationCurve.Evaluate (oriTime / TweenTime);
 
-			if (tweentype == TweenType.Position) {
-				transform.localPosition = deltaV3;
-			} 
-			else if (tweentype == TweenType.Rotation) {
-				transform.Rotate (deltaV3);
-			}
-			else {
-				transform.localScale = deltaV3;
-			}
+			transform.localPosition = deltaV3;
+
 
 			if (runForward) {
 				if (oriTime >= TweenTime) {
