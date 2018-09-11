@@ -40,7 +40,6 @@ public class RatioSetting : MonoBehaviour {
 					isSet = false;
 					prevRatio = showRatio;
 					if (onComplete != null) {
-						Debug.Log ("Un Null");
 						onComplete.Invoke ();
 						onComplete = null;
 					}
