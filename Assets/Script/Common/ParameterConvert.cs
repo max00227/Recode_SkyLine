@@ -35,7 +35,7 @@ public class ParameterConvert {
 		return monsterAbility;
 	}
 
-	public static float JobRatioCalculation(int atkJob,int defJob){
+	public static float JobRatioCal(int atkJob, int defJob){
 		if (atkJob == 1 && defJob == 2) {
 			return 1.5f;
 		}
@@ -54,7 +54,7 @@ public class ParameterConvert {
 		return 1f; 
 	}
 
-	public static float AttriRatioCalculation(int atkAttr,int defAttr){
+	public static float AttriRatioCal(int atkAttr, int defAttr){
 		if (atkAttr == 0) {
 			if (defAttr == 0) {
 				return 1.5f;

@@ -124,7 +124,6 @@ public class GroundRaycastController : MonoBehaviour {
 		} 
 		else if (hasLayerGcs.Count <= CreateGround) {
 			nextRoundGcs = hasLayerGcs;
-			return true;
 		} 
 		else {
 			while (nextRoundGcs.Count < CreateGround - 1) {
@@ -164,7 +163,19 @@ public class GroundRaycastController : MonoBehaviour {
 						}
 					}
 
-					nextRoundGcs = DataUtil.RandomList (CreateGround - 1 - nextRoundGcs.Count, gcs.ToArray (), layerGcs.Count);
+					//避免因數量不足進入無窮迴圈
+					if (nextRoundGcs.Count == 0) {
+						nextRoundGcs = DataUtil.RandomList (CreateGround - 1 - nextRoundGcs.Count, gcs.ToArray (), layerGcs.Count);
+					} 
+					else {
+						List<GroundController> randomGcs = DataUtil.RandomList (CreateGround - 1 - nextRoundGcs.Count, gcs.ToArray (), layerGcs.Count);
+						if (randomGcs.Count > 0) {
+							Debug.LogWarning (randomGcs.Count);
+							foreach (GroundController gc in randomGcs) {
+								nextRoundGcs.Add (gc);
+							}
+						}
+					}
 				}
 			}
 			nextRoundGcs.Add (maxGc);
