@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RatioSetting : MonoBehaviour {
+public class NumberSetting : MonoBehaviour {
 	[SerializeField]
 	Text text;
 
@@ -55,7 +55,7 @@ public class RatioSetting : MonoBehaviour {
 		text.text = ratio.ToString();
 	}
 
-	public void SetShowUp(int ratio) {
+	public void SetShowUp(int ratio, float speed) {
 		isRun = false;
 		upSpeed = (ratio - showRatio) / 0.5f;
 

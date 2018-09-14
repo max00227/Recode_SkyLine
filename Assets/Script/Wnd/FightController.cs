@@ -6,30 +6,44 @@ using System;
 using model.data;
 
 public class FightController : MonoBehaviour {
-	enum AtkType{
-		pve,
-		evp
-	}
-
-	AtkType atkType;
-
+	
+		
 	public CharaLargeData[] characters;
 
 	public MonsterLargeData[] monsters;
 
 	private int[] monsterCdTimes = new int[5];
 
+	private int[] jobRatio;
+
 	LinkedList<int> lockOrderIdx;
 
-	private Dictionary<int,int[]> fightPairs;
+	private Dictionary<int,AccordingData[]> fightPairs;
 
 	public delegate void FightComplete ();
 
 	public FightComplete onComplete;
 
+	private int[] cdTime;
+
+	private int[] protectJob;
+
+	private int[] charaActLevel;
+
+	private int[] charaFullHp;
+	private int[] monsterFullHp;
+
+
+	public delegate void OnShowFight(int orgIdx ,DamageData damageData, AtkType aType);
+
+	public OnShowFight onShowFight;
+
+	public Dictionary<int, List<DamageData>> damages;
+
 	public void SetData(){
 		characters = new CharaLargeData[5];
 		monsters = new MonsterLargeData[5];
+		charaFullHp  = monsterFullHp = new int[5];
 
 		string enemyDataPath = "/ClientData/EnemyData.txt";
 
@@ -41,12 +55,14 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
 			monsters[i] = MasterDataManager.GetMonsterData (enemyData.TeamData[0].Team[i].id);
 			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
+			monsterFullHp [i] = monsters [i].hp;
 		}
 
 
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
 			characters[i] = MasterDataManager.GetCharaData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
+			charaFullHp [i] = characters [i].hp;
 		}
 
 		for (int i = 0; i < monsterCdTimes.Length; i++) {
@@ -56,18 +72,124 @@ public class FightController : MonoBehaviour {
 		UnLockOrder ();
 	}
 
-	public void FightStart(bool lockEnemy, List<int> canAttack, int[] cdTime){
-		if (canAttack.Count > 0) {
-			FightStart (canAttack.ToArray (), AtkType.pve);
-		}
-		if (cdTime.Any (t => t == 0)) {
-			FightStart (cdTime, AtkType.evp);
-		}
-		onComplete.Invoke ();
+	public void SetProtect(int[] protects){
+		protectJob = protects;
 	}
 
-	private void FightStart(int[] attackIdx, AtkType aType){
-		fightPairs = new Dictionary<int, int[]> ();
+	private void OnFight(AtkType type){
+		damages = new Dictionary<int, List<DamageData>> ();
+		int count = type == AtkType.pve ? characters.Length : monsters.Length;
+		for (int i = 0; i < count; i++) {
+			int orgHp = type == AtkType.pve ? characters[i].hp : monsters[i].hp;
+			if (orgHp > 0) {
+				if (fightPairs.ContainsKey (i)) {
+					AccordingData[] order;
+					fightPairs.TryGetValue (i, out order);
+					int orgJob = type == AtkType.pve ? characters[i].job : monsters[i].job;
+					Dictionary<int,int> finalDamage = new Dictionary<int, int> ();
+
+					//判斷是否全體攻擊
+					bool isAll = false;
+					if (orgJob > 4) {
+						if (type == AtkType.evp) {
+							isAll = true;
+						}
+						else {
+							if (charaActLevel [i] > 2) {
+								isAll = true;
+							}
+						}
+					}
+					for (int j = 0;j<order.Length;j++) {
+						if (order[i].hp > 0) {
+							int damage;
+							float hpRatio;
+							if (type == AtkType.pve) {
+								damage = CalDamage (characters [i].atk, monsters [order[j].index].def, jobRatio [orgJob], order[j].attriJob, order[j].minus, isAll);
+								monsters [order[j].index].hp -= damage;
+								hpRatio = monsters [order [j].index].hp / monsterFullHp [order [j].index];
+							} 
+							else {
+								damage = CalDamage (monsters [i].atk, characters [order[j].index].def, 1, order[j].attriJob, order[j].minus, isAll);
+								characters [order[i].index].hp -= damage;
+								hpRatio = characters [order [j].index].hp / charaFullHp [order [j].index];
+							}
+							order [j].hp -= damage;
+
+
+							if (damages.ContainsKey (i)) {
+								damages [i].Add (GetDamageData (order [i].index, order [j].hp, hpRatio));
+							} 
+							else{
+								List<DamageData> data = new List<DamageData>();
+								data.Add (GetDamageData (order [i].index, order [j].hp, hpRatio));
+								damages.Add(i,data);
+							}
+
+							if (!isAll) {
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private DamageData GetDamageData(int targer, int fHp, float hpRatio){
+		DamageData data = new DamageData ();
+		data.targetIdx = targer;
+		data.finalHp = fHp;
+		data.hpRatio = hpRatio;
+
+		return data;
+	}
+
+	public int CalDamage(int atk, int def, int ratio, float ratioAJ, int minus, bool isAll){
+		int randomRatio = isAll != true ? UnityEngine.Random.Range (75, 101) : UnityEngine.Random.Range (40, 75);
+
+		int damage = Mathf.CeilToInt((atk * (randomRatio / 100) * ratio * ratioAJ - def) * minus / 100);
+
+		return damage;
+	}
+
+	IEnumerator ShowFight(AtkType atype, bool Callback){
+		int count = 0;
+		while (count < damages.Count) {
+
+			foreach (DamageData data in damages[damages.ElementAt(count).Key]) {
+				onShowFight.Invoke (damages.ElementAt (count).Key, data, atype);
+			}
+			count++;
+
+			yield return new WaitForSeconds(0.5f);
+		}
+		onShowFight = null;
+
+		if (Callback) {
+			onComplete.Invoke ();
+		}
+	} 
+
+	public void FightStart(bool lockEnemy, List<int> canAttack, int[] ratios, int[] actLevel){
+		jobRatio = ratios;
+		charaActLevel = actLevel;
+		bool enemyFight = cdTime.Any (t => t == 0);
+
+		if (canAttack.Count > 0) {
+			FightStart (canAttack.ToArray (), AtkType.pve, actLevel);
+			OnFight (AtkType.pve);
+			StartCoroutine (ShowFight (AtkType.pve, !enemyFight));
+		}
+		if (enemyFight) {
+			FightStart (cdTime, AtkType.evp);
+			OnFight (AtkType.evp);
+			StartCoroutine (ShowFight (AtkType.evp, enemyFight));
+		}
+	}
+
+	private void FightStart(int[] attackIdx, AtkType aType, int[] actLevel = null){
+		fightPairs = new Dictionary<int, AccordingData[]> ();
 		if (aType == AtkType.pve) {
 			foreach (int idx in attackIdx) {
 				fightPairs.Add (idx, matchAtkTarget (characters [idx].job, aType));
@@ -76,182 +198,97 @@ public class FightController : MonoBehaviour {
 		else {
 			for (int i = 0;i< attackIdx.Length;i++) {
 				if (attackIdx [i] == 0) {
-					fightPairs.Add (i, matchAtkTarget (monsters [i].job, aType));
+					fightPairs.Add (i, matchAtkTarget (monsters [i].job, aType));					
 				}
 			}
 		}
 	}
 
-	private int[] matchAtkTarget(int jobIdx, AtkType aType){
-		int[] atkOrder = new int[5];
+	private AccordingData[] matchAtkTarget(int jobIdx, AtkType aType){
+		AccordingData[] atkOrder = new AccordingData[5];
 		List<int> unLockIdx = new List<int> ();
 		for (int i = 0; i < 5; i++) {
 			if (!lockOrderIdx.Contains (i)) {
 				unLockIdx.Add (i);
 			}	
 		}
+		AccordingData[] compareOrder = CompareData (jobIdx, unLockIdx, aType);
 
-		int orderIdx = 0;
-		foreach (int i in CompareData (jobIdx, unLockIdx, aType).Reverse()) {
-			atkOrder [orderIdx] = i;
-			orderIdx++;	
+		if (unLockIdx.Count == 5) {
+			atkOrder = compareOrder;
+		}
+		else{
+			for (int i = 0; i < atkOrder.Length; i++) {
+				atkOrder [i] = GetAccordingData (jobIdx, lockOrderIdx.ElementAt (i), aType);
+				if (i >= lockOrderIdx.Count) {
+					atkOrder [i] = compareOrder [i - lockOrderIdx.Count];
+				}
+			}
 		}
 
 		return atkOrder;
 	}
 
-	private int[] CompareData(int orgIdx, List<int> unLockIdx, AtkType aType){
-		List<AccordingData> according = new List<AccordingData> ();
+	private AccordingData GetAccordingData(int orgIdx, int idx, AtkType aType){
+		AccordingData data = new AccordingData ();
+		data.index = idx;
 		if (aType == AtkType.pve) {
-			foreach (int idx in unLockIdx) {
-				AccordingData data = new AccordingData ();
-				data.index = idx;
-				data.attriJob = GetCalcRatio (characters [orgIdx].job, monsters [idx].job, characters [orgIdx].attributes, monsters [idx].attributes);
-				data.mAtkAtk = monsters [idx].mAtk + monsters [idx].atk;
-				data.hp = monsters [idx].hp;
-				data.def = monsters [idx].def;
-				data.crt = monsters [idx].crt;
-				according.Add (data);
-			}
-
-			return AccordingCompare (according.ToArray(), true);
-		} 
-		else {
-			foreach (int idx in unLockIdx) {
-				AccordingData data = new AccordingData ();
-				data.index = idx;
-				data.attriJob = GetCalcRatio (monsters [orgIdx].job, characters [idx].job, monsters [orgIdx].attributes, characters [idx].attributes);
-				data.mAtkAtk = characters [idx].mAtk + characters [idx].atk;
-				data.hp = characters [idx].hp;
-				data.def = characters [idx].def;
-				data.crt = characters [idx].crt;
-				according.Add (data);
-			}
-
-			return AccordingCompare (according.ToArray());
+			data.attriJob = GetCalcRatio (characters [orgIdx].job, monsters [idx].job, characters [orgIdx].attributes, monsters [idx].attributes);
+			data.mAtkAtk = new int[3] { monsters [idx].mAtk, monsters [idx].atk, monsters [idx].mAtk + monsters [idx].atk };
+			data.hp = monsters [idx].hp;
+			data.minus = cdTime [idx] == 0 ? 0 : 50;
+			data.crt = monsters [idx].crt;
+		} else {
+			data.attriJob = GetCalcRatio (monsters [orgIdx].job, characters [idx].job, monsters [orgIdx].attributes, characters [idx].attributes);
+			data.mAtkAtk = new int[3] { characters [idx].mAtk, characters [idx].atk, characters [idx].mAtk + characters [idx].atk };
+			data.hp = characters [idx].hp;
+			data.minus = protectJob [characters [idx].job] / 2;
+			data.crt = characters [idx].crt;
 		}
+
+		return data;
+	}
+
+	private AccordingData[] CompareData(int orgIdx, List<int> unLockIdx, AtkType aType){
+		List<AccordingData> according = new List<AccordingData> ();
+		foreach (int idx in unLockIdx) {
+			AccordingData data = GetAccordingData (orgIdx, idx, aType);
+			according.Add (data);
+		}
+
+		return AccordingCompare (according.ToArray(), true);
 	}
 
 	private float GetCalcRatio(int aj, int bj, int aa, int ba){
 		return ParameterConvert.AttriRatioCal (aa, ba)*ParameterConvert.JobRatioCal (aj, bj);
 	}
 
-	private int[] AccordingCompare(AccordingData[] according, bool isPlayer = false){
-		according = AccordingCompare (according, AccordingType.attriJob, isPlayer);
-		int[] order = new int[5];
-		for (int i = 0; i < according.Length; i++) {
-			order [i] = according [i].index;
-		}
-
-		return order;
-	}
-
-	private AccordingData[] AccordingCompare(AccordingData[] according, AccordingType type, bool isPlayer = false){
-		switch(type){
-		case AccordingType.attriJob:
+	private AccordingData[] AccordingCompare(AccordingData[] according, bool isPlayer = false){
+		if (isPlayer) {
 			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return(x.attriJob.CompareTo (y.attriJob));
+				return(x.attriJob.CompareTo (y.attriJob)) * -1;
 			});
-			if (isPlayer) {
-				return according;
-			}
-			break;
-		case AccordingType.mAtkAtk:
+		} 
+		else {
 			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return(x.mAtkAtk.CompareTo (y.mAtkAtk));
-			});
-			break;
-		case AccordingType.hp:
-			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return(x.hp.CompareTo (y.hp));
-			});
-			break;
-		case AccordingType.def:
-			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return(x.def.CompareTo (y.def));
-			});
-			break;
-		case AccordingType.crt:
-			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return(x.crt.CompareTo (y.crt));
-			});
-			return according;
-		}
-
-		Dictionary<int, int> splitDic = new Dictionary<int, int> ();
-		for (int i = 0; i < according.Length; i++) {
-			for (int j = 0; j < according.Length; j++) {
-				int count = 0;
-				switch(type){
-				case AccordingType.attriJob:
-					if (according [i].attriJob == according [j].attriJob && i != j) {
-						count++;
-					}
-					break;
-				case AccordingType.mAtkAtk:
-					if (according [i].mAtkAtk == according [j].mAtkAtk && i != j) {
-						count++;
-					}
-					break;
-				case AccordingType.hp:
-					if (according [i].hp == according [j].hp && i != j) {
-						count++;
-					}
-					break;
-				case AccordingType.def:
-					if (according [i].def == according [j].def && i != j) {
-						count++;
-					}
-					break;
-				case AccordingType.crt:
-					if (according [i].crt == according [j].crt && i != j) {
-						count++;
-					}
-					break;
-				}
-
-				if (count > 0) {
-					if (splitDic.Count > 0) {
-						bool newDic = false;
-						foreach (KeyValuePair<int, int> kv in splitDic) {
-							if (splitDic.ContainsKey (i) && i > kv.Key + kv.Value) {
-								newDic = true;	
+				if (x.attriJob.CompareTo (y.attriJob) == 0) {
+					if (x.mAtkAtk[3].CompareTo (y.mAtkAtk[3]) == 0) {
+						if (x.hp.CompareTo (y.hp) == 0) {
+							if (x.minus.CompareTo (y.minus) == 0) {
+								return x.crt.CompareTo (y.crt);
+							} else {
+								return x.minus.CompareTo (y.minus);
 							}
-						}
-						if (newDic) {
-							splitDic.Add (i, count);
+						} else {
+							return x.hp.CompareTo (y.hp);
 						}
 					} else {
-						splitDic.Add (i, count);
+						return(x.mAtkAtk[3].CompareTo (y.mAtkAtk[3])) * -1;
 					}
+				} else {
+					return(x.attriJob.CompareTo (y.attriJob)) * -1;
 				}
-			}
-		}
-
-
-		foreach (KeyValuePair<int, int> kv in splitDic) {
-			
-			AccordingData[] accs = new AccordingData[kv.Value];
-			Array.Copy (according, kv.Key, accs, 0, kv.Value);
-			switch(type){
-			case AccordingType.attriJob:
-				accs = AccordingCompare (accs, AccordingType.mAtkAtk);
-				break;
-			case AccordingType.mAtkAtk:
-				accs = AccordingCompare (accs, AccordingType.hp);
-				break;
-			case AccordingType.hp:
-				accs = AccordingCompare (accs, AccordingType.def);
-				break;
-			case AccordingType.def:
-				accs = AccordingCompare (accs, AccordingType.crt);
-				break;
-			}
-			for (int i = kv.Key; i < kv.Value; i++) {
-				for (int j = 0; j < accs.Length; j++) {
-					according [i] = accs [j];
-				}
-			}
+			});
 		}
 
 		return according;
@@ -278,20 +315,30 @@ public class FightController : MonoBehaviour {
 		return lockOrderIdx;
 	}
 
+	public void SetCDTime(int[] cd){
+		foreach(int i in cd){
+			Debug.Log (i);
+		}
+		cdTime = cd;
+	}
+
 	struct AccordingData{
 		public int index;
 		public float attriJob;
-		public int mAtkAtk;
+		public int[] mAtkAtk;
 		public int hp;
-		public int def;
+		public int minus;
 		public int crt;
 	}
+}
 
-	enum AccordingType{
-		attriJob,
-		mAtkAtk,
-		hp,
-		def,
-		crt
-	}
+public enum AtkType{
+	pve,
+	evp
+}
+
+public struct DamageData{
+	public int targetIdx;
+	public int finalHp;
+	public float hpRatio;
 }

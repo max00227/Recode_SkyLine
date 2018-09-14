@@ -42,7 +42,11 @@ public class GroundSEController : MonoBehaviour {
 	private GameObject damageTxts;
 
 	[SerializeField]
+	private TweenPostion damageLight;
+
+	[SerializeField]
 	private Text[] damageTxt;
+
 
 	// Use this for initialization
 	void Start() {
@@ -61,11 +65,11 @@ public class GroundSEController : MonoBehaviour {
 				if (showedCount < seGrounds.Count) {
 					if (showTime <= 0) {
 						foreach (Text txt in damageTxt) {
-							txt.GetComponent<TweenScale>().PlayForward ();
+							txt.GetComponent<TweenScale> ().PlayForward ();
 						}
 
 						//seGrounds [showedCount].ChangeSprite (showNumber[showedCount]);
-						StartCoroutine(seGrounds [showedCount].ChangeSpriteWait (showNumber[showedCount]));
+						StartCoroutine (seGrounds [showedCount].ChangeSpriteWait (showNumber [showedCount]));
 
 
 						showedCount++;
@@ -76,11 +80,18 @@ public class GroundSEController : MonoBehaviour {
 						setComplete = false;
 					}
 				}
-			} else {
+			} 
+			else if ((int)seType == 2) {
 				extraLight.runFinish = OnRunFinish;
 				extraLight.SetFromAndTo (seGrounds [0].transform.localPosition, endPos);
 				extraLight.gameObject.SetActive (true);
 				extraLight.PlayForward ();
+				setComplete = false;
+			} 
+			else {
+				damageLight.runFinish = OnRunFinish;
+				damageLight.gameObject.SetActive (true);
+				damageLight.PlayForward ();
 				setComplete = false;
 			}
 		}
@@ -148,11 +159,22 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
+	public void SetDamageShow(Vector3 org, Vector3 dir){
+		seType = SpecailEffectType.Damage;
+		damageLight.SetFromAndTo (org, dir);
+		setComplete = true;
+		isRun = false;
+	}
+
 
 	private void OnRunFinish(TweenPostion tp){
-		extraLight.gameObject.SetActive (false);
-		extraLight.resetPosition ();
-		onExtraUp.Invoke (charaIdx);
+		tp.gameObject.SetActive (false);
+		tp.resetPosition ();
+
+		if (onExtraUp != null) {
+			onExtraUp.Invoke (charaIdx);
+		}
+
 		tp.runFinish = null;
 		if (onRecycle != null) {
 			onRecycle.Invoke (this);

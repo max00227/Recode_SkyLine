@@ -21,7 +21,7 @@ public class FightUIController : MonoBehaviour {
 	Transform imagePool;
 
 	[SerializeField]
-	FightController fighcController;
+	FightController fightController;
 
 	GroundController[] allGcs;
 
@@ -31,10 +31,6 @@ public class FightUIController : MonoBehaviour {
 	GroundController startGc, endGc;
 
 	bool isResetGround=false;
-
-	//private CharaLargeData[] characters;
-
-	//private MonsterLargeData[] monsters;
 
 	private int[] monsterCdTimes = new int[5];
 
@@ -62,7 +58,7 @@ public class FightUIController : MonoBehaviour {
 	int[] jobRatios;
 
 	[SerializeField]
-	public RatioSetting[] ratioTxt;
+	public NumberSetting[] ratioTxt;
 
 	private bool spaceCorrect;
 
@@ -79,7 +75,7 @@ public class FightUIController : MonoBehaviour {
 
 	List<GroundSEController> completeSe;
 
-	Dictionary<int, int> recActLevel;
+	int[] recActLevel;
 
 	public Button[] charaButton;
 
@@ -120,9 +116,12 @@ public class FightUIController : MonoBehaviour {
 	int imageItem = 32;
 	#endregion
 
+	int[] protectJob = new int[5];
+
 	void SetData() {
 		monsterCdTimes = new int[5]{7,1,3,5,6};
-		fighcController.SetData ();
+		fightController.SetCDTime (monsterCdTimes);
+		fightController.SetData ();
 		groundPool.SetController ();
 	}
 
@@ -180,7 +179,7 @@ public class FightUIController : MonoBehaviour {
 				se.gameObject.SetActive (false);
 				se.CloseSE ();
 			}
-			foreach (RatioSetting rs in ratioTxt) {
+			foreach (NumberSetting rs in ratioTxt) {
 				rs.run ();
 			}
 		}
@@ -189,11 +188,15 @@ public class FightUIController : MonoBehaviour {
 	private void RecycleShowUp(){
 		unCompleteCount--;
 		if (unCompleteCount == 0) {
+			recAllRatioData = allRatioData;
 			if (ExtraRatios.Count > 0) {
 				StartCoroutine (OnShowExtra ());
 			} else {
-				fighcController.onComplete = FightEnd;
-				fighcController.FightStart (lockCount != 0, canAttack, monsterCdTimes);
+				fightController.onComplete = FightEnd;
+				CheckActLevel ();
+				fightController.SetProtect (protectJob);
+				fightController.onShowFight = OnShowFight;
+				fightController.FightStart (lockCount != 0, canAttack, recJobRatios, recActLevel);
 			}
 		}
 	}
@@ -205,9 +208,12 @@ public class FightUIController : MonoBehaviour {
 
 		if (SEPool.Count == showItemCount && SEingPool.Count == 0) {
 			rg.onExtraUp = null;
-			recAllRatioData = allRatioData;
-			fighcController.onComplete = FightEnd;
-			fighcController.FightStart (lockCount != 0, canAttack, monsterCdTimes);
+
+			fightController.onComplete = FightEnd;
+			CheckActLevel ();
+			fightController.SetProtect (protectJob);
+			fightController.onShowFight = OnShowFight;
+			fightController.FightStart (lockCount != 0, canAttack, recJobRatios, recActLevel);
 		}
 	}
 
@@ -234,9 +240,10 @@ public class FightUIController : MonoBehaviour {
 			org.Add (data.gc);
 			foreach (var jobIdx in data.charaJobs) {
 				recJobRatios [jobIdx - 1] += 25;
-				for (int i = 0; i < fighcController.characters.Length; i++) {
-					if (fighcController.characters [i].job == jobIdx) {
+				for (int i = 0; i < fightController.characters.Length; i++) {
+					if (fightController.characters [i].job == jobIdx) {
 						GroundSEController rg = SEPool.Dequeue ();
+
 						rg.SetExtraSE (org, charaButton [i].transform.localPosition, i);
 						rg.onRecycle = RecycleExtraItem;
 						rg.onExtraUp = ExtraRatioUp;
@@ -257,8 +264,24 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void ExtraRatioUp(int idx){
-		
 		ratioTxt [idx].SetExtra ();
+	}
+
+	private void OnShowFight(int orgIdx, DamageData damageData, AtkType aType){
+		Vector3 org = aType == AtkType.pve ? charaButton [orgIdx].transform.localPosition : enemyButton [orgIdx].transform.localPosition;
+		Vector3 target = aType == AtkType.evp ? charaButton [orgIdx].transform.localPosition : enemyButton [orgIdx].transform.localPosition;
+
+		GroundSEController rg = SEPool.Dequeue ();
+		rg.SetDamageShow (org, target);
+		rg.onRecycle = ShowFightEnd;
+		rg.gameObject.SetActive (true);
+		rg.Run ();
+	}
+
+	private void ShowFightEnd(GroundSEController rg){
+		rg.gameObject.SetActive (false);
+		SEPool.Enqueue (rg);
+		rg.onRecycle = null;
 	}
 	#endregion
 
@@ -268,7 +291,10 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void OnProtection(int targetIdx){
+	private void OnProtection(int targetJob){
+		if (protectJob [targetJob - 1] < 60) {
+			protectJob [targetJob - 1] += 10; 
+		}
 		//Debug.Log ("Guardian : " + guardian + " , Target" + target);
 	}
 
@@ -437,10 +463,10 @@ public class FightUIController : MonoBehaviour {
 
 		for (int i = 0; i < jobRatios.Length; i++) {
 			if (jobRatios [i] != recJobRatios [i]) {
-				for (int j = 0; j < fighcController.characters.Length; j++) {
-					if (fighcController.characters [j].job == i + 1) {
+				for (int j = 0; j < fightController.characters.Length; j++) {
+					if (fightController.characters [j].job == i + 1) {
 						AddCanAttack (j);
-						ratioTxt [j].SetShowUp (jobRatios [i]);
+						ratioTxt [j].SetShowUp (jobRatios [i], 0.5f);
 						ratioTxt [j].onComplete = RecycleShowUp;
 						unCompleteCount++;
 					}
@@ -480,12 +506,12 @@ public class FightUIController : MonoBehaviour {
 						|| (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99) {
 						startGc = r.gameObject.GetComponent<GroundController> ().matchController;
 						if (charaIdx != null) {
-							if (fighcController.characters [(int)charaIdx].job == 3) {
+							if (fightController.characters [(int)charaIdx].job == 3) {
 								startGc.onProtection = OnProtection;
 							}
 
 							charaGc.AddLast (startGc);
-							startGc.ChangeChara ((int)charaIdx, fighcController.characters [(int)charaIdx].job, null);
+							startGc.ChangeChara (fightController.characters [(int)charaIdx].job, null);
 
 							startCharaImage = PopImage (_imagePool, startGc, r.gameObject.transform.localPosition);
 							endCharaImage = PopImage (_imagePool, null, r.gameObject.transform.localPosition);
@@ -531,9 +557,9 @@ public class FightUIController : MonoBehaviour {
 								{
 									endGc = r.gameObject.GetComponent<GroundController>().matchController;
 
-									endGc.ChangeChara ((int)charaIdx, fighcController.characters [(int)charaIdx].job, startGc);
+									endGc.ChangeChara (fightController.characters [(int)charaIdx].job, startGc);
 
-									if (fighcController.characters [(int)charaIdx].job == 3) {
+									if (fightController.characters [(int)charaIdx].job == 3) {
 										endGc.onProtection = OnProtection;
 									}
 
@@ -594,7 +620,7 @@ public class FightUIController : MonoBehaviour {
 						spaceCount++;
 
 						foreach (GroundController gc in norGcs) {
-							gc.SetJob(fighcController.characters[(int)charaIdx].job);
+							gc.SetJob(fightController.characters[(int)charaIdx].job);
 						}
 						if (onlyAdd) {
 							charaIdx = null;
@@ -624,6 +650,7 @@ public class FightUIController : MonoBehaviour {
 	private void CheckGround() {
 		allRatioData = new List<RaycastData> ();
 		ExtraRatios = new List<ExtraRatioData>();
+		protectJob = new int[5]{ 0, 0, 0, 0, 0 };
 		hasDamage = false;
 
 		foreach (GroundController gc in charaGc) {
@@ -650,6 +677,26 @@ public class FightUIController : MonoBehaviour {
 	{
 		jobRatios = new int[5]{ 0, 0, 0, 0, 0 };
 		foreach (var data in allRatioData) {
+			jobRatios [data.CharaJob - 1] = jobRatios [data.CharaJob - 1] + data.ratio;
+		}
+
+		for (int i = 0; i < jobRatios.Length; i++) {
+			for (int j = 0; j < fightController.characters.Length; j++) {
+				if (fightController.characters [j].job == i + 1) {
+					ratioTxt [j].SetRatio (jobRatios [i]);
+					if (recJobRatios [fightController.characters [i].job - 1] != jobRatios [fightController.characters [i].job - 1]) {
+						ratioTxt [i].SetColor (Color.red);
+					} else {
+						ratioTxt [i].SetColor (Color.black);
+					}
+				}
+			}
+		}
+	}
+
+	private void CheckActLevel()
+	{
+		foreach (var data in recAllRatioData) {
 			if (data.hits.Count >= 5 && data.ratio > 250) {
 				ChangeActLevel (data.CharaJob, 3);
 			}
@@ -657,20 +704,6 @@ public class FightUIController : MonoBehaviour {
 				ChangeActLevel (data.CharaJob, 2);
 			} else {
 				ChangeActLevel (data.CharaJob, 1);
-			}
-			jobRatios [data.CharaJob - 1] = jobRatios [data.CharaJob - 1] + data.ratio;
-		}
-
-		for (int i = 0; i < jobRatios.Length; i++) {
-			for (int j = 0; j < fighcController.characters.Length; j++) {
-				if (fighcController.characters [j].job == i + 1) {
-					ratioTxt [j].SetRatio (jobRatios [i]);
-					if (recJobRatios [fighcController.characters [i].job - 1] != jobRatios [fighcController.characters [i].job - 1]) {
-						ratioTxt [i].SetColor (Color.red);
-					} else {
-						ratioTxt [i].SetColor (Color.black);
-					}
-				}
 			}
 		}
 	}
@@ -693,6 +726,8 @@ public class FightUIController : MonoBehaviour {
 		for (int i = 0; i < monsterCdTimes.Length; i++) {
 			monsterCdTimes [i] = monsterCdTimes [i] - (spaceCount - 1);
 		}
+
+		fightController.SetCDTime (monsterCdTimes);
 	}
 
 	private IEnumerator CheckRatio() {
@@ -716,8 +751,8 @@ public class FightUIController : MonoBehaviour {
 				if (hasNew == true)
 				{
 					List<Vector3> postions = new List<Vector3> ();
-					for (int i = 0; i < fighcController.characters.Length; i++) {
-						if (fighcController.characters [i].job == data.CharaJob) {
+					for (int i = 0; i < fightController.characters.Length; i++) {
+						if (fightController.characters [i].job == data.CharaJob) {
 							postions.Add (charaButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
 							ratioCount [i]++;
 						}
@@ -739,8 +774,8 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void ResetDamage() {
-		for (int i = 0; i < fighcController.characters.Length; i++) {
-			ratioTxt [i].SetRatio (recJobRatios [fighcController.characters [i].job - 1]);
+		for (int i = 0; i < fightController.characters.Length; i++) {
+			ratioTxt [i].SetRatio (recJobRatios [fightController.characters [i].job - 1]);
 			ratioTxt [i].SetColor (Color.black);
 		}
 	}
@@ -767,7 +802,7 @@ public class FightUIController : MonoBehaviour {
 			gc.ResetType ();
 		}
 
-		recJobRatios = ratioCount =  new int[5] { 0, 0, 0, 0, 0 };
+		recJobRatios = ratioCount = recActLevel =  new int[5] { 0, 0, 0, 0, 0 };
 		for (int i = 0; i < 5; i++) {
 			ratioTxt [i].ResetRatio ();
 			ratioTxt [i].SetColor (Color.black);
@@ -775,13 +810,6 @@ public class FightUIController : MonoBehaviour {
 
 		allRatioData = new List<RaycastData> ();
 		recAllRatioData = new List<RaycastData> ();
-		recActLevel = new Dictionary<int, int> ();
-
-
-		for (int i = 0; i < 5; i++) {
-			recActLevel.Add (i, 0);
-		}
-
 
 		charaGc = new LinkedList<GroundController> ();
 
@@ -907,10 +935,10 @@ public class FightUIController : MonoBehaviour {
 	public void LockEnemy (int idx){
 		if (!fightStart) {
 			if (lockOrder.Count < 3) {
-				lockOrder = fighcController.LockOrder (idx);
+				lockOrder = fightController.LockOrder (idx);
 			} 
 			else {
-				lockOrder = fighcController.UnLockOrder ();
+				lockOrder = fightController.UnLockOrder ();
 			}
 		}
 		SetLockUI ();
@@ -958,5 +986,6 @@ public struct CharaImageData{
 
 public enum SpecailEffectType{
 	Reverse = 1,
-	ExtraRatio = 2
+	ExtraRatio = 2,
+	Damage = 3
 }

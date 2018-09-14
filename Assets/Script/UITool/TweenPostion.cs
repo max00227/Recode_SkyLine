@@ -108,6 +108,7 @@ public class TweenPostion : MonoBehaviour {
 	public void SetFromAndTo(Vector3 f, Vector3 t){
 		from = f;
 		to = t;
+		transform.localPosition = f;
 	}
 
 

@@ -12,8 +12,6 @@ public class GroundController : MonoBehaviour
 
     public GroundController matchController;
 
-    public int? charaIdx;
-
     [HideInInspector]
     public int _layer;
 
@@ -63,7 +61,7 @@ public class GroundController : MonoBehaviour
 
 	public OnShowing onShowingThr;
 
-	public delegate void OnProtection (int target);
+	public delegate void OnProtection (int targetJob);
 
 	public OnProtection onProtection;
 
@@ -90,8 +88,6 @@ public class GroundController : MonoBehaviour
         _groundType = defaultType;
 
 		isActived = isChanged = activeLock = raycasted = false;
-
-        charaIdx = null;
 
 		charaJob = 0;
 
@@ -303,7 +299,7 @@ public class GroundController : MonoBehaviour
 					if (hits[j].transform.GetComponent<GroundController>().charaJob != charaJob)
                     {
 						if (onProtection != null) {
-							onProtection.Invoke ((int)hits [j].transform.GetComponent<GroundController> ().charaIdx);
+							onProtection.Invoke (hits [j].transform.GetComponent<GroundController> ().charaJob);
 						}
                     }
                     else
@@ -426,9 +422,8 @@ public class GroundController : MonoBehaviour
         raycasted = true;
     }
 
-	public void ChangeChara(int idx, int job, GroundController pair, bool isAct = false)
+	public void ChangeChara(int job, GroundController pair, bool isAct = false)
 	{
-		charaIdx = idx;
 		_groundType = GroundType.Chara;
 		charaJob = job;
 
