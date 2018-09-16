@@ -243,7 +243,7 @@ public class FightUIController : MonoBehaviour {
 				for (int i = 0; i < fightController.characters.Length; i++) {
 					if (fightController.characters [i].job == jobIdx) {
 						GroundSEController rg = SEPool.Dequeue ();
-
+                        Debug.Log(i);
 						rg.SetExtraSE (org, charaButton [i].transform.localPosition, i);
 						rg.onRecycle = RecycleExtraItem;
 						rg.onExtraUp = ExtraRatioUp;

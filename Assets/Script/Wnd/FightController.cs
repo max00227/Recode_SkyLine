@@ -105,7 +105,7 @@ public class FightController : MonoBehaviour {
 							int damage;
 							float hpRatio;
 							if (type == AtkType.pve) {
-								damage = CalDamage (characters [i].atk, monsters [order[j].index].def, jobRatio [orgJob], order[j].attriJob, order[j].minus, isAll);
+                                damage = CalDamage(characters[i].atk, monsters[order[j].index].def, jobRatio[orgJob - 1], order[j].attriJob, order[j].minus, isAll);
 								monsters [order[j].index].hp -= damage;
 								hpRatio = monsters [order [j].index].hp / monsterFullHp [order [j].index];
 							} 
@@ -242,7 +242,7 @@ public class FightController : MonoBehaviour {
 			data.attriJob = GetCalcRatio (monsters [orgIdx].job, characters [idx].job, monsters [orgIdx].attributes, characters [idx].attributes);
 			data.mAtkAtk = new int[3] { characters [idx].mAtk, characters [idx].atk, characters [idx].mAtk + characters [idx].atk };
 			data.hp = characters [idx].hp;
-			data.minus = protectJob [characters [idx].job] / 2;
+			data.minus = protectJob [characters [idx].job-1] / 2;
 			data.crt = characters [idx].crt;
 		}
 
@@ -317,7 +317,7 @@ public class FightController : MonoBehaviour {
 
 	public void SetCDTime(int[] cd){
 		foreach(int i in cd){
-			Debug.Log (i);
+			//Debug.Log (i);
 		}
 		cdTime = cd;
 	}

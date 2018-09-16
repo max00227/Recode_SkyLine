@@ -25,8 +25,6 @@ public class GroundSEController : MonoBehaviour {
 
 	int charaIdx;
 
-	Vector3 endPos;
-
 	public delegate void OnRecycle(GroundSEController rg);
 
 	public OnRecycle onRecycle;
@@ -46,6 +44,9 @@ public class GroundSEController : MonoBehaviour {
 
 	[SerializeField]
 	private Text[] damageTxt;
+
+    [SerializeField]
+    private Transform lightParant;
 
 
 	// Use this for initialization
@@ -83,7 +84,6 @@ public class GroundSEController : MonoBehaviour {
 			} 
 			else if ((int)seType == 2) {
 				extraLight.runFinish = OnRunFinish;
-				extraLight.SetFromAndTo (seGrounds [0].transform.localPosition, endPos);
 				extraLight.gameObject.SetActive (true);
 				extraLight.PlayForward ();
 				setComplete = false;
@@ -142,11 +142,11 @@ public class GroundSEController : MonoBehaviour {
 	}
 
 	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs){
-		seGrounds = grounds;
+		//extraLight.transform.localPosition = dir;
+        extraLight.SetParabola(grounds[0].transform.localPosition, dir);
 
-		extraLight.transform.localPosition = dir;
+        SetLightParent(grounds[0].transform.localPosition, dir);
 
-		endPos = dir;
 
 		showedCount = 0;
 		showTime = 0;
@@ -160,14 +160,24 @@ public class GroundSEController : MonoBehaviour {
 	}
 
 	public void SetDamageShow(Vector3 org, Vector3 dir){
-		seType = SpecailEffectType.Damage;
-		damageLight.SetFromAndTo (org, dir);
+        SetLightParent(org, dir);
+
+        seType = SpecailEffectType.Damage;
+		damageLight.SetParabola (org, dir);
 		setComplete = true;
 		isRun = false;
 	}
 
+    public void SetLightParent(Vector3 f, Vector3 t) {
+        lightParant.localPosition = f;
+        Debug.Log(Quaternion.LookRotation(f - t).eulerAngles.x);
+        lightParant.rotation = Quaternion.Euler(0, 0, 180 - Quaternion.LookRotation(f - t).eulerAngles.x);
+    }
+
 
 	private void OnRunFinish(TweenPostion tp){
+        //lightParant.rotation = Quaternion.identity;
+        //lightParant.localPosition = Vector3.zero;
 		tp.gameObject.SetActive (false);
 		tp.resetPosition ();
 

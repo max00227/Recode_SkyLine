@@ -20,7 +20,10 @@ public class TweenPostion : MonoBehaviour {
 	[SerializeField]
 	bool isPopupWnd = false;
 
-	[HideInInspector]
+    [SerializeField]
+    bool isParabola = false;
+
+    [HideInInspector]
 	public GameObject showGameObject;
 
 	bool isRun = false;
@@ -32,7 +35,12 @@ public class TweenPostion : MonoBehaviour {
 	float oriTime = 0;
 	float recTime;
 
-	public delegate void RunFinish(TweenPostion tt);
+    float parabolaPower;
+
+    float distance;
+
+
+    public delegate void RunFinish(TweenPostion tt);
 
 	public RunFinish runFinish;
 
@@ -77,7 +85,15 @@ public class TweenPostion : MonoBehaviour {
 				oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
 			}
 
-			Vector3 deltaV3 = from + (to - from) * animationCurve.Evaluate (oriTime / TweenTime);
+            Vector3 deltaV3;
+            if (!isParabola)
+            {
+                deltaV3 = from + (to - from) * animationCurve.Evaluate(oriTime / TweenTime);
+            }
+            else {
+                deltaV3 = new Vector3(from.x + (distance * (oriTime / TweenTime)), parabolaPower * animationCurve.Evaluate(oriTime / TweenTime), from.z);
+            }
+
 
 			transform.localPosition = deltaV3;
 
@@ -111,8 +127,19 @@ public class TweenPostion : MonoBehaviour {
 		transform.localPosition = f;
 	}
 
+    public void SetParabola(Vector3 f, Vector3 t) {
+        from = Vector3.zero;
+        transform.localPosition = f;
 
-	public void resetPosition(){
+        distance = Vector3.Distance(f, t);
+        to = Vector3.forward * distance;
+        int isUp = -1 * Random.Range(0, 2);
+        parabolaPower = UnityEngine.Random.Range(distance / 6, distance / 3) * isUp;
+    }
+
+
+
+    public void resetPosition(){
 		transform.localPosition = from;
 	} 
 }
