@@ -12,6 +12,8 @@ public class GroundSEController : MonoBehaviour {
 	int plusDamage;
 	float showDamage;
 	float plusSpeed;
+	float hpRatio;
+	FightItemButton callbackTarget;
 
 	bool isRun;
 
@@ -25,13 +27,19 @@ public class GroundSEController : MonoBehaviour {
 
 	int charaIdx;
 
+
 	public delegate void OnRecycle(GroundSEController rg);
 
 	public OnRecycle onRecycle;
 
 	public delegate void OnExtraUp(int idx);
 
-	public OnExtraUp onExtraUp; 
+	public OnExtraUp onExtraUp;
+
+	public delegate void OnRecycleDamage(GroundSEController rg, float ratio, FightItemButton target);
+
+	public OnRecycleDamage onRecycleDamage;
+
 
 	[SerializeField]
 	private TweenPostion extraLight;
@@ -142,7 +150,6 @@ public class GroundSEController : MonoBehaviour {
 	}
 
 	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs){
-		//extraLight.transform.localPosition = dir;
         extraLight.SetParabola(grounds[0].transform.localPosition, dir);
 
         SetLightParent(grounds[0].transform.localPosition, dir);
@@ -159,25 +166,34 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
-	public void SetDamageShow(Vector3 org, Vector3 dir){
-        SetLightParent(org, dir);
+	public void SetDamageShow(Vector3 org, FightItemButton target, float ratio){
+		SetLightParent(org, target.transform.localPosition);
+
+		hpRatio = ratio;
+		callbackTarget = target;
 
         seType = SpecailEffectType.Damage;
-		damageLight.SetParabola (org, dir);
+		damageLight.SetParabola (org, target.transform.localPosition);
 		setComplete = true;
 		isRun = false;
 	}
 
     public void SetLightParent(Vector3 f, Vector3 t) {
         lightParant.localPosition = f;
-        Debug.Log(Quaternion.LookRotation(f - t).eulerAngles.x);
-        lightParant.rotation = Quaternion.Euler(0, 0, 180 - Quaternion.LookRotation(f - t).eulerAngles.x);
+		Vector3 relativePos = f - t;
+		float angle = Quaternion.LookRotation (relativePos).eulerAngles.x;
+		if (relativePos.x > 0) {
+			lightParant.rotation = Quaternion.Euler (0, 0, 180 - angle);
+		} 
+		else {
+			lightParant.rotation = Quaternion.Euler (0, 0, angle - 360);
+		}
     }
 
 
 	private void OnRunFinish(TweenPostion tp){
-        //lightParant.rotation = Quaternion.identity;
-        //lightParant.localPosition = Vector3.zero;
+        lightParant.rotation = Quaternion.identity;
+        lightParant.localPosition = Vector3.zero;
 		tp.gameObject.SetActive (false);
 		tp.resetPosition ();
 
@@ -188,6 +204,10 @@ public class GroundSEController : MonoBehaviour {
 		tp.runFinish = null;
 		if (onRecycle != null) {
 			onRecycle.Invoke (this);
+		}
+
+		if (onRecycleDamage != null) {
+			onRecycleDamage.Invoke (this, hpRatio, callbackTarget);
 		}
 	}
 

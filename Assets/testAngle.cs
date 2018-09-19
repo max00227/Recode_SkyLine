@@ -36,8 +36,17 @@ public class testAngle : MonoBehaviour {
 
         Vector3 relativePos = f - t;
         Quaternion rotation = Quaternion.LookRotation(relativePos);
-        Debug.Log(rotation.x + " , " + rotation.y + " , " + rotation.z);
-        sel.transform.GetChild(2).rotation = rotation;
-        sel.transform.GetChild(2).GetChild(1).localPosition = new Vector3(0, 0, Vector3.Distance(f, t));
+
+		float angle = Quaternion.LookRotation(relativePos).eulerAngles.x;
+
+		Debug.Log(angle);
+		if (relativePos.x > 0) {
+			sel.transform.GetChild (2).rotation = Quaternion.Euler (0, 0, 180 - angle);
+		}
+		else {
+			sel.transform.GetChild (2).rotation = Quaternion.Euler (0, 0, angle - 360);
+
+		}
+		sel.transform.GetChild(2).GetChild(1).localPosition = new Vector3(Vector3.Distance(f, t), 0, 0);
     }
 }

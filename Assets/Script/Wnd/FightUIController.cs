@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using model.data;
 using System;
+using System.Linq;
 using UnityEngine.Profiling;
 
 public class FightUIController : MonoBehaviour {
@@ -57,8 +58,8 @@ public class FightUIController : MonoBehaviour {
 
 	int[] jobRatios;
 
-	[SerializeField]
-	public NumberSetting[] ratioTxt;
+	/*[SerializeField]
+	public NumberSetting[] ratioTxt;*/
 
 	private bool spaceCorrect;
 
@@ -77,9 +78,9 @@ public class FightUIController : MonoBehaviour {
 
 	int[] recActLevel;
 
-	public Button[] charaButton;
+	public FightItemButton[] charaButton;
 
-	public Button[] enemyButton;
+	public FightItemButton[] enemyButton;
 
 	private int energe;
 
@@ -119,9 +120,15 @@ public class FightUIController : MonoBehaviour {
 	int[] protectJob = new int[5];
 
 	void SetData() {
-		monsterCdTimes = new int[5]{7,1,3,5,6};
-		fightController.SetCDTime (monsterCdTimes);
+		monsterCdTimes = new int[5]{7,5,3,1,6};
+		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.SetData ();
+
+		lockOrder = new LinkedList<int> ();
+		SetLockUI ();
+
+
+
 		groundPool.SetController ();
 	}
 
@@ -156,6 +163,7 @@ public class FightUIController : MonoBehaviour {
 			}
 		}
 
+
 		resetGroundCount = 0;
 
 		CreateGround = 3;
@@ -179,8 +187,8 @@ public class FightUIController : MonoBehaviour {
 				se.gameObject.SetActive (false);
 				se.CloseSE ();
 			}
-			foreach (NumberSetting rs in ratioTxt) {
-				rs.run ();
+			foreach (FightItemButton btn in charaButton) {
+				btn.NumberShowRun ();
 			}
 		}
 	}
@@ -243,7 +251,6 @@ public class FightUIController : MonoBehaviour {
 				for (int i = 0; i < fightController.characters.Length; i++) {
 					if (fightController.characters [i].job == jobIdx) {
 						GroundSEController rg = SEPool.Dequeue ();
-                        Debug.Log(i);
 						rg.SetExtraSE (org, charaButton [i].transform.localPosition, i);
 						rg.onRecycle = RecycleExtraItem;
 						rg.onExtraUp = ExtraRatioUp;
@@ -264,22 +271,23 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void ExtraRatioUp(int idx){
-		ratioTxt [idx].SetExtra ();
+		charaButton [idx].SetExtra ();
 	}
 
 	private void OnShowFight(int orgIdx, DamageData damageData, AtkType aType){
-		Vector3 org = aType == AtkType.pve ? charaButton [orgIdx].transform.localPosition : enemyButton [orgIdx].transform.localPosition;
-		Vector3 target = aType == AtkType.evp ? charaButton [orgIdx].transform.localPosition : enemyButton [orgIdx].transform.localPosition;
+		FightItemButton org = aType == AtkType.pve ? charaButton [orgIdx] : enemyButton [orgIdx];
+		FightItemButton target = aType == AtkType.evp ? charaButton [damageData.targetIdx] : enemyButton [damageData.targetIdx];
 
 		GroundSEController rg = SEPool.Dequeue ();
-		rg.SetDamageShow (org, target);
-		rg.onRecycle = ShowFightEnd;
+		rg.SetDamageShow (org.transform.localPosition, target, damageData.hpRatio);
+		rg.onRecycleDamage = ShowFightEnd;
 		rg.gameObject.SetActive (true);
 		rg.Run ();
 	}
 
-	private void ShowFightEnd(GroundSEController rg){
+	private void ShowFightEnd(GroundSEController rg, float ratio, FightItemButton target){
 		rg.gameObject.SetActive (false);
+		target.SetHpBar (ratio);
 		SEPool.Enqueue (rg);
 		rg.onRecycle = null;
 	}
@@ -292,7 +300,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void OnProtection(int targetJob){
-		if (protectJob [targetJob - 1] < 60) {
+		if (protectJob [targetJob - 1] < 30) {
 			protectJob [targetJob - 1] += 10; 
 		}
 		//Debug.Log ("Guardian : " + guardian + " , Target" + target);
@@ -419,8 +427,8 @@ public class FightUIController : MonoBehaviour {
 
 		int focusCount = 1;
 
-		foreach (var v in ratioTxt) {
-			v.SetColor (Color.black);
+		foreach (var v in charaButton) {
+			v.SetTextColor (Color.black);
 		}
 
 		groundPool.ChangeLayer ();
@@ -429,10 +437,9 @@ public class FightUIController : MonoBehaviour {
 			ResetGround ();
 		};
 
-		foreach (Button cBtn in charaButton) {
-			cBtn.enabled = true;
+		foreach (FightItemButton cBtn in charaButton) {
+			cBtn.SetEnable (true);
 		}
-
 	}
 
 	private void RoundEnd()
@@ -442,8 +449,8 @@ public class FightUIController : MonoBehaviour {
 
 		fightStart = true;
 
-		foreach (Button cBtn in charaButton) {
-			cBtn.enabled = false;
+		foreach (FightItemButton cBtn in charaButton) {
+			cBtn.SetEnable (false);
 		}
 
 		if (energe < 3) {
@@ -466,8 +473,8 @@ public class FightUIController : MonoBehaviour {
 				for (int j = 0; j < fightController.characters.Length; j++) {
 					if (fightController.characters [j].job == i + 1) {
 						AddCanAttack (j);
-						ratioTxt [j].SetShowUp (jobRatios [i], 0.5f);
-						ratioTxt [j].onComplete = RecycleShowUp;
+						charaButton [j].SetRatioTxt (jobRatios [i], true);
+						charaButton[j].onComplete = RecycleShowUp;
 						unCompleteCount++;
 					}
 				}
@@ -480,6 +487,9 @@ public class FightUIController : MonoBehaviour {
 			StartCoroutine (CheckRatio ());
 		} 
 		else {
+			fightController.onComplete = FightEnd;
+			fightController.onShowFight = OnShowFight;
+			fightController.EnemyFight ();
 			if (isResetGround) {
 				ResetGround ();
 				return;
@@ -490,8 +500,10 @@ public class FightUIController : MonoBehaviour {
 		hasDamage = false;
 		spaceCount = 0;
 		charaIdx = null;
-		startCharaImage = endCharaImage = null;
-		startGc = endGc = null;
+		startCharaImage = null;
+		endCharaImage = null;
+		startGc = null;
+		endGc = null;
 		ratioCount = new int[5] { 0, 0, 0, 0, 0 };
 
 		recAllRatioData = allRatioData;
@@ -612,8 +624,7 @@ public class FightUIController : MonoBehaviour {
 						}
 
 						if (energe > 0 && !isResetGround) {
-							startCharaImage = endCharaImage = null;
-							startGc = endGc = null;
+							ResetStatus ();
 							onlyAdd = true;
 						}
 
@@ -632,10 +643,10 @@ public class FightUIController : MonoBehaviour {
 					else {
 						PopImage ();
 						PopImage ();
-						startCharaImage = endCharaImage = null;
 						startGc.ResetType ();
 						charaGc.RemoveLast ();
 						isResetGround = false;
+						ResetStatus ();
 						ResetDamage ();
 					}
 				}
@@ -683,11 +694,11 @@ public class FightUIController : MonoBehaviour {
 		for (int i = 0; i < jobRatios.Length; i++) {
 			for (int j = 0; j < fightController.characters.Length; j++) {
 				if (fightController.characters [j].job == i + 1) {
-					ratioTxt [j].SetRatio (jobRatios [i]);
+					charaButton [j].SetRatioTxt (jobRatios [i]);
 					if (recJobRatios [fightController.characters [i].job - 1] != jobRatios [fightController.characters [i].job - 1]) {
-						ratioTxt [i].SetColor (Color.red);
+						charaButton [i].SetTextColor (Color.red);
 					} else {
-						ratioTxt [i].SetColor (Color.black);
+						charaButton [i].SetTextColor (Color.black);
 					}
 				}
 			}
@@ -775,8 +786,8 @@ public class FightUIController : MonoBehaviour {
 
 	private void ResetDamage() {
 		for (int i = 0; i < fightController.characters.Length; i++) {
-			ratioTxt [i].SetRatio (recJobRatios [fightController.characters [i].job - 1]);
-			ratioTxt [i].SetColor (Color.black);
+			charaButton [i].SetRatioTxt (recJobRatios [fightController.characters [i].job - 1]);
+			charaButton [i].SetTextColor (Color.black);
 		}
 	}
 
@@ -804,8 +815,7 @@ public class FightUIController : MonoBehaviour {
 
 		recJobRatios = ratioCount = recActLevel =  new int[5] { 0, 0, 0, 0, 0 };
 		for (int i = 0; i < 5; i++) {
-			ratioTxt [i].ResetRatio ();
-			ratioTxt [i].SetColor (Color.black);
+			charaButton [i].ResetRatio ();
 		}
 
 		allRatioData = new List<RaycastData> ();
@@ -813,11 +823,17 @@ public class FightUIController : MonoBehaviour {
 
 		charaGc = new LinkedList<GroundController> ();
 
+
 		charaIdx = null;
-		startCharaImage = endCharaImage = null;
-		startGc = endGc = null;
-		hasDamage = fightStart = isResetGround = spaceCorrect = false;
+
+
+		hasDamage = false;
+		fightStart = false;
+		isResetGround = false;
+		spaceCorrect = false;
 		spaceCount = 0;
+
+		ResetStatus ();
 
 
 		while (_charaGroup.Count > 0) {
@@ -826,15 +842,24 @@ public class FightUIController : MonoBehaviour {
 
 		if (isInit == false) {
 			resetGroundCount++;
+			fightController.SetResetRatio (Mathf.CeilToInt(resetGroundCount/2));
 		} else {
 			energe = 1;
 		}
 
-		foreach (Button cBtn in charaButton) {
-			cBtn.enabled = true;
+		foreach (FightItemButton cBtn in charaButton) {
+			cBtn.SetEnable (true);
 		}
 
+
 		RoundStart ();
+	}
+
+	private void ResetStatus(){
+		startCharaImage = null;
+		endCharaImage = null;
+		startGc = null;
+		endGc = null;
 	}
 
 	private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
@@ -946,11 +971,13 @@ public class FightUIController : MonoBehaviour {
 
 	private void SetLockUI(){
 		if (lockOrder.Count == 0) {
-			//Debug.Log ("Un Lock");
+			for (int i = 0; i < enemyButton.Length; i++) {
+				enemyButton [i].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
+			}
 		} 
 		else {
-			foreach (var v in lockOrder) {
-				//Debug.Log (v);
+			for (int i = 0; i < lockOrder.Count; i++) {
+				enemyButton [lockOrder.ElementAt (i)].transform.GetChild (0).GetComponent<Text> ().text = (i + 1).ToString ();
 			}
 		}
 	}

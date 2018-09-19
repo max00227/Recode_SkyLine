@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TweenPostion : MonoBehaviour {
 
@@ -35,10 +36,14 @@ public class TweenPostion : MonoBehaviour {
 	float oriTime = 0;
 	float recTime;
 
-    float parabolaPower;
+    //float parabolaPower;
 
     float distance;
 
+	[SerializeField]
+	PowerRange powerRange;
+
+	float parabolaPower;
 
     public delegate void RunFinish(TweenPostion tt);
 
@@ -127,14 +132,15 @@ public class TweenPostion : MonoBehaviour {
 		transform.localPosition = f;
 	}
 
-    public void SetParabola(Vector3 f, Vector3 t) {
+	public void SetParabola(Vector3 f, Vector3 t) {
         from = Vector3.zero;
         transform.localPosition = f;
 
         distance = Vector3.Distance(f, t);
         to = Vector3.forward * distance;
-        int isUp = -1 * Random.Range(0, 2);
-        parabolaPower = UnityEngine.Random.Range(distance / 6, distance / 3) * isUp;
+		int isUp = (int)Mathf.Pow (-1, UnityEngine.Random.Range (0, 2));
+
+		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max) * isUp;
     }
 
 
@@ -142,4 +148,10 @@ public class TweenPostion : MonoBehaviour {
     public void resetPosition(){
 		transform.localPosition = from;
 	} 
+
+	[Serializable]
+	struct PowerRange{
+		public int min;
+		public int max;
+	}
 }
