@@ -36,19 +36,19 @@ public class ParameterConvert {
 	}
 
 	public static float JobRatioCal(int atkJob, int defJob){
+		if (atkJob == 0 && defJob == 1) {
+			return 1.5f;
+		}
 		if (atkJob == 1 && defJob == 2) {
 			return 1.5f;
 		}
-		if (atkJob == 2 && defJob == 3) {
+		if (atkJob == 2 && defJob == 0) {
 			return 1.5f;
 		}
-		if (atkJob == 3 && defJob == 1) {
+		if (atkJob == 3 && defJob == 4) {
 			return 1.5f;
 		}
-		if (atkJob == 4 && defJob == 5) {
-			return 1.5f;
-		}
-		if (atkJob == 5 && defJob == 4) {
+		if (atkJob == 4 && defJob == 3) {
 			return 1.5f;
 		}
 		return 1f; 

@@ -19,7 +19,7 @@ public class NumberSetting : MonoBehaviour {
 
 	public OnComplete onComplete;
 
-	public bool isSet = false;
+	bool isSet = false;
 
 	// Use this for initialization
 	void Start () {

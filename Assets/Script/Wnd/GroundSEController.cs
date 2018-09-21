@@ -77,7 +77,6 @@ public class GroundSEController : MonoBehaviour {
 							txt.GetComponent<TweenScale> ().PlayForward ();
 						}
 
-						//seGrounds [showedCount].ChangeSprite (showNumber[showedCount]);
 						StartCoroutine (seGrounds [showedCount].ChangeSpriteWait (showNumber [showedCount]));
 
 

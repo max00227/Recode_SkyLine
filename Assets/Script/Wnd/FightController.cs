@@ -33,6 +33,10 @@ public class FightController : MonoBehaviour {
 	private int[] charaFullHp;
 	private int[] monsterFullHp;
 
+	private int monsterProtect;
+
+	private int charaProtect;
+
 	private Dictionary<int, AccordingData[]> charaAccording;
 
 	private Dictionary<int, AccordingData[]> monsterAccording;
@@ -47,19 +51,24 @@ public class FightController : MonoBehaviour {
 
 	public OnShowFight onShowFight;
 
+	public delegate void OnProtect(bool hasProtect);
+
+	public OnProtect onProtect;
+
 	public Dictionary<int, List<DamageData>> damages;
 
 
 	void Update(){
 		if (Input.GetKeyDown (KeyCode.P)) {
 			for (int i = 0; i < 5; i++) {
-				Debug.Log (string.Format ("{0}. Monster : {1} , Chara : {2}", i, monsters[i].job, characters[i].job));
+				Debug.Log (monsterAccording [0] [i].minus);
 			}
 		}
 	}
 
 
 	public void SetData(){
+		monsterProtect = 0;
 		characters = new CharaLargeData[5];
 		monsters = new MonsterLargeData[5];
 		charaFullHp = new int[5];
@@ -77,6 +86,9 @@ public class FightController : MonoBehaviour {
 			monsters[i] = MasterDataManager.GetMonsterData (enemyData.TeamData[0].Team[i].id);
 			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
 			monsterFullHp [i] = monsters [i].hp;
+			if (monsters [i].job == 2) {
+				monsterProtect++;
+			}
 		}
 
 
@@ -84,6 +96,9 @@ public class FightController : MonoBehaviour {
 			characters[i] = MasterDataManager.GetCharaData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
 			charaFullHp [i] = characters [i].hp;
+			if (characters [i].job == 2) {
+				charaProtect++;
+			}
 		}
 
 		for (int i = 0; i < monsterCdTimes.Length; i++) {
@@ -91,6 +106,8 @@ public class FightController : MonoBehaviour {
 		}
 
 		GetAccordingDataDic ();
+
+		CallbackProtect ();
 
 		UnLockOrder ();
 	}
@@ -100,13 +117,13 @@ public class FightController : MonoBehaviour {
 
 		for (int i = 0; i < monsterAccording.Count; i++) {
 			for (int j = 0; j < monsterAccording.ElementAt (i).Value.Length; j++) {
-				monsterAccording.ElementAt (i).Value [j].minus = protectJob [characters [monsterAccording.ElementAt (i).Value [j].index].job - 1];
+				monsterAccording.ElementAt (i).Value [j].minus = protectJob [characters [monsterAccording.ElementAt (i).Value [j].index].job];
 			}
 		}
 	}
 
 	private void OnFight(AtkType type){
-		Debug.Log (type.ToString ());
+		ShowLog (type.ToString (), 2);
 		damages = new Dictionary<int, List<DamageData>> ();
 		int count = type == AtkType.pve ? characters.Length : monsters.Length;
 		for (int i = 0; i < count; i++) {
@@ -115,17 +132,16 @@ public class FightController : MonoBehaviour {
 				if (fightPairs.ContainsKey (i)) {
 					AccordingData[] order;
 					fightPairs.TryGetValue (i, out order);
-					int orgJob = type == AtkType.pve ? characters[i].job : monsters[i].job;
-					Dictionary<int,int> finalDamage = new Dictionary<int, int> ();
+					int orgJob = type == AtkType.pve ? characters [i].job : monsters [i].job;
 
 					//判斷是否全體攻擊
 					bool isAll = false;
-					if (orgJob >= 4) {
+					if (orgJob >= 3) {
 						if (type == AtkType.evp) {
 							isAll = true;
 						}
 						else {
-							if (jabActLevel [i] > 2) {
+							if (jabActLevel [i] >= 2) {
 								isAll = true;
 							}
 						}
@@ -136,32 +152,47 @@ public class FightController : MonoBehaviour {
 							int damage;
 							float hpRatio;
 							if (type == AtkType.pve) {
-								damage = CalDamage(characters[i].atk, monsters[order[j].index].def, jobRatio[orgJob - 1], order[j].attriJob, order[j].minus,jabActLevel[orgJob], isAll);
+								int minus = order [j].minus;
 
-								Debug.Log ("傷害值 : " + damage);
-								Debug.Log (string.Format("敵人編號{0}滿血值 : {1}",order [j].index ,monsterFullHp [order [j].index]));
-								Debug.Log (string.Format("敵人編號{0}受傷前 : {1}",order [j].index ,monsters [order [j].index].hp));
+								//敵方隊伍含有盾職減傷
+								if (monsters [i].job != 3) {
+									minus = minus * (10 - monsterProtect);
+								}
+
+
+								damage = CalDamage (characters [i].atk, monsters [order [j].index].def, jobRatio [orgJob], order [j].attriJob, order [j].minus, jabActLevel [orgJob], isAll);
+
+								ShowLog (string.Format ("傷害值 : {0}", damage), 2);
+								ShowLog (string.Format("敵人編號{0}滿血值 : {1}",order [j].index ,monsterFullHp [order [j].index]),2);
+								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷前 : {2}", i, order [j].index, monsters [order [j].index].hp), 2);
 
 								monsters [order [j].index].hp -= damage <= 0 ? 1 : damage;
-								if (monsters [order [j].index].hp < 0) {
+								if (monsters [order [j].index].hp <= 0) {
 									monsters [order [j].index].hp = 0;
+									if (monsters [order [j].index].job == 2) {
+										monsterProtect--;
+									}
 								}
-								Debug.Log (string.Format("敵人編號{0}受傷後 : {1}",order [j].index ,monsters [order [j].index].hp));
+								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷後 : {2}", i, order [j].index, monsters [order [j].index].hp));
 
 								hpRatio = (float)monsters [order [j].index].hp / (float)monsterFullHp [order [j].index];
 							} 
 							else {
-								damage = CalDamage (monsters [i].atk, characters [order[j].index].def, 100, order[j].attriJob, order[j].minus, 0, isAll);
-								Debug.Log ("玩家傷害值 : " + damage);
-								Debug.Log (string.Format("玩家編號{0}滿血值 : {1}",order [j].index ,charaFullHp [order [j].index]));
-								Debug.Log (string.Format("玩家編號{0}受傷前 : {1}",order [j].index ,characters [order [j].index].hp));
+								//計算傷害
+								damage = CalDamage (monsters [i].atk, characters [order[j].index].def, 100, order[j].attriJob, order [j].minus, 0, isAll);
+								ShowLog (string.Format ("傷害值 : {0}", damage), 2);
+								ShowLog (string.Format("玩家編號{0}滿血值 : {1}",order [j].index ,charaFullHp [order [j].index]),2);
+								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷前 : {2}", i, order [j].index, characters [order [j].index].hp), 2);
 
 
 								characters [order [j].index].hp -= damage <= 0 ? 1 : damage;
-								if (characters [order [j].index].hp < 0) {
+								if (characters [order [j].index].hp <= 0) {
 									characters [order [j].index].hp = 0;
+									if (characters [order [j].index].job == 2) {
+										charaProtect--;
+									}
 								}
-								Debug.Log (string.Format("玩家編號{0}受傷後 : {1}",order [j].index ,characters [order [j].index].hp));
+								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷後 : {2}", i, order [j].index, characters [order [j].index].hp), 2);
 
 								hpRatio = (float)characters [order [j].index].hp / (float)charaFullHp [order [j].index];
 							}
@@ -183,6 +214,8 @@ public class FightController : MonoBehaviour {
 				}
 			}
 		}
+
+		CallbackProtect ();
 	}
 
 	private DamageData GetDamageData(int targer, float hpRatio){
@@ -206,7 +239,8 @@ public class FightController : MonoBehaviour {
 		Debug.Log ("加成倍率 : " + (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio));
 		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio) - def) * (100 - minus) / 100);
 		//((Atk * randamRatio * (ratio + actRatio) * ratioAJ * resetCount) - def) * minus
-		return damage <= 0 ? 1 : damage;
+
+		return damage <= 0 ? 1 : 1;
 	}
 
 	IEnumerator ShowFight(AtkType atype, bool Callback){
@@ -311,11 +345,13 @@ public class FightController : MonoBehaviour {
 
 	}
 
-
+	private void CallbackProtect(){
+		onProtect.Invoke (charaProtect > 0);
+	}
 
 
 	private AccordingData[] CompareData(int orgIdx, AtkType aType){
-		AccordingData[] according = aType == AtkType.pve ? monsterAccording [orgIdx] : charaAccording [orgIdx];
+		AccordingData[] according = aType == AtkType.pve ? charaAccording [orgIdx] : monsterAccording [orgIdx];
 
 		return AccordingCompare (according, true);
 	}
@@ -453,7 +489,7 @@ public class FightController : MonoBehaviour {
 			data.attriJob = GetCalcRatio (monsters [orgIdx].job, characters [idx].job, monsters [orgIdx].attributes, characters [idx].attributes);
 			data.mAtkAtk = new int[3] { characters [idx].mAtk, characters [idx].atk, characters [idx].mAtk + characters [idx].atk };
 			data.hp = characters [idx].hp;
-			data.minus = protectJob [characters [idx].job-1] / 2;
+			data.minus = protectJob [characters [idx].job];
 			data.crt = characters [idx].crt;
 		}
 
@@ -471,6 +507,17 @@ public class FightController : MonoBehaviour {
 
 	private float GetCalcRatio(int aj, int bj, int aa, int ba){
 		return ParameterConvert.AttriRatioCal (aa, ba)*ParameterConvert.JobRatioCal (aj, bj);
+	}
+
+
+	private void ShowLog(string content,int type = 0){
+		if (type == 0) {
+			Debug.Log (content);
+		} else if (type == 1) {
+			Debug.LogWarning (content);
+		} else {
+			Debug.LogError (content);
+		}
 	}
 }
 

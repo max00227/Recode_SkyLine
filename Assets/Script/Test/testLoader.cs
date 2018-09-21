@@ -5,9 +5,10 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using WndEditor;
+using UnityEditor;
 
 public class testLoader : MonoBehaviour {
-	string path = "/ClientData/ClientData.txt";
+	static string path = "/ClientData/ClientData.txt";
 	string teamDataPath = "/ClientData/TeamData.txt";
 
 
