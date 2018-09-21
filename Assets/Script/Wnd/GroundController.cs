@@ -406,12 +406,9 @@ public class GroundController : MonoBehaviour
 			_groundType = GroundType.Copper;
 		} 
 		else {
-			int upRatio;
 			if ((int)_groundType == 1) {
-				upRatio = 50;
 				_groundType = GroundType.Silver;
 			} else if ((int)_groundType == 2) {
-				upRatio = 25;
 				_groundType = GroundType.gold;
 
 				if (isEnd) {
@@ -457,11 +454,9 @@ public class GroundController : MonoBehaviour
 	public void PrevType(bool isEnd) {
 		if (isChanged && !lockPrev) {
 			if (!isCross || isEnd) {
-				Debug.Log ("Prev");
 				_groundType = _prevType;
 			} 
 			else {
-				Debug.Log ("PrevCross");
 				_groundType = _prevCrossType;
 				isCross = false;
 			}

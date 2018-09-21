@@ -46,6 +46,7 @@ public class FightUIController : MonoBehaviour {
 
 	int? charaIdx;
 
+
 	Image startCharaImage, endCharaImage;
 
 	LinkedList<GroundController> charaGc;
@@ -120,7 +121,7 @@ public class FightUIController : MonoBehaviour {
 	#endregion
 
 	#region InstantItemCount 遊玩中產生物件宣告
-	int showItemCount = 48;
+	int showItemCount = 16;
 	int imageItem = 32;
 	#endregion
 
@@ -430,7 +431,6 @@ public class FightUIController : MonoBehaviour {
 	/// </summary>
 	/// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
-		Debug.Log ("Next");
 		fightStart = false;
 
 		energe++;
@@ -796,7 +796,11 @@ public class FightUIController : MonoBehaviour {
 							ratioCount [i]++;
 						}
 					}
+					if (SEPool.Count<=0) {
+						CreateSE ();
+					}
 					GroundSEController rg = SEPool.Dequeue ();
+
 					rg.SetReverseSE (data.hits, postions);
 					rg.onRecycle = RecycleReverseItem;
 					SEingPool.Enqueue (rg);
@@ -1020,6 +1024,18 @@ public class FightUIController : MonoBehaviour {
 			for (int i = 0; i < lockOrder.Count; i++) {
 				enemyButton [lockOrder.ElementAt (i)].transform.GetChild (0).GetComponent<Text> ().text = (i + 1).ToString ();
 			}
+		}
+	}
+
+	private void CreateSE(){
+		showItemCount += 16;
+		for (int i = 0; i < 16; i++)
+		{
+			GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
+			showItem.GetComponent<RectTransform>().SetParent(showGroup);
+			showItem.transform.localPosition = Vector3.zero;
+			showItem.gameObject.SetActive (false);
+			SEPool.Enqueue(showItem);
 		}
 	}
 }

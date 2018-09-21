@@ -163,8 +163,8 @@ public class FightController : MonoBehaviour {
 								damage = CalDamage (characters [i].atk, monsters [order [j].index].def, jobRatio [orgJob], order [j].attriJob, order [j].minus, jabActLevel [orgJob], isAll);
 
 								ShowLog (string.Format ("傷害值 : {0}", damage), 2);
-								ShowLog (string.Format("敵人編號{0}滿血值 : {1}",order [j].index ,monsterFullHp [order [j].index]),2);
-								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷前 : {2}", i, order [j].index, monsters [order [j].index].hp), 2);
+								ShowLog (string.Format("敵人編號{0}滿血值 : {1}",order [j].index ,monsterFullHp [order [j].index]),1);
+								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷前 : {2}", i, order [j].index, monsters [order [j].index].hp), 1);
 
 								monsters [order [j].index].hp -= damage <= 0 ? 1 : damage;
 								if (monsters [order [j].index].hp <= 0) {
@@ -173,16 +173,16 @@ public class FightController : MonoBehaviour {
 										monsterProtect--;
 									}
 								}
-								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷後 : {2}", i, order [j].index, monsters [order [j].index].hp));
+								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷後 : {2}", i, order [j].index, monsters [order [j].index].hp),1);
 
 								hpRatio = (float)monsters [order [j].index].hp / (float)monsterFullHp [order [j].index];
 							} 
 							else {
 								//計算傷害
 								damage = CalDamage (monsters [i].atk, characters [order[j].index].def, 100, order[j].attriJob, order [j].minus, 0, isAll);
-								ShowLog (string.Format ("傷害值 : {0}", damage), 2);
-								ShowLog (string.Format("玩家編號{0}滿血值 : {1}",order [j].index ,charaFullHp [order [j].index]),2);
-								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷前 : {2}", i, order [j].index, characters [order [j].index].hp), 2);
+								ShowLog (string.Format ("傷害值 : {0}", damage), 1);
+								ShowLog (string.Format("玩家編號{0}滿血值 : {1}",order [j].index ,charaFullHp [order [j].index]),1);
+								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷前 : {2}", i, order [j].index, characters [order [j].index].hp), 1);
 
 
 								characters [order [j].index].hp -= damage <= 0 ? 1 : damage;
@@ -192,7 +192,7 @@ public class FightController : MonoBehaviour {
 										charaProtect--;
 									}
 								}
-								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷後 : {2}", i, order [j].index, characters [order [j].index].hp), 2);
+								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷後 : {2}", i, order [j].index, characters [order [j].index].hp), 1);
 
 								hpRatio = (float)characters [order [j].index].hp / (float)charaFullHp [order [j].index];
 							}
@@ -227,7 +227,6 @@ public class FightController : MonoBehaviour {
 	}
 
 	public int CalDamage(int atk, int def, int ratio, float ratioAJ, int minus,int actLevel, bool isAll){
-		Debug.Log (atk + " : " + def + " : " + ratio + " : " + ratioAJ + " : " + minus);
 		int actRatio;
 		if (actLevel != 0) {
 			actRatio = 50 * (int)Mathf.Pow (2, actLevel - 1);
@@ -236,7 +235,7 @@ public class FightController : MonoBehaviour {
 		}
 
 		float randomRatio = isAll != true ? UnityEngine.Random.Range (75, 101) : UnityEngine.Random.Range (40, 75);
-		Debug.Log ("加成倍率 : " + (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio));
+		ShowLog (string.Format("加成倍率 : {0}", (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio)),1);
 		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio) - def) * (100 - minus) / 100);
 		//((Atk * randamRatio * (ratio + actRatio) * ratioAJ * resetCount) - def) * minus
 
