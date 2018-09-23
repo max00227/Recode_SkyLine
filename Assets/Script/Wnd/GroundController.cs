@@ -73,7 +73,7 @@ public class GroundController : MonoBehaviour
 	[HideInInspector]
 	public int charaJob;
 
-	private List<int> charaJobs;
+	private int extraJob;
 
 	public GroundController pairGc;
 
@@ -89,6 +89,7 @@ public class GroundController : MonoBehaviour
         _layer = 1;
 		isActived = isChanged = activeLock = raycasted = isPrevLock = isCross = lockPrev = false;
 		testRaycasted = false;
+        extraJob = 99;
     }
 
     // Update is called once per frame
@@ -101,7 +102,7 @@ public class GroundController : MonoBehaviour
 		_layer = (int)_groundType == 0 ? 1 : 0;
 		ResetSprite (_groundType);
 		pairGc = null;
-		charaJobs = new List<int> ();
+        extraJob = 99;
     }
 
 	public void ChangeSprite(GroundType type)
@@ -260,7 +261,6 @@ public class GroundController : MonoBehaviour
     }
 
 	public List<RaycastData> OnChangeType(bool isEnd){
-		charaJobs = new List<int> ();
 		return RaycastRound(false, isEnd);	
 	}
 
@@ -483,17 +483,19 @@ public class GroundController : MonoBehaviour
     }
 
 	public void AddJob(int job){
-		if (!charaJobs.Contains (job)) {
-			charaJobs.Add (job);
-		}
+        extraJob = job;
 	}
 
 	private void OnPlusRatio() {
 		ExtraRatioData data = new ExtraRatioData();
         data.gc = matchController;
-		data.charaJobs = charaJobs;
+		data.extraJob = extraJob;
 
 
-        plusRatio.Invoke(data);
+        if (extraJob != 99)
+        {
+            plusRatio.Invoke(data);
+        }
+        extraJob = 99;
     }
 }

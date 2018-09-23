@@ -1058,7 +1058,7 @@ public struct RaycastData {
 }
 
 public struct ExtraRatioData {
-	public List<int> charaJobs;
+	public int extraJob;
 	public GroundController gc;
 }
 
