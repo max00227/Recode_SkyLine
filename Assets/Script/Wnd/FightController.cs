@@ -166,7 +166,7 @@ public class FightController : MonoBehaviour {
 								ShowLog (string.Format("敵人編號{0}滿血值 : {1}",order [j].index ,monsterFullHp [order [j].index]),1);
 								ShowLog (string.Format ("玩家編號{0}攻擊敵人編號{1}受傷前 : {2}", i, order [j].index, monsters [order [j].index].hp), 1);
 
-								monsters [order [j].index].hp -= damage <= 0 ? 1 : damage;
+								monsters [order [j].index].hp -= damage;
 								if (monsters [order [j].index].hp <= 0) {
 									monsters [order [j].index].hp = 0;
 									if (monsters [order [j].index].job == 2) {
@@ -185,7 +185,7 @@ public class FightController : MonoBehaviour {
 								ShowLog (string.Format ("敵人編號{0}攻擊玩家編號{1}受傷前 : {2}", i, order [j].index, characters [order [j].index].hp), 1);
 
 
-								characters [order [j].index].hp -= damage <= 0 ? 1 : damage;
+								characters [order [j].index].hp -= damage;
 								if (characters [order [j].index].hp <= 0) {
 									characters [order [j].index].hp = 0;
 									if (characters [order [j].index].job == 2) {
@@ -239,7 +239,7 @@ public class FightController : MonoBehaviour {
 		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio) - def) * (100 - minus) / 100);
 		//((Atk * randamRatio * (ratio + actRatio) * ratioAJ * resetCount) - def) * minus
 
-		return damage <= 0 ? 1 : 1;
+		return damage <= 0 ? 1 : damage;
 	}
 
 	IEnumerator ShowFight(AtkType atype, bool Callback){
@@ -332,9 +332,7 @@ public class FightController : MonoBehaviour {
 					}
 				}
 			}
-			/*foreach (AccordingData data in atkOrder) {
-				Debug.Log (data.index);
-			}*/
+
 			return atkOrder;
 		} 
 		else {
@@ -510,13 +508,13 @@ public class FightController : MonoBehaviour {
 
 
 	private void ShowLog(string content,int type = 0){
-		if (type == 0) {
+		/*if (type == 0) {
 			Debug.Log (content);
 		} else if (type == 1) {
 			Debug.LogWarning (content);
 		} else {
 			Debug.LogError (content);
-		}
+		}*/
 	}
 }
 

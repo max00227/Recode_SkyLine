@@ -4,26 +4,16 @@ using System;
 using UnityEngine;
 
 public class GroundRaycastController : MonoBehaviour {
-	List<GroundController> norGcs;
+	GroundController[] allGcs;
 
 	[SerializeField]
 	DirectGroundController center;
-
-	[SerializeField]
-	DirectGroundController[] angle;
 
 	int CreateGround;
 
 	// Use this for initialization
 	public void SetController () {
-		norGcs = new List<GroundController> ();
-		var c = GetComponentsInChildren<GroundController> ();
-		foreach (GroundController gc in c) {
-			if ((int)gc._groundType == 0) {
-				norGcs.Add (gc);
-			}
-		}
-
+		allGcs = GetComponentsInChildren<GroundController> ();
 	}
 	
 	// Update is called once per frame
@@ -36,36 +26,29 @@ public class GroundRaycastController : MonoBehaviour {
 	}
 
 	public void RoundStart(bool isCenter = true){
-		DirectGroundController dirCenter;
-		if (isCenter) {
-			dirCenter = center;
-		} else {
-			dirCenter = angle [UnityEngine.Random.Range (0, 7)];
-		}
-
 		RaycastHit2D[] hits;
 
 		List<int> randomList = new List<int>();
 
 
-		if (norGcs.Count >= 37)
+		if (allGcs.Length >= 61)
 		{
-			randomList = DataUtil.RandomList(CreateGround - 1, dirCenter.randomList);
+			randomList = DataUtil.RandomList(CreateGround - 1, center.randomList);
 		}
 		else
 		{
-			randomList = DataUtil.RandomList(CreateGround, dirCenter.randomList);
+			randomList = DataUtil.RandomList(CreateGround, center.randomList);
 		}
 
-		dirCenter.gc.ChangeType ();
+		center.gc.ChangeType (false, true);
 
 
 		if (randomList.Count>0){
 			foreach (int randomI in randomList) {
-				hits = GetRaycastHits(dirCenter.gc.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + dirCenter.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + dirCenter.randomList[randomI] * 60))), 0.97f);
+				hits = GetRaycastHits(center.gc.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + center.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + center.randomList[randomI] * 60))), 0.97f);
 				if (hits.Length > 0) {
 					foreach (var hit in hits) {
-						hit.collider.GetComponent<GroundController> ().ChangeType ();
+						hit.collider.GetComponent<GroundController> ().ChangeType (false, true);
 					}
 				}
 			}
@@ -74,13 +57,16 @@ public class GroundRaycastController : MonoBehaviour {
 
 	public void RoundEnd()
 	{
-		foreach (GroundController gc in norGcs) {
-			gc.SetType();
+		foreach (GroundController gc in allGcs) {
+			if ((int)gc._groundType != 99) {
+				gc.SetType ();
+			}
+			
 		}
 	}
 
 	public void ChangeLayer(){
-		foreach (GroundController gc in norGcs) {
+		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType != 0 && (int)gc._groundType != 99) {
 				ChangeLayer (gc.transform.localPosition);
 			}
@@ -113,8 +99,8 @@ public class GroundRaycastController : MonoBehaviour {
 
 		int focusCount = 1;
 
-		foreach (GroundController gc in norGcs) {
-			if (gc._layer != 0) {
+		foreach (GroundController gc in allGcs) {
+			if (gc._layer != 0 && (int)gc._groundType != 99) {
 				hasLayerGcs.Add (gc);
 			}
 		}
@@ -182,7 +168,7 @@ public class GroundRaycastController : MonoBehaviour {
 		}
 
 		foreach (GroundController gc in nextRoundGcs) {
-			gc.ChangeType ();
+			gc.ChangeType (false, true);
 		}
 		return true;
 	}

@@ -32,7 +32,7 @@ public class GroundSEController : MonoBehaviour {
 
 	public OnRecycle onRecycle;
 
-	public delegate void OnExtraUp(int idx);
+	public delegate void OnExtraUp(int idx, int upRatio);
 
 	public OnExtraUp onExtraUp;
 
@@ -40,6 +40,7 @@ public class GroundSEController : MonoBehaviour {
 
 	public OnRecycleDamage onRecycleDamage;
 
+	private int upRatio;
 
 	[SerializeField]
 	private TweenPostion extraLight;
@@ -148,11 +149,19 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
-	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs){
+	/// <summary>
+	/// Sets the extra S.
+	/// </summary>
+	/// <param name="grounds">原點</param>
+	/// <param name="dir">方向</param>
+	/// <param name="idxs">角色編號</param>
+	/// <param name="upInt">上升值</param>
+	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs, int upInt){
         extraLight.SetParabola(grounds[0].transform.localPosition, dir);
 
         SetLightParent(grounds[0].transform.localPosition, dir);
 
+		upRatio = upInt;
 
 		showedCount = 0;
 		showTime = 0;
@@ -197,7 +206,7 @@ public class GroundSEController : MonoBehaviour {
 		tp.resetPosition ();
 
 		if (onExtraUp != null) {
-			onExtraUp.Invoke (charaIdx);
+			onExtraUp.Invoke (charaIdx, upRatio);
 		}
 
 		tp.runFinish = null;

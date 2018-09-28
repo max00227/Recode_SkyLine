@@ -51,27 +51,27 @@ public class NumberSetting : MonoBehaviour {
 		}
 	}
 
-	public void SetRatio (int ratio) {
-		text.text = ratio.ToString();
+	public void SetNumber (int number) {
+		text.text = number.ToString();
 	}
 
-	public void SetShowUp(int ratio, float speed) {
+	public void SetShowUp(int number, float speed) {
 		isRun = false;
-		upSpeed = (ratio - showRatio) / 0.5f;
+		upSpeed = (number - showRatio) / 0.5f;
 
 		prevRatio = showRatio;
 
-		showRatio = ratio;
+		showRatio = number;
 		isSet = true;
 	}
 
-	public void SetExtra(){
-		showRatio = showRatio + 25;
+	public void SetPlus(int number){
+		showRatio = showRatio + number;
 
 		text.text = showRatio.ToString();
 	}
 
-	public void ResetRatio () {
+	public void ResetNumber () {
 		showRatio = 0;
 		text.text = showRatio.ToString();
 

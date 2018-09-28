@@ -34,10 +34,11 @@ public class FightItemButton : MonoBehaviour {
 
 	public void SetRatioTxt(int ratio, bool isShow = false){
 		if (isShow) {
+			//Debug.Log (ratio);
 			ratioTxt.SetShowUp (ratio, 0.5f);
 			ratioTxt.onComplete = Callback;
 		} else {
-			ratioTxt.SetRatio (ratio);
+			ratioTxt.SetNumber (ratio);
 		}
 	}
 
@@ -46,7 +47,7 @@ public class FightItemButton : MonoBehaviour {
 	}
 
 	public void ResetRatio(){
-		ratioTxt.ResetRatio ();
+		ratioTxt.ResetNumber ();
 		ratioTxt.SetColor (Color.black);
 	}
 
@@ -58,8 +59,8 @@ public class FightItemButton : MonoBehaviour {
 		ratioTxt.run ();
 	}
 
-	public void SetExtra(){
-		ratioTxt.SetExtra ();
+	public void SetExtra(int upRatio){
+		ratioTxt.SetPlus (upRatio);
 	}
 
 	public void Callback(){

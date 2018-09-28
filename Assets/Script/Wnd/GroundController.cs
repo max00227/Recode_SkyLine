@@ -34,12 +34,11 @@ public class GroundController : MonoBehaviour
 
 	private GroundType _prevType = GroundType.None;
 
-	private GroundType _prevCrossType;
-
-	[HideInInspector]
-	public bool isCross = false;
+	private GroundType _roundPrevType;
 
     private bool activeLock;
+
+	private bool roundActLock;
 
 	public bool testRaycasted;
 
@@ -73,13 +72,15 @@ public class GroundController : MonoBehaviour
 	[HideInInspector]
 	public int charaJob;
 
-	private int extraJob;
+	private int? extraGoldJob;
 
-	public GroundController pairGc;
+	private int? extraSilverJob;
 
-	bool isPrevLock;
-
-	bool lockPrev;
+	[HideInInspector]
+	public enum ExtraType {
+		Silver,
+		Gold
+	}
 
     // Use this for initialization
     void Awake()
@@ -87,22 +88,22 @@ public class GroundController : MonoBehaviour
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
-		isActived = isChanged = activeLock = raycasted = isPrevLock = isCross = lockPrev = false;
+		isActived = isChanged = activeLock = raycasted = false;
 		testRaycasted = false;
-        extraJob = 99;
+		extraGoldJob = null;
+		extraSilverJob = null;
     }
 
-    // Update is called once per frame
     public void ResetType()
     {
         _groundType = defaultType;
-		isActived = isChanged = activeLock = raycasted = isPrevLock = isCross = lockPrev = false;
+		isActived = isChanged = activeLock = raycasted = false;
 		charaJob = 0;
 		onProtection = null;
 		_layer = (int)_groundType == 0 ? 1 : 0;
 		ResetSprite (_groundType);
-		pairGc = null;
-        extraJob = 99;
+		extraGoldJob = null;
+		extraSilverJob = null;
     }
 
 	public void ChangeSprite(GroundType type)
@@ -115,13 +116,6 @@ public class GroundController : MonoBehaviour
             }
 			else if ((int)type < 4)
             {
-				//連線重疊避免回朔圖片錯誤
-				if ((int)type == 3) {
-					if (image.sprite != GetSprites [(int)type]) {
-						matchController.isCross = true;
-						matchController._prevCrossType = GroundType.Silver;
-					}
-				}
 				image.sprite = GetSprites[(int)type];
             }
         }
@@ -142,6 +136,8 @@ public class GroundController : MonoBehaviour
 				image.sprite = GetSprites[3];
 			}
 		}
+
+		//避免同物件進行回調時回調被清掉或回調錯誤
 		yield return new WaitForSeconds (0.75f);
 		switch(number){
 		case 1:
@@ -162,6 +158,7 @@ public class GroundController : MonoBehaviour
 		}
 	}
 
+
 	public void ChangeSprite(int number)
 	{
 		if (image != null)
@@ -177,6 +174,8 @@ public class GroundController : MonoBehaviour
 				image.sprite = GetSprites[3];
 			}
 		}
+
+		//避免同物件進行回調時回調被清掉或回調錯誤
 		switch(number){
 		case 1:
 			if (onShowedFst != null) {
@@ -229,10 +228,7 @@ public class GroundController : MonoBehaviour
     {
 		if (isActived) {
 			activeLock = true;
-		}
-
-		if (isChanged) {
-			matchController.ChangeSprite (_prevType);
+			roundActLock = activeLock;
 		}
 
 		raycasted = false;
@@ -246,9 +242,11 @@ public class GroundController : MonoBehaviour
 		}
     }
 
-	public void SetJob(int jobIdx){
-		if ((int)_groundType > 0 && (int)_groundType < 10) {
-			AddJob (jobIdx);
+	public void SetJob(int jobIdx, ExtraType extraType){
+		if (extraType == ExtraType.Gold) {
+			extraGoldJob = jobIdx;
+		} else {
+			extraSilverJob = jobIdx;
 		}
 	}
 
@@ -260,25 +258,30 @@ public class GroundController : MonoBehaviour
         }
     }
 
-	public List<RaycastData> OnChangeType(bool isEnd){
-		return RaycastRound(false, isEnd);	
+	public List<RaycastData> OnChangeType(bool isTouchUp, bool isEnd, bool isTest = false){
+		return RaycastRound(false, isTouchUp, isEnd, isTest);	
 	}
 
-	public void OnPrevType(bool isInit = false){
-		RaycastRound (true, isInit);
+	public void OnPrevType(bool isEnd){
+		RaycastRound (true, false, isEnd);
 	}
 
 	private Dictionary<int, List<RaycastData>> OnPrevType(RaycastHit2D[] hits, bool isEnd)
 	{
-		if (!isPrevLock) {
-			foreach (var hit in hits) {
-				hit.collider.GetComponent<GroundController> ().PrevType (isEnd);
-			}
+		foreach (var hit in hits) {
+			hit.collider.GetComponent<GroundController> ().PrevType (isEnd);
 		}
         return null;
     }
 
-	private List<RaycastData> RaycastRound(bool isPrev = false, bool isEnd = false)
+	/// <summary>
+	/// 向六方向射出射線進行偵測.
+	/// </summary>
+	/// <returns>The round.</returns>
+	/// <param name="isPrev">是否還原狀態 <c>true</c> is previous.</param>
+	/// <param name="isTouchUp">是否屏幕碰觸結束<c>true</c> is touch up.</param>
+	/// <param name="isEnd">是否結束此回合<c>true</c> is end.</param>
+	private List<RaycastData> RaycastRound(bool isPrev, bool isTouchUp, bool isEnd, bool isTest = false)
 	{
 		RaycastHit2D[] hits;
         List<RaycastData> dataList = new List<RaycastData> ();
@@ -317,9 +320,9 @@ public class GroundController : MonoBehaviour
 						if (!hitNone) {
 							if (isPrev) {
 								OnPrevType (hitGcs.ToArray (), isEnd);
-							} 
-							else {
-								int ratio = CalculateRatio (hitGcs.ToArray (), charaJob, isEnd);
+							} else {
+
+								int ratio = CalculateRatio (hitGcs.ToArray (), charaJob, isTouchUp, isEnd, isTest);
 
 								if (ratio > 0) {
 									RaycastData data = new RaycastData ();
@@ -345,6 +348,9 @@ public class GroundController : MonoBehaviour
 									}
 								}
 							}
+						} 
+						else {
+							
 						}
 
                         break;
@@ -354,125 +360,164 @@ public class GroundController : MonoBehaviour
         }
 
 		if (!isPrev) {
-            OnRaycasted (hasActived);
+			OnRaycasted (hasActived, isTouchUp);
 		}
 
 		return dataList;
 	}
 
-	private int CalculateRatio(RaycastHit2D[] hits, int charaJob, bool isEnd)
+	//計算加成
+	private int CalculateRatio(RaycastHit2D[] hits, int charaJob, bool isTouchUp, bool isEnd, bool isTest)
     {
         int extraRatio = 0;
 
         bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
+
 
         foreach (var hit in hits)
         {
             if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
             {
 				hit.collider.GetComponent<GroundController> ().raycasted = true;
-                if (!hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted)
-                {
-					if (hasChange && !isPrevLock)
-                    {
-						
-						hit.collider.GetComponent<GroundController>().ChangeType(isEnd);
-                    }
+				if (!hits [hits.Length - 1].collider.GetComponent<GroundController> ().raycasted || isTest) {
+					if (hasChange || isTouchUp) {
+						hit.collider.GetComponent<GroundController> ().ChangeType (isTouchUp, isEnd);
+					}
 
 					switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
+					case 1:
+						//記錄回傳用資料
+						if ((isTouchUp || isEnd)&& !hasChange) {
+							hit.collider.GetComponent<GroundController> ().SetJob (charaJob, ExtraType.Silver);
+						}
+						break;
 					case 2:
 						extraRatio = extraRatio + 50;
-						if (isEnd) {
-							hit.collider.GetComponent<GroundController>().SetJob (charaJob);
+
+						//記錄回傳用資料
+						if (isTouchUp || isEnd) {
+							hit.collider.GetComponent<GroundController> ().SetJob (charaJob, ExtraType.Gold);
 						}
 						break;
 					case 3:
 						extraRatio = extraRatio + goldRatio;
 						break;
 					}
-                }
+				}
             }
         }
+
 		return extraRatio;
     }
 
-	public void ChangeType(bool isEnd = false)
+	//改變狀態，並記錄回朔狀態
+	public void ChangeType(bool isTouchUp, bool isEnd)
     {
-		if (isChanged == false) {
-			_prevType = _groundType;
+		if (isTouchUp && !isEnd) {
+			_roundPrevType = _groundType;
+			return;
 		}
 
 		if ((int)_groundType == 0) {
 			_groundType = GroundType.Copper;
-		} 
-		else {
+			matchController.ChangeSprite (_groundType);
+		} else {
+
 			if ((int)_groundType == 1) {
 				_groundType = GroundType.Silver;
-			} else if ((int)_groundType == 2) {
+
+				if (isEnd) {
+					OnPlusRatio (ExtraType.Silver);
+				}
+			} 
+			else if ((int)_groundType == 2) {
 				_groundType = GroundType.gold;
 
 				if (isEnd) {
-					lockPrev = true;
-				}
-				if (raycasted == true) {
-					OnPlusRatio ();
+					OnPlusRatio (ExtraType.Gold);
 				}
 			}
-
 			isChanged = true;
 		}
-			
-		matchController.ChangeSprite(_groundType);
-        _layer = 0;
+
+		if (isEnd) {
+			_prevType = _groundType;
+			_roundPrevType = _groundType;
+		} else {
+			matchController.ChangeSprite (_groundType);
+		}
+		_layer = 0;
     }
 
-	public void OnPrevLock(bool unlock = false){
-		isPrevLock = !unlock;
-	}
-
-    public void OnRaycasted(bool hasAcitve)
+	public void OnRaycasted(bool hasAcitve, bool isTouchUp)
     {
         if (hasAcitve)
         {
             isActived = true;
+			if (isTouchUp) {
+				roundActLock = true;
+			}
         }
         raycasted = true;
     }
 
-	public void ChangeChara(int job, GroundController pair, bool isAct = false)
+	public void ChangeChara(int job)
 	{
+		isChanged = true;
 		_groundType = GroundType.Chara;
 		charaJob = job;
-
-		isActived = isAct;
-
-		pairGc = pair;
 
 		_layer = 0;
 	}
 
+	//回朔狀態，以是否為回合結束為基準;
 	public void PrevType(bool isEnd) {
-		if (isChanged && !lockPrev) {
-			if (!isCross || isEnd) {
-				_groundType = _prevType;
-			} 
-			else {
-				_groundType = _prevCrossType;
-				isCross = false;
+		if ((int)_groundType != 10) {
+			if (isChanged) {
+				if (isEnd) {
+					_groundType = _prevType;
+					isChanged = false;
+					raycasted = false;
+				} else {
+					_groundType = _roundPrevType;
+				}
+
+				matchController.ChangeSprite (_groundType);
 			}
-
-			isChanged = false;
-
-			matchController.ChangeSprite(_groundType);
+		} 
+		else {
+			if (!isEnd) {
+				if (!roundActLock) {
+					isActived = false;
+				}
+			} else {
+				if (!activeLock) {
+					isActived = false;
+				}
+			}
 		}
-
-        raycasted = false;
-
-        if (!activeLock)
-        {
-            isActived = false;
-        }
     }
+
+	//覆蓋功能用
+	public void OnCover(){
+		_roundPrevType = _groundType;
+		_groundType = defaultType;
+		matchController.ChangeSprite (_groundType);
+
+		_layer = 0;
+	}
+
+	//還原覆蓋用
+	public void OnPrevCover(){
+		if (isChanged) {
+			_groundType = _prevType;
+			isChanged = false;
+			raycasted = false;
+
+			isActived = false;
+			matchController.ChangeSprite (_groundType);
+		}
+	}
 
     private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis)
     {
@@ -482,20 +527,42 @@ public class GroundController : MonoBehaviour
         return hits;
     }
 
-	public void AddJob(int job){
-        extraJob = job;
-	}
+	//回傳額外傷害加成，回傳後移除回傳資料，避免重複回傳
+	private void OnPlusRatio(ExtraType extraType) {
+		if (extraType == ExtraType.Silver) {
+			if (extraSilverJob != null) {
+				Debug.Log ("Silver");
+				ExtraRatioData data = new ExtraRatioData();
 
-	private void OnPlusRatio() {
-		ExtraRatioData data = new ExtraRatioData();
-        data.gc = matchController;
-		data.extraJob = extraJob;
+				data.gc = matchController;
+				data.extraJob = (int)extraSilverJob;
+				data.upRatio = 50;
 
+				plusRatio.Invoke(data);
+			}
+		}
+        else {
+			if (extraGoldJob != null) {
+				ExtraRatioData data = new ExtraRatioData ();
+				Debug.Log ("Gold");
+				data.gc = matchController;
+				data.extraJob = (int)extraGoldJob;
+				data.upRatio = 25;
 
-        if (extraJob != 99)
-        {
-            plusRatio.Invoke(data);
+				plusRatio.Invoke (data);
+
+				if (extraSilverJob != null) {
+					data = new ExtraRatioData ();
+					Debug.Log ("Silve to Gold");
+					data.gc = matchController;
+					data.extraJob = (int)extraGoldJob;
+					data.upRatio = 25;
+
+					plusRatio.Invoke (data);
+				}
+			}
+			extraGoldJob = null;
+			extraSilverJob = null;
         }
-        extraJob = 99;
     }
 }
