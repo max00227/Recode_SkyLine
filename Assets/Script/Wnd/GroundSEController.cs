@@ -28,15 +28,15 @@ public class GroundSEController : MonoBehaviour {
 	int charaIdx;
 
 
-	public delegate void OnRecycle(GroundSEController rg);
+	public delegate void OnRecycle(GroundSEController gse);
 
 	public OnRecycle onRecycle;
 
-	public delegate void OnExtraUp(int idx, int upRatio);
+	public delegate void OnExtraUp(GroundSEController gse,int idx, int upRatio);
 
 	public OnExtraUp onExtraUp;
 
-	public delegate void OnRecycleDamage(GroundSEController rg, float ratio, FightItemButton target);
+	public delegate void OnRecycleDamage(GroundSEController gse, float ratio, FightItemButton target);
 
 	public OnRecycleDamage onRecycleDamage;
 
@@ -206,16 +206,19 @@ public class GroundSEController : MonoBehaviour {
 		tp.resetPosition ();
 
 		if (onExtraUp != null) {
-			onExtraUp.Invoke (charaIdx, upRatio);
+			onExtraUp.Invoke (this, charaIdx, upRatio);
+			onExtraUp = null;
 		}
 
 		tp.runFinish = null;
 		if (onRecycle != null) {
 			onRecycle.Invoke (this);
+			onRecycle = null;
 		}
 
 		if (onRecycleDamage != null) {
 			onRecycleDamage.Invoke (this, hpRatio, callbackTarget);
+			onRecycleDamage = null;
 		}
 	}
 

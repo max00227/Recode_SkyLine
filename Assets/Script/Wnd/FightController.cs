@@ -516,6 +516,10 @@ public class FightController : MonoBehaviour {
 			Debug.LogError (content);
 		}*/
 	}
+
+	public void UseSkill(int idx, AtkType aType){
+		
+	}
 }
 
 public enum AtkType{

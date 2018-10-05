@@ -93,6 +93,8 @@ public class FightUIController : MonoBehaviour {
 
 	int unCompleteCount;
 
+	int unShowed;
+
 	int lockCount;
 
 	List<int> canAttack;
@@ -192,11 +194,12 @@ public class FightUIController : MonoBehaviour {
 
 
 	#region ShowRecycle
-	private void RecycleReverseItem(GroundSEController rg) {
-		SEPool.Enqueue (rg);
-		completeSe.Add (rg);
-		rg.onRecycle = null;
-		if (SEPool.Count == showItemCount && SEingPool.Count == 0) {
+	private void RecycleReverseItem(GroundSEController gse) {
+		unShowed--;
+		SEPool.Enqueue (gse);
+		completeSe.Add (gse);
+		gse.onRecycle = null;
+		if (unShowed == 0) {
 			foreach (GroundSEController se in completeSe) {
 				se.gameObject.SetActive (false);
 				se.CloseSE ();
@@ -219,13 +222,15 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void RecycleExtraItem(GroundSEController rg) {
-		rg.gameObject.SetActive (false);
-		SEPool.Enqueue (rg);
-		rg.onRecycle = null;
+	private void RecycleExtraItem(GroundSEController gse) {
 
-		if (SEPool.Count == showItemCount && SEingPool.Count == 0) {
-			rg.onExtraUp = null;
+		unShowed--;
+		gse.gameObject.SetActive (false);
+		SEPool.Enqueue (gse);
+		gse.onRecycle = null;
+
+		if (unShowed == 0) {
+			gse.onExtraUp = null;
 
 			OnFight ();
 		}
@@ -243,26 +248,28 @@ public class FightUIController : MonoBehaviour {
 			recJobRatios [data.extraJob] += 25;
 			for (int i = 0; i < fightController.characters.Length; i++) {
 				if (fightController.characters [i].job == data.extraJob) {
-					GroundSEController rg = SEPool.Dequeue ();
-					rg.SetExtraSE (org, charaButton [i].transform.localPosition, i, data.upRatio);
-					rg.onRecycle = RecycleExtraItem;
-					rg.onExtraUp = ExtraRatioUp;
-					SEingPool.Enqueue (rg);
+					Debug.LogWarning (data.gc.name + " , CharaIdx : " + i+ " , "+data.upRatio);
+					GroundSEController gse = SEPool.Dequeue ();
+					gse.SetExtraSE (org, charaButton [i].transform.localPosition, i, data.upRatio);
+					gse.onRecycle = RecycleExtraItem;
+					gse.onExtraUp = ExtraRatioUp;
+					SEingPool.Enqueue (gse);
 					AddCanAttack (i);
 				}
 			}
 		}
 
-
+		unShowed = SEingPool.Count;
 		while (SEingPool.Count > 0) {
-			GroundSEController rg = SEingPool.Dequeue ();
-			rg.gameObject.SetActive (true);
-			rg.Run ();
+			GroundSEController gse = SEingPool.Dequeue ();
+			gse.gameObject.SetActive (true);
+			gse.Run ();
 			yield return new WaitForSeconds (0.2f);
 		}
 	}
 
-	private void ExtraRatioUp(int idx, int upRatio){
+	private void ExtraRatioUp(GroundSEController gse, int idx, int upRatio){
+		gse.gameObject.SetActive (false);
 		charaButton [idx].SetExtra (upRatio);
 	}
 
@@ -278,18 +285,18 @@ public class FightUIController : MonoBehaviour {
 		FightItemButton org = aType == AtkType.pve ? charaButton [orgIdx] : enemyButton [orgIdx];
 		FightItemButton target = aType == AtkType.evp ? charaButton [damageData.targetIdx] : enemyButton [damageData.targetIdx];
 
-		GroundSEController rg = SEPool.Dequeue ();
-		rg.SetDamageShow (org.transform.localPosition, target, damageData.hpRatio);
-		rg.onRecycleDamage = ShowFightEnd;
-		rg.gameObject.SetActive (true);
-		rg.Run ();
+		GroundSEController gse = SEPool.Dequeue ();
+		gse.SetDamageShow (org.transform.localPosition, target, damageData.hpRatio);
+		gse.onRecycleDamage = ShowFightEnd;
+		gse.gameObject.SetActive (true);
+		gse.Run ();
 	}
 
-	private void ShowFightEnd(GroundSEController rg, float ratio, FightItemButton target){
-		rg.gameObject.SetActive (false);
+	private void ShowFightEnd(GroundSEController gse, float ratio, FightItemButton target){
+		gse.gameObject.SetActive (false);
 		target.SetHpBar (ratio);
-		SEPool.Enqueue (rg);
-		rg.onRecycle = null;
+		SEPool.Enqueue (gse);
+		gse.onRecycle = null;
 	}
 	#endregion
 
@@ -471,7 +478,6 @@ public class FightUIController : MonoBehaviour {
 
 	private void RoundEnd(bool hasDamage)
 	{
-		Debug.Log ("Round End : " + hasDamage);
 		spCount++;
 
 		/*Debug.LogWarning ("ROUND " + spCount);
@@ -496,7 +502,6 @@ public class FightUIController : MonoBehaviour {
 			MonsterCdDown ();
 		}
 
-		groundPool.RoundEnd ();
 
 		ResetDamage (false);
 
@@ -523,6 +528,8 @@ public class FightUIController : MonoBehaviour {
 			fightController.onShowFight = OnShowFight;
 			fightController.EnemyFight ();
 		}
+
+		groundPool.RoundEnd ();
 
 		hasDamage = false;
 		spaceCount = 0;
@@ -687,6 +694,8 @@ public class FightUIController : MonoBehaviour {
 
 						spaceCount++;
 
+						canCover = false;
+
 						if (onlyAdd && !isResetGround) {
 							preJobRatios = jobRatios;
 							CheckGround (true);
@@ -846,20 +855,21 @@ public class FightUIController : MonoBehaviour {
 					if (SEPool.Count<=0) {
 						CreateSE ();
 					}
-					GroundSEController rg = SEPool.Dequeue ();
+					GroundSEController gse = SEPool.Dequeue ();
 
-					rg.SetReverseSE (data.hits, postions);
-					rg.onRecycle = RecycleReverseItem;
-					SEingPool.Enqueue (rg);
+					gse.SetReverseSE (data.hits, postions);
+					gse.onRecycle = RecycleReverseItem;
+					SEingPool.Enqueue (gse);
 				}
 			}
 		}
 
+		unShowed = SEingPool.Count;
 		while (SEingPool.Count > 0) {
-			GroundSEController rg = SEingPool.Dequeue();
-			rg.gameObject.SetActive (true);
-			rg.Run ();
-			yield return new WaitForSeconds (0.5f*(rg.seGrounds.Count-1));
+			GroundSEController gse = SEingPool.Dequeue();
+			gse.gameObject.SetActive (true);
+			gse.Run ();
+			yield return new WaitForSeconds (0.5f*(gse.seGrounds.Count-1));
 		}
 	}
 

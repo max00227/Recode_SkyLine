@@ -22,7 +22,7 @@ public class ParameterConvert {
 	public static Dictionary<string, int> GetMonsterAbility(MonsterLargeData data,int monsterLv){
 		Dictionary<string, int> monsterAbility = new Dictionary<string, int>();
 
-		float calculate = Mathf.Pow (monsterLv, 0.2f + (0.005f * monsterLv)) + (24 * monsterLv / 90);
+		float calculate = Mathf.Pow (monsterLv, 0.2f + (0.005f * monsterLv)) + (24 * monsterLv / 120);
 
 		float radio = calculate<2f?1:calculate;
 

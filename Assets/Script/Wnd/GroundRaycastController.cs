@@ -120,9 +120,10 @@ public class GroundRaycastController : MonoBehaviour {
 								layerList.Add (gc);
 							}
 						}
-
+							
 						if (layerList.Count > 0) {
 							maxGc = DataUtil.RandomList (focusCount, layerList.ToArray ()) [0];
+							break;
 						}
 					}
 				} 

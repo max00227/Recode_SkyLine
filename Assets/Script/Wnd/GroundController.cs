@@ -116,6 +116,7 @@ public class GroundController : MonoBehaviour
             }
 			else if ((int)type < 4)
             {
+				Debug.Log (this.name + " : " + type + " : " + (int)type);
 				image.sprite = GetSprites[(int)type];
             }
         }
@@ -233,6 +234,9 @@ public class GroundController : MonoBehaviour
 
 		raycasted = false;
 		isChanged = false;
+		extraGoldJob = null;
+		extraSilverJob = null;
+
 
 		if ((int)_groundType == 0) {
 			_layer = 1;
@@ -472,6 +476,7 @@ public class GroundController : MonoBehaviour
 
 	//回朔狀態，以是否為回合結束為基準;
 	public void PrevType(bool isEnd) {
+
 		if ((int)_groundType != 10) {
 			if (isChanged) {
 				if (isEnd) {
@@ -481,7 +486,6 @@ public class GroundController : MonoBehaviour
 				} else {
 					_groundType = _roundPrevType;
 				}
-
 				matchController.ChangeSprite (_groundType);
 			}
 		} 
@@ -510,7 +514,7 @@ public class GroundController : MonoBehaviour
 	//還原覆蓋用
 	public void OnPrevCover(){
 		if (isChanged) {
-			_groundType = _prevType;
+			_groundType = _roundPrevType;
 			isChanged = false;
 			raycasted = false;
 
@@ -531,7 +535,6 @@ public class GroundController : MonoBehaviour
 	private void OnPlusRatio(ExtraType extraType) {
 		if (extraType == ExtraType.Silver) {
 			if (extraSilverJob != null) {
-				Debug.Log ("Silver");
 				ExtraRatioData data = new ExtraRatioData();
 
 				data.gc = matchController;
@@ -544,7 +547,6 @@ public class GroundController : MonoBehaviour
         else {
 			if (extraGoldJob != null) {
 				ExtraRatioData data = new ExtraRatioData ();
-				Debug.Log ("Gold");
 				data.gc = matchController;
 				data.extraJob = (int)extraGoldJob;
 				data.upRatio = 25;
@@ -553,9 +555,8 @@ public class GroundController : MonoBehaviour
 
 				if (extraSilverJob != null) {
 					data = new ExtraRatioData ();
-					Debug.Log ("Silve to Gold");
 					data.gc = matchController;
-					data.extraJob = (int)extraGoldJob;
+					data.extraJob = (int)extraSilverJob;
 					data.upRatio = 25;
 
 					plusRatio.Invoke (data);
