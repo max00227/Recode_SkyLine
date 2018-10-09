@@ -43,7 +43,6 @@ public class FightUIController : MonoBehaviour {
 
 	int? charaIdx;
 
-
 	Image startCharaImage, endCharaImage;
 
 	LinkedList<GroundController> charaGc;
@@ -137,6 +136,7 @@ public class FightUIController : MonoBehaviour {
 		monsterCdTimes = new int[5]{7,5,3,1,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.onProtect = GetHasProtect;
+		fightController.onSkillCDEnd = OnSkillCDEnd;
 		fightController.SetData ();
 
 		lockOrder = new LinkedList<int> ();
@@ -188,6 +188,8 @@ public class FightUIController : MonoBehaviour {
 
 		energe = 1;
 		energeNum.SetNumber (energe);
+
+		fightController.onLockButton = OnLockButton;
 
 		ResetGround(true);
 	}
@@ -248,7 +250,6 @@ public class FightUIController : MonoBehaviour {
 			recJobRatios [data.extraJob] += 25;
 			for (int i = 0; i < fightController.characters.Length; i++) {
 				if (fightController.characters [i].job == data.extraJob) {
-					Debug.LogWarning (data.gc.name + " , CharaIdx : " + i+ " , "+data.upRatio);
 					GroundSEController gse = SEPool.Dequeue ();
 					gse.SetExtraSE (org, charaButton [i].transform.localPosition, i, data.upRatio);
 					gse.onRecycle = RecycleExtraItem;
@@ -281,9 +282,9 @@ public class FightUIController : MonoBehaviour {
 		fightController.FightStart (lockCount != 0, canAttack, recJobRatios, recActLevel);
 	}
 
-	private void OnShowFight(int orgIdx, DamageData damageData, AtkType aType){
-		FightItemButton org = aType == AtkType.pve ? charaButton [orgIdx] : enemyButton [orgIdx];
-		FightItemButton target = aType == AtkType.evp ? charaButton [damageData.targetIdx] : enemyButton [damageData.targetIdx];
+	private void OnShowFight(int orgIdx, DamageData damageData, InitiatorType iType){
+		FightItemButton org = iType == InitiatorType.Player ? charaButton [orgIdx] : enemyButton [orgIdx];
+		FightItemButton target = iType == InitiatorType.Enemy ? charaButton [damageData.targetIdx] : enemyButton [damageData.targetIdx];
 
 		GroundSEController gse = SEPool.Dequeue ();
 		gse.SetDamageShow (org.transform.localPosition, target, damageData.hpRatio);
@@ -332,6 +333,10 @@ public class FightUIController : MonoBehaviour {
 			if (!fightStart && spaceCount > 0) {
 				CheckOut ();
 			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.E)) {
+			fightController.ShowHasAnim ();
 		}
 
 		if (Input.GetKeyDown(KeyCode.U)) {
@@ -403,14 +408,13 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		if (onPress) {
-			// 当前时间 -  按钮最后一次被按下的时间 > 延迟时间0.2秒
+			// 當前時間 -  最後按鈕按下時間 > 延遲1秒
 			if (Time.time - lastIsDownTime > delay && !charaDetail) {
 				SetCharaDetail ((int)charaIdx);
 				charaIdx = null;
 				charaDetail = true;
 			}
 		}
-
 	}
 
 	public void OnPressDown(int selIdx){
@@ -725,7 +729,7 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void CheckOut(){
+	public void CheckOut(){
 		RoundEnd(CheckGround (false, true));
 	}
 
@@ -960,43 +964,6 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
-		LayerMask mask = 1 << 8;
-		RaycastHit2D[] hits = Physics2D.RaycastAll(org, dir, dis, mask);
-
-		return hits;
-	}
-
-	/// <summary>
-	/// Randoms the list.
-	/// </summary>
-	/// <returns>The list.</returns>
-	/// <param name="randomCount">抽選數量</param>
-	/// <param name="array">抽選清單</param>
-	/// <param name="lastCount">真實數量</param>
-	/// <typeparam name="T">The 1st type parameter.</typeparam>
-	List<T> RandomList<T>(int randomCount, T[] array, int? lastCount= null){
-		List<T> ListT = new List<T> ();
-		int count = lastCount==null?array.Length:(int)lastCount;
-		if (count > randomCount) {
-			for (int i = 0; i < randomCount; i++) {
-				int idx = UnityEngine.Random.Range (0, array.Length);
-				while (ListT.Contains (array [idx])) {
-					idx = UnityEngine.Random.Range (0, array.Length);
-				}
-
-				ListT.Add (array [idx]);
-			}
-		} else if (count <= randomCount) {
-			for (int i = 0; i < array.Length; i++) {
-				if (!ListT.Contains (array [i])) {
-					ListT.Add (array [i]);
-				}
-			}
-		}
-		return ListT;
-	}
-
 	private Image PopImage(Stack<Image> pool = null, GroundController linkGc = null, Vector3? position = null){
 		Image image;
 		if (pool != null) {
@@ -1072,6 +1039,14 @@ public class FightUIController : MonoBehaviour {
 			showItem.gameObject.SetActive (false);
 			SEPool.Enqueue(showItem);
 		}
+	}
+
+	private void OnSkillCDEnd(int charaIdx){
+		Debug.LogWarning ("Chara " + charaIdx + " Can Use Skill");
+	}
+
+	private void OnLockButton(int idx, InitiatorType atype){
+		
 	}
 }
 

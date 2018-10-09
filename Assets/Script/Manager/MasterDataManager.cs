@@ -45,6 +45,14 @@ public static class MasterDataManager {
 		return DataUtil.GetById<MonsterLargeData> (id, ref monsterLargeData);
 	}
 
+	public static SkillLargeData GetSkillData(int id){
+		return DataUtil.GetById<SkillLargeData> (id, ref skillLargeData);
+	}
+
+	public static RuleLargeData GetRuleData(int id){
+		return DataUtil.GetById<RuleLargeData> (id, ref ruleLargeData);
+	}
+
 	public static void UpdataMasterdata(ClientLargeData clientData){
 		charaLargeData = clientData.Chara;
 

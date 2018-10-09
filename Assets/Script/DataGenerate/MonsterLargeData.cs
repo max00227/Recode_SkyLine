@@ -127,7 +127,9 @@
 
 		public System.Int32 act{ get; set;}
 
+		public System.Int32 NorSkill;
 
+		public SkillLargeData _NorSkill;
 
 	    public void Merge(System.Collections.Generic.Dictionary<string, int> data)
 	    {
@@ -137,5 +139,13 @@
 	        this.mDef = data["MDef"];
 	        this.hp = data["Hp"];
 	    }
+
+		public void MergeSkill(System.Int32 skillId)
+		{
+			this._NorSkill = MasterDataManager.GetSkillData (skillId);
+			if (this._NorSkill != null) {
+				this._NorSkill.Merge (this._NorSkill.rule_id);
+			}
+		}
 	}
 }

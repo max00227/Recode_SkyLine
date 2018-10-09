@@ -28,13 +28,12 @@ public class testLoader : MonoBehaviour {
 	void Awake () {
 		//container.SetListItemTest(10);
 		//TutorialManager.Instance.SetTutorialStep (process.step);
-
 		test.ClientDataLoader.readClientData();
 		StreamReader sr = new StreamReader (Application.dataPath + teamDataPath);
 		json = sr.ReadToEnd();
 
-
 		MyUserLargeData userData = JsonConversionExtensions.ConvertJson<MyUserLargeData>(json);
+
 
 		MyUserData.UpdataUserdata (userData);
 		//Debug.Log (largeData.TeamListData.team);

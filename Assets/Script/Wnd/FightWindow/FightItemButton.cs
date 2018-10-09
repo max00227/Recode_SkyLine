@@ -34,7 +34,6 @@ public class FightItemButton : MonoBehaviour {
 
 	public void SetRatioTxt(int ratio, bool isShow = false){
 		if (isShow) {
-			Debug.Log (this.name + " : " + ratio);
 			ratioTxt.SetShowUp (ratio, 0.5f);
 			ratioTxt.onComplete = Callback;
 		} else {

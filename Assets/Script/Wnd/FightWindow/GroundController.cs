@@ -116,7 +116,6 @@ public class GroundController : MonoBehaviour
             }
 			else if ((int)type < 4)
             {
-				Debug.Log (this.name + " : " + type + " : " + (int)type);
 				image.sprite = GetSprites[(int)type];
             }
         }

@@ -78,9 +78,10 @@ namespace model.data{
 			}
 		}
 
-		System.Int32 Target{ get; set;}
-		System.Int32[] RuleType{ get; set;}
-		System.Int32[] EffectType{ get; set;}
-		System.Int32 ConvType{ get; set;}
+		public System.Int32 Target{ get; set;}
+		public System.Int32[] RuleType{ get; set;}
+		public System.Int32[] EffectType{ get; set;}
+		public System.Int32 ConvType{ get; set;}
+		public System.Boolean isBuff{ get; set;}
 	}
 }

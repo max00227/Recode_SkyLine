@@ -61,7 +61,6 @@ public class GroundRaycastController : MonoBehaviour {
 			if ((int)gc._groundType != 99) {
 				gc.SetType ();
 			}
-			
 		}
 	}
 

@@ -18,6 +18,7 @@ public class MyUserData  {
 
 
 	public static void UpdataUserdata(MyUserLargeData userData){
+		Debug.LogWarning ("Update User Data");
 		TeamListData = userData.TeamData;
 	}
 

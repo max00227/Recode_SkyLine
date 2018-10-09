@@ -85,8 +85,12 @@
 
 		public System.Int32[] Act { get; set; }
 
-		public System.Int32 ActSkill_id { get; set; }
-		public System.Int32 NorSkill_id { get; set; }
+		public System.Int32 ActSkill { get; set; }
+		public System.Int32 NorSkill { get; set; }
+
+		public SkillLargeData _ActSkill;
+		public SkillLargeData _NorSkill;
+
 
 
         public void Merge(System.Collections.Generic.Dictionary<string, int> data)
@@ -97,5 +101,17 @@
             this.mDef = data["MDef"];
             this.hp = data["Hp"];
         }
+
+		public void MergeSkill(System.Int32 aid, System.Int32 nid)
+		{
+			this._ActSkill = MasterDataManager.GetSkillData (aid);
+			if (this._ActSkill != null) {
+				this._ActSkill.Merge (this._ActSkill.rule_id);
+			}
+			this._NorSkill = MasterDataManager.GetSkillData (nid);
+			if (this._NorSkill != null) {
+				this._NorSkill.Merge (this._NorSkill.rule_id);
+			}
+		}
     }
 }
