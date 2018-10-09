@@ -1,0 +1,13 @@
+<post>
+<div><span color="#000000">전국 대회에서 투수 선발 기준은</span></div>
+<div><span color="#000000">예선 대회 때와 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">제 1시합 : </span></div>
+<div><span color="#000000">에이스가 등판합니다.</span></div>
+<div><span color="#000000">제 2시합 이후 : </span></div>
+<div><span color="#000000">2번 투수에서 일반 등판에서 투수로 등판합니다.</span></div>
+<div><span color="#000000">결승전 : </span></div>
+<div><span color="#000000">에이스 대결입니다. 에이스 대결에서는 등판 간격에 의한 체력 감소는 발생하지 않습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">이전 경기에서 투수의 능력 순서가 바뀐 경우 등판 순서가 변경될 수 있습니다.</span></div>
+</post>

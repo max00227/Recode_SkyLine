@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">주장은 다른 팀원에게 주장을</span></div>
+<div><span color="#000000">교체한 후 이적할 수 있습니다.</span></div>
+<div><span color="#000000">주장 교체는 구단주실에서 시행할</span></div>
+<div><span color="#000000">수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 리더 외에 팀원이</span></div>
+<div><span color="#000000">없는 경우, 그대로 이적할 수</span></div>
+<div><span color="#000000">있습니다</span></div>
+</post>

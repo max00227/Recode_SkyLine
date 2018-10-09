@@ -1,0 +1,44 @@
+<post>
+<div><span color="#000000">체력은 경기가 진행 된 후</span></div>
+<div><span color="#000000">스킬을 발동했을 때 소비됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">체력이 줄어들면 경기에서 발휘되는 능력도 떨어집니다.</span></div>
+<div><span color="#000000">체력은 0, 50, 100의 단락으로 표시색상이 바뀌고 능력이 감소합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■체력이 줄어드는 타이밍과 분량</span></div>
+<padding value="35"/>
+<div><span color="#000000">체력은 아래와 같이 각각의 회가 진행되고 끝나면 다음 작전 회의에 들어 가기 전에 감소합니다.</span></div>
+<div><span color="#000000">또한, 체력이 줄어드는 양은 투수인가 야수인가에 따라 달라집니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·1~3회말</span></div>
+<div><span color="#000000">투수 : -50 야수 : -20</span></div>
+<padding value="35"/>
+<div><span color="#000000">·4~6회말</span></div>
+<div><span color="#000000">투수 : -50 야수 : -20</span></div>
+<padding value="35"/>
+<div><span color="#000000">·7 ,8회말</span></div>
+<div><span color="#000000">투수 : -20 야수 : -10</span></div>
+<padding value="35"/>
+<div><span color="#000000">·9회말 </span></div>
+<div><span color="#000000">투수 : -20 야수 : -10</span></div>
+<padding value="35"/>
+<div><span color="#000000">예)경기 시작 전의 작전 회의 시간에 야수 캐릭터의 체력이
+ 120인 경우</span></div>
+<padding value="35"/>
+<div><span color="#000000">·1~3회에서는 체력 120인 상태에서
+ 능력이 발휘된다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·3회 종료 후에 체력이 20감소하여
+ 100이 되고, 능력이 감소한 상태가
+ 된다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 경기의 애니메이션으로 표시되는 체력은 그 회 경기 중의 체력 수가 아닌 경기 경과에 의해 이미 소비된 체력 수가 표시됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■체력 회복</span></div>
+<padding value="35"/>
+<div><span color="#000000">체력은 동료로부터의 응원이 또는
+보건소에서 회복할 수 있습니다.</span></div>
+<div><span color="#000000">매일 아침 5:00부터 순차적으로 전부 회복을 시행합니다.</span></div>
+<div><span color="#000000">탈퇴 중인 팀원은 체력이
+회복되지 않습니다.</span></div>
+</post>

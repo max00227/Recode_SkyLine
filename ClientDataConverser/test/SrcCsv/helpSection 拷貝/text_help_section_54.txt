@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">야구팀의 진형 선배.</span></div>
+<padding value="35"/>
+<div><span color="#000000">유식해서 필요한 지식들을 가르쳐 주는</span></div>
+<div><span color="#000000">좋은 선배이지만,</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기에 출전하는 모습을 그다지</span></div>
+<div><span color="#000000">본 적은 없다...</span></div>
+</post>

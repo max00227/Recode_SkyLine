@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">전국 대회, 당일 대회에 출전하고 싶은 야구팀끼리 훈련 경기가 시행됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">훈련 경기는 보통 경기와 같은 방법으로 진행됩니다.</span></div>
+<div><span color="#000000">훈련 경기의 경기 결과는 성적에 반영</span></div>
+<div><span color="#000000">되지 않습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">훈련 경기에서 이기면 특별 보상으로
+100G머니를 획득할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">훈련 경기의 응원 대결에서 이기면 보통 경기와 같은 장비 뽑기 티켓을 획득할 수 있습니다.</span></div>
+</post>

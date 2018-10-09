@@ -1,0 +1,26 @@
+<post>
+<div><span color="#000000">예선 대회 경기 성적에 따라</span></div>
+<div><span color="#000000">개인 성적 순위가 생깁니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■순위 종류(야수)</span></div>
+<div><span color="#000000">·타점</span></div>
+<div><span color="#000000">·HR 수</span></div>
+<div><span color="#000000">·타율</span></div>
+<div><span color="#000000">■순위 종류(투수)</span></div>
+<div><span color="#000000">·탈삼진</span></div>
+<div><span color="#000000">·승리 수</span></div>
+<div><span color="#000000">·방어율</span></div>
+<padding value="35"/>
+<div><span color="#000000">순위 대상이 되려면 규정</span></div>
+<div><span color="#000000">횟수 이상 출전해야 합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">타율 순위 : 현재 개최 중인 전국 대회 예선 리그에 있어 소속되어 있는 지역과 그때까지 시행된 경기 수x3.5타석</span></div>
+<div><span color="#000000">방어율 순위 : 현재 개최 중인 전국 대회 예선 리그에 있어 소속되어 있는 지역에서 그때까지 시행된 경기x2.5이닝</span></div>
+<padding value="35"/>
+<div><span color="#000000">예선 대회 중에 이적할경우 </span></div>
+<div><span color="#000000">예선 경기에서의 시합 성적은 초기화</span></div>
+<div><span color="#000000">되므로 주의해주시기 바랍니다.</span></div>
+<div><span color="#000000">※경기 결과는 각 순위에 반영될 때까지 시간차가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 현재 대회를 포함한 과거 6대회로부터 이전의 대회 성적은 볼 수 없습니다.</span></div>
+</post>

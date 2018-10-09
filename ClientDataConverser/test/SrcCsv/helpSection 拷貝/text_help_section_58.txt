@@ -1,0 +1,6 @@
+<post>
+<div><span color="#000000">목수를 하고 있는 수원.</span></div>
+<padding value="35"/>
+<div><span color="#000000">맘씨 좋은 목수로서 훈련 중에 만나면</span></div>
+<div><span color="#000000">야구장비의 사용도를 많이 올려준다.</span></div>
+</post>

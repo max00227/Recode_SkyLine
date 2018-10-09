@@ -1,0 +1,20 @@
+<post>
+<div><span color="#000000">스킬은 경기에서 승리하기 위해 필요한 요소 중 하나입니다.</span></div>
+<div><span color="#000000">크게 2종류가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■일반 스킬</span></div>
+<div><span color="#000000">조건이 맞으면 자동으로 발동하는 스킬</span></div>
+<div><span color="#000000">입니다.</span></div>
+<div><span color="#000000">종합능력이 소속 리그의 상한치를 초과하는 경우는 리그 제한이 적용된 능력치가 스킬 발동 조건이 됩니다.</span></div>
+<div><span color="#000000">리그 제한에 대해서는 도움말 '리그 제한에 대해서'를 참고해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■액티브 스킬</span></div>
+<div><span color="#000000">작전 회의 중에 발동할 수 있는 스킬입니다.</span></div>
+<div><span color="#000000">발동 후 경기 중에 조건이 충족되면</span></div>
+<div><span color="#000000">효과를 발휘합니다.</span></div>
+<div><span color="#000000">액티브 스킬을 사용하면</span></div>
+<div><span color="#000000">체력이 소비됩니다.</span></div>
+<div><span color="#000000">매번 스킬을 사용하고 있으면</span></div>
+<div><span color="#000000">경기 마지막까지 체력이 지속되지 않으</span></div>
+<div><span color="#000000">므로 사용 시 신중히 생각해주시기 바랍니다.</span></div>
+</post>

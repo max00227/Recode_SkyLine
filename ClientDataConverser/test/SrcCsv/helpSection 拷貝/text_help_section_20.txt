@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">카드 획득이 가능한 지역입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">여기에서는 다양한 종류의 카드를</span></div>
+<div><span color="#000000">획득할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">다양한 카드를 획득해서 필요한 곳에</span></div>
+<div><span color="#000000">사용해 보세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">카드의 종류에 대해서는 도움말 '카드의 종류에 대해서'를 참고해주시기 바랍니다.</span></div>
+</post>

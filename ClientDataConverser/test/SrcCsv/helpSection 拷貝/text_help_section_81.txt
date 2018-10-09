@@ -1,0 +1,15 @@
+<post>
+<div><span color="#000000">레어도와 종류에 의해 각 야구 장비의 강도와 외면이 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■레어도</span></div>
+<div><span color="#000000">레어도가 높은 야구장비는 장착했을 시에 올라가는 파라미터도 더욱 높아집니다.</span></div>
+<div><span color="#000000">야구 장비의 아이콘에 붙어있는 ★의 숫자가 많으면 많을수록 레어도가 높아집니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■종류</span></div>
+<div><span color="#000000">같은 레어도에 같은 이름의 야구장비라도 종류에 따라서 능력과 외면이 다른 경우가 있습니다.</span></div>
+<div><span color="#000000">·(고급)</span></div>
+<div><span color="#000000">·(맞춤형)</span></div>
+<div><span color="#000000">·(최고)</span></div>
+<div><span color="#000000">능력의 높음은 높은 순으로 최고>맞춤형>고급입니다.</span></div>
+<div><span color="#000000">또한, 같은 레어도·종류·이름의 야구장비라도 외면이 다른 경우가 있습니다. 그 경우 능력은 동등합니다.</span></div>
+</post>

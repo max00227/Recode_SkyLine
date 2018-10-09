@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">예선 대회는 전국 대회 출전 팀을 결정하기 위해 각 팀이 지역 별에서 경기를 하는 기간입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">예선 대회의 개최 기간은 대회 개최</span></div>
+<div><span color="#000000">전에 알림으로 통지</span></div>
+<div><span color="#000000">됩니다.</span></div>
+<div><span color="#000000">또한, '경기장'의</span></div>
+<div><span color="#000000">'대회 스케줄'에서도 확인</span></div>
+<div><span color="#000000">가능 합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">매일 알림을 확인해 주세요!</span></div>
+</post>

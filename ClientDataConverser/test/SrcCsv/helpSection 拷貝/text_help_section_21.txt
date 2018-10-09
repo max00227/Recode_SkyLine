@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">이 지역에서는 수집품을 받을 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">수집품은 리사 아줌마의 상점으로</span></div>
+<div><span color="#000000">가지고 가면 아이템과 교환해 줍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">스테이지에 따라 받을 수 있는 수집품이</span></div>
+<div><span color="#000000">다르니</span></div>
+<div><span color="#000000">다양한 수집품들을 모아서 많은 아이템을</span></div>
+<div><span color="#000000">획득하세요.</span></div>
+</post>

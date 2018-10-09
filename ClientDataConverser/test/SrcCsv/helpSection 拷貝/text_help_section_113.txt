@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">팀에 투수가 1명인 경우에는</span></div>
+<div><span color="#000000">연투가 됩니다. 그 경우,</span></div>
+<div><span color="#000000">선발 멤버 결정 시 체력은 0이</span></div>
+<div><span color="#000000">됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">같은 투수가 두 시합을 연속해서 선발로 출전했을 때만 연투 취급이 됩니다.</span></div>
+<div><span color="#000000">제 1시합에서 선발, 제 2시합에서 중간 계투로 등판해도 연투 취급은 안 됩니다.</span></div>
+<div><span color="#000000">선발 멤버가 결정되면 시합 종료까지의 캐릭터 변경은 불가능하므로 주의해주시기 바랍니다.</span></div>
+</post>

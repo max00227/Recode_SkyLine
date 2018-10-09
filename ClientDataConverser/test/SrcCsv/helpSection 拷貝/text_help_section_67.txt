@@ -1,0 +1,30 @@
+<post>
+<div><span color="#000000">야구장비는
+</span></div>
+<div><span color="#000000">·배트</span></div>
+<div><span color="#000000">·스파이크</span></div>
+<div><span color="#000000">·글러브</span></div>
+<div><span color="#000000">총3종류가 있습니다.</span></div>
+<div><span color="#000000">이러한 장비를 장착하는 것으로</span></div>
+<div><span color="#000000">능력을 상승시킬 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■야구장비의 스킬</span></div>
+<div><span color="#000000">야구장비 중에서는 스킬이 장착되어 있는 것도 있습니다.</span></div>
+<div><span color="#000000">어떤 스킬의 야구장비로 경기에 출천하는 가도 작전 중 하나입니다.</span></div>
+<div><span color="#000000">스킬에 대해서는 도움말 '스킬에 대하여'를 참고해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■리그에 의한 야구장비의 능력제한.</span></div>
+<div><span color="#000000">리그에 의해 야구장비가 발휘될 수 있는 능력이 다르므로 주의해주시기 바랍니다.</span></div>
+<div><span color="#000000">자세한 사항은 도움말 '리그의 아이템 기능 제한에 대해서'를 참고해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■투수용·야수용 야구장비.</span></div>
+<div><span color="#000000">투수용·야수용 야구장비는 각각 상승하는 능력이 다릅니다.</span></div>
+<div><span color="#000000">예를 들어, 투수가 야수용 야구장비를 장착해도 야수의 능력(파워 등)은 오르지 않습니다. 야수가 투수용을 장착한 경우에도 마찬가지입니다.</span></div>
+<div><span color="#000000">또한, 자신의 포지션과 다른 포지션 스킬은 사용할 수 없습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">야구장비에는 사용기한이 없으므로</span></div>
+<div><span color="#000000">한번 얻으면 계속 사용할 수</span></div>
+<div><span color="#000000">있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">야구장비의 소지 상한에 대해서는 도움말 '각 아이템의 소지 상한'을 참고해주시기 바랍니다.</span></div>
+</post>

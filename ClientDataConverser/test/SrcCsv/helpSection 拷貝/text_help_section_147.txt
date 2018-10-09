@@ -1,0 +1,19 @@
+<post>
+<div><span color="#000000">아래 조건에 해당하는 경우 이적할</span></div>
+<div><span color="#000000">수 없습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·이전 이적 후, 다음 날 아침 5:00가 지나지</span></div>
+<div><span color="#000000"> 않으면 이적할 수 없습니다.</span></div>
+<div><span color="#000000">·내가 이적하면 소속팀의</span></div>
+<div><span color="#000000"> 경기 가능 인원 수가 내려가 경기를 진행할</span></div>
+<div><span color="#000000">수 없는 경우는 이적할 수 없습니다.</span></div>
+<div><span color="#000000"> ※당일의 경기한 종료부터 다음날 아침의</span></div>
+<div><span color="#000000">  일정을 결정하는 사이에는 이적할</span></div>
+<div><span color="#000000"> 수 있습니다.</span></div>
+<div><span color="#000000"> ※나의 팀에 다른 팀원이 없는</span></div>
+<div><span color="#000000">  경우 이적할 수 있습니다.</span></div>
+<div><span color="#000000"> ※다른 팀원으로 주장을 교체하면</span></div>
+<div><span color="#000000">  이적할 수 있게 됩니다.</span></div>
+<div><span color="#000000">·이적하고 싶은 팀에 야수의 상한 수가 13명을 달하고 있는 경우 야수로서 이적은 불가능합니다.</span></div>
+<div><span color="#000000">·이하 가고 싶은 팀의 투수가 상한 수 9명을 달하고 있는 경우 투수로서 이적은 불가능합니다.</span></div>
+</post>

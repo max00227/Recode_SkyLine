@@ -1,0 +1,2227 @@
+version_copy_right = ver {0}\n2014KAYAC Inc.,All Rights Reserved, \nPublished By Chaplin game Co.,Limited
+
+league = 리그: {0}부
+user_number = {0}명
+
+all = 모두
+close = 닫기
+confirm = 확인
+error_title = 오류
+information_title = 알림
+unexpected_error_change_scene_message = 일시적인 오류가 생겼네요.\n메인화면으로 이동합니다.
+unexpected_error_message = 일시적인 오류가 생겼네요.\n메인화면으로 이동합니다.
+unexpected_error_message_prev_scene = 예상치 못한 오류가 발생하였습니다.\n이전화면으로 이동합니다.
+application_update_message_ios = 새로운 버전이 있습니다.\nApp Store에서 업데이트할 수 있습니다.
+application_update_message_android = 새로운 버전이 있습니다.\nGoogle Play에서 업데이트할 수 있습니다.
+
+explanation = 설명
+effect = 효과
+price = 가격
+physical = 체력
+item_count = 개수
+buying_amount = 구매 개수
+selling_amount = 판매 개수
+having_amount = 보유 수량
+
+unit_hours = 시간
+unit_minutes = 분
+no_limit_days = 기한 없음
+
+error_validate_empty_name = 이름을 입력해 주세요.
+error_validate_ng = 사용할 수 없는 글자가 포함되어 있습니다.\n다시 입력해 주세요.
+
+connection_error_title = 접속 실패
+connection_error_message = 일시적으로 서버에 연결할 수 없습니다.\n데이터 환경이 좋은 곳에서 다시 시도해 주세요.
+
+system_dialog_button_retry = 다시 시도
+system_dialog_button_quit = 종료
+
+large_data_download_title = 데이터 다운로드
+large_data_download_message = 데이터 다운로드를 시행합니다.\nWi-Fi 환경에서의 다운로드를 권장합니다.
+large_data_download_note = 대용량 데이터로 접속 환경에 따라 시간이 걸릴 수가 있습니다.
+
+application_quit_confirm_title = 확인
+application_quit_confirm_message = <우리동네 야구단> 게임을 종료하시겠습니까?
+
+common_mail_body_head_format = 【유저 정보】\n{0}※위의 문장은 삭제하지 마시고 그대로 보내주십시오.\n\n{1}
+
+register_invite_fail_title = 초대 코드
+register_invite_fail_message = 초대 코드 반영에 실패하였습니다.\n존재하지 않는 초대 코드이거나 초대 코드 입력에 실패하였습니다.\n다시 초대 코드를 반영하기 위해서는\n게임 내 초대 코드 입력 화면에 초대 코드를 입력해 주세요.
+
+register_invite_fail_empty = 초대 코드가 입력되어 있지 않습니다.
+register_invite_fail_shortage = 초대 코드가 너무 짧습니다.
+register_invite_fail_not_found_match_world = 초대 코드가 유효한 서버를 찾을 수 없습니다.
+register_invite_fail_is_not_exist = 입력한 초대 코드는 유효한 초대 코드가 아닙니다.
+
+signup_error_title = 로그인 실패
+signup_error_message_team = 선택한 야구팀의 정원이 초과하였습니다.\n죄송하지만 다시 야구팀을 선택해 주세요.
+signup_error_message_user_name = 입력한 이름은 사용할 수 없습니다.\n죄송하지만 다른 이름을 입력해 주세요.
+signup_error_message_player_name = 입력한 캐릭터명은 사용할 수 없습니다.\n죄송하지만 다른 이름을 입력해 주세요.
+signup_error_message_other = 로그인 실패
+
+signup_error_title_registered = 로그인
+signup_error_message_registered = 기존의 등록된 데이터로 복구했습니다.
+
+google_plus_signout_title = Playゲームサインアウト確認
+google_plus_signout_message = Playゲームからサインアウトしますか？
+
+news_error_message_not_found = 알림이 없습니다.
+news_all_mail_confirm_message = 모두 읽음으로 표시합니다.\n진행하시겠습니까?
+
+subject_detail_header_sender_name_receiver_name = {0}이(가) {1}에게
+subject_detail_header_sender_name = {0}에서
+subject_detail_header_receive_name_sender_name = {1}에서 {0}(으)로
+subject_detail_header_receive_name = {0}(으)로
+
+subject_detail_header_no_team = 탈퇴 중
+
+mail_send_not_friend_error_title = 발송 불가
+mail_send_not_friend_error_message = 내 친구가 아니므로 발송할 수 없습니다.
+mail_send_cancel_confirm_title = 취소 확인
+mail_send_cancel_confirm_message = 이대로 종료하면 내용이 지워집니다\n메일 작성을 종료하시겠습니까?
+
+receive_mail_notice = 수신 후 90일이 지난 메일은 삭제됩니다.\n보관 메일이 1,000통을 넘으면 오래된 순으로 삭제됩니다.
+sent_mail_notice = 90일이 지난 메일은 삭제됩니다.\n보관 메일이 1,000통을 넘으면 오래된 순으로 삭제됩니다.
+
+data_transfer_send_mail_title = 계정 전환 정보
+
+read_all_mail_confirm_message = 모두 읽음으로 표시합니다.\n진행하시겠습니까?
+
+user_and_system_info = 유저명: {0}\n유저ID: {1}\n이용 중인 OS: {3}\n이용 중인 앱: {4}\n이용 중인 기종명: {5}\n
+user_and_system_info_world = 유저명: {0}\n유저ID: {1}\n서버명: {2}\n\n이용 중인 OS: {3}\n이용 중인 앱: {4}\n이용 중인 기종명: {5}\n
+
+mypage_team_member_ranking_status_in_starting_member = 선발 라인업
+mypage_team_member_ranking_status_out_starting_member = 대기 명단
+mypage_team_member_ranking_status_lack_member = 야구팀 팀원을 모으자!
+
+mypage_sweeper_normal_message = 모두 경기에 참여하러 가고 있어요~♪\n랄라라~♪
+mypage_sweeper_practice_message = 모두가 훈련 경기에\n가고 있어요~♪\n랄라라~♪
+mypage_sweeper_koshien_message = 축! 대회 출전!!\n드디어 이날이\n왔네요!
+
+mypage_sweeper_interleague_message = \n시작했어요~♪\n랄라라~♪
+mypage_sweeper_interleagueshowcase_message = \n시작했어요~♪\n랄라라~♪
+
+product_empty_name = ????
+price_gacha_point = {0}장 뽑기 티켓
+price_gacha_voucher = {0}뽑기티켓
+price_coin = {0}코인
+price_gold = {0}G머니
+num_item = x{0}
+num_item_with_name = {0}x{1}
+medal_with_num = 메달x{0}
+medal = 메달
+
+item_type_bat = 배트
+item_type_glove = 글러브
+item_type_spike = 야구화
+item_type_cap = 모자
+item_type_face = 얼굴
+item_type_uniform = 유니폼
+item_type_belt = 벨트
+item_type_emblem = 엠블럼
+
+header_shop_top = 상점
+header_shop_gold = G머니 구매
+header_shop_event = 이벤트 한정
+header_practice_list = 훈련 메뉴
+header_practice_player = 캐릭터 선택
+header_practice_detail = 스테이지 상세
+header_practice_team_multi_raid_detail = {0}와(과) 대결!
+header_friend_list = 내 친구
+header_locker = 아이템
+header_locker_equip = 야구 장비
+header_locker_equip_bat = 배트
+header_locker_equip_glove = 글러브
+header_locker_equip_spike = 야구화
+header_locker_card = 카드 목록
+header_locker_avatar_equip = 장비 교체
+header_locker_avatar_equip_cap = 모자
+header_locker_avatar_equip_face = 얼굴
+header_locker_avatar_equip_uniform = 유니폼
+header_locker_avatar_equip_belt = 벨트
+header_locker_avatar_equip_emblem = 엠블럼
+header_locker_cabinet_list = 倉庫一覧
+header_other = 기타
+header_extension_and_skill_book = 투혼·스킬 노트
+header_school_guide = 이적·영입
+header_position_wish = 희망 포지션
+header_order_wish = 희망 타순
+header_team_transfer = 이적
+header_team_to_transger = 이적하기
+header_leader_top = 영입
+header_scout_profile = 영입 대기
+header_scout = 선수 영입
+header_scout_list = 영입 대기
+header_scout_invite = 제안 보기
+header_team_appeal_board = 팀원 모집
+header_team_appeal_board_list = 모집 중인 야구팀 찾기
+header_team_admin_change_member_list = 주장 변경
+header_gacha_gold = 골드 추첨
+header_gacha_ticket = 장비뽑기
+header_gacha_special_ticket = 한정티켓 장비뽑기
+header_gacha_detail = 뽑기 상세
+header_team_board = {0} 게시판
+header_collection_top = 수집
+header_collection_my_item = 수집
+header_collection_friend_wishlist = 모집 게시판
+header_yell_battle_result = 응원 대결
+header_team_member_ranking = 팀 내 순위
+header_season_team_ranking_award_list = 모든 보상 목록
+header_library = 기록·도움말
+header_library_when_apple_guard = 기록
+header_help = 도움말
+header_friendship_episode_theme_list = 우정 이야기
+header_friendship_episode_contribution = 우정 이야기 작성
+header_friendship_episode = '{0}'
+header_koshien_winning_team_friendship_episode = 우승 이야기
+header_koshien_winning_team_friendship_episode_contribution = 우승 이야기 작성
+header_game_archive = 대회 신문
+header_opinion_box = 건의함
+header_chara_list = 캐릭터 목록
+header_profile = 캐릭터 정보
+header_gift_box = 선물
+header_recent_mail = 우편
+header_shop_exchange_gold = 코인 교환
+header_team_score = 팀 데이터
+header_infirmary = 체력 회복
+header_game_result_member_list = 선수 성적
+header_game_result_progress = 경과 목록
+header_game_history = 지난 경기 목록
+header_game_list = 오늘의 경기 목록
+header_league_change = 리그 변경
+header_team_search_result = 검색 결과
+header_team_search = 야구팀 검색
+header_menu_sub_list = 설정·기타
+header_menu_push_setting = 푸시 알림
+header_menu_transfer = 계정 인계
+header_menu_credit = 제작자
+header_menu_privacy_prolicy = 개인 정보 보호 정책
+header_menu_copyright = 저작권
+header_news = 알림
+header_prifile_player_list = 캐릭터 변경
+header_player_ranking = 개인 순위
+header_personal_score_detail = 개인 성적
+header_personal_score_history = 성적 기록
+header_shop_avatar_item = 장비 교체
+header_shop_sell_avatar_item = 장비 교체
+header_shop_sell_game_item = 야구 장비
+header_team_member_list = 팀원 명단
+header_team_member_request_list = 팀원 희망 목록
+header_team_ranking = 팀 순위
+header_team_score_history = 성적기록
+header_training_room_top = 장비 강화
+header_training_room_change = 투혼으로 변경
+header_training_room_submit = 투혼 장착
+header_training_room_easy_composition = 간편 투혼 장착
+header_player_trophy = 타이틀 목록
+header_team_trophy = 타이틀 목록
+header_team_create = 야구팀 설립
+header_gold_information = G머니 확인
+header_coin_information = 코인 확인
+header_collection_medal_exchange = 메달 교환
+header_koshien_history = 전국대회 결과
+header_interleague_history = 지역 교류전 결과
+header_koshien_block_list = 지역 목록
+header_event_description = 설명·주의사항
+header_event_ranking = 개인 순위
+header_event_homerun_ranking = 연속 HR 순위
+header_event_team_ranking = 팀 순위
+header_event_team_knock_down_point_ranking = 팀 승점 순위
+header_serial_campaign = 일련 번호 이벤트 목록
+header_common_serial_campaign_input = 일련 코드 번호
+header_daily_ranking = 일일 순위
+header_daily_reward_player = 個人デイリー報酬
+header_daily_reward_team = チームデイリー報酬
+header_event_ranking_reward_player = 개인 순위 보상
+header_event_ranking_reward_homerun = 연속 HR 순위 보상
+header_event_ranking_reward_team = 팀 순위 보상
+header_event_ranking_reward_team_knock_down_point = 팀 승점 순위 보상
+header_event_point_reward = 개인 BP 달성 보상
+header_event_kill_count_reward = 승리 보상
+header_event_homerun_reward = 연속 HR 달성 보상
+header_event_level_reward = 레벨업 보상
+header_event_fishing_list = 팀원 기록
+header_event_ranking_in_team = 팀 내 순위
+header_event_ranking_reward_in_team = 팀 내 순위 보상
+header_event_size_ranking = 개인 크기 순위
+header_event_team_size_ranking = 팀 크기 순위
+header_event_cycling_cutie_ranking_detail = {0}순위
+header_event_cycling_cutie_ranking_reward = 나의 매니저 보상
+header_team_kickout = 강제 탈퇴
+header_team_pickup_board_list = 추천 야구팀
+header_cutie_top = 나의 매니저
+header_cutie_list = 매니저 목록
+header_mission_cafe = 퀘스트
+header_training_top = 스킬/아이템 강화
+header_training_skill_top = 캐릭터 스킬 강화
+header_training_remove_skill = キャラスキル取り外し
+header_team_strategy_board = 작전 보드
+header_team_strategy_facilitator = 작전 담당
+header_cycling_cutie_ranking_top = 나의 매니저 순위
+header_team_member_order_wish_list = 희망 타순 목록
+
+header_interleague_wave_battle_result = 응원전
+header_interleague_team_ranking = 교류전 팀 순위
+header_interleague_block_ranking = 교류전 지역별 순위
+header_interleague_game_list = 오늘의 경기 목록
+header_interleague_game_history = 지난 경기 목록
+
+header_duel_game_list = 이벤트 훈련 경기 목록
+header_duel_game_reward = 훈련 경기 승리 보상
+
+header_duel_team_ranking = 팀 경기 포인트 순위
+header_duel_team_ranking_reward = 팀 경기 포인트 순위 보상
+
+header_dungeon_floor_ranking = 격퇴 순위
+header_dungeon_floor_ranking_reward = 격퇴 순위 보상
+
+header_reward_access_list = 報酬獲得方法
+
+header_cabinet_deposit = {0}に預ける
+header_cabinet_remove = {0}から取り出す
+
+header_team_farm_invite = 育成部員を勧誘する
+header_team_farm_transfer = 育成枠に転校する
+
+not_enought_coin = 코인이 부족합니다.
+not_enought_gold = G머니가 부족합니다.
+shop_confirm_durability = 내구력: {0}
+shop_confirm_quantity = 보유 수량: {0}
+shop_confirm_quest = {0}을(를) 구매합니다. 진행하시겠습니까?
+shop_confirm_not_enought_gold = G머니가 부족합니다. 지금 구매하겠습니까?
+shop_confirm_full_item = {0}의 수가 최대가 되었습니다.
+shop_confirm_buy_serif = 이거 구매할 건가요?
+shop_confirm_sell_serif = 좋은 물건이네요! 이 가격은 어때요?
+shop_confirm_multi_sell_serif = 이게 전부인가요?
+shop_extension_confirm_sell_serif = 좋은 물건이네요! 이 가격은 어때요?
+shop_buy_success_title = 구매 완료
+shop_buy_success_message = {0}을(를) 구매합니다.
+shop_buy_fail_title = 구매 오류
+shop_common_purchase_confirm_serif = 그래요, 이 아이템을 사는 거죠?\n구매 개수가 맞는지 확인해 보세요.
+shop_common_purchase_result_serif_maido = 항상 고마워요!
+shop_common_purchase_result_serif_avatar_item = 원하는 다른 유니폼이 있는지 구경해 봐요!\n아니면 이 유니폼으로 갈아입어 볼래요?
+shop_common_purchase_result_serif_other_item = 마음에 들었니?\n사고 싶은 게 있다면 언제든지 와!
+shop_common_sell_confirm_serif = {0}을(를) 판매할 거야?\n정말 괜찮겠어?
+shop_common_sell_result_serif = 또 팔고 싶은 물건이 있다면\n언제든지 부담 없이 들러줘!
+shop_common_purchase_result_serif_avatar_item_event = 오, 좋은 것을 구매했네!\n또 원하는 물건이 있는지 구경해 봐!
+
+event_single_raid_top_can_not_load_message = 화면 로드에 실패했습니다.
+
+shop_common_having_gold = 보유 G머니
+shop_common_having_coin = 보유 코인
+
+shop_user_agreement_tos = 이용 약관
+shop_user_agreement_asf = 자금 결제 방법
+shop_user_agreement_asct = 특정상품 거래법
+
+shop_multi_sell_start = 한꺼번에 팔기
+shop_multi_sell_cancel = 포기
+shop_multi_sell_confirm = 선택한 아이템을 판매합니다.\n진행하시겠습니까?
+shop_multi_sell_high_skill_level_items_confirm = [ff0000]스킬 레벨이 높은 아이템이 포함되어 있습니다.[-]\n판매하시겠습니까?
+shop_multi_sell_result_serif = 항상 이용해 줘서 고마워!
+shop_multi_sell_equiped_item_sell_message = 착용 중입니다. 착용 해제 후 판매하실 수 있습니다.
+shop_multi_sell_locked_item_sell_message = 잠금 상태입니다. 잠금 해제 후 판매하실 수 있습니다.
+shop_multi_sell_price_zero_sell_message = 판매 가격이 0이므로 판매할 수 없습니다.
+
+market_price = \{0}
+market_buy_success_title = 구매 완료
+market_buy_success_message = {0}을(를) 구매합니다.
+market_buy_fail_title = 구매 오류
+market_buy_fail_message_not_found = 이 아이템은 현재 구매할 수 없습니다.
+market_buy_fail_message_gold_shortage = G머니가 부족하므로 구매할 수 없습니다.
+market_buy_fail_message_coin_shortage = 코인이 부족하므로 구매할 수 없습니다.
+market_buy_fail_message_amount_max = 보유 수량 상한을 초과해서 구매할 수 없습니다.
+
+purchase_currency_type_coin = 코인
+purchase_currency_type_gold = G머니
+purchase_type_facility = 시설 설치
+purchase_type_item = 아이템 구매
+purchase_type_extension_attach = 강화
+purchase_type_extension_convert = 투혼으로 변경
+purchase_type_exchange_gold = 코인 교환
+purchase_type_remove_skill = スキルを取り外す
+purchase_fail_shortage_dialog_title = {0} 부족
+purchase_fail_shortage_dialog_message = {0}이(가) 부족하므로 {1}할 수 없습니다.\n{0}을(를) 구매하시겠습니까?
+purchase_fail_shortage_dialog_note = 필요한{0}: {1}\n보유하고 있는{0}: {2}
+
+power = 파워
+meet = 글러브
+fielding = 수비
+run = 주루
+velocity = 구위
+control = 제구
+breaking_ball = 변화구
+stamina = 체력
+
+ranking_jumper_label_rank_format = {0}위~
+ranking_jumper_label_my_rank = 내 순위
+
+game_start_error_team_not_found_title = 경기
+game_start_error_team_not_found_message = 경기에 참가하고 있는 팀과 현재의 팀이 일치하지 않습니다.\n경기장으로 돌아가 팀 정보를 업데이트합니다.
+
+game_detail_error_game_not_found_title = 경기
+game_detail_error_game_not_found_message = 경기 정보 수집에 실패하였습니다.
+
+game_start_error_detail_not_found_title = 경기
+game_start_error_detail_not_found_message = 경기 정보 수집에 실패하였습니다.\n경기장으로 돌아가 경기 정보를 업데이트합니다.
+
+game_result_error_detail_not_my_game_title = 경기
+game_result_error_detail_not_my_game_message = 경기 정보를 다시 수집해야 합니다.
+
+game_top_practice_game_reward_text = [000000]연습 경기에 이긴 팀에게는 내가\n[ee9900]{0}[-]을(를) 주겠다.
+
+game_top_offseason_serif = 다음 대회가 시작될 때까지 열심히 준비해야 한다.
+game_top_offseason_label = 다음 대회는 {0}월 {1}일에 진행한다.
+game_top_member_shortage_serif = 안타깝지만 팀원이 9명 이상 있어야 경기에 참여할 수 있습니다.
+game_top_game_serif = 지역 예선 상위팀은 전국대회에 참여할 수 있어요!
+game_top_before_matching_serif = 경기는 1일 4회! 어느 팀과 경기할지 기대되네요!
+game_top_before_matching_label = {0}시 이후 오늘의 경기 일정이 결정됩니다!
+game_top_practice_game_serif = 훈련 경기이지만\n대충해서는 안돼요.
+
+game_top_koshien_before_matching = 오늘이 바로 전국대회!
+game_top_koshien_tournament = 곧 {0}차전의 시간입니다\n준비는 됐나요?
+game_top_koshien_tournament_lose = 아쉽게 져버렸네요...\n다음은 꼭 우승할 거에요!\n화이팅!
+game_top_koshien_final = 드디어 결정의 순간...!\n열심히 응원할게요!
+game_top_koshien_final_winner = 해냈어요!!\n이제 전국 1위에요!\n다음은 연승을 노립시다♪
+
+game_top_error_title_dont_shown_game = 전국대회
+game_top_error_text_dont_shown_game = 경기 결과를 볼 수 없습니다.
+
+game_yell_fail_title = 응원 실패
+game_yell_fail_body = 체력이 부족하므로 응원할 수 없습니다.
+
+game_ensue_label = 계속...
+
+game_side_name_1 = 1루 쪽
+game_side_name_3 = 3루 쪽
+
+game_bench_wipe_animation_other_player = 다른 {0}
+
+game_scorebook_result_none = ---
+game_scorebook_result_hit_single = 안타
+game_scorebook_result_hit_double = 2루타
+game_scorebook_result_hit_triple = 3루타
+game_scorebook_result_homerun = 홈런
+game_scorebook_result_walk = 볼넷
+game_scorebook_result_infield_hit = 내야 안타
+game_scorebook_result_strike_out = 삼진
+game_scorebook_result_bounder = 땅볼
+game_scorebook_result_fly = 뜬공
+game_scorebook_result_error = 실책
+game_scorebook_result_bunt_success = 번트 성공
+game_scorebook_result_bunt_fail = 번트 실패
+game_scorebook_result_sacrifice_fly = 희생 플라이
+game_scorebook_result_steal_success = 도루 성공
+game_scorebook_result_steal_fail = 도루 실패
+
+game_scorebook_result_0 = ---
+game_scorebook_result_17 = 좌전 안타
+game_scorebook_result_18 = 중전 안타
+game_scorebook_result_19 = 우전 안타
+game_scorebook_result_27 = 좌전 2루타
+game_scorebook_result_28 = 중전 2루타
+game_scorebook_result_29 = 우전 2루타
+game_scorebook_result_37 = 좌전 3루타
+game_scorebook_result_38 = 중전 3루타
+game_scorebook_result_39 = 우전 3루타
+game_scorebook_result_47 = 좌측 홈런
+game_scorebook_result_48 = 중앙 홈런
+game_scorebook_result_49 = 우측 홈런
+game_scorebook_result_50 = 볼넷
+game_scorebook_result_61 = 투수 정면안타
+game_scorebook_result_62 = 포수 정면안타
+game_scorebook_result_63 = 1루 내야 안타
+game_scorebook_result_64 = 2루 내야 안타
+game_scorebook_result_65 = 3루 내야 안타
+game_scorebook_result_66 = 유격수 내야 안타
+game_scorebook_result_100 = 삼진
+game_scorebook_result_111 = 투수 앞 땅볼
+game_scorebook_result_112 = 포수 앞 땅볼
+game_scorebook_result_113 = 1루 땅볼
+game_scorebook_result_114 = 2루 땅볼
+game_scorebook_result_115 = 3루 땅볼
+game_scorebook_result_116 = 유격수 땅볼
+game_scorebook_result_121 = 투수 플라이
+game_scorebook_result_122 = 포수 플라이
+game_scorebook_result_123 = 1루 플라이
+game_scorebook_result_124 = 2루 플라이
+game_scorebook_result_125 = 3루 플라이
+game_scorebook_result_126 = 유격수 플라이
+game_scorebook_result_127 = 좌익수 플라이
+game_scorebook_result_128 = 중견수 플라이
+game_scorebook_result_129 = 우익수 플라이
+game_scorebook_result_131 = 투수 실책
+game_scorebook_result_132 = 포수 실책
+game_scorebook_result_133 = 1루 실책
+game_scorebook_result_134 = 2루 실책
+game_scorebook_result_135 = 3루 실책
+game_scorebook_result_136 = 유격수 실책
+game_scorebook_result_137 = 좌익수 실책
+game_scorebook_result_138 = 중견수 실책
+game_scorebook_result_139 = 우익수 실책
+game_scorebook_result_200 = 번트 성공
+game_scorebook_result_210 = 번트 실패
+game_scorebook_result_220 = 희생 플라이
+game_scorebook_result_300 = 도루 성공
+game_scorebook_result_310 = 도루 실패
+game_scorebook_result_405 = 3루 내야 안타
+game_scorebook_result_415 = 3루 땅볼
+
+game_result_homerun_1 = 솔로 홈런
+game_result_homerun_2 = 2점 홈런
+game_result_homerun_3 = 3점 홈런
+game_result_homerun_4 = 만루 홈런
+
+game_decide_member_date = MM월 dd일
+game_index = 제{0}회 경기
+game_vs = VS {0}
+game_timeline_yell = {0}, 화이팅!!
+game_timeline_switch_message = {0}, [ff3300]{1}[-]와(과) 교체!
+game_timeline_switch_notice_message = [ff3300]{0}[-]의 체력이 떨어졌군요. 다음 교대를 생각합시다.
+
+game_timeline_skill = [ff3300]'{0}'[-]을(를) 노립시다!
+game_timeline_skill_for_bench = [ff3300]'{0}'[-]! 응원은 맡겨줘!
+
+game_timeline_skill_1 = [ff3300]'{0}'[-]을(를) 노립시다!
+game_timeline_skill_for_bench_1 = [ff3300]'{0}'[-]! 응원은 맡겨줘!
+game_timeline_skill_2 = [ff3300]'{0}'[-]을(를) 노려요!
+game_timeline_skill_for_bench_2 = [ff3300]'{0}'[-]! 응원은 맡겨줘!
+
+game_timeline_level_skill = [ff3300]'{0}Lv{1}'[-]을(를) 노립시다!
+game_timeline_level_skill_for_bench = [ff3300]'{0}Lv{1}'[-]! 응원은 맡겨줘!
+
+game_timeline_level_skill_1 = [ff3300]'{0}Lv{1}'[-]을(를) 노립시다!
+game_timeline_level_skill_for_bench_1 = [ff3300]'{0}Lv{1}'[-]! 응원은 맡겨줘!
+game_timeline_level_skill_2 = [ff3300]'{0}Lv{1}'[-]을(를) 노립시다!
+game_timeline_level_skill_for_bench_2 = [ff3300]'{0}Lv{1}'[-]! 응원은 맡겨줘!
+
+game_timeline_eqip = [ff3300]'{0}'[-](으)로 가요!
+
+game_timeline_eqip_1 = [ff3300]'{0}'[-](으)로 가요!
+game_timeline_eqip_2 = [ff3300]'{0}'[-](으)로 가요!
+
+game_timeline_yell_remain = 누구에게 응원을 보낼까요?(앞으로 {0}번)
+game_timeline_yellbattle_reward = 승리 팀에게는\n{0}을(를) 드립니다!
+
+game_use_skill_header_active = 어떤 스킬을 사용할까요?
+game_use_skill_header_normal = 패시브 스킬
+game_use_skill_header_active_locked = 반동으로 사용 횟수 하강 중!
+game_use_skill_header_active_full_locked = 반동으로 스킬 사용 불가!
+
+game_timeline_submit_error_title = 발송 제한
+game_timeline_submit_error_message = 연속으로 보낼 수 없습니다.\n잠시만 기다려주세요.
+game_timeline_submit_error_message_empty_message = 메시지를 입력해 주세요.
+
+game_decide_member_scene_message = {0}전의\n선발 라인업을 발표합니다.
+
+game_skill_use_title = 스킬
+game_skill_use_error_bench = 이 스킬은 벤치의 선수만 이용 가능합니다.
+game_skill_use_error_member = 이 스킬은 출전 선수만 이용 가능합니다.
+game_skill_use_error_not_enable = 이 스킬은 현재 사용할 수 없습니다.
+game_skill_use_error_not_pitcher = 투수가 아니어서 투수용 스킬을 사용할 수 없습니다.
+
+game_cutin_team_label = {0}의
+game_cutin_myturn_label = {0}의
+
+game_change_message = 1경기 1번만\n교환할 수 있습니다.
+game_yell_message = 누구에게 응원을 보낼까요?
+game_skill_message = 어떤 스킬을 사용할까요?
+
+game_chara_skill_sleep = {0}일간 접속하지 않았기 때문에\n캐릭터 스킬을 사용할 수 없습니다.
+game_chara_skill_sleep_hour = 72시간 동안 접속하지 않았기 때문에\n캐릭터 스킬을 사용할 수 없습니다.
+
+friend_apply_confirm_title = 신청 확인
+friend_apply_confirm_message = 친구 신청을 하겠습니까?
+friend_apply_success_title = 신청 완료
+friend_apply_success_message = 친구 신청을 하였습니다.
+
+friend_accept_confirm_title = 승인 확인
+friend_accept_confirm_message = {0}와(과) 친구가 되겠습니까?
+friend_accept_success_title = 승인 완료
+friend_accept_success_message = 친구가 되었습니다!
+
+friend_reject_confirm_title = 거부 확인
+friend_reject_confirm_message = {0}의 친구 신청을 거부하겠습니까?
+friend_reject_success_title = 거부 완료
+friend_reject_success_message = 친구 신청을 거부하였습니다.
+
+friend_cancel_confirm_title = 취소 확인
+friend_cancel_confirm_message = {0}에게 보낸 친구 신청을 취소하시겠습니까?
+friend_cancel_success_title = 취소 완료
+friend_cancel_success_message = 친구 신청을 취소하였습니다.
+
+friend_remove_confirm_title = 해제 확인
+friend_remove_confirm_message = {0}님과의 친구를 해제하겠습니까?
+friend_remove_success_title = 해제 완료
+friend_remove_success_message = 친구를 해제하였습니다.
+
+friend_change_training_and_collection_status_confirm_title = ペアトレ＆グッズ設定
+friend_training_and_collection_on_confirm_message = {0}さんをペアトレ\nグッズ交換相手にしますか？
+friend_training_and_collection_off_confirm_message = {0}さんをペアトレ\nグッズ交換相手から外しますか？
+
+training_skill_remove_title = このスキルを取り外しますか？
+training_skill_remove_message = スキル強化ゲージはリセットされます。\n※スキルレベルは変わりません。\nキャラスキルを取り外してよいですか？
+training_skill_remove_success_title = 取り外し完了
+training_skill_remove_success_message = スキルが取り外されました。
+training_skill_remove_not_enough_item_title = アイテム不足
+training_skill_remove_not_enough_item_message = {0}を所持していません
+
+friend_list_no_team_name = ---
+
+friend_last_accessd_limit_over = 2주이상 전
+
+team_ranking_no_koshien_spot_border_rank = ???
+team_ranking_confirm_refresh_title = 업데이트 확인
+team_ranking_confirm_refresh_message = 순위가 업데이트되었습니다.\n재검색 중입니다.
+
+ranking_confirm_refresh_title = 업데이트 확인
+ranking_confirm_refresh_message = 순위가 업데이트되었습니다.\n재검색 중입니다.
+
+team_strategy_delete_confirm_title = 해제 확인
+team_strategy_delete_confirm_body = 작전 보드를 삭제하겠습니까?
+team_strategy_facilitator_serif = 팀의 중요한 내용이다.\n제대로 된 작전 계획을\n부탁한다.
+team_strategy_facilitator_update_confirm_title = 작전 코치 되기
+team_strategy_facilitator_update_confirm_body = 작전 코치는 팀에서 1명만 가능합니다.\n작전 담당이 되겠습니까?
+team_strategy_facilitator_update_success_title = 작전 코치가 되었습니다.
+team_strategy_facilitator_update_success_body = 클럽하우스로 돌아가 새로운 작전을 준비합시다!
+team_strategy_facilitator_giveup_confirm_title = 작전 코치를 그만둔다.
+team_strategy_facilitator_giveup_confirm_body = 작전 코치를 그만두면\n과거에 작성한 작전을 수정할 수 없습니다.\n작전 코치를 그만두시겠습니까?
+team_strategy_facilitator_giveup_success_title = 작전 코치를 그만두었습니다
+team_strategy_facilitator_giveup_success_body = 작전 계획 수립! 수고했습니다!
+team_strategy_content_with_ngword = 입력 제한 문자 '{0}'이(가) 포함되어 있습니다.
+
+team_strategy_facilitator_farm_cannot_use_title = 作戦係にはなれません
+team_strategy_facilitator_farm_cannot_use_message = 育成枠に所属している状態で、作戦係になることはできません。
+
+gift_character_serif = 선물 박스 내의 아이템은\n수령 기한이 넘으면\n삭제됩니다!
+gift_expired_at = 수령 기한: {0}
+gift_remain_at = 앞으로 {0}
+gift_remain_at_long_days = 앞으로 {0}일 이상
+gift_confirm_receiving_title = 수령 확인
+gift_confirm_receiving_body = {0}\n을(를) 수령하시겠습니까?
+gift_confirm_receiving_all_body = 표시되어 있는 선물을 모두 수령하시겠습니까?
+gift_warn_nogifts_title = 모두 수령
+gift_warn_nogifts_body = 수령 가능한 선물이 없습니다.
+gift_warn_didnotreceive_name_format = {0}
+gift_warn_didnotreceive_title = 수령 실패
+gift_warn_didnotreceive_body = 선물 수령 실패\n{0}\n※아이템 등의 보유 수량이 상한을 넘어간 경우 수령할 수 없습니다.
+gift_all_received_title = 수령 완료
+gift_all_received_message = 선물이 없습니다.\n야구장으로 돌아갑니다.
+
+in_recording = 집계 중
+out_of_ranking = 순위권 밖
+other_block = 다른 지역
+other_league = 다른 리그
+other_league_ranking = -
+
+locker_top_serif = 장비 정리도\n야구 소년으로서\n중요한 일이야.
+locker_cabinet_serif = あまり使わない道具は\n倉庫にしまっておくと\nいいぞ
+
+locker_equip_success_title = 장착 완료
+locker_equip_success_message = {0}\n장비를 장착했습니다.
+
+locker_equip_recommend_success_title = 장비 완성
+locker_equip_recommend_success_message = 추천 장비를 장착했습니다.
+locker_equip_recommend_confirm_message = 추천 장비로 변경하시겠습니까?
+
+locker_equip_remove_success_title = 해제 완료
+locker_equip_remove_success_message = {0}을(를) 해제하였습니다.
+
+locker_equip_reset_success_title = 재설정 완료
+locker_equip_reset_success_message = 장비를 재설정하였습니다.
+
+locker_avatar_equip_success_title = 장비 장착 완료
+locker_avatar_equip_success_message = {0}\n장비를 장착했습니다.
+
+locker_avatar_remove_success_title = 해제 완료
+locker_avatar_remove_success_message = {0}을(를) 해제하였습니다.
+
+locker_avatar_equip_reset_success_title = 재설정 완료
+locker_avatar_equip_reset_success_message = 재설정하였습니다.
+
+locker_equip_equipment_set_success_title = 세트 변경
+locker_equip_equipment_set_success_message = {0}(으)로 변경하였습니다.
+
+locker_equipment_set_name_input_title = 세트 이름 변경
+locker_equipment_set_name_input_note = 세트 이름은 최대 20자까지 입력 가능합니다.
+
+locker_equipment_set_rename_success_title = 세트 이름 변경
+locker_equipment_set_rename_success_message = 세트 이름을 {0}(으)로 변경하였습니다.
+
+locker_cabinet_can_not_use_error_title = 사용할 수 없습니다.
+locker_cabinet_can_not_use_error_message_format = {0}は{1}以上で使用することができます。
+locker_cabinet_error_message = 倉庫はミドルリーグ以上で使用することができます。
+locker_cabinet_not_available_message = {0}通常枠で使用できます
+locker_cabinet_unlock_item_message = {0}ポケGで{1}を開放
+locker_cabinet_rename_title = 이름 변경
+locker_cabinet_raname_note = 倉庫名は最大6文字まで入力できます。
+locker_cabinet_unlock_title = 倉庫開放
+locker_cabinet_unlock_message = [ff0000]{0}ポケG[-][662200]で｢{1}｣を開放しますか？[-]
+locker_cabinet_unlock_success_message = ｢{0}｣を開放しました
+locker_cabinet_confirm_gold_purchase_title = 확인
+locker_cabinet_confirm_gold_purchase_message = G머니가 부족합니다.\nG머니를 구매하시겠습니까?
+locker_cabinet_confirm_gold_purchase_note = 필요한 G머니: {0}\n보유 G머니: {1}
+locker_cabinet_help_window_title = 倉庫使用について
+locker_cabinet_help_window_message = 倉庫は上位リーグ専用機能です。\nマスターリーグで2個目以降の倉庫を使用しているとミドルリーグに、ミドルリーグで倉庫を使用しているとビギナーリーグに転校または転校申請ができなくなります。\nご注意下さい。
+locker_cabinet_help_window_checkbox_message = 今後表示しない
+
+avatar_equip_no_item_format = 현재 {0}이(가) 없습니다.
+
+practice_list_quest_area = 어디서 훈련할까요?
+practice_list_quest_stage = 어떤 훈련 메뉴로 할까요?
+practice_list_facility_description = 적합한 시설 이용 시 효율이 좋아집니다.
+practice_list_selecting_facility = {0}/{1}
+practice_list_pairtraining_description = 2인 훈련의 효율이 더 좋습니다.
+practice_list_team_multi_raid_name = {0}등장 중!!
+practice_list_team_multi_raid_description = 콤보 달성이 승리의 비결입니다!
+practice_list_team_multi_raid_expired_title = {0}와(과) 대결
+practice_list_team_multi_raid_expired_message = 시간이 없으므로 돌아가 버렸습니다.
+practice_list_fishing_boss_expired_title = 용왕이 사라졌습니다!
+practice_list_fishing_boss_expired_message = 용왕은 흥미를 잃고 사라졌습니다. 다시 물고기를 잡아 용왕을 불러요.
+practice_list_use_item_user_name = {0}이(가)
+practice_list_use_item_item_name = {0}을(를) 사용!
+practice_list_ability_importance = 집중
+practice_pair_select_empty_message = 훈련하고 있는 다른 멤버는 없습니다.
+practice_pair_select_empty_guide = 친구가 많아지면 2인 훈련이 수월해집니다!
+practice_list_unlock_practice_title = 새로운 훈련이 시작되었습니다.
+practice_list_unlock_practice_name = '{0}'
+practice_list_unlock_practice_message = 새로운 훈련 {0}이(가) 가능해졌습니다!
+practice_list_team_fishing_name = 낚시터
+practice_list_team_fishing_boss_name = 용왕 낚시 대작전
+practice_list_team_fishing_detail = 낚시터
+practice_list_team_fishing_boss_detail = 용왕 낚시 대작전
+practice_list_team_fishing_description = 魚を釣ってヌシを誘いましょう
+practice_list_team_fishing_boss_description = 제한 시간 내에 낚아요!
+practice_list_team_corps_boss_name = 보스 출현 중!
+practice_list_delete_resume_message = 일부 이벤트 정보가 초기화되었습니다. 자세한 내용은 알림 메시지를 확인해주세요.
+
+practice_alert_growth_lock_max_total_ability_title = 성장 잠금 중
+practice_alert_growth_lock_max_total_ability_message = 캐릭터의 모든 힘이 리그 제한에 도달해 능력 상승이 불가능합니다.\n연습을 시작하겠습니까?
+practice_alert_player_max_total_ability_title = 능력 보너스 상한
+practice_alert_player_max_total_ability_message = 개발할 수 있는 능력 보너스가 한계에 도달해 능력 상승이 불가능합니다.\n연습을 시작하겠습니까?
+practice_alert_check_message = 이 캐릭터로는 앞으로 표시하지 않습니다.
+
+practice_bp_dialog_message = {0} 님이 BP 상승 카드를 발동합니다!\n카드 효과 {1}배 상승 중입니다.\n\n효과를 덮어 씁니다. 카드를 사용 하시겠습니까?
+practice_team_band_dialog_message = {0}さん が団結カードを\n発動しています。\n\n効果が上書きされますが、カードを\n使用しますか？
+
+necessary_physical = 소비: {0}
+shortage_item_title = 아이템이 없습니다.
+shortage_item_message = {0}이(가) 없습니다.\n상점에서 구매하겠습니까?
+
+already_has_event_cheer_title = {0}발동 중
+already_has_event_cheer_message = 이미 {0}을(를) 발동하고 있습니다. 발동을 덮어쓰겠습니까?
+
+practice_use_facility_shortage_coin_title = 코인이 부족합니다.
+practice_use_facility_shortage_coin_message = 코인이 부족하므로\n시설을 설치할 수 없습니다.
+practice_lock_title = 아직 훈련할 수 없습니다.
+practice_lock_rank_message = 이 훈련은 선수 레벨{0}부터\n훈련할 수 있습니다.
+practice_lock_other_message = 조건 미달이므로\n이 훈련을 할 수 없습니다.
+practice_lock_event_message = 이벤트 조건을 달성하면\n훈련을 할 수 있습니다.
+practice_special_lock_title = 아직 플레이할 수 없습니다.
+practice_special_lock_message = 이 특별 훈련은\n{0}~{1}의\n동안에만 플레이할 수 있습니다.
+practice_card_empty_title = 카드가 없습니다.
+practice_card_empty_message = 카드는 상점에서 구매 가능합니다.
+practice_goods_getted = {0}을(를)\n획득!
+practice_collection_complete_serif = 수집품 {0}개를 모았어!!
+practice_roulette_button_coin = 코인
+practice_roulette_button_card = 카드
+practice_roulette_button_exp_up = 사용
+
+practice_result_gift_reward = 보상
+practice_result_gift_coin = 코인
+practice_result_gift_item = 아이템
+practice_result_gift_and = 하고
+practice_result_gift_title = 선물함에 보냈습니다.
+practice_result_gift_message = 보유 수량 상한으로 인해 취득한 {0}은(는) 선물함으로 보내졌습니다.
+practice_result_goods_collect = 수집품을 5종 모으면 상점에서\n아이템과 교환할 수 있어요!
+
+practice_giveup_message_normal = 연습 중에 취득한 코인, 수집품이 전부 없어집니다.\n연습 중에 퀘스트가\n달성이 불가능한 경우가 있습니다.
+practice_giveup_message_event = 연습 중에 취득한 아이템 및 포인트는 전부 없어집니다.\n소비한 아이템, 체력은 돌아오지 않습니다.\n또한, 연습 중에 퀘스트 달성이 되지 않는 경우가 있습니다.
+practice_giveup_message_derby = 연습 중에 취득한 아이템 및 포인트는 전부 없어집니다.\n연속 홈런 수는 0회로 초기화됩니다.\n사용한 아이템은 돌아오지 않습니다.\n또한, 연습 중에 퀘스트 달성이 되지 않는 경우가 있습니다.
+
+practice_resume_title = 훈련 시작
+practice_resume_body = 중단한 연습이 있습니다.\n중단한 연습을 개시하겠습니까?
+practice_resume_yes = 계속하기
+practice_resume_no = 그만하기
+practice_resume_confirm_body = 그만두는 경우, 중단한 연습에서 획득한 코인·수집품이 없어집니다.\n진행하시겠습니까?
+practice_resume_confirm_body_derby = 계속하지 않는 경우, 연속 홈런 수는 0회로 초기화됩니다.\n진행하시겠습니까?
+practice_resume_error_body = 데이터가 손상되었으므로 훈련을 계속할 수 없습니다.
+practice_pair_training_with = {0}와(과) 2인 연습 중
+practice_select_item_for_exp_up_message = 숙련도를 상승할 야구 장비를\n선택해주세요.
+
+team_mate_request_friend_title = 팀동료에게 친구 신청
+team_mate_request_friend_description = 친구가 되면 메일 보내기가 가능해\n지므로 이적 후에도 2인 연습이 가능합니다.\n친구 신청을 하겠습니까?
+team_mate_request_success_title = 친구 신청 완료
+team_mate_request_success_message = 친구 신청이 완료되었습니다.
+
+minigame_resume_title = 미니 게임 시작
+minigame_resume_body = 중단한 미니 게임이 있습니다.\n중단한 미니 게임을 다시 하겠습니까?
+minigame_resume_yes = 계속하기
+minigame_resume_no = 그만하기
+minigame_resume_confirm_body = 그만하는 경우, 중단한 연습에서 획득한 코인·수집품이 없어집니다.\n진행하시겠습니까?
+minigame_resume_timeover_body = 대결 시간이 지났으므로 미니 게임을 계속할 수 없습니다.
+
+cycling_resume_body = 중단된 미니 게임이 있습니다.\n\n다시 게임할 경우에는 취득한\n하트 수집품이 없어지고 처음부터\n미니 게임이 시작됩니다.\n\n계속하시겠습니까?
+cycling_resume_confirm_body = 중단하는 경우 취득한\n하트 수집품, 미니게임에서\n소비한 체력을 잃게 됩니다.\n\n진행하시겠습니까?
+
+shop_confirm_buyitem_title = 구매 확인
+shop_confirm_buyitem_body = 아이템을\n구매하겠습니까?
+shop_after_buyitem_title = 구매 완료
+shop_after_buyitem_body = 아이템을\n구매했습니다.
+
+shop_confirm_sellitem_title = 판매 확인
+shop_confirm_sellitem_body = 아이템을\n판매하겠습니까?
+shop_after_sellitem_title = 판매 완료
+shop_after_sellitem_body = 아이템을\n판매하였습니다.
+
+shop_purchase_succeeded = G머니를 구매했습니다.
+shop_purchase_item_notfound = 구매 가능한 상품이 없습니다.
+shop_purchase_platform_error_title = 오류
+shop_purchase_platform_error_gp = 구매 처리 실패\n사용 중인 디바이스의 설정·통신 환경을 확인하신 후, 다시 시도하시기 바랍니다.\n지불했음에도 미반영의 경우에는 Google에서 보낸 확인 메일을 첨부한 후, 고객 센터로 연락 바랍니다.
+shop_purchase_platform_error_as = 구매 처리 실패\n사용 중인디바이스의 설정·통신 환경을 확인하신 후, 다시 시도하시기 바랍니다.\n지불했음에도 미반영의 경우에는 Apple에서 보낸 확인 메일을 첨부한 후, 고객 센터로 연락 바랍니다.
+
+shop_top_chara_talk_welcome = 어서 오세요!\n오늘은 무슨 일로 오셨죠?
+shop_top_chara_talk_pocket_gold_campaign = 딱 좋을 때 오셨네요!\n지금 G머니를 구매하면\n덤을 받을 수 있어요.
+shop_top_chara_talk_buy = 무엇을 구매할 건가요?\n마음 편히 둘러 보세요.
+shop_top_chara_talk_sell = 필요 없는 물건이 있다면\n우리 상점에서 살게요.
+
+shop_exchange_gold_confirm_title = 코인 구매 확인
+shop_exchange_gold_confirm_message = {0}코인을\n구매하겠습니까?
+shop_exchange_gold_result_title = 코인 구매 확인
+shop_exchange_gold_result_message = {0}코인을\n구매하였습니다!
+
+syllable_remaining_label = 앞으로 {0}자
+syllable_team_default = 전국대회를 향해 모두 화이팅
+syllable_team_title = 팀 댓글
+syllable_edit_team_title = 팀 댓글 수정
+syllable_edit_team_success = 팀 댓글을 수정합니다.
+syllable_edit_set_phrases_title = 템플릿 편집
+syllable_edit_set_phrases_success = 템플릿을 수정합니다.
+syllable_edit_set_phrases_notice = 템플릿은 최대 {0}자입니다.
+syllable_edit_team_notice = 팀 댓글은 주장만 수정 가능합니다.
+syllable_edit_team_max_labels = 팀 댓글은 최대 {0}자입니다.
+syllable_edit_strategy_title_title = 타이틀을 수정한다.
+syllable_edit_strategy_title_success = 작전 보드 타이틀을 수정하였습니다.
+syllable_edit_strategy_title_notice = 최대 {0}자입니다.
+syllable_strategy_notify_title = 팀원에게 알린다.
+syllable_strategy_notify_success = 팀원에게 알렸습니다.
+syllable_strategy_notify_notice = 최대 {0}자입니다.
+
+name_edit_player_title = 이름 변경
+name_edit_player_note = 캐릭터명은 최대 6자까지입니다.
+name_edit_player_success = 유저 이름을 변경했습니다.
+
+infirmary_chara_message = 휴식하면 체력이 전부 회복됩니다\n조금 쉬겠습니까?
+infirmary_chara_message_full = 체력이 가득하네?\n어서 게으름 피우지 말고\n잘 하고 와.
+infirmary_chara_message_nomore = 이제 회복할 수 없어.\n내일 또 가도록 해.
+infirmary_full_stamina = 체력이 꽉 찼습니다.
+infirmary_enabled_recover = 체력 회복 가능합니다.
+infirmary_disabled_recover = 더이상 회복할 수 없습니다.
+infirmary_confirm = 회복실에서 쉬고\n체력을 회복할까요?
+
+position_name_jpn_pitcher = 투수
+position_name_jpn_catcher = 포수
+position_name_jpn_first = 1루수
+position_name_jpn_second = 2루수
+position_name_jpn_third = 3루수
+position_name_jpn_short = 유격수
+position_name_jpn_left = 좌익수
+position_name_jpn_center = 중견수
+position_name_jpn_right = 우익수
+position_name_jpn_starter = 선발
+position_name_jpn_relief = 중간 계투
+position_name_jpn_closer = 마무리
+
+school_guide_header_serif_top = 어서 오게나.\n무슨 용건이라도 있나?
+
+position_exposition_starter = 많은 이닝을 투구하는 것이 요구된다.
+position_exposition_relief = 선발 투수와 마무리 투수의 중간을 담당한다.
+position_exposition_closer = 상대의 반격을 막아 팀을 승리로 이끄는 포지션
+
+position_wish_caption_summary = 희망 포지션
+position_wish_caption_pitcher_choice = 등판 희망
+position_wish_caption_fielder_choice = 제{0}희망
+
+position_wish_serif_summary = 허허허\n희망하는 포지션이\n있다면 고려하도록 하죠.
+position_wish_serif_pitcher_choice = 언제쯤의 등판이\n좋은가요?\n희망 사항을 말해주세요.
+position_wish_serif_fielder_choice = 제{0}희망은 어떤\n포지션인가요?
+position_wish_serif_submit = 알겠습니다.\n이 포지션으로\n생각하겠습니다.
+
+position_wish_already_changed_error_title = 포지션 변경 완료
+position_wish_already_changed_error_message = 오늘은 이미 포지션 변경을 완료했습니다.\n오전 5시부터 다시 변경이 가능합니다.
+
+position_wish_confirm_title = 확인
+position_wish_confirm_message = 포지션 희망 변경은 하루에 한 번뿐입니다.\n변경하시겠습니까?
+position_wish_no_change_confirm_message = 현재 희망하는 포지션과 같습니다.\n이대로 괜찮겠습니까?
+position_wish_bench_confirm_message = 주의사항에 동의하고 벤치 희망을 내겠습니까?
+position_wish_bench_confirm_note = <주의사항>\n·벤치 희망은 그만둘 때까지 지속됩니다.\n·벤치 희망을 내고 있어도 경기에 나갈 수 있는\n경우가 있습니다.
+
+order_wish_batting_number_name_format = {0}번
+order_wish_batting_number_ability_condition_format = {0}이상
+order_wish_batting_number_unselect_explanation = 타순 희망을 안 낸다.
+order_wish_unselected_name = 희망 없음
+order_wish_serif_summary = 허허허\n희망하는 타순과 포지션이 있다면 고려하겠습니다.
+order_wish_serif_batting_number_choice = 어느 타순을 희망합니까?
+order_wish_serif_position_choice_pitcher = 어떤 역할이 좋습니까? 희망 사항을 말해주세요.
+order_wish_serif_position_choice_fielder = 어느 포지션을 희망합니까?
+order_wish_serif_submit = 알겠습니다.\n이 희망으로 생각하겠습니다.
+order_wish_batting_number_error_title = 주의
+order_wish_batting_number_error_message = {0}은(는) 능력치가 충족하지 않으므로 희망을 낼 수 없습니다.
+order_wish_batting_number_error_note = <능력치>\n{0}
+order_wish_batting_number_error_note_ability_condition = {0}: {1}이상
+order_wish_batting_number_error_note_ability_condition_mask = [888888]{0}: {1}이상[-]
+order_wish_batting_number_error_note_ability_condition_error = [ff3333]{0}: {1}이상(앞으로 {2} 필요)[-]
+order_wish_batting_number_error_note_position_condition = 포지션: {0}
+order_wish_batting_number_error_note_position_condition_error = [ff3333]포지션: {0}({1}은(는) 희망을 낼 수 없음)[-]
+order_wish_change_confirm_title = 확인
+order_wish_change_confirm_message = {0}의 희망 오더를 내겠습니다.\n진행하시겠습니까?
+order_wish_change_confirm_note = ※이적하면 캐릭터별로 희망 타순이 초기화됩니다.\n※이적을 희망하는 타이밍에 따라 경기에 반영되지 않는 경우가 있으므로 주의 바랍니다.
+order_wish_bench_confirm_title = 확인
+order_wish_bench_confirm_message = 주의사항에 동의하고 벤치 희망을 내겠습니까?
+order_wish_bench_confirm_note = <주의사항>\n·벤치 희망은 그만둘 때까지 지속됩니다.\n·벤치 희망을 내고 있어도 경기에 나갈 수 있는\n경우가 있습니다.
+order_wish_caption_summary = 현재의 희망 오더
+order_wish_caption_batting_number_choice = 희망 타순
+order_wish_caption_position_choice_pitcher = 희망 역할
+order_wish_caption_position_choice_fielder = 희망 포지션
+
+team_member_order_wish_list_column_position_pitcher = 역할
+team_member_order_wish_list_column_position_fielder = 수비
+
+team_search_header_serif = 다른 팀에 대한 것은\n내가 알려주겠다.\n뭘 알고 싶지?
+team_search_not_found_title = 검색 결과가 없습니다.
+team_search_not_found_message = 지정된 조건에 맞는 팀이 없습니다.\n조건을 변경하여 다시 검색해주세요.
+team_search_input_default_text = 지정 없음
+team_search_avatar_name = 친구
+
+team_create_select_message = 다른 팀으로 가버리는구나...\n야구팀이 없는 동네라면\n새로운 팀을 만들 수 있어.
+team_create_select_block = 야구팀 지역: {0}
+team_create_confirm_message = 호오. 좋은 팀이군\n이 동네에서 팀을\n만들 거지?
+team_create_complete_message = 수속이 끝났어\n새로운 팀에서도\n활약을 기대하고 있겠다.
+
+team_create_after_normal = 어서 멤버를 모으자
+team_create_after_viral = 팀 ID 확인
+
+team_transfer_top_serif = 다른 팀으로 이적하고 싶은가?\n더 많은 활약을 위해서라면\n이적하는 것도 좋은 방법이지.
+
+scout_profile_serif_register = 선수 영입을 희망하는가\n...알겠다.\n너의 희망을 들어보지.
+scout_profile_serif_complete = 등록했다.\n영입 제안이 올 때까지\n시간이 걸릴 거다.
+scout_profile_serif_default = 너의 희망 조건은\n들었지만 바꾸고\n싶어진 건가.
+scout_profile_serif_update = 희망 내용을 변경할 거야?\n변경하고 싶은 내용을\n알려줘.
+
+scout_profile_cancel_title = 희망 취소
+scout_profile_cancel_message = 영입 희망을 취소하시겠습니까?
+
+scout_profile_dialog_title_new = 영입
+scout_profile_dialog_message_new = 영입을 희망합니다.
+
+scout_profile_dialog_title_change = 영입
+scout_profile_dialog_message_change = 영입 조건을 변경하였습니다.
+
+team_appeal_board_serif_register = 음, 팀원을 늘릴 거야?\n팀원을 모집하려면\n선수 조건을 말해줘 .
+team_appeal_board_serif_complete = 음, 강한 선수가\n들어오면 좋겠네.\n이 내용으로 모집하겠어.
+team_appeal_board_serif_default = 음, 모집 조건은\n항상 업데이트하는 게 좋아\n모집 내용을 변경하겠나?
+team_appeal_board_serif_update = 음, 좋은 선수가\n모집되지 않는다면 내용을\n변경하는 게 좋아.
+
+team_appeal_board_cancel_title = 모집 취소
+team_appeal_board_cancel_message = 팀원 모집을 취소하시겠습니까?
+
+team_appeal_board_dialog_title_new = 팀원 모집
+team_appeal_board_dialog_message_new = 팀원 모집을 시작하였습니다.
+
+team_appeal_board_dialog_title_change = 팀원 모집
+team_appeal_board_dialog_message_change = 모집 조건을 변경하였습니다.
+
+team_appeal_board_dialog_note = 5일이 경과하면 자동으로 삭제됩니다.
+
+scout_appeal_input_title = 어필 편집
+scout_select_none = 지정 없음
+
+scout_blook_select_none = 지정 없음
+
+leader_top_serif_default = 음, 너의 힘이라면\n선수도 모이겠지\n야구팀을 부탁한다.
+scout_appeal_search_serif = 음, 선수를 영입하고 싶은가?\n전국에서 훌륭한 선수를\n찾아봐.
+
+search_rank_label = {0}~{1}
+
+scout_select_rank_none = 지정 없음
+scout_select_position_type_none = 지정 없음
+scout_common_rank_label = 순위{0}
+
+scout_appeal_search_not_found_title = 검색 결과
+scout_appeal_search_not_found_message = 검색 조건에 맞는 선수가 없습니다.
+
+scout_appeal_list_scout_confirm_title = 영입 확인
+scout_appeal_list_scout_confirm_message = {0}을(를) 영입하겠습니까?
+scout_appeal_list_scout_with_message_confirm_message = 위의 메시지와 함께\n{0}을(를) 영입하겠습니까?
+scout_appeal_list_default_scout_message = 함께 전국대회를 목표로 하자
+
+scout_appeal_list_scout_result_title = 영입 신청 완료
+scout_appeal_list_scout_result_message = {0}에게 영입 신청을 보냈습니다.
+
+scout_list_cancel_confirm_title = 신청 취소 확인
+scout_list_cancel_confirm_message = {0}의 영입 신청을 취소하시겠습니까?
+
+scout_list_cancel_result_title = 신청 취소
+scout_list_cancel_result_message = 영입 신청을 취소했습니다.
+
+scout_invite_reject_confirm_title = 확인
+scout_invite_reject_confirm_message = {0}(으)로부터의 제안을 거절하겠습니까?
+
+scout_invite_reject_result_title = 완료
+scout_invite_reject_result_message = 제안을 거절했습니다.
+
+scout_invite_list_team_member_num = 투수 {0}명/야수 {1}명
+scout_invite_list_team_member_num_farm_include = 投手 {0}人/野手 {1}人/育成 {2}人
+scout_invite_list_date = {0}/{1}/{2} {3}:{4}
+
+scout_invite_accept_confirm_title = 이적 확인
+scout_invite_accept_confirm_message = {0}(으)로 이적합니다.\n진행하시겠습니까?
+
+scout_invite_accept_result_title = 이적 완료
+scout_invite_accept_result_message = {0}(으)로 이적했습니다.
+team_admin_change_title_confirm = 주장 변경
+team_admin_change_confirm_message = {0}와(과)\n주장을 변경하시겠습니까?
+team_admin_change_confirm_note = ·리더 변경 후에는 '영입하기' 기능을 사용할 수 없게 됩니다.
+team_admin_change_title_complete = 주장 변경
+team_admin_change_complete_message = {0}와(과)\n주장을 변경했습니다!
+
+team_transfer_title_confirm = 이적 확인
+team_transfer_title_complete = 이적 완료!
+team_transfer_confirm_message = 「{0}」の通常枠に転校します。\nよろしいですか？
+team_transfer_confirm_with_cancel_message = 새롭게 '{0}'(으)로 이적하는 경우\n'{1}'(으)로의 신청은\n취소됩니다. 진행하시겠습니까?
+team_transfer_complete_message = 「{0}」の通常枠に転校しました。\nさっそく新しい仲間にあいさつをしましょう！
+team_transfer_prohibit_title = 이적할 수 없습니다.
+team_transfer_prohibit_message = '{0}'(으)로의 이적은\n다음과 같은 이유로 할 수 없습니다.\n\n·{1}
+team_transfer_confirm_note = ・試合成績はリセットされます。\n・転校を取りやめることはできません。\n・転校は1日1回しか出来ません。\n・リーダーが転校する場合、リーダー権限をメンバーに\n　移譲する必要があります。\n・転校先の高校で使用できないぼくマネを設定している\n　場合、ぼくマネが変更されます。\n・一部のチャレンジは転校すると取り消されます。\n・転校するとキャラ毎の打順希望がリセットされます。
+team_transfer_beginner_farm_confirm_additional_note = \n・転校すると育成枠から外れ、ビギナーリーグの育成枠\n　に戻ることはできません。\n・育成枠から抜けた場合は、育成報酬が付与されませ\n　ん。
+
+team_member_request_confirm_title = 이적 신청 확인
+team_member_request_confirm_message = 설립된 야구팀이 있으므로\n이적하려면 신청이 필요합니다.\n'{0}'에 이적 신청을 하겠습니까?
+team_member_request_confirm_continue_message = 이적 승인이 불가능합니다.\n다음 조건을 충족할 때까지\n상대의 승인이 불가능합니다. 진행하시겠습니까?\n\n·{0}
+
+team_member_request_confirm_with_cancel_message = 새롭게 '{0}'(으)로 이적을 신청하는 경우\n'{1}'(으)로의 신청은\n취소됩니다. 진행하시겠습니까?
+team_member_request_complete_title = 이적 신청 완료
+team_member_request_complete_message = {0}'에 이적 신청을 하였습니다.
+team_member_request_prohibit_title = 신청할 수 없습니다.
+team_member_request_prohibit_message = '{0}'(으)로의 이적 신청은\n아래의 이유로 신청할 수 없습니다.\n\n·{1}
+team_member_request_cancel_confirm_title = 신청 취소 확인
+team_member_request_cancel_confirm_message = {0}'(으)로의 이적 신청을\n취소하시겠습니까?
+team_member_request_cancel_complete_title = 신청 취소 완료
+team_member_request_cancel_complete_message = {0}'(으)로의 이적 신청을\n취소하였습니다.
+team_member_request_list_member_num = 현재 팀원 수 {0}/{1}
+team_member_request_reject_confirm_title = 신청 취소 확인
+team_member_request_reject_confirm_message = {0}'(으)로 부터의 신청을\n거절하겠습니까?
+team_member_request_reject_complete_title = 신청 취소 완료
+team_member_request_reject_complete_message = 신청을 거절했습니다.
+team_member_request_accept_confirm_title = 팀원모집 수속 확인
+team_member_request_accept_confirm_message = '{0}'을(를) 동료로 하겠습니까?
+team_member_request_accept_complete_title = 팀원모집 수속 완료
+team_member_request_accept_complete_message = '{0}'이(가) 동료가 되었습니다.
+team_member_request_disable_full_member = 転校先の通常枠がいっぱい
+team_member_request_disable_full_farm_member = 転校先の育成枠がいっぱい
+
+team_farm_cannot_promote_error_title = 昇格できません
+team_farm_cannot_promote_error_message = 通常枠がいっぱいです
+team_farm_promotion_apply_title = 通常枠への昇格
+team_farm_promotion_apply_message = 通常枠への昇格を申請しますか？
+team_farm_promotion_apply_complete_title = 昇格申請完了
+team_farm_promotion_transfer_title = 通常枠への昇格
+team_farm_promotion_transfer_message = 通常枠へ昇格しますか？
+team_farm_promotion_transfer_complete_title = 昇格完了！
+team_farm_promotion_note = ・昇格は転校と同じ処理になります。\n・転校を取りやめることはできません。\n・転校は1日1回しか出来ません。\n・リーダーが転校する場合、リーダー権限をメンバーに\n　移譲する必要があります。\n・転校先の高校で使用できないぼくマネを設定している\n　場合、ぼくマネが変更されます。\n・一部のチャレンジは転校すると取り消されます。
+
+team_no_applying_team_title = 申請中の高校がありません
+team_no_applying_normal_team_message = 通常枠で転校申請を出している高校はありません。
+team_no_applying_farm_team_message = 育成枠で転校申請を出している高校はありません。
+
+team_normal_or_farm_select_serif = どちらでてんこうするんだ？
+team_farm_beginner_enquete_serif = ビギナーリーグに転校か、君にあう高校があるかもしれないな
+team_farm_invite_edit_serif = どんな育成部員を勧誘したいんだ？
+team_farm_invite_info_serif = この内容で育成部員を勧誘しているぞ！
+
+team_farm_appeal_board_cancel_title = 勧誘取り下げ
+team_farm_appeal_board_cancel_message = 育成枠の勧誘を取り下げますか？
+team_farm_appeal_board_dialog_title_new = 登録完了
+team_farm_appeal_board_dialog_message_new = 育成枠の勧誘情報を登録しました。
+
+team_farm_selection_required = 選択必須
+team_farm_create_team_confirm_title = 확인
+team_farm_create_team_confirm_message = チームを設立すると、通常枠になりますが、よろしいですか？
+
+team_farm_transfer_title_complete = 이적 완료!
+team_farm_transfer_confirm_message = 「{0}」の育成枠に転校します。\nよろしいですか？
+team_farm_transfer_complete_message = 「{0}」の育成枠に転校しました。\nさっそく新しい仲間にあいさつをしましょう！
+team_farm_transfer_confirm_additional_note = \n・育成枠に所属できる期間は最大２シーズンです。\n・育成枠で2シーズンを経過すると育成枠から外れて、\n　昇格するか転校するかを選択します。\n・育成枠に所属した状態で2シーズン目の4日目以降に\n　転校すると、育成報酬が付与されなくなります
+
+league_change_league_select_serif = 높은 레벨을 목표로 하는 것도 너에게는 중요한 것이지.\n희망 리그는 어디인가?
+league_change_league_select_league_sync_serif = 어려운 리그로 가려면\n자기 자신의 능력 한계를 정해야 한다.
+league_change_school_select_serif = 음, 이건 어떤가?\n너에게 맞을 것 같은 팀을 골라봤어.
+league_change_decide_change_serif = 흠, 괜찮은 야구팀이군\n새로운 리그는 이 팀에서 열심히 해야 한다?
+league_change_complete_change_serif = 수속이 끝났어\n새로운 팀에서도\n활약을 기대하고 있겠다.
+league_change_searche_school_serif = 이 리그로 가고 싶은 팀이 있는가?\n흠, 자세히 말해봐.
+
+league_change_search_result_member_label = 투수 {0}명/야수 {1}명
+league_change_select_team_error_title = 리그가 없습니다.
+league_change_select_team_error_message = 옮길 수 있는 팀이 없으므로 리그 변경이 불가능합니다.
+
+league_change_confirm_message = ·리그를 변경한 경우\n현재 소속하고 있는 팀은 탈퇴하게 됩니다.\n·옮긴 팀에서 사용할 수 없는 나의 매니저를 설정하고 있는\n경우 나의 매니저가 변경됩니다.
+
+league_change_rank_error_title = 리그를 이동할 수 없습니다.
+league_change_rank_error_under = 선수의 레벨이 부족하므로 리그를 이동할 수 없습니다.
+league_change_league_sync_error = 이 캐릭터는 과거에 {0}의 리그 제한을 해제하고 있으므로 리그를 이동할 수 없습니다.
+league_change_league_select_league_sync_message = {0}(으)로 야구팀을 이동하면 현재 사용하고 있는 캐릭터는 {1}에서 사용할 수 없게 됩니다. 진행하시겠습니까?
+
+add_player_select_position_message = 포지션은\n뭘로 할래?
+add_player_input_name_message = 새로운 캐릭터의\n이름을 정해줘!
+add_player_confirm_message = 오! 좋은데?\n새로운 캐릭터를 등록해줘
+
+addplayer_title = 캐릭터 추가 성공
+addplayer_success = 캐릭터를 추가하였습니다.
+
+removeplayer_confirm_title = 캐릭터 삭제
+removeplayer_last_confirm_content = 정말 캐릭터를 삭제하겠습니까?
+removeplayer_notice = 한번 삭제한 캐릭터는 레벨과 성적 등의 정보가 전부 초기화됩니다.
+removeplayer_title = 캐릭터 삭제 성공
+removeplayer_success = 캐릭터를 삭제하였습니다.
+removeplayer_error_title = 캐릭터 삭제
+removeplayer_error_main = 메인 선수는 삭제할 수 없습니다.
+
+profile_change_user_message_title = 자기소개 편집
+profile_change_user_message_notice = 누군가를 비방 및 중상하는 내용과 게임의 취지에 어긋난 내용은 글은 작성하지 마십시오.\n본명과 메일 주소, 전화번호 등 특정 개인과 연결되는 정보는 입력하지 마십시오.
+profile_change_user_message_success_message = 자기소개를 편집합니다.
+profile_change_user_name_title = 닉네임 편집
+profile_change_user_name_success_message = 닉네임을 편집합니다.
+profile_change_player_syllable_title = 한마디 수정
+profile_change_player_syllable_notice = 누군가를 비방 및 중상하는 내용과 게임의 취지에 어긋난 내용은 글은 작성하지 마십시오.\n본명과 메일 주소, 전화번호 등 특정 개인과 연결되는 정보는 입력하지 마십시오.
+profile_change_player_syllable_success_message = 한마디 글을 수정합니다.
+
+profile_change_main_player_min_rank_error_message = 소속 리그 최저 레벨에 도달하지 않았으므로 변경할 수 없습니다.
+profile_change_main_player_league_sync_error_message = 과거에 {0}의 리그 제한을 해제하고 있으므로 사용할 수 없습니다.
+profile_change_main_player_league_sync_confirm_title = 리그 제한 해제
+profile_change_main_player_league_sync_confirm_message = 리그 제한을 해제하여 {0}(으)로 올라갑니다.\n{1}에서 사용할 수 없게 됩니다. 진행하시겠습니까?
+profile_change_main_player_finish_title = 변경 확인
+profile_change_main_player_finish_message = '{0}'(으)로 변경하였습니다.
+profile_change_main_player_finish_note = ※앞으로의 경기에서는 이 캐릭터의 오더 희망이 반영됩니다.
+profile_season_block_area = 제{0}회 {1}대회
+
+profile_ability_tips_league_sync_current_league_limit = {0}의 경기에서는\n종합능력이 {1}밖에 발휘되지 않고 있어!
+profile_ability_tips_league_sync_next_league = {0}에서\n실력을 보여줄래?
+profile_ability_league_sync_limit_title = 리그 제한을 초과했습니다.
+profile_ability_league_sync_limit_message = 종합능력이 {0}의 제한({1})을(를) 초과했습니다.\n경기에서 발휘된 능력은 {0}의 리그 제한을 받습니다.
+profile_ability_reset_ability_bonus_point_title = 능력 보너스 초기화
+profile_ability_reset_ability_bonus_point_message = 취득한 보너스를 초기화합니다.\n초기화하면 최대 순위 도달 시의 상태로 돌아갑니다.
+profile_ability_growth_unlock_title = 성장 잠금 해제
+profile_ability_growth_unlock_message = {0}(종합능력 {1})에서 잠금되어 있습니다.\n잠금을 해제하겠습니까?
+profile_ability_growth_lock_title = 성장 잠금
+profile_ability_growth_lock_error_total_ability_messag = 이 캐릭터의 종합능력은 이미 {0}의 제한을 초과하고 있으므로 잠금을 할 수 없습니다.
+profile_ability_growth_lock_error_total_ability_note = 성장 잠금은 {0}의 제한까지 사용할 수 있습니다.
+profile_ability_growth_lock_message = {0}(종합능력 {1})에서 잠금을 했습니다.
+
+profile_world_name = {0} 서버
+
+skill_not_match_player_type_error_batter = 이 스킬은 타자용이므로 사용할 수 없습니다.
+skill_not_match_player_type_error_pitcher = 이 스킬은 투수용이므로 사용할 수 없습니다.
+skill_unless_otherwise_specified_situation = -
+
+used_up_description = 숙련도
+
+training_room_chara_serif_top = 장비를 강하게 하고 싶은가?\n좋아, 내가 도와주지.
+training_room_chara_serif_change_select = 사용한 장비를\n투혼으로 해주지.\n뭐가 좋은가?
+training_room_chara_serif_change_confirm = 잘도 사용했군.\n이 야구 장비를\n투혼으로 하겠나?
+training_room_chara_serif_submit_item_select = 음, 괜찮은 투혼이군.\n강하게 하고 싶은 장비에\n투혼을 장착해보겠네.
+training_room_chara_serif_submit_extention_select = 음, 이 야구 장비를\n강하게 하고 싶은 거군?\n다음은 투혼을 선택해 보게.
+training_room_chara_serif_submit_confirm = 음, 괜찮은 투혼이군\n이 투혼을 이 아이템에\n넣을건가?
+
+training_room_convert_confirm_title = 확인
+training_room_convert_confirm_message = 투혼화합니다. 진행하시겠습니까?
+training_room_convert_confirm_note = 투혼화한 야구 장비는 없어집니다.
+
+training_room_attach_confirm_title = 확인
+training_room_attach_confirm_message = 투혼을 장착합니다. 진행하시겠습니까?
+training_room_attach_confirm_note = 강화하면 투혼이 없어집니다.
+
+training_room_attach_confirm_cantuse_title = 확인
+training_room_attach_confirm_cantuse_message = 스킬의 레벨이 상승하여 이 능력으로는 스킬 발동이 불가능해집니다.\n\n강화하시겠습니까?
+
+training_room_attach_confirm_cantlevelup_title = 확인
+training_room_attach_confirm_cantlevelup_message = 야구 장비의 스킬 레벨보다 투혼 스킬 레벨이 낮으므로 스킬 레벨은 상승하지 않습니다.\n\n강화하시겠습니까?
+
+training_room_attach_confirm_cantlevelup_and_use_title = 확인
+training_room_attach_confirm_cantlevelup_and_use_message = 스킬의 레벨이 상승하여 이 능력으로는 스킬 발동이 불가능해집니다.\n\n야구 장비의 스킬 레벨보다 투혼 스킬 레벨이 낮으므로 스킬 레벨은 상승하지 않습니다.\n\n강화하시겠습니까?
+
+other_item_no_item_all = 아이템이 없습니다.
+other_item_no_item_card = 카드가 없습니다.
+other_item_no_item_drink = 드링크가 없습니다.
+other_item_no_item_extension = 투혼이 없습니다.
+other_item_no_item_event = 이벤트 아이템이 없습니다.
+other_item_no_item_ticket = 티켓이 없습니다.
+other_item_no_item_skill_book = 스킬 노트가 없습니다.
+other_item_no_item_cutie = 나의 매니저 아이템이 없습니다.
+
+item_use_confirm_title = 아이템 사용 확인
+item_use_recovery_physical_confirm_message = 아이템을 사용하여 체력 회복을 하겠습니까?
+item_use_complete_title = 아이템 사용 완료
+item_use_recovery_physical_complete_message = 체력을 회복하였습니다.
+
+item_parameter_dialog_having_amount = 보유 수:
+item_parameter_dialog_sell_price = 매각 가격:
+item_parameter_dialog_having_coin = 보유 금:
+
+gacha_name_suffix = 장비뽑기
+gacha_multi_draw_name_format = {0} 연
+gacha_draw_point_name_gacha_point = 장비 뽑기 티켓
+gacha_draw_point_name_gacha_voucher = 뽑기티켓
+gacha_draw_point_name_gold = G머니
+gacha_draw_point_name_empty = ????
+gacha_draw_point_price_format_gold = {1}{0}
+gacha_draw_point_price_format_ticket = {0} {1}장
+gacha_top_serif = 뽑기를 많~이\n뽑아줘요!
+gacha_top_serif_for_beginner = 신입 팀원 한정\n뽑기를 하세요.
+gacha_date_time_format = M/d(ddd) H:mm まで
+gacha_remaining_time_format_in_day = [{0}] 앞으로 {1:00}시간 {2:00}분[-]
+gacha_remaining_time_format_in_hour = [{0}] 앞으로 {1:00}분 {2:00}초[-]
+gacha_remaining_time_format_end = [{0}] 종료했습니다.[-]
+gacha_top_odds_title = 확률 제공
+gacha_confirm_dialog_title = 확인
+gacha_confirm_gold_purchase_dialog_message = G머니가 부족합니다.\nG머니를 구매하시겠습니까?
+gacha_confirm_gold_purchase_dialog_note = 필요한 G머니: {0}\n보유 G머니: {1}
+gacha_draw_confirm_dialog_message = {0}로 {1}를 뽑겠습니까?
+gacha_draw_confirm_dialog_message_limit = (남은 횟수{0}회)
+gacha_draw_again_button_wheel_name_format = {0}장비뽑기
+gacha_error_dialog_title = 경고
+gacha_error_out_of_date_dialog_message = 뽑기 개최기간이 종료되었습니다.
+gacha_error_draw_limit_dialog_message = 뽑기 제한 횟수를 초과했습니다.
+gacha_error_ticket_shortage_dialog_message = {0}가 부족합니다.
+gacha_error_ticket_shortage_dialog_note = 필요한 티켓: {0}: 1\n보유하고 있는 티켓: {1}
+
+maintenance_dialog_title = 점검 중
+maintenance_dialog_message_start = 현재 점검 중입니다.\n잠시 후에 다시 접속해주세요.
+maintenance_dialog_message_playing = 점검을 시작했습니다.\n시작 화면으로 돌아갑니다.
+maintenance_dialog_message_term = 점검 예상 시간\n\n{0}~{1}
+
+trophy_dialog_date = 취득 일시: {0}
+trophy_dialog_tournament = 제{0}회 대회
+
+timeline_old_log_default_player_name = 예전 팀원
+timeline_new_log_default_player_name = 새로운 팀원
+timeline_empty_npc_name = NPC
+timeline_empty_cutie_name = 매니저
+timeline_set_phrases_select = 템플릿을 골라주세요.
+timeline_set_phrases_edit = 수정할 템플릿을 골라주세요.
+
+collection_wishlist_requesting_count = 의뢰 중인 아이템 수 {0}/{1}
+collection_wishlist_grant_confirm_title = 아이템 선물 확인
+collection_wishlist_add_confirm_title = 아이템 의뢰 확인
+collection_wishlist_cancel_confirm_title = 의뢰 취소 확인
+collection_wishlist_cancel_success_title = 의뢰 취소 완료
+collection_wishlist_cancel_success_message = 의뢰를 취소했습니다.
+collection_wishlist_close_title = 비표시 확인
+collection_wishlist_close_message = 이 투고를 비표시하시겠습니까?
+collection_wishlist_untradable_message = 이 아이템은 의뢰 불가한 아이템이므로 의뢰할 수 없습니다.
+
+collection_top_serif_1 = 얘야?\n좋은 물건을 갖고 있구나.\n나한테 보여줄래?
+collection_top_serif_2 = 호호호\n오늘 좋은 물건을\n손에 넣었어.
+collection_myitem_can_complete_task = 가지고 있는 물건을\n나의 소중한 물건과\n교환하지 않을래?
+collection_myitem_can_complete_task_for_beginner = 신입 회원에게 특별히\n희귀 아이템을 교환을 해드릴게요.
+collection_myitem_no_goods = 교환할 수 있는\n아이템이 없니?\n안되겠네, 다시 오렴.
+collection_myitem_request_guide = 가지고 있지 않는 아이템을 선택하면 동료에게 의뢰할 수 있어.
+collection_detail_serif_1 = 내가 봤을 땐\n야구팀의 잡동사니여도\n보물로 가득한 산이야!
+collection_detail_serif_2 = 맞아 이거 이거.\n내가 원하는 게 바로\n이런 보물이야.
+collection_cant_exchange_title = 교환할 수 없습니다.
+collection_cant_exchange_message = 아이템 수가 부족하므로 교환할 수 없습니다.
+collection_exchange_confirm_title = 아이템 교환 확인
+collection_exchange_confirm_message = '{0}'와(과) 교환합니다.\n진행하시겠습니까?
+collection_exchange_result_sunfix = {0}을 교환했습니다!
+collection_medal_exchange_serif = 그건 레어한 물건이니\n잘~ 생각해서\n교환하도록 해.
+collection_cant_medal_exchange_title = 교환할 수 없습니다.
+collection_cant_medal_exchange_message = 메달 수가 부족하므로 교환할 수 없습니다.
+collection_medal_exchange_confirm_title = 메달 교환 확인
+collection_medal_exchange_confirm_message = '{0}'와(과) 교환합니다.\n진행하시겠습니까?
+collection_expired_title = 유효기한 만료
+collection_expired_message = 이 아이템은 이미 유효기간이 만료되었습니다.
+collection_event_time = 유효기간: yyyy/MM/dd HH:mm까지
+
+game_result_skill_history_appearance = {0}회 {1}{2}타석
+
+position_fielder_description = 내야수와 외야수로 구분되어 있습니다!\n팀 득점의 근본이기에\n매우 중요한 역할이라고 평가합니다!\n포지션도 다양하여 \n출전 기회가 많습니다!
+position_pitcher_description = 투수는 수비를 맡은 중요한 역할입니다!\n타자를 속여서 헛스윙이나\n땅볼 등을 유도하여 아웃시킵니다!\n인기가 많은 포지션이여서\n선발 라인업에 경쟁이 치열합니다!
+
+register_top_kuwata_wellcome = ようこそっ\nぼくらの甲子園!ポケットへ!\n私はマネージャーのあかねだよ!\nこれから一緒に成長して\n甲子園を目指していこうねっ!
+register_select_player_message = 우선 키우고 싶은 캐릭터를\n선택해주세요!
+register_select_position_message = 선호하는 포지션도\n선택해주세요!
+register_select_name_message = あなたの名前を\n教えてほしいな！
+register_select_confirm_message = うん!いい感じ!\nじゃあこれで登録するね
+register_complete_message = 素敵なキャラだね！\nじゃあ次は入部する高校を\nえらぼっか！
+register_select_world_message = 最後にプレイする\nワールドを決めてね！
+register_input_code_message = 친구와 함께라면\n금방 성장할지도....!
+
+register_world_world_name = {0}서버
+
+tut_serif_quest_username = 너의 이름을\n알려줘.
+tut_serif_confirm_username = 이걸로 정한 건가요?
+
+tut_button_kuwata_wellcome = 잘 부탁드립니다!
+tut_button_select_player = 이 캐릭터로 선택!
+tut_button_select_name = この名前にする!
+tut_button_select_position = 이 포지션으로 선택
+tut_button_register_avatar_confirm = 등록!!
+tut_button_register_avatar_complete = 내일 훈련\n열심히 하겠습니다!
+tut_button_select_world = 이걸로 오케이!
+
+tut_button_mypage_practice_now = 괜찮아요!
+tut_button_dice_explanation = 주사위 굴리기!
+tut_button_ability_before = 훈련해요!
+tut_button_ability_gauge_roulette_after = 성장한\n기분이 들어요!
+tut_button_ability_gauge_after = 네!
+tut_button_coin_get_before = 오오!!
+tut_button_coin_get_roulette_after = 우와!!
+tut_button_coin_get_after = 코인 모으기도\n열심히 하겠습니다!
+tut_button_card_get_before = 어떤 카드를\n받을 수 있을까요~!
+tut_button_card_get_roulette_after = 아싸!!
+tut_button_card_get_after = 얼른\n사용해보고 싶어요!
+tut_button_card_use_after = 편리해요!
+tut_button_dice_count_after = 네!
+tut_button_collection_get_before = 두근두근!
+tut_button_collection_get_after = 기대돼요~!
+tut_button_ability_gauge_again_after = 성장했어요!!
+tut_button_practice_complete_thanks = 고마워요!!
+tut_button_practice_result = 네!!
+
+tut_serif_town_collection_guide_1 = 방금 훈련 시 수집된\n '수집품'을 기억하죠?
+tut_serif_town_collection_guide_2 = 여기에 저런 수집품을\n수집하는 사람이 있어요.
+tut_button_town_collection_guide = 어디에 있어요?
+tut_serif_town_collection_guide_3 = 여기에 사는 할머니는\n다양한 '수집품'을 수집하고 있어요.
+tut_serif_town_collection_guide_4 = 방금 획득한 수집품을\n할머니에게 전해주세요.
+tut_serif_collection_wellcome_1 = 허허허\n당신은 새로운 팀원인가요?\n 어떤 일로 찾아오셨나요?
+tut_serif_collection_wellcome_2 = 아이구! 나에게 각별히 수집품을\n가져온건가요?
+tut_serif_collection_wellcome_3 = 수집품으로\n내 진귀한 물건을 교환하려고요?
+tut_serif_collection_exchange_before_1 = 이번은 특별히 종류 1개로\n교환해드리죠.다음 번에 꼭 5종류를\n모두 가져오셔야 교환할 수 있어요.
+tut_button_collection_exchange_before = 알겠습니다!
+tut_serif_collection_exchange_after_1 = 허허허\n아주 좋은 거네요!고마워요.
+tut_button_collection_exchange_after = 어디에\n있나요?
+
+tut_serif_town_gacha_guide_1 = 저 장비뽑기를 돌리면\n야구 아이템을 획득 가능해요!
+tut_serif_gacha_wellcome_1 = 장비뽑기에 오신 것을 환영합니다! ! \n엉?\n처음 오신거세요?
+tut_serif_gacha_wellcome_2 = 지희라고 해요.\n뽑기티켓 기계를 담당하고 있는 지희입니다! \n잘 부탁드립니다ー!
+tut_button_gacha_wellcome = 잘 부탁해요!
+tut_serif_gacha_draw_before_1 = 손님을 처음 만난 이유로\n서비스로 한번은 무료로 돌려드립니다!
+tut_serif_gacha_draw_before_2 = 어서 돌려보세요.
+tut_button_gacha_draw_before = 뽑기 할래요!
+tut_serif_gacha_draw_after_1 = 우～와! \n5성 아이템이네요! 아주 희귀한 아이템이에요!
+tut_serif_gacha_draw_after_2 = 다음 번에 뽑기티켓을 모으면\n다시 찾아오세요!
+tut_button_gacha_draw_after = 슬슬\n경기장으로\n돌아갑시다.
+
+tut_serif_locker_equipment_item_before_1 = \n수집품 상점에서 획득한 야구 아이템을\n어서 장착해봐요!
+tut_serif_locker_equipment_item_before_2 = 장비는 야구장의\n'아이템'에서 확인할 수 있어요.\n 빨리 확인하세요.
+tut_button_locker_equipment_item_after = がんばります！
+tut_button_mypage_equipment_item_after = 네!
+tut_button_register_user_name_after = 열심히 하겠습니다!
+
+tutorial_team_search_title = 지역 선택
+tut_serif_confirm_join_team = {0}高校でいいかな？
+tut_button_before_game_rankup_after = 고마워요!
+tut_button_prepair_for_game = 얼른 경기에\n나가고 싶어요!
+tut_tutton_quest_team_name = 야구팀 이름?
+tut_tutton_quest_team_name_again = 음...\n야구팀 이름은
+tut_tutton_confirm_join_team = いいよ!
+tut_tutton_join_team_after = よろしく!
+
+tut_serif_join_team_after = じゃあこれからよろしくね！\n明日グラウンドで\n待ってるね！
+tut_serif_my_page_first_times_1 = おっそーい！！！\nもうっ！\n初日から遅れてくるなんて…
+tut_serif_my_page_first_times_2 = …ってちょっと！
+tut_serif_my_page_first_times_3 = ヒザすりむいているじゃない！\n転んだの？\n大丈夫？
+tut_serif_my_page_first_times_4 = よかった！\n心配しちゃった！
+tut_serif_my_page_first_times_5 = これ入部祝いの「ぼくらのバット」
+tut_serif_my_page_first_times_6 = 今日は練習試合があるのよ
+tut_serif_my_page_first_times_7 = 遅刻したミスは\nこのバットで取り返してきてちょうだい！
+tut_button_my_page_first_times_1 = 괜찮아요!
+tut_button_my_page_first_times_2 = 任せて!
+
+tut_serif_game_town_before = 遠くに球場が見えるでしょ\nあそこで試合が行われるの\n行ってみましょっ
+tut_serif_game_town_after_1 = 試合は1日最大4試合！\nそれぞれ決まった時間に\n試合が行われるの
+tut_serif_game_town_after_2 = その日の試合予定は\n朝に発表されるから\nチェックをわすれずにね
+tut_serif_game_town_after_3 = あっ！集合よ！\nスタメンが発表されるみたい！
+
+prohibited_scene_training_room_serif = 아무도 없는 것 같아요..\n나중에 다시 올까요?
+prohibited_scene_training_skill_serif = 네놈에겐 아직 멀었다...\n퀘스트를 쌓는 것이 좋다.
+
+tut_button_first_game_town_after = 두근두근
+tut_button_first_game_dt_first = 한 경기에서 3번의\n작전 타임이네요.
+tut_button_first_game_dt_first_new = 1번의 경기에서 4번의\n작전 시간이 있습니다.
+tut_button_first_game_decide_member_after = 頑張るぞ!
+tut_button_first_game_yell_after = 네!
+tut_button_first_game_switch_before = 네? 경기에\n나갈 수 있어요?
+tut_button_first_game_switch_after = 활약할 수\n있으려나...
+tut_button_first_game_skill_info_before = 알겠어요!
+tut_button_first_game_skill_info_detail = 무슨 차이가\n있는거죠?
+tut_button_first_game_skill_info_after = 활동적으로\n나가는거군요.
+tut_button_first_game_skill_use_after = 체력이 조금\n줄었어요?
+tut_button_first_game_skill_use_info = 타이밍이\n중요한 거군요!
+tut_button_first_game_pre_start_first_game = 열심히 하고\n올게요!
+tut_serif_first_game_result_before_1 = すごーい！！\n大活躍だったね！
+tut_button_first_homerun_after = 分かった！
+tut_button_first_game_result_before = 고마워요!
+tut_serif_first_game_result_after_1 = 이번은 연습 경기지만\n정식 경기에서 활약할 수 있게\n어서 훈련하세요.
+tut_serif_first_game_result_after_2 = 경기에서 활약하기 위해\n빨리 새로운 아이템을 가져가세요.
+tut_button_first_game_result_after = 전국대회를 목표로!
+tut_button_first_game_yell_info_after = 全員野球で\n追いつくぞ！
+tut_button_first_last_inning_play_before = 네!
+tut_button_first_last_inning_play_after = 逆転するぞ！
+
+tut_serif_complete_1 = 아, 카페 점장이\n오셨나보네요!\n한번 만나 볼까요?
+
+tut_button_game_item_experience_max_after = 가요!
+tut_button_extension_convert_wellcome = 투혼?
+tut_button_extension_convert_before = 부탁합니다!
+tut_button_extension_convertres = 장비가\n변했어요!
+tut_button_extension_attach_result = 엄청나요!!
+tut_button_extension_attach_after = 네! 스승님!
+
+tut_serif_game_phase_game_decide_member_after_1 = 3番で出場よ！
+tut_serif_game_phase_game_decide_member_after_2 = さぁそろそろはじまるわ！
+tut_serif_game_phase_game_decide_member_after_3 = 훈련 경기이지만\n대충해서는 안돼요.
+
+tut_serif_game_phase_two_introduction_1 = さあ作戦会議ね。
+tut_serif_game_phase_two_introduction_2 = 4点差だけど慌てずに、\nまずは1点取り返そう！
+tut_serif_game_phase_two_introduction_3 = 1試合の中で試合前と\n3回・6回・8回終了後に\nそれぞれ作戦会議があるの
+tut_serif_game_phase_two_introduction_4 = 作戦会議では仲間と\n次の回どうするかを話すと\nより勝利に近づくわ
+
+tut_serif_game_phase_two_equip_1 = 試合で活躍する\nポイントを教えるね！
+tut_serif_game_phase_two_equip_2 = まずは、装備を変更してみよう
+tut_serif_game_phase_two_equip_before_1 = お！期待の新入部員の\n{0}だな
+tut_serif_game_phase_two_equip_before_2 = 装備を変更して、試合で活躍しよう
+tut_serif_game_phase_two_equip_before_3 = じゃあバットを選んで\n装備してみるんだ！
+tut_serif_game_phase_two_equip_afeter_1 = いい感じ！
+tut_serif_game_phase_two_equip_afeter_2 = これで逆転してきてくれ
+tut_serif_game_phase_two_skill_before_1 = 似合ってるね！
+tut_serif_game_phase_two_skill_before_2 = やきゅう道具には"スキル"がついてるの
+tut_serif_game_phase_two_skill_before_3 = 活躍するために\n"スキル"を使ってみましょ
+tut_serif_game_phase_two_skill = "フルスイング"を発動して\n一発逆転をねらってみましょ
+tut_serif_game_phase_two_skill_after = バッチリね！\nスキルがセットされたわ！
+tut_serif_game_phase_two_skill_info_1 = アクティブスキルを使うと\nスタミナを消費するの\n使いどころが重要ね
+tut_serif_game_phase_two_skill_info_2 = スタミナは\n試合に出るだけでも\n減るから注意してね！
+
+tut_serif_game_phase_two_skill_info_before = さっそくアクティブスキルを\n使ってみましょ！
+tut_serif_game_phase_two_skill_info_after_1 = ノーマルスキルは\n身につけているだけで\n効果があるの
+tut_serif_game_phase_two_skill_info_after_2 = だけどアクティブスキルは\n作戦会議中に"自分で"\n実行しないといけないわ
+tut_serif_game_phase_two_skill_info_detail_1 = スキルは使うと\n自分や仲間の能力を\nあげることができるのよ
+tut_serif_game_phase_two_skill_info_detail_2 = スキルには\n"ノーマル"と"アクティブ"の\n2種類があるの
+tut_serif_game_phase_two_epilogue_1 = そろそろ作戦会議が終わるわ
+tut_serif_game_phase_two_epilogue_2 = がんばってね！
+
+tut_serif_game_phase_three_introduction_1 = すごーい!!
+tut_serif_game_phase_three_introduction_2 = まさかホームランを\n打つとは思わなかったわ！
+tut_serif_game_phase_three_introduction_3 = でも、まだ3点差ね
+tut_serif_game_phase_three_introduction_4 = 今度は、仲間の力を借りて\n全員野球で逆転しよう！
+
+tut_serif_game_phase_three_yell_before_1 = 仲間のスタミナが\n減ってきているわよ
+tut_serif_game_phase_three_yell_before_2 = エールを送って\n回復してあげましょ
+
+tut_serif_game_phase_three_yell_after_1 = 仲間のスタミナが\n少し回復したわね
+tut_serif_game_phase_three_yell_after_2 = こうやってみんなで\nエールを送りあって\nスタミナを回復していくのよ
+tut_serif_game_phase_three_yell_after_3 = "学校"の"保健室"で\nスタミナを回復してくれるの\nあとで行ってみたらどうかしら
+
+tut_serif_game_phase_three_epilogue_1 = そろそろ作戦会議が終わるわ
+tut_serif_game_phase_three_epilogue_2 = 仲間も回復したし、\nチームの力で追いつこう！
+
+tut_serif_game_phase_four_introduction_1 = ついに最終回ね。
+tut_serif_game_phase_four_introduction_2 = 1点差あるけど、\nまだまだ逆転できるわ！
+tut_serif_game_phase_four_introduction_3 = この作戦会議は自由にやってみて！
+tut_serif_game_phase_four_introduction_4 = 作戦会議終了まで、\nスキルやエールをうまくつかってね！
+
+tut_serif_game_phase_four_epilogue = そろそろ最終回が始まるわ\n最終回は打席が回ってくるかも\nしれないからがんばってね！
+
+tut_serif_game_phase_four_yell_reply_1 = エール、ありがとう！
+tut_serif_game_phase_four_yell_reply_2 = ありがとう！逆転するぞ！
+tut_serif_game_phase_four_yell_reply_3 = エール、ありがとう！まだまだ！
+tut_serif_game_phase_four_yell_reply_4 = {0}さん、エールありがとう！！
+tut_serif_game_phase_four_yell_reply_5 = ありがとう！逆転しよう！
+tut_serif_game_phase_four_yell_reply_default = エールありがとう！
+
+prohibited_scene_title = 사용할 수 없습니다.
+prohibited_scene_message = 이 기능은 레벨이 오르면 사용할 수 있습니다.
+
+game_result_no_attack_skill_label = 공격진에게 발동하고 있는 스킬이 없습니다.
+game_result_no_deffence_skill_label = 수비진에게 발동하고 있는 스킬이 없습니다.
+game_result_yell_battle_win = 해냈어! {0}GET!
+game_result_yell_battle_lose = 안타깝다... 응원을 보내서 승리하자!!
+game_result_yell_battle_draw = 대접전! 다음 경기야말로 동료와 승리를 목표로!
+game_result_position_bench = 벤치
+
+collection_wishlist_max_title = 의뢰할 수 없습니다.
+collection_wishlist_max_message = 의뢰 중인 수집품 수가 상한에 도달했으므로 의뢰할 수 없습니다.
+collection_wishlist_success_title = 수집품 의뢰 완료
+collection_wishlist_success_message = {0}을(를) 의뢰했습니다.
+collection_wishlist_success_message_with_amount = {0}×{1}を依頼しました。
+collection_friend_wishlist_grant_result_title = 선물 완료
+collection_friend_wishlist_grant_confirm_title = プレゼント個数確認
+collection_friend_wishlist_grant_confirm_message = {0}×{1}を贈ります。
+collection_friend_wishlist_grant_result_message = 아이템을 보냈습니다.
+collection_friend_wishlist_grant_result_message_with_amount = {0}×{1}を贈りました。
+collection_friend_wishlist_grant_diff_amount_result_message = 要望の個数に達したため,\n{0}個贈りました。
+collection_friend_wishlist_shortage_goods_title = 아이템이 없음.
+collection_friend_wishlist_shortage_goods_message = 아이템이 없습니다.
+collection_friend_wishlist_hide_result_title = 숨기기 완료
+collection_friend_wishlist_hide_result_message = 숨겼습니다.
+
+team_member_ranking_notice = 선발 라인업 후보 야수 상위 8명/투수 상위 2명
+
+game_season_team_ranking_award_elimination = 지역 예선
+game_season_team_ranking_award_koshien = 전국대회
+game_season_team_ranking_award_interleague = 교류전
+
+game_schedule_qualifying_name_format = {0} 예선
+game_schedule_finals_name = 전국대회
+game_schedule_tournament_name_format = 제{0}회 {1} 전국대회
+game_schedule_interleague_name_format = 교류전 대회
+
+explanation_board_practice_facility_title = 시설을 사용 시
+explanation_board_practice_facility_0 = 능력치 훈련 지역보다\n시설 지역에서 능력치가 더 상승해요!
+explanation_board_practice_facility_1 = 사용한 만큼\n강해지니까\n계속 사용해보세요♪
+explanation_board_rankup_title = 레벨이 오르면
+explanation_board_rankup_0 = 레벨업\n축하해요!
+explanation_board_rankup_1 = 레벨이 오르면\n능력 상한도 올라\n지금보다 강해질 거예요.
+explanation_board_rankup_2 = 레벨을 올려\n점점 더 강해지세요!
+explanation_board_school_guide_title = 이적·영입
+explanation_board_school_guide_0 = 팀원을 늘리거나\n이적하고 싶을 때는\n나에게로 와.
+explanation_board_school_guide_1 = 너의 팀생활이\n즐거워지도록\n도와줄게.
+explanation_board_friend_title = 친구가 되면
+explanation_board_friend_0 = 친구는 게임상의 친구입니다.
+explanation_board_friend_1 = 친구가 많을수록\n2인 훈련을 많이\n할 수 있어요.
+explanation_board_friend_2 = 계속해서 친구를\n늘려가세요.
+explanation_board_position_wish_title = 포지션 희망을 해두면
+explanation_board_position_wish_0 = 허허허\n희망하는 포지션이\n있다면 말해주세요.
+explanation_board_position_wish_1 = 다른 팀원과\n능력을 비교해서\n생각하겠어요.
+explanation_board_order_wish_title = 희망 타순 관련
+explanation_board_order_wish_0 = 다른 팀원의 희망 타순은 팀 희망 목록에서 확인할 수 있습니다.
+explanation_board_minigame_batting_title = 타격 대결!
+explanation_board_minigame_batting = 야구공을 제대로 보고\n홈런을 목표로\n해주세요.
+explanation_board_minigame_snowball_title = 눈싸움
+explanation_board_minigame_snowball = 맞기 전에\n맞춰버리자.
+explanation_board_fishing_normal_title = 낚시를 하자!
+explanation_board_fishing_normal = 큰물고기를 목표로\n힘내자!
+explanation_board_fishing_boss_title = 용왕을 낚자!
+explanation_board_fishing_boss = 저게 용왕이다!\n나 대신에\n저놈을 낚는 거다!
+explanation_board_minigame_knock_title = 어떤 공도 잡는다!
+explanation_board_minigame_knock = 너라면 어떠한 공도\n잡을 수 있을\n거라고!
+explanation_board_minigame_homerun_title = 연속 홈런에 도전!
+explanation_board_minigame_homerun = 한 번의 실수는 큰 실패라고!\n엄격한 특훈이니까\n힘 빼지 말고!
+
+explanation_board_minigame_showdown_title = 타격 대결!
+explanation_board_minigame_showdown = 저격 모드를 사용해서 라이벌을 이기자!
+explanation_board_event_corps_title = 다 같이 부하&보스를 쓰러트려!
+explanation_board_event_corps = barbarbar
+explanation_board_minigame_corps_title = 타격 대결!
+explanation_board_minigame_corps = 우정 필살을 사용해서 상대를 이기자.
+
+explanation_board_mission_title = 퀘스트 관련
+explanation_board_mission_0 = 우리들의 소원을\n들어주세요!
+explanation_board_cutie_title = 내 매니저 관련
+explanation_board_cutie_0 = 우리가 당신을\n강하게 만들어줄게요♪
+explanation_board_skillnote_title = 캐릭터 스킬 강화 설명
+explanation_board_skillnote_0 = 스킬 노트를 사용하여\n캐릭터를 더욱 강하게 할\n수 있어요!
+explanation_board_wave_title = 파도타기 응원 관련
+
+explanation_board_animation_skip_title = 연출 스킵 기능
+explanation_board_animation_skip_message = 연출 스킵 기능이\n추가되었습니다!
+
+explanation_board_event_duel_title = 투구력&타격력을 상승시켜 훈련 경기에 도전
+explanation_board_event_duel = barbarbar
+explanation_board_minigame_duel_title = 투구 대결!
+explanation_board_minigame_duel = 포수 미트\n를 노리고\n던져요.
+
+explanation_board_event_meteor_title = 적을 마구 쓰러트리자!
+explanation_board_event_meteor_boss_title = 보스를 파괴하자!
+explanation_board_event_meteor = 적을 마구 쓰러트리자!
+explanation_board_event_meteor_boss = 보스를 파괴하자!
+
+explanation_board_event_cycling_title = (임시)러브 대시!
+explanation_board_event_cycling_message = (임시)러브 대시!
+
+explanation_board_cutie_speciality_level_down_title = 특성 레벨을 낮추고 싶다면...
+
+explanation_board_easy_composition_title = 간편 투혼 장착
+
+explanation_board_remove_skill_title = キャラスキル取り外しについて
+explanation_board_remove_skill_0 = 「白紙のノート」を使ってキャラスキルを取り外そう！
+explanation_board_remove_skill_1 = 取り外したスキルは\nスキルノートになるよ！
+
+local_notification_title = 우리동네 야구단
+local_notification_physical_max = 체력이 꽉 찼어! 얼른 훈련하러 가자♪
+
+facebook_not_installed_error_message = 페이스북이 설치되어 있지 않습니다.
+
+facebook_not_supported_ios_error_message = 장치에 페이스북 계정이 설정되어 있지 않습니다.\n홈 화면의 '설정'>'페이스북'에서 계정 설정을 해주십시오.
+
+invitation_facebook_share_title = 페이스북 공유
+invitation_facebook_share_message = 초대 ID를 복사했어요.\n다음 화면에서 붙여넣기를 하여 친구와 공유하세요.\n\n친구가 게임에 참가하면 둘 다 선물을 받을 수 있어요!
+
+invitation_error_title = 오류
+invitation_error_message = 초대 코드 입력란이 공백입니다.
+
+invitation_input_result_title = 수령 완료
+invitation_input_result_message = 보상을 선물 박스로 보냈습니다.
+
+invitation_note_title = 주의사항
+
+profile_link_sharing = 게임 프로필이야! {0}
+
+change_reserved_scene_error_message = 링크의 화면을 열 수 없습니다.\n경기장에 접속한 상태로 다시 시도해주시기 바랍니다.
+change_reserved_scene_error_message_for_extra_incentive_tutorial = 아이템을 수령할 수 없습니다. \n튜토리얼 종료 후 링크를 클릭하여 다시 시도해주세요.
+
+no_skill_data = 스킬 없음
+
+school_description_on_tap_manager = 아직 아무도 없는 것 같아요.\n우선은 카페에서 내 소원을 들어줘요!
+
+xml_parse_error_title = 상세
+xml_parse_error_body = 상세 정보 표시에 실패하였습니다.
+
+game_item_ability_cap_title = 리그의 상한치를 초과하고 있습니다.
+game_item_ability_cap_message = 장착 중인{0}의 {1}이 {2}의 {1}의 상한치({3})를 초과하고 있습니다.
+
+team_kickout_back_cutie_message = 어머, 오랜만이네!
+
+team_kickout_selection_cutie_message_common_not_enable_farm = 新しい学校で新しいチームメイ\nトと一緒に練習しましょうよ！
+team_kickout_selection_cutie_message_common = まず、どちらの枠の\n部員になるか決めて欲しいな！\n初めて選ぶなら\n下の「育成枠」がおすすめだよ
+team_kickout_selection_cutie_message_beginner = おめでとう！\n育成期間が無事終わったよ！\n通常枠の学校を紹介するね！
+
+team_kickout_back_button_text = 새로운 팀 선택!
+
+team_tutorial_farm_header_text = まずはどの枠の部員に\nなるか決めてほしいな！
+team_tutorial_farm_selected_cutie_message = OK!{0}だね！\nじゃあおすすめの高校を紹介するね！
+team_tutorial_selected_normal_cutie_message = うんうん通常枠にするんだね！\nじゃあ、おすすめの高校を\n紹介するね！
+
+team_tutorial_league_selected_cutie_message = うんうん{0}にするんだね！\nじゃあオススメの高校を\n紹介するね！
+
+team_tutorial_beginner_questionnaire_cutie_message = オッケー♪育成枠だね！\nあなたにぴったりの高校を\n見つけたいから、\nあなたのこと教えてくれる？
+team_tutorial_beginner_answer_cutie_message = 教えてくれてありがとう！\nあなたのこと分かった気がする\nおすすめの高校探してくるね！
+
+tut_button_questionnaire_ask = いいよ!
+tut_button_beginner_farm_expired = やったー！
+
+team_kickout_team_confirm_cutie_message = 이 팀으로 괜찮나요?
+team_kickout_team_confirm_button_text = 네!
+
+team_kickout_team_transfer_cutie_message = 이동 수속을 마쳤어!\n나도 응원할 테니까 함께 열심히 해요♪
+team_kickout_team_transfer_button_text = 고마워요!
+
+team_prevision_rank_title = 예선 순위
+team_koshien_rank_title = 본선 순위
+team_interleague_team_rank_title = 전국 순위
+team_interleague_block_rank_title = 지역 순위
+
+team_score_season_and_league_name = 제{0}회 {1}
+team_score_koshien_block_name_team_score = {0} 이번 대회 성적
+team_score_koshien_block_name = {0} 성적
+team_score_interleague_block_name_team_score = {0} 이번 교류전 대회 성적
+team_score_interleague_block_name = {0} 교류전 성적
+team_score_prevision_rank = {0}위
+team_score_not_play_koshien = 미출전
+
+game_title_none = 경기
+game_title_elimination_label = 지역 예선 경기
+koshien_game_title_elimination_label = 예선 {0} 지역
+koshien_game_title_final_label = 결승 지역
+game_title_practice_game_label = 훈련 경기
+game_title_showcase_game_label = 교류전 대표경기
+game_title_interleague_game_label = 전국 지역 교류전
+
+koshien_section_name_text = {0} 지역
+koshien_final_label_text = 결승전
+koshien_semifinal_label_text = 준결승
+koshien_semisemifinal_label_text = 준준결승
+
+koshien_history_season_label_text = 제{0}회 대회
+koshien_history_victory_label_text = 우승
+
+koshien_block_no_data_title = 전국대회
+koshien_block_no_data_message = 데이터가 없습니다.
+
+event_data_error_title = 오류
+event_data_error_body = 지정된 이벤트 정보가 올바르지 않습니다.
+event_user_gift_message = '{0}' 선물!\n선물에서 받아줘.
+event_period_format = 기간: {0}~{1}까지
+
+viral_status_progress = {0}까지 앞으로 {1}명
+viral_status_progress_achieved = 이전 팀에서 {0}을(를) 획득했습니다!
+viral_status_progress_waived = 다른 팀 ID를 입력했으므로 G머니를 취득할 수 없습니다.
+viral_status_achieve = {0}을(를) 취득했습니다!
+viral_status_achieve_waived = 다른 팀의 ID를 입력했으므로 G머니를 취득할 수 없었습니다.
+
+viral_create_team_already_title = 확인
+viral_create_team_already_achieved_message = 이미 G머니를 취득하고 있으므로 새로운 팀을 만들어도 G머니를 취득할 수 없습니다. 진행하시겠습니까?
+viral_create_team_already_waived_message = 이미 다른 팀 코드를 입력하고 있으므로 G머니를 취득할 수 없습니다. 진행하시겠습니까?
+viral_create_team_already_note = 새로운 팀의 ID를 입력한 유저는 G머니를 취득할 수 있습니다.
+
+viral_code_transfer_already_title = 팀의 ID를 입력할 수 없습니다.
+viral_code_transfer_already_achived_message = 이전의 팀 ID를 입력하고 있으므로 팀 ID를 입력할 수 없습니다.
+viral_code_transfer_already_waived_message = 이전의 팀 ID를 입력하고 있으므로 팀 ID를 입력할 수 없습니다.
+
+viral_code_transfer_input_title = 팀 ID 입력
+viral_code_transfer_input_caption = 친구의 팀 ID를 입력해 주십시오.
+
+viral_code_transfer_input_error_title = 오류
+viral_code_transfer_input_error_message = 팀 ID가 입력되어 있지 않습니다.
+
+viral_share_common_base = 스마트폰으로 새로운 게임을 시작했어! 이 팀 ID: {0}(으)로 {1}에 이적하고 팀원 수가 모이면 20,000원 상당의 아이템을 받을 수 있어! 협력해주세요! 함께 전국대회를 목표로 하자!
+viral_share_facebook = 팀 ID: {0}\n팀명: {1}\n팀 인원이 10명 모이면 총 220,000원 상당의 아이템을 선물! 이벤트 실시 중!
+viral_share_common_hash = #전국대회 #야구대회
+viral_share_common_link = http://kp.kayac.com/welcome?f
+
+viral_facebook_share_title = 페이스북 공유
+viral_facebook_share_message = 팀 ID를 복사했어.\n다음 화면에서 붙여넣기를 하여 친구와 공유하세요!
+
+viral_explanation_title = 설명/주의사항
+
+viral_transfer_complete_title = 이적 완료
+viral_transfer_complete_message = {0}에 이적하였습니다.\n팀 ID를 다른 친구와도 공유하세요.
+
+change_scene_validate_error_message = 이적하는 곳이 존재하지 않습니다.
+
+serial_campaign_error_message = 시리얼 코드 입력란이 공백입니다.
+serial_campaign_notice_title = 참여 방법
+common_serial_campaign_code_input_success_title = 입력에 성공했습니다.
+common_serial_campaign_code_input_success_body = 받은 선물은 선물 박스로 보내집니다.
+common_serial_campaign_error_message = 시리얼 코드 입력란이 공백입니다.
+
+minigame_result_get_point = pt
+minigame_result_get_bp_point = BP를 획득!!
+minigame_result_total_point = 누계 획득 BP
+minigame_result_total_personal_point = 개인 누계 획득 BP
+minigame_result_term_personal_point = 개인 {0} 획득 BP
+minigame_result_total_team_point = 팀 {0} 획득 BP
+minigame_result_team_daily_point = 일일 팀 획득 BP
+minigame_result_item_total_point_prefix = 누계
+minigame_result_item_total_point_suffix = BP 돌파!
+minigame_result_item_get_name_suffix = 획득
+minigame_result_item_next = 다음 보상 획득까지
+minigame_result_item_next_point_prefix = 남은
+minigame_result_item_next_point_suffix = BP
+minigame_result_item_countstop = 모든 보상을 획득했습니다!
+minigame_result_ranking_raid = 순위
+minigame_result_ranking_team_battle = 개인 {0} 순위
+minigame_result_team_ranking_title = 팀 {0} 순위
+minigame_result_team_daily_ranking_title = 일일 팀 순위
+minigame_result_ranking_suffix = 위
+minigame_term_first_half = 전반
+minigame_term_second_half = 후반
+minigame_result_derby_ranking_bp = 획득 BP 순위
+minigame_result_derby_ranking_homerun = 연속 HR 순위
+minigame_result_max_homerun = 자기 최고 기록
+minigame_result_homerun_title = 연속 HR
+minigame_result_homerun_unit = 개
+
+minigame_result_team_knock_down_point_ranking_title = {0}팀 격파 점수 순위
+minigame_result_term_knock_down_point_title = {0}팀 격파 점수
+
+source_replacer_unit_day = {0}일
+source_replacer_unit_hour = {0}시간
+source_replacer_unit_minute = {0}분
+
+event_asset_bundle_view_can_not_load_message = 화면 로드에 실패했습니다.
+
+event_ranking_label_bp = 획득 BP
+event_ranking_label_lp = 획득 LP
+event_ranking_label_homerun = 연속 HR
+event_ranking_list_label_bp = BP
+event_ranking_list_label_lp = LP
+event_ranking_list_label_homerun = 연속 HR
+event_ranking_list_floor = 층
+
+event_team_daily_ranking_title = {0}일째 대전팀!
+event_team_daily_ranking_result_title = {0}일째 대전 결과!
+event_chance_item_amount = {0}앞으로 {1}개
+
+event_reward_current_rank = {0}의 현재 순위
+event_reward_current_rank_no_term = 현재 순위
+event_reward_point_section_title = {0} BP
+event_reward_ranking_section_title_same = {0} {1}위
+event_reward_ranking_section_title = {0} {1}위~{2}위
+event_daily_reward_ranking_section_title_same = {0}위
+event_daily_reward_ranking_section_title = {0}위~{1}위
+
+event_ranking_showdown_level_unit = Lv
+event_ranking_reward_showdown_level_point_value_name = 현재 Lv
+event_ranking_reward_showdown_level_name = Lv {0}
+
+team_kickout_scene_header_label = [ffcc00]주장과 팀원 {0}명[-]의 동의가 필요합니다\n72시간 이상 로그인하지 않은 팀원은\n[ffcc00]주장만[-]으로 탈퇴가 가능합니다.
+
+team_kickout_remain_expel_need_leader_member = 탈퇴하려면 주장과 {0}명의 동의가 필요합니다.
+team_kickout_remain_expel_need_member = 탈퇴하려면 {0}명의 동의가 필요합니다.
+team_kickout_remain_expel_need_leader = 탈퇴시키기 위해서는 주장의 동의가 필요합니다.
+
+team_kickout_remain_expel_confirm_title = 탈퇴에 동의하십니까?
+team_kickout_remain_expel_confirm_message_leader_member = 탈퇴는 주장과 {0}명의 동의가 모이면 가능합니다.\n실행 후의 취소는 불가능합니다.
+team_kickout_remain_expel_confirm_message_leader = 탈퇴는 주장의 동의하에 이뤄집니다.\n실행 후의 취소는 불가능합니다.
+team_kickout_remain_expel_confirm_message_member = 탈퇴는 앞으로 {0}명의 동의가 모이면 가능합니다.\n실행 후의 취소는 불가능합니다.
+
+team_kickout_remain_expel_result_success_title = 동의를 받았습니다.
+team_kickout_reamin_expel_result_success_need_member = 앞으로 {0}명의 동의가 모이면 탈퇴가 가능합니다.
+team_kickout_remain_expel_result_success_need_leader_member = 주장과 {0}명의 동의가 모이면 탈퇴가 가능합니다.
+team_kickout_remain_expel_result_success_need_leader = 주장의 동의가 있으면 탈퇴가 가능합니다.
+
+team_kickout_remain_expel_result_expelled_title = 탈퇴되었습니다.
+team_kickout_remain_expel_result_expelled_message = 탈퇴되었습니다. {0}이(가) 야구팀에서 나갔습니다.
+
+team_kickout_remain_expel = 탈퇴하려면 {0}명의 동의가 필요합니다.
+team_kickout_normal_confirm_title = 탈퇴에 동의하십니까?
+team_kickout_normal_confirm_message = 탈퇴는 {0}명의 동의가 있으면 가능해집니다.\n실행 후의 취소는 불가능합니다.
+team_kickout_normal_result_success_title = 동의를 받았습니다.
+team_kickout_normal_result_success_message = 앞으로 {0}명의 동의가 모이면 탈퇴가 가능해집니다.
+team_kickout_normal_result_expelled_title = 탈퇴되었습니다.
+team_kickout_normal_result_expelled_message = {0}명의 동의가 모였으므로 {1}이(가) 야구팀에서 나갔습니다.
+team_kickout_normal_cancel_success_title = 동의를 취소했습니다.
+team_kickout_normal_cancel_success_message = 탈퇴의 동의를 취소했습니다.
+
+team_kickout_leader_confirm_title = 탈퇴하시겠습니까?
+team_kickout_leader_confirm_message = 탈퇴는 주장의 결정하에 이뤄집니다.\n실행 후의 취소는 불가능합니다.
+team_kickout_leader_result_expelled_title = 탈퇴되었습니다.
+team_kickout_leader_result_expelled_message = {0}이(가) 야구팀에서 나갔습니다.
+
+team_multi_raid_could_not_find_title = {0}와(과) 경기할 수 없습니다.
+team_multi_raid_could_not_find_message = 이미 다른 팀과 경기 중이거나 시간 만료로 인해 대결할 수 없습니다.
+team_multi_raid_result_kill_count = {0}회 승리 달성!
+team_multi_raid_result_next_incentive = 다음에 {0}을(를) 쓰러트리면\n{1}을(를) 받을 수 있어!
+team_multi_raid_result_akane_message = {0}에게 이겼어! 해냈어!
+
+team_showdown_new_day_start = {0}일째 시작!
+
+fishing_boss_size_kill_bonus = {0}BP
+fishing_size_format = {0:0.00}
+fishing_size_with_unit = {0:0.00}m
+fishing_result_attack_damage = {0}의 피해
+fishing_max_size_title = 최대 크기
+
+go_to_shop_to_buy_bp_up_card_title = 카드가 없습니다.
+go_to_shop_to_buy_bp_up_card_message = BP 메가 상승 카드가 있다면\n10분간 팀 전원의 BP를 2배 또는\n3배 상승!\n상점에서 카드를 구매하겠습니까?
+go_to_shop_to_buy_lp_up_card_message = 러브러브 카드가 있다면\n10분간 자신의 LP를 2배 또는\n3배 상승!\n상점에서 카드를 구매하겠습니까?
+
+go_to_shop_to_buy_chance_amulet_title = 기회의 부적을 보유하지 않습니다.
+go_to_shop_to_buy_chance_amulet_message_in_dungeon = 부적을 보유하면\n몬스터에게 준 피해가 대박 상승!\n상점에서 사고 싶습니까?
+
+catch_count_unit = 공
+catch_count_point_title = 포구 수
+
+homerun_count_unit = 개
+
+clear_cache_dialog_title = 캐시 정보 삭제
+clear_cache_dialog_message = 디바이스에 저장된 데이터를 삭제하고 타이틀로 돌아갑니다.\n게임을 다시 시작한 경우, 데이터를 다시 다운로드하므로 통신 환경이 좋은 장소에서 실행해 주세요.
+
+disk_full_dialog_title = 디바이스 용량 부족
+disk_full_dialog_message = 디바이스 용량이 부족합니다.\n디바이스의 용량을 확인한 후 다시 앱을 실행해주세요.
+disable_function_access_title = 오류
+disable_function_access_message = 이 기능은 현재 사용할 수 없습니다.
+feature_switch_off_title = 오류
+feature_switch_off_message = この機能は現在準備中です
+
+minigame_knock_user_team_daily_ranking_title = 팀 내 일일 순위
+minigame_knock_incentive_remain_title = {0} 앞으로
+
+showndown_number_of_playing_teammate = 참가 {0}명
+
+tab_name_all = 전부
+tab_name_card = 카드
+tab_name_drink = 드링크
+tab_name_extension = 투혼
+tab_name_event_item = 이벤트
+tab_name_gacha_ticket = 뽑기 티켓
+tab_name_skill_book = 스킬 노트
+tab_name_cutie_item = 나의 매니저
+
+cutie_change_confirm_title = 나의 매니저
+cutie_change_confirm_message = 나의 매니저를 변경하시겠습니까?
+
+cutie_change_success_title = 나의 매니저
+cutie_change_success_message = 나의 매니저를 변경했습니다.
+
+cutie_change_fail_title = 나의 매니저
+cutie_change_fail_message_progressed_item = 선물 사용 중에는 나의 매니저를 변경할 수 없습니다.
+
+cutie_present_default = 무엇을 선물하겠습니까?
+cutie_present_select = [ffff00]{0}[-]'을(를) 선물하겠습니까?
+
+cutie_present_success_title = 나의 매니저
+cutie_present_success_message = '{0}'을(를) 선물했습니다.
+
+local_notification_cutie_condition_vitality = 큰일이야! 매니저가 녹초가 된 모양이야.... 회복시켜줘!
+local_notification_cutie_condition_intelligence = 큰일이야! 매니저가 꾸벅꾸벅 졸고 있는 모양이야.... 회복시켜줘!
+local_notification_cutie_condition_charm = 큰일이야! 매니저가 의욕을 잃은 모양이야.... 회복시켜줘!
+local_notification_cutie_condition_love = 큰일이야! 매니저가 삐친 모양이야.... 회복시켜줘!
+
+local_notification_cutie_growth_complete = 매니저가 선물을 다 쓴 것 같아! 능력이 상승했는지 보러 가자!
+
+cutie_cure_dialog_uchida_serif_1 = 아이템에 의해 고쳐질 확률이 달라!
+cutie_cure_dialog_uchida_serif_2 = 아이템을 안 가진 것 같아.
+
+cutie_growth_not_enough_value_title = 나의 매니저
+cutie_growth_not_enough_value_message = 이 선물을 사용하기엔\n나의 매니저 능력치가 부족합니다.
+
+cutie_growth_minus_confirm_title = 나의 매니저
+cutie_growth_minus_confirm_message = 이 선물을 사용하면 나의 매니저 능력치가 내려갑니다!\n정말 진행하시겠습니까?
+
+cutie_growth_cancel_confirm_title = 나의 매니저
+cutie_growth_cancel_confirm_message = 선물 사용을 취소하겠습니까?
+cutie_growth_cancel_confirm_note = 사용한 선물을 사라집니다.
+
+cutie_growth_cancel_complete_title = 나의 매니저
+cutie_growth_cancel_complete_message = 선물 사용을 취소했습니다.
+
+cutie_growth_cancel_bad_condition_title = 나의 매니저
+cutie_growth_cancel_bad_condition_message = 상태가 이상할 때는 선물 사용을 취소할 수 없습니다.
+
+cutie_growth_cancel_completed_title = 나의 매니저
+cutie_growth_cancel_completed_message = 선물 사용 완료 후에는 취소할 수 없습니다.
+
+cutie_skillbook_get_message = 스킬 노트를 {0}에게서 받았습니다!
+
+cutie_speciality_name_lv_zero = ???
+
+training_top_serif = 허허허.\n네녀석이 강하게 하고 싶은 것은\n장비인가? 캐릭터인가?
+
+training_skill_serif_select_note = 추가하고 싶은 스킬 노트를 선택하는 것입니다.
+training_skill_serif_remove_note = 取り外したいスキルを選ぶのじゃ
+training_skill_serif_select_decide = 확실합니까?
+training_skill_strict_league_title = 확인
+training_skill_strict_league_message = このキャラスキルを取り付けると、\n{0}未満ではメインキャラとして設定できなくなります。\n取り付けますか？
+
+player_name_unknown = ????
+
+mission_owner_serif_has_mission = 어서 오세요!\n손님이 와있어요.
+mission_owner_serif_has_no_mission = 어서 와요!
+mission_receive_award = 받기
+mission_neighbor_dependabillity = {0}의 신뢰도
+mission_has_no_expiry_date = 시간제한 없음
+mission_expired_receive_message = チャレンジの期限が過ぎているため、個別受け取りはこちらの受け取りが\n最後になりますがよろしいですか？
+mission_bulk_receive_help_window_message = 『一括で受け取る』で獲得した報酬は\n全てギフトボックスへ送られます。\nご注意ください。
+mission_bulk_receive_help_window_checkbox_message = 今後表示しない
+
+card_Confirm_window_title_use = 카드 사용 확인
+card_Confirm_window_confirm_use = 카드를 사용하시겠습니까?
+
+card_Confirm_window_title_shop = 카드가 없습니다.
+card_Confirm_window_confirm_shop = 카드를 구매하시겠습니까?
+
+interleague_game_top_game_name = {0} 대표경기
+interleague_game_top_serif = 응원하면 대표 팀이\n모두 회복! 이겨라 이겨라!!\n{0}!!
+interleague_history_victory_label_text = 지역 교류전 1위
+interleague_game_name_interleague_label = 지역 교류전
+interleague_game_name_showcase_label = 교류전 대표경기
+interleague_game_error_not_found_title = 대표경기
+interleague_game_error_not_found_message = 대표경기가 편성되어 있지 않습니다.
+
+interleague_event_page_out_of_date_title = 교류전
+interleague_event_page_out_of_date_message = 교류전의 개최기간이 지났습니다.
+
+history_no_item_label_text_none = 이력이 없습니다
+history_no_item_label_text_koshien = 전국대회의 이력이 없습니다.
+history_no_item_label_text_interleague = 지역 교류전의 이력이 없습니다.
+corps_drop_item_list_item_label = {0}을(를) 이기고 GET!
+
+duel_game_list_day_count = {0}일째
+duel_game_suspend_reason_member = 部員が9人未満だったため試合は行われませんでした
+duel_game_suspend_reason_score = 팀의 투구력·타력이 0이었으므로 경기가 이뤄지지 않았습니다.
+
+duel_minigame_result_get_pitching = 팀 투구력 획득!
+duel_minigame_result_get_batting = 팀 타력 획득!
+
+duel_minigame_result_reward_condition = Lv{0}의 {1} 격파로 획득
+
+duel_minigame_start_bonus_time_dialog_title = 보너스 타임 발동!
+duel_minigame_start_bonus_time_dialog_message = 보너스 타임이므로 경기장으로 돌아갑니다.
+
+duel_minigame_end_bonus_time_dialog_title = 보너스 타임 종료!
+duel_minigame_end_bonus_time_dialog_message = 보너스 타임이 종료되었습니다.\n경기장으로 돌아갑니다.
+
+duel_minigame_result_game_index = 제{0}\n경기
+
+duel_game_tournament_timer_game_index = 제{0} 경기
+duel_game_tournament_timer_game_ranking = 준비 중
+
+event_unique_ui_atlas_name_format = event_unique_ui_{0}
+
+event_rival_reward_level = Lv{0} 격파 시
+event_rival_reward_header_title = 현재 {0}의 레벨
+event_rival_reward_header = {0} 승리 보상
+
+duel_game_reward_section_format = Lv{0}~Lv{1} 승리 시
+duel_game_reward_section_single_format = Lv{0} 승리 시
+
+library_header_serif_top_1 = 당신의 에피소드도...\n들려줘...
+library_header_serif_top_2 = 모르는 건\n...뭐든지 물어봐…
+library_header_serif_top_3 = ......책을 읽을 때는\n조용히....해줘....
+
+friendship_episode_contributor_name_format = {0}님으로부터
+friendship_episode_contribution_limit = 모집 기간: yyyy/MM/dd HH:mm까지
+friendship_episode_contribution_mail_subject = 우정 이야기
+friendship_episode_contribution_mail_body_format = リーグ名: {0}\nチーム名: {1}\nプレイヤー名: {2}\n※採用時に、お名前として明記されます。\n※匿名希望の場合は、空欄にしてください。\n\n【募集テーマ】\n{3}\n\n【エピソードタイトル】\n※20文字程度でお願いします。\n\n【友情エピソード】\n※エピソードを採用する際に、内容によっては運営事務局で編集する場合もございます。
+
+koshien_winning_team_friendship_episode_season_format = 제{0}회 대회
+koshien_winning_team_friendship_episode_contribution_mail_subject = 우승 이야기
+koshien_winning_team_friendship_episode_contribution_mail_body_format = リーグ名: {0}\nチーム名: {1}\nプレイヤー名: {2}\n※採用時に、お名前として明記されます。\n※匿名希望の場合は、空欄にしてください。\n\n【募集テーマ】\n第{3}回甲子園大会優勝エピソード\n\n【エピソードタイトル】\n※20文字程度でお願いします。\n\n【優勝エピソード】\n※エピソードを採用する際に、内容によっては運営事務局で編集する場合もございます。
+
+game_archive_list_item_title = 제{0}회 전국대회
+game_archive_list_item_title_with_interleague = 제{0}회 전국대회+교류전
+game_archive_news_paper_list_item_title_for_koshien = 우승 신문: {0}
+game_archive_news_paper_list_item_title_for_interleague = 교류전 1위: {0}
+
+meteor_ball_over_error_title = 공 구매
+meteor_ball_over_error_body = 이 이상 공은 가질 수 없습니다.
+
+meteor_reentry_error_title = 통신 장애
+meteor_reentry_error_body = 서버와의 동기화에 실패했습니다.
+
+meteor_recover_physical_window_title_recover_and_refill = 체력을 회복하여 공을 교환한다.
+meteor_refill_ball_complete_message_format = 체력을 {0} 소비하여\n공을 {1}구 추가합니다.
+
+opinion_category_none = 없음
+opinion_category_other = 기타
+opinion_category_inquiry = 오류·데이터 복구·조사 의뢰 관련
+opinion_category_game = 경기 관련
+opinion_category_skill = 스킬 관련
+opinion_category_event = 이벤트
+opinion_category_item = 아이템 관련
+opinion_category_cutie = 나의 매니저 관련
+opinion_category_matching = 경기 편성 관련
+
+opinion_error_title = 건의함
+opinion_error_message_category_empty = 카테고리를 선택해주세요.
+opinion_error_message_input_empty = 의견·요망을 입력해 주십시오.
+opinion_error_message_input_over = 작성은 {0}자까지 입니다.
+
+recovery_physical_window_title = 체력 회복
+
+beginner_login_bonus_list_serif_1 = 전국대회를 목표로\n함께 힘냅시다!
+beginner_login_bonus_list_serif_2 = 좋은 날씨네!\n오늘도 활기차게\n연습하자!
+beginner_login_bonus_list_serif_3 = 밥도 맛있게\n먹고 오늘도\n우리팀 화이팅하자!
+beginner_login_bonus_list_serif_4 = 다치지 않도록\n기합넣고\n훈련 훈련!
+beginner_login_bonus_list_serif_5 = 열심히 하고 있네!\n전국대회에 나갈 수\n있게 될지도.
+beginner_login_bonus_list_serif_6 = 지금부터 우리팀?\n경기장까지\n같이 가자!
+beginner_login_bonus_list_serif_7 = 선물은\n선물 박스로\n보낼테니\n나중에 받아줘.
+beginner_login_bonus_detail_serif_normal = 오늘의 선물이에요!\n선물 박스에\n보내둘게요.
+beginner_login_bonus_detail_serif_final = 전국대회를 목표로\n함께 힘냅시다!\n앞으로도 잘 부탁해!
+beginner_login_bonus_notice_serif = 이걸 사용하면\n바로 선발 라인업으로\n활약할 수 있을지도!
+beginner_login_bonus_cutin_serif = 7일째 달성!\n초급자 졸업을\n축하해!
+beginner_login_bonus_day_count = {0}일째
+beginner_login_bonus_get_item_label = {0} 획득!
+beginner_login_bonus_button_label_normal_day = 앞으로 {0}일!
+beginner_login_bonus_button_label_final_day = 고마워
+beginner_login_bonus_notice_title_label = 누적 로그인 7일로 호화로운 보상!
+
+extra_incentive_item_name = {0} 획득!
+
+login_days_count_unit = 일
+next_login_days_count_unit = 일째
+bonus_list_current_login_days_count_header_title_label = 현재 로그인 일수
+bonus_list_next_bonus_days_count_header_title_label = 다음 보너스
+bonus_list_cumulative_login_bonus_header_title_label = 총 로그인 횟수 보너스
+
+bonus_notify_window_explanation_label = 일일 달성으로
+
+cumulative_login_bonus_item_title_label = {0} 획득!
+cumulative_login_bonus_item_explanation_label = 선물 박스에 보냈습니다.
+cumulative_login_bonus_default_cutie_serif = 항상 놀아줘서 고마워!
+
+login_bonus_cumulative_bonus_explanation_label = 다음 보너스까지
+login_bonus_cumulative_bonus_remain_prefix_label = 남은
+login_bonus_cumulative_bonus_remain_suffix_label = 일
+
+bonus_list_no_item_label = 보너스가 없습니다.
+
+personal_total_score_record_date = {0}~{1}
+
+training_room_error_title_game_item = 투혼으로 변경
+training_room_error_title_extension = 투혼 장착
+training_room_error_title_skill_note = 캐릭터 스킬 강화
+training_room_error_locked = 잠금 상태이므로 선택할 수 없습니다.
+
+cutie_level_down_error_speciality_num_title = 낮출 수 있는 특성이 없습니다.
+cutie_level_down_error_speciality_num_message = 특성이 하나도 없으므로 특성 레벨을 낮출 수 없습니다.
+
+cutie_level_down_caption = 이 특성 레벨을 낮추겠습니까?
+cutie_level_down_caption_cant = 현재 이 특성 레벨은 낮출 수 없습니다.
+cutie_level_down_caption_growth = 아이템 사용 중에는 특성 레벨을 낮출 수 없습니다.
+
+cutie_level_down_error_title = 특성 레벨을 낮출 수 없습니다.
+cutie_level_down_error_message_cant = 현재 이 특성 레벨은 낮출 수 없습니다.
+cutie_level_down_error_message_range = 특성 레벨을 낮추기에는 현재의 능력치를 1개 이상 특성의 규정 범위에서 멀어질 필요가 있습니다.
+cutie_level_down_error_message_num = 모든 특성을 '???'으로 돌릴 수 없습니다.
+cutie_level_down_error_message_item = {0}이(가) 없습니다.
+cutie_level_down_error_message_growth = 선물 사용 중에는 특성 레벨을 낮출 수 없습니다.
+
+cutie_level_down_dialog_title = 특성 레벨 다운
+cutie_level_down_confirm_message = 특성 레벨이 1개 하락하여\n'{0}'에서\n'{1}'이(가) 됩니다.
+cutie_level_down_confirm_note = 이 특성 레벨의 스킬 노트는 받을 수 없습니다.
+cutie_level_down_result_message = 특성 레벨이 '{0}'로 하락했습니다
+
+easy_composition_skill = [440000]{0} Lv{1}[-]
+easy_composition_skill_levelup = [440000]{0} Lv{1} → [FF7700]Lv{2}[-]
+easy_composition_skill_none = [440000]스킬 없음[-]
+
+easy_composition_error_title = 간편 투혼 장착
+easy_composition_error_message_experience = 숙련도가 부족합니다.
+easy_composition_error_message_equipped = 장착 중입니다.
+easy_composition_error_message_equipment_set = 세트 장비로 등록 중입니다.
+easy_composition_error_message_locked = 잠금 상태인 야구 장비입니다.
+
+skill_name_filter_title = 스킬 검색
+skill_name_filter_no_item = 조건에 맞는 스킬이 없습니다.
+
+skill_name_filter_color_change_prefix = [990000]
+skill_name_filter_color_change_suffix = [-]
+
+equip_no_game_item = 장착할 수 있는 야구 장비가 없습니다.
+shop_sell_no_game_item = 판매할 수 있는 야구 장비가 없습니다.
+practice_no_game_item = 숙련도를 상승시키는 야구 장비가 없습니다.
+training_room_attach_no_game_item = 강화할 수 있는 야구 장비가 없습니다.
+training_room_change_no_game_item = 투혼할 수 있는 야구 장비가 없습니다.
+filter_no_game_item = 해당하는 야구 장비가 없습니다.
+
+training_room_extension_ability_before = 강화 전
+training_room_extension_ability_after = 강화 후
+
+pulldown_list_item_format = [440000]{0}[-]
+select_none = (지정 없음)
+
+app_review_pop_up_title_before = 재밌게 게임하고 계신가요?
+app_review_pop_up_title_after = 평가해 주셔서 감사합니다!
+
+app_review_pop_up_to_store = 앱스토어 리뷰에\n협력해 주시겠습니까?
+app_review_pop_up_opinion_box = 개선 사항 또는 의견을 건의함에\n남겨주세요.
+
+composition_error_title = 이용할 수 없습니다.
+composition_error_message = 업데이트 예정입니다.\n업데이트를 기대해주세요.
+
+btn_sort_txt_name = 가나다순
+btn_sort_txt_power = 힘 능력 순
+btn_sort_txt_meet = 선구 능력 순
+btn_sort_txt_run = 주루 능력 순
+btn_sort_txt_fielding = 수비 능력 순
+btn_sort_txt_velocity = 구위 능력 순
+btn_sort_txt_control = 제구 능력 순
+btn_sort_txt_breaking_ball = 변화구 능력 순
+btn_sort_txt_amount = 보유수량 순
+btn_sort_txt_prefecture = 지역명 순
+btn_sort_txt_number_fielder = 야수 수량 순
+btn_sort_txt_number_pitcher = 투수 수량 순
+btn_sort_txt_school_name = 야구단 명 순
+btn_sort_txt_date = 일시 순
+btn_sort_txt_player_rank = 순위 순
+btn_sort_txt_experience_point = 숙련도 순
+btn_sort_txt_grade = 레벨 순
+btn_sort_txt_price = 단계 순
+btn_sort_txt_login = 로그인 순
+btn_sort_txt_get_date = 획득 순
+btn_sort_txt_kind = 종류 순
+btn_sort_txt_total = 종합력 순
+btn_sort_txt_rank = 순위 순
+btn_sort_txt_fielding_type = 수비 위치 순
+btn_sort_txt_vitality = 활력 순
+btn_sort_txt_intelligence = 학습력 순
+btn_sort_txt_charm = 매력 순
+btn_sort_txt_love = 호감도 순
+btn_sort_txt_wait_time = 대기 시간 순
+btn_sort_txt_skill_active = 액티스 스킬 순
+btn_sort_txt_skill_normal = 패시브 스킬 순
+btn_sort_txt_collection = コレクション順
+btn_sort_txt_collection_request = 依頼順
+
+dungeon_revive_window_message = [440000][ff0000] 체력{0}점 소모하여[-]모두 HP를 회복하시겠습니까?\n한 번의 도전에서 한번만 부활할 수 있습니다.[-]
+dungeon_retire_confirm_title = 포기하시겠습니까?
+dungeon_retire_confirm_message = 여기서 포기하면 이번 도전에서\n[ff0000]획득한 보물상자가 다 사라집니다.[-]\n부활하지 않고 도전을 포기하시겠습니까？
+dungeon_retire_confirm_note = 획득 한 수량이  홀수인 경우, 무조건 반올림 됩니다.
+
+cabinet_equiped_item_select_error_message = 装備中のため、預けることができません。
+cabinet_max_having_amount_error_message = 所持アイテムがいっぱいです。売却するか闘魂に変換するなどして、やきゅう道具を減らしてください。
+cabinet_capacity_error_message = 倉庫のアイテムがいっぱいです。
+cabinet_complete_put_in_message = やきゅう道具を{0}倉庫に預けました
+cabinet_complete_pull_out_message = やきゅう道具を倉庫から{0}取り出しました
+cabinet_no_item_put_in = 預けられるやきゅう道具がありません
+cabinet_no_item_pull_out = 倉庫にやきゅう道具がありません
+
+sns_save_token_title = 連携完了
+sns_save_token_message_1 = LINE連携によるデータのバックアップに成功しました！引き続き「ぼくらの甲子園！ポケット」をお楽しみください。
+sns_save_token_message_2 = Lobi連携によるデータのバックアップに成功しました！引き続き「ぼくらの甲子園！ポケット」をお楽しみください。
+sns_save_token_message_3 = LINE連携によるデータのバックアップに成功しました！引き続き「ぼくらの甲子園！ポケット」をお楽しみください。
+sns_transfer_success_title_lobi = 引き継ぎ成功
+sns_transfer_success_body_lobi = このぼくポケアカウントは今から72時間Lobiアカウントでの引き継ぎはできませんのでご注意下さい。
+sns_transfer_success_title_line = 引き継ぎ成功
+sns_transfer_success_body_line = このぼくポケアカウントは今から72時間LINEアカウントでの引き継ぎはできませんのでご注意下さい。
+sns_transfer_failure_title = SNS認証
+sns_transfer_failure_body = SNSの認証を完了できませんでした。
+
+event_mynet_connect_title = 알림
+event_mynet_connect_message = イベントの更新があります。\nグラウンドに戻ります。
+
+transition_to_out_of_app_confirm_message = ここから先は外部サービスに移動します。よろしいですか？
+
+ad_video_error_message = 動画が再生できませんでした。\nしばらく経ってから再度お試しください。
+ad_video_skipped_error_message = 動画の再生が中断されました。\n再度動画の視聴を行ってください。
+ad_video_play_confirm_title = 視聴確認
+ad_video_received_reward_title = 視聴報酬
+
+ad_video_health_recovery_confirm_message = 動画を視聴すると、体力が{0}回復します。\n\n動画を視聴しますか？\n\n【注意事項】\n・動画視聴による体力の回復は1日に1回です。\n・動画の視聴が完全に終了後に体力の回復が行われます。
+ad_video_health_recovery_confirm_note = 現在の体力：{0}\n回復後の体力：{1}
+ad_video_health_recovery_received_message = ご視聴ありがとうございました。\n\n体力を{0}回復しました！
+ad_video_health_recovery_received_note = 現在の体力：{0}
+
+ad_video_blue_ticket_confirm_message = 動画を視聴して、ガラポンチケット{0}枚が入手できます。\n\n動画を視聴しますか？\n\n【注意事項】\n・ガラポンチケットの入手は1試合に1回です。\n・動画の視聴が完全終了後にガラポンチケットの付与が行われます。
+ad_video_blue_ticket_confirm_note = 所持しているガラポンチケット：{0}枚
+ad_video_blue_ticket_reveived_message = ご視聴ありがとうございました。\n\nガラポンチケットを{0}枚入手しました。\n\n動画は次回試合にて、再度視聴できます。
+ad_video_blue_ticket_received_note = 所持しているガラポンチケット：{0}枚
+
+ad_video_time_halving_confirm_message = 動画を視聴して、\nプレゼントの使用時間を半減することができます。\n\n動画を視聴しますか？\n\n【注意事項】\n・プレゼントの使用時間を半減できるのは1日に1回です。\n・動画の視聴が完全に終了後に時間の半減が行われます。
+ad_video_time_halving_little_time_confirm_message = 動画を視聴して、\nプレゼントの使用時間を半減することができます。\n\nプレゼント使用時間が残り僅かですが、動画を視聴しますか？\n\n【注意事項】\n・プレゼントの使用時間を半減できるのは1日に1回です。\n・動画の視聴が完全に終了後に時間の半減が行われます。
+ad_video_time_halving_confirm_note = 現在のプレゼント使用時間：{0}
+ad_video_time_halving_reveived_message = ご視聴ありがとうございました。\nプレゼントの使用時間を半減しました！
+ad_video_time_halving_received_note = 現在のプレゼント使用時間：{0}
+ad_video_time_halving_timeout_message = プレゼントの使用時間が終了しているため、動画の再生ができません。
+
+ad_video_pokeg_confirm_message = 動画を視聴して、\n{0}ポケGを入手できます。\n\n動画を視聴しますか？\n\n【注意事項】\n・ポケGの入手は1日に1回です。\n・動画の視聴が完全に終了後にポケGの付与が行われます。
+ad_video_pokeg_confirm_note = 所持しているポケG:{0}
+ad_video_pokeg_reveived_message = ご視聴ありがとうございました。\n{0}ポケGを入手しました！
+ad_video_pokeg_received_note = 所持しているポケG:{0}
+
+
+team_admin_change_complete_message_1 = {0}을(를)\n주장으로 임명했습니다!
+game_result_batter_skill = 타자 스킬
+game_result_pitcher_skill = 투수 스킬
+game_result_runner_skill = 주루 스킬
+game_result_defence_skill = 수비 스킬
+team_kickout_back_cutie_message_0 = 어머, 오랜만이네!
+team_kickout_back_cutie_message_1 = 훈련을 오랫동안 안 와서, 혹시 이 팀이 안 맞는 건가 싶었어...
+team_kickout_back_cutie_message_2 = 새로운 팀에 들어가 새로 팀원들과 함께 훈련해요!
+Fb_share_title = 보상 받기
+Fb_RequestFriend_Message = 초대 횟수{0}회 남아 있습니다.
+Fb_error_title = 오류가 발생하였습니다.
+Fb_error_message = 보상 받을 횟수가 없습니다.
+Fb_error_message2 = 보상 보내기 오류 발생했습니다.
+Fb_error_message3 = 로그인할 수 없습니다. 설정 > Facebook 로그아웃 및 창 닫은 후 다시 시도해 주세요.
+FB_RequestFriend = 주의 사항
+Fb_Logout_title = 유저 로그아웃
+Fb_Logout_Message = Facebook 로그아웃했습니다. 다음 방문 시 재 로그인이 필요합니다.
+ad_reward_message = 광고 관람 횟수 {0} 회 남아 있습니다.
+ad_shop_close_message = 버튼이 다음에 매점 방문시 닫힙니다.
+ad_window_close_message = 버튼이 다음에 페이지 방문시 닫힙니다.
+ad_reward_title = 보상을 받았습니다.
+ad_reward_error_title = 광고 업로드 실패하였습니다.
+ad_reward_error_message = 광고를 다운로드할 수 없습니다.다시 시도해 주세요.
+star_rating_fail = 설문지 제출 실패
+reward_fail_title = 예외가 발생했습니다.
+reward_fail_message = 보상을 보낼 수 없습니다.
+reward_count_error = 횟수를 얻을 수 없습니다.
+switch_fail_message = 계정 이전 실패.\n또는 선택한 계정이 원래 로그인 계정입니다.
+switch_success_message = 계정 이전 완료.\n게임을 다시 시작해주세요.
+binding_success_message = 계정 연동 완료.\n게임을 다시 시작해주세요.
+web_login_message = 계정\n\n		{0}\n\n로그인 코드\n\n		{1}\n\n{2}\n\n\n
+web_login_fail = Web 계정 로그인 실패.\n계정이 연동되는지 확인해주세요.
+web_login_tip = . 로그인 코드는 3 분 동안 유효합니다.
+transfer_succes_massage = 계정 이전 완료.\n게임을 다시 시작해주세요.
+transfer_fail_massage = 계정을 이전 실패하였습니다.
+tip_title = 알림
+no_binding_message = 계정이 연동되었는지 확인해주시길 바랍니다.
+Fb_error_message4 = 설정->페이스북 계정 연동,페이스북 계정 연동 및 로그인.
+kr_agreement_1_title = 게임운영정책
+kr_agreement_2_title = 개인 정보 처리
+kr_agreement_3_title = 이용약관
+application_update_message_mycard = 새로운 버전이 있습니다.\n 스토어에서 업데이트할 수 있습니다.
+iap_scene_title = 活動禮包一覽

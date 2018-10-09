@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">코인은</span></div>
+<div><span color="#000000">게임 내에서 사용할 수 있는 화폐입니다.</span></div>
+<div><span color="#000000">훈련에서 시설을 이용하거나 야구장비를 투혼으로 바꾸는 등</span></div>
+<div><span color="#000000">다양하게 사용할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">코인은 주로 훈련 중에 얻을 수 있습니다.</span></div>
+<div><span color="#000000">부족할 때에는 상점에서 G머니와 교환할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">코인의 소지 상한에 대해서는 도움말 '각 아이템의 소지 상한'을 참고해주시기 바랍니다.</span></div>
+</post>
+

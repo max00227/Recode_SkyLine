@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">같은 전국 대회 우승을 노리는 라이벌과 교류할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">채팅창에서 의기투합한 선수와 친구가 되어 새로운 팀을 설립해도 좋겠죠?</span></div>
+<padding value="35"/>
+<div><span color="#000000">※채팅창은 커뮤니케이션 서비스 "Lobi"를 이용합니다.</span></div>
+<div><span color="#000000">채팅창 내에서 민폐 행위 등의 문제는 Lobi 운영국에 의해 Lobi의 이용규약, 지침에 의거하여 판단·대응하겠습니다.</span></div>
+<div><span color="#000000">채팅창 내에서 악질의 민폐 행위 등을 발견한 경우에는 Lobi의 통보 기능을 이용해주시기 바랍니다.</span></div>
+</post>

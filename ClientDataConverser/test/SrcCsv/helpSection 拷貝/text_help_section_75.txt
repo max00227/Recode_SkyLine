@@ -1,0 +1,31 @@
+<post>
+<div><span color="#000000">이적은 소속되어 있는 야구팀과 이별하여 새로운 야구팀으로 이동하는 것입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">이적은 1일 1회까지만 가능합니다.</span></div>
+<div><span color="#000000">한 번 더 이적하고 싶은 경우에는 이적한 다음 날의 아침 5:00 이후, 재이적이 가능합니다.</span></div>
+<div><span color="#000000">다만, 오프 시즌 중에만 이적 횟수 제한이 없어집니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">이적을 희망하는 경우에는</span></div>
+<div><span color="#000000">구단주를 찾아가 상담하세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 팀을 설립하고 싶은 주장은</span></div>
+<div><span color="#000000">주장을 다른 팀원으로 교체하면</span></div>
+<div><span color="#000000">이적할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">조건에 따라서는 이적할 수 없는 경우가 있으므로 주의해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■이적 주의점</span></div>
+<div><span color="#000000">·이적하면 오더 희망을 내고있던 타순이 희망없음으로 변경됩니다.</span></div>
+<div><span color="#000000">이적 후의 팀에 맞춰 다시 오더 희망을 내주세요.</span></div>
+<div><span color="#000000">※모든 캐릭터의 타순이 희망없음으로 변경됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■이적이 불가능한 조건</span></div>
+<div><span color="#000000">·한번 이적한 경우 다음 날 아침 5:00까지는 이적할 수 없습니다.</span></div>
+<div><span color="#000000">·경기에 참여하고 있는 도중에 이적하는 것은 불가능합니다.</span></div>
+<div><span color="#000000">※당일의 전 경기 종료~익일 아침의 조합 결정까지의 사이에는 가능</span></div>
+<div><span color="#000000">·전국 대회의 전날부터 개최 당일</span></div>
+<div><span color="#000000">·팀에 다른 팀원이 있을 시의 주장</span></div>
+<div><span color="#000000">※주장을 교체하면 가능, 또한 팀에 주장이 한명만 있는 경우에는 주장을 변경하지 않아도 이적 가능</span></div>
+
+<div><span color="#000000">·이적하고 싶은 팀에 투수의 상한 수가 9명을 달하고 있는 경우 투수로서 이적은 불가능합니다.</span></div>
+</post>

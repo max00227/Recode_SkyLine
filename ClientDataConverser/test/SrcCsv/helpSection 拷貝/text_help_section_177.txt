@@ -1,0 +1,70 @@
+<post>
+<div><span color="#000000">■우정·우승 에피소드 설명</span></div>
+<padding value="35"/>
+<div><span color="#000000">팀의 동료간의 추억이나 우리동네 야구단의 재밌었던 경험등의 에피소드를 도서실에서 읽을 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">전국 대회에서 우승한 팀의 우정과 추억, 우승 에피소드를
+읽을 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■우정 에피소드의 투고 방법 </span></div>
+<padding value="35"/>
+<div><span color="#000000">도서실의 우정 에피소드 페이지 밑에 배너에서 모집 테마 리스트 페이지로 링크할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">모집 테마 리스트에서 임의로 모집 
+테마를 TAP하면 투고용 메일
+서식에서 우정 에피소드를 투고 
+할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■우승 에피소드의 투고 방법</span></div>
+<padding value="35"/>
+<div><span color="#000000">전국 대회에서 우승한 팀의 게시판에는 신문 기사로부터의 코멘트가 적혀있습니다.</span></div>
+<div><span color="#000000">코멘트 링크처 투고용의
+메일 서식에서 우승 에피소드를 투고할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■우정 갈아입기에 설명</span></div>
+<padding value="35"/>
+<div><span color="#000000">보내주신 에피소드 중에서 운영 
+사무국이 선정한 에피소드로서 채용합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">채용된 유저 분께는 운영사무국에서 '우정 갈아입기'를 배부합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">우정 갈아입기는 선물박스에서
+확인할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※배부하는 갈아입기는 예고없이
+ 변경되는 경우가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■주의사항</span></div>
+<padding value="35"/>
+<div><span color="#000000">※전화 응모는 받지 않고 있습 
+ 니다</span></div>
+<padding value="35"/>
+<div><span color="#000000">※에피소드를 투고할 시에 기입한
+ 이름과 소속 리그, 야구팀 명이 게재 
+ 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※익명 희망의 경우에는 빈칸 또는
+ 익명 희망이라고 기입하고 투고해주세
+ 요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※유저 분을 불쾌하게 하는 것은 게재할 수 없습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※타이틀 명, 본문 중의 단말기 정보·유저 
+ ID는 변경하지 마시고 보내주세
+ 요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※보낸 메일에 대해서
+ 운영사무국으로부터 답장을 하지 않습니
+ 다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※에피소드의 채용 결과는 도서실에서의 게재, 우정 갈아입기의 부여를 가지고
+ 돌려드리겠습니다.
+ 채용 결과에 관한 문의에는
+ 답변해드릴 수 없으므로 양해해주시기 
+ 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※이번에 모집한 에피소드는
+ 다음의 '우리들의 야구단'에 관련한 기사나
+ 방송 등에도 사용할 수가 있습
+ 니다. 미리 양해해주시기 바랍니다. </span></div>
+</post>

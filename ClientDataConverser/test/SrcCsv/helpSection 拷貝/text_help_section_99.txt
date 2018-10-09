@@ -1,0 +1,8 @@
+<post>
+<div><span color="#000000">먼저 앱을 재시작하여 구입한 아이템이 표시되는지 확인해주시기 바랍니다.</span></div>
+<div><span color="#000000">그래도 개선되지 않은 경우에는 아래 정보를 기입한 후 문의처로 연락주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·구입 일시</span></div>
+<div><span color="#000000">·구입 아이템 명</span></div>
+<div><span color="#000000">·구입 수</span></div>
+</post>

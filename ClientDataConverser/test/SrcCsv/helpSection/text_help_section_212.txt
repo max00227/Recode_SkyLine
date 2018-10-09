@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">「ぼくらの甲子園！ポケット」の</span></div>
+<div><span color="#000000">公式wikiへのリンクです</span></div>
+<padding value="35"/>
+<div><span color="#000000">イベント情報やゲーム内に登場するやきゅう道具の情報、スキルの情報など</span></div>
+<div><span color="#000000">様々な情報を見ることができます</span></div>
+</post>

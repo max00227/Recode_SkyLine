@@ -1,0 +1,20 @@
+<post>
+<div><span color="#000000">처음부터 존재하고 있는 팀에 소속하는 것 외에 자신의 팀을 설립할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">설립된 팀의 특징은 아래와 같습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■설립된 팀의 특징</span></div>
+<div><span color="#000000">1. 주장이 존재한다.</span></div>
+<div><span color="#000000">처음부터 존재하고 있는 팀에는 리더가 없지만</span></div>
+<div><span color="#000000">설립한 팀에서는 팀 설립자가 팀 리더입니다.</span></div>
+<div><span color="#000000">리더에게는 다른 팀원들이 할 수 없는 리더 권한이 몇 가지 있습니다.</span></div>
+<div><span color="#000000">리더 권한에 대해서는 도움말 '팀 리더 설명'을 참고해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">2. 가입이 승인제가 됩니다.</span></div>
+<div><span color="#000000">처음부터 존재하고 있는 야구팀은 가입이 자유지만</span></div>
+<div><span color="#000000">설립한 팀은 가입하는 데 있어 주장의 승인이 필요합니다.</span></div>
+<div><span color="#000000">자세한 사항은 도움말 '팀 리더 설명'을 참고해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">지인끼리 팀을 만들고 싶을</span></div>
+<div><span color="#000000">때는 새로운 야구팀을 설립해도 좋겠죠?</span></div>
+</post>

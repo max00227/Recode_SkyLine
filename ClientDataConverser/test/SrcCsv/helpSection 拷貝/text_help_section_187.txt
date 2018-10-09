@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">선발 멤버 결정 시, 캐릭터 변경은 선발 멤버 결정 시작 시간 6초전까지 변경할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">[예]</span></div>
+<div><span color="#000000">선발 멤버를 결정하는 시작 시간이 19:00인 경우</span></div>
+<div><span color="#000000">18:59:54까지 캐릭터 변경 가능</span></div>
+<padding value="35"/>
+<div><span color="#ff0000">※18:59:55 이후에는 캐릭터를 변경할 수 없습니다.</span></div>
+</post>

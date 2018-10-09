@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">야구팀의 감독인 나가시마 감독!</span></div>
+<padding value="35"/>
+<div><span color="#000000">평소에는 상냥하고 온화하지만..</span></div>
+<div><span color="#000000">옛날에는 엄청나게 무서운 악마 감독으로</span></div>
+<div><span color="#000000">팀들 사이에서 유명했다고 한다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">최근에는 화낸 모습을 본 적 없다고는 하지만...</span></div>
+<div><span color="#000000">부디 혼나는 일이 없도록...!</span></div>
+</post>

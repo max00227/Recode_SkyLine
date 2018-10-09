@@ -1,0 +1,30 @@
+<post>
+<div><span color="#000000">전국 대회 결승 종료 후, 우승한
+팀의 게시판에 신문 제목 모집의 알림이 전달됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">요청이 있는 경우에 경기장의 팀 게시판에 문의해주세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">마감 : 전국 대회 당일의 23시59분 
+글자 수 : 16글자까지</span></div>
+<padding value="35"/>
+<div><span color="#000000">■제목에 대해서</span></div>
+<padding value="35"/>
+<div><span color="#000000">·내용에 따라서는 희망에 응하지 않는 경우가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·사용자들이 불쾌할 수 있는 모든 것들은 게재할 수 없습 
+니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·글자수 제한과 레이아웃에 의해
+ 제목을 변경할 경우가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■갈아입기에 대해서</span></div>
+<padding value="35"/>
+<div><span color="#000000">·전국 대회 결승 시에 착용하고 있던 갈아입기는 신문에 반영됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■기타</span></div>
+<padding value="35"/>
+<div><span color="#000000">·제 3자의 저작권, 의상권 등의 지적재
+ 산권을 침해하는 사진의 게재는 불가능
+ 합니다.</span></div>
+<padding value="35"/>
+</post>

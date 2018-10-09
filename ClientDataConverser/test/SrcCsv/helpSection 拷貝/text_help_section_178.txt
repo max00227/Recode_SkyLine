@@ -1,0 +1,14 @@
+<post>
+<div><span color="#000000">팀원에게 작전 지시를 푸시 알림으로 알리거나 메시지로서 남겨두는 작전보드 기능이 추가되었습니다. </span></div>
+<div><span color="#000000">작전 보드는 최대 5개까지 설정할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■작전 보드에서 할 수 있는 것</span></div>
+<div><span color="#000000">·전부 5개의 작전 보드를 추가·편집·삭제할 수 있습니다.</span></div>
+<div><span color="#000000">·작전 보드의 갱신에 대해서 팀원에게 1일 4회, 1시간씩 푸시 알림을 보낼 수 있습니다.</span></div>
+<div><span color="#000000"> ※작전 보드의 갱신 알림 수신설정은 '거리'＞'설정'(화면내 오른쪽 위 아이콘)>'푸시 알림'내 '작전 보드'에서 설정할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■작전 보드를 사용하려면?</span></div>
+<div><span color="#000000">작전 보드의 편집은 '작전 담당'만이 권한이 있습니다. </span></div>
+<div><span color="#000000">작전 담당에 대해서는 도움말 '야구팀 설명'＞'작전담당 설명'을 함께 참고해주시기 바랍니다.</span></div>
+<div link="TeamStrategyFacilitatorScene"><span color="#0000FF">작전 담당 페이지는 여기</span></div>
+</post>

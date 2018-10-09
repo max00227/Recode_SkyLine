@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">야구소년이 되어</span></div>
+<div><span color="#000000">팀원들과 함께 협력하여</span></div>
+<div><span color="#000000">"전국 대회 우승"을 목표로 하는 게임입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">총 9명의 플레이어가 한팀을 이루어</span></div>
+<div><span color="#000000">각각의 포지션으로 경기를 진행합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">동료와 함께 경기하여</span></div>
+<div><span color="#000000">승리하는 감동을 느껴보세요.</span></div>
+</post>

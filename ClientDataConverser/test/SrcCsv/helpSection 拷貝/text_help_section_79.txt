@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">친구는 나의 친구실에서 확인 가능합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">친구 신청이 오거나</span></div>
+<div><span color="#000000">친구 신청을 하면 나의 친구실에서</span></div>
+<div><span color="#000000">확인할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">친구추가는 상대의 개인정보에서 '친구 맺기'</span></div>
+<div><span color="#000000">를 누르면 신청할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">친구는 최대 200명까지 만들 수 있습니다.</span></div>
+</post>

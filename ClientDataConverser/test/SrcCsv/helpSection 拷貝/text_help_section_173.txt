@@ -1,0 +1,55 @@
+<post>
+<div><span color="#000000">■'지역 대표 경기'란?</span></div>
+<padding value="35"/>
+<div><span color="#000000">'전국 지역 교류전'에서는
+각 지역 별로 1일 최대 4회씩 지역 대표 경기가 시행됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 대표 시합에서는 각 지역의 순위 상위팀이 매일 한팀씩 
+선출되어 각 지역의 대표팀과 경기를 시행합니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 대표 시합의 개최 시간은 평소의 '전국 지역 교류전'과 같습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 대표 경기에 출전하는 야구팀은 그 시간대 보통의 '전국 지역
+교류전' 경기는 짜여지지 않습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 대표 시합의 결과는
+전국팀 순위 해당 시즌 예선 팀 순위 및 개인 순위에 반영됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■지역 대표 경기의 관전에 대해서</span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 대표 경기에서는 출전팀 이외에 선수도 같은 지역의 대표팀의 경기를 관전할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">관전 시에 할 수 있는 것은 아래와 같습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·경기 경과의 열람</span></div>
+<padding value="35"/>
+<div><span color="#000000">·경기의 팀 게시판 열람 
+※게시판에 작성할 수가 없습니다</span></div>
+<padding value="35"/>
+<div><span color="#000000">·대표팀의 응원 </span></div>
+<div><span color="#000000">※응원에 대해서는 도움말 '전국 지
+ 역 교류전 : 응원'도 함께 참고해주시기
+ 바랍니다</span></div>
+<padding value="35"/>
+<div><span color="#000000">■대표팀의 발표 시간</span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 대표 경기의 대표팀은
+매일 아침 6:00경에 경기장에서 발표 
+됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■지역 순위에 대해서</span></div>
+<padding value="35"/>
+
+<div><span color="#000000">지역 대표 시합의 결과에 따라
+지역 순위가 집계됩니다. </span></div>
+<div><span color="#000000">순위 상위 지역은 지역 별로 나뉘는 전국 대회 
+출전 범위가 늘어납니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■지역 순위 결과와 보상</span></div>
+<padding value="35"/>
+<div><span color="#000000">각 리그 지역 순위 1위인 지역에서는 특별한 신문을 제작합니다. </span></div>
+<div><span color="#000000">경기장의 배너 '전국 대회 결과 발표'에서 확인 할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">추가의 전국 대회 출전 범위는 경기장의 대회 스케줄이 반영됩니다. </span></div>
+<div><span color="#000000">반영이 완료되는 대로 안내에서 보고하겠습니다. </span></div>
+</post>

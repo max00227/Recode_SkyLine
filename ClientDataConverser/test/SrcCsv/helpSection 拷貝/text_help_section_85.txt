@@ -1,0 +1,14 @@
+<post>
+<div><span color="#000000">3종류의 리그가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">우선은 루키 리그에 소속하여</span></div>
+<div><span color="#000000">순위를 올리면 다음 리그로</span></div>
+<div><span color="#000000">올라갈 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">다른 리그로 이동할 시에는</span></div>
+<div><span color="#000000">이동하는 곳의 리그로 새로운 야구팀에</span></div>
+<div><span color="#000000">들어갈 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">영웅팀에서 보다 강한 동료와 함께</span></div>
+<div><span color="#000000">전국 대회를 향해 열심히 훈련해주세요.</span></div>
+</post>

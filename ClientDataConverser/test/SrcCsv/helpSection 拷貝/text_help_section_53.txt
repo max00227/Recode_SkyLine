@@ -1,0 +1,6 @@
+<post>
+<div><span color="#000000">야구팀이 믿고 의지할 수 있는 매니저</span></div>
+<padding value="35"/>
+<div><span color="#000000">화나면 무섭기도 하지만</span></div>
+<div><span color="#000000">항상 활기 넘치고 열심히 하는 매니저.</span></div>
+</post>

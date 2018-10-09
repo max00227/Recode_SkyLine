@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">경기란 2팀이 득점을 겨루고 승패를 결정하는 것입니다.</span></div>
+<div><span color="#000000">지금까지 열심히 훈련한 성과를 발휘하는 곳입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">정각이 되면 작전 회의가 열리고 그 후에 자동적으로 경기가 진행됩니다.</span></div>
+<div><span color="#000000">동료와 협력해서 경기에서 승리하세요!</span></div>
+</post>

@@ -1,0 +1,4 @@
+<post>
+<div><span color="#000000">빈 지역입니다.</span></div>
+<div><span color="#000000">휴식을 취하세요.</span></div>
+</post>

@@ -1,0 +1,14 @@
+<post>
+<div><span color="#000000">작전 회의 중</span></div>
+<div><span color="#000000">다른 선수와 교체하는 것입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">선발 멤버인 선수가 자신과 교대한 경우, 체력이 0이 됐을 때 감독에게 지시를 받아 교대하는 경우로 총 2종류가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">어느 쪽도 교대에 출전하는 선수는</span></div>
+<div><span color="#000000">감독이 정합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 선발 투수는 반드시 1회~3회(전국 대회의 예선 지역의 경우에는 6회까지) 등판하기 때문에 경기 전에 교대 할 수 없습니다.</span></div>
+<div><span color="#000000">다시 교대할 수 있는 횟수는 1경기 중 한 선수 당 1회까지입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">벤치에서도 경기에 나갈 수 있는 기회가 있으므로 준비에 임해주시기 바랍니다.</span></div>
+</post>

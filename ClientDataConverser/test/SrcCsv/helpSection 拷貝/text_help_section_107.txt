@@ -1,0 +1,15 @@
+<post>
+<div><span color="#000000">전국 대회에서는 결승전 이외의 경우</span></div>
+<div><span color="#000000">진행 방법이 평소와는 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">1회~3회는 양 팀 0대0인 채로 진행하여</span></div>
+<div><span color="#000000">4회~9회에서 승부가 결정됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기 개시 전에 발동한 스킬은</span></div>
+<div><span color="#000000">4회~6회에 발동합니다.</span></div>
+<div><span color="#000000">1~3회에서는 일반·액티브</span></div>
+<div><span color="#000000">스킬은 발동하지 않습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한 결승 토너먼트의 결승전은</span></div>
+<div><span color="#000000">평소대로 1회부터 승부가 시작됩니다.</span></div>
+</post>

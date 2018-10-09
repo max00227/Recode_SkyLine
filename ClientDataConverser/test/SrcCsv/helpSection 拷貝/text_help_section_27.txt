@@ -1,0 +1,26 @@
+<post>
+<div><span color="#000000">경기는</span></div>
+<padding value="35"/>
+<div><span color="#000000">·선발 멤버 발표
+</span></div>
+<div><span color="#000000">·제 1단계 : 1회~3회</span></div>
+<div><span color="#000000">·제 2단계 : 4회~6회</span></div>
+<div><span color="#000000">·제 3단계 : 7~8회</span></div>
+<div><span color="#000000">·제 4단계 : 9회</span></div>
+<padding value="35"/>
+<div><span color="#000000">총4개의 단계로 나뉘어</span></div>
+<div><span color="#000000">단계 별로 작전회의가 열립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기는 매일 특정 시간에 시작됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※경기 시간에 대해서는 도움말 '경기 시간에 대해서'를 참고해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기가 시작되기 전에 선발 멤버가 결정</span></div>
+<div><span color="#000000">됩니다. 어떻게 경기를 치를지 팀  내에서 미리 의논해주세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">각각의 단계에는 10분의 작전 회의가 있으니 그 중에서 스킬 발동및 교대에 대해서 의논해주세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">개개인의 능력도 중요하지만</span></div>
+<div><span color="#000000">팀워크가 승리를 이끕니다.</span></div>
+<div><span color="#000000">팀 전원이 승리를 목표로 열심히 경기해주세요.</span></div>
+</post>

@@ -1,0 +1,31 @@
+<post>
+<div><span color="#000000">일반 스킬, 액티브 스킬을 사용·발동하기 위해서는 아래의 조건을 만족할 필요가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·필요한 능력치에 도달하고 있을 것</span></div>
+<padding value="35"/>
+<div><span color="#000000">※종합능력이 소속 리그의 상한치를 초과한 경우는 리그 제한이 적용된 능력치가 대상이 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·발동 조건의 경기를 진행하고 있을 것</span></div>
+<padding value="35"/>
+<div><span color="#000000">·스킬과 자신의 포지션이 일치할 것</span></div>
+<padding value="35"/>
+<div><span color="#000000">(스킬이 무효되는 조건)</span></div>
+<padding value="35"/>
+<div><span color="#000000">아래 조건에 해당되면 체력을 소비하여 발동한 스킬이 무효가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·스킬을 작전 회의에서 발동한 후에 야구 장비 장착을 변경하면 변경 전의 스킬이 무효</span></div>
+<padding value="35"/>
+<div><span color="#000000">※다시 한번 발동한 야구장비를 장착하면 스킬이 무효가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※다시 장착한 야구장비에 스킬 레벨이 같은 스킬인 경우에도 무효가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※다시 장착한 것으로 인해 특정 횟수 이상 스킬을 발동해버린 경우는 발동순이 오래된 스킬부터 무효가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·액티브 스킬을 발동한 후에 교대하여 벤치가 된 경우 그 액티브 스킬은 무효가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·벤치 스킬을 발동한 후에 교대하여 경기에 나간 경우 그 벤치 스킬은 무효가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 메인·서브 장비와는 상관없이 같은 선수가 같은 스킬을 2개 이상 발동시킨 경우에는 레벨이 높은 쪽이 발동하지만 다른 선수끼리 같은 스킬을 발동시키면 중복 효과를 얻을 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">서브 장비에 대해서는 도움말 '서브 장비 설명'을 참고해주시기 바랍니다.</span></div>
+</post>

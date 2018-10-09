@@ -1,0 +1,4 @@
+<post>
+<div><span color="#000000">BGM와SE, VOICE의 ON/OFF
+음량 조절이 가능합니다.</span></div>
+</post>

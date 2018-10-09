@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">카페의 단골 손님들로부터 다양한 도전을 받을 수 있습니다. </span></div>
+<div><span color="#000000">단골 손님에 따라 신뢰할 수 있는 도전 종류가 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">단골 손님의 도전을 달성하면 선물로 아이템을 획득하고 단골 손님의 신뢰도가 상승합니다. </span></div>
+<div><span color="#000000">신뢰도가 상승하면 보다 어려운 도전을 받을 수 있게 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">단골 손님의 신뢰도는 카페의 '단골 노트'에서 확인할 수 있습니다. </span></div>
+</post>

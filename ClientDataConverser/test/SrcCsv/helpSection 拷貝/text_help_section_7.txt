@@ -1,0 +1,16 @@
+<post>
+<div><span color="#000000">투수엔 총4개의 능력이 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■투수의 능력</span></div>
+<padding value="35"/>
+<div><span color="#000000">구위 : 피안타의 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">컨트롤 : 사구, 피안타의 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">변화구 : 피안타의 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">수비 : 상대의 안타를 방어하는 확률, 자신의 실수 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">투구 시에 능력을 발휘합니다.</span></div>
+<div><span color="#000000">상대의 득점을 0으로 만드려면 각각의 능력을 상승시키는 것이 좋습니다.</span></div>
+</post>

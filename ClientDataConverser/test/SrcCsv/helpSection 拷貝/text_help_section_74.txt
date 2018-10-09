@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">구단주가 있는 곳에서는 이적과 영입 등의 팀에 관한 것을 상담할 수 있습니다.</span></div>
+<div><span color="#000000">리그 변경도 구단주실에서 상담할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">자세한 것은 관련 도움말을 참고해주시기 바랍니다.</span></div>
+<div><span color="#000000">·이적이란?</span></div>
+<div><span color="#000000">·팀 설립이란?</span></div>
+<div><span color="#000000">·팀 주장 설명</span></div>
+<padding value="35"/>
+</post>

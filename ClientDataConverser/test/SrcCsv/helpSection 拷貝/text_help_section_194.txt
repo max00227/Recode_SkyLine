@@ -1,0 +1,82 @@
+<post>
+<div><span color="#000000">■보상 야구 아이템에 관하여</span></div>
+<padding value="35"/>
+<div><span color="#000000">특정 장비뽑기에서 보상 야구 아이템이 설정되어 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">각 장비뽑기에 최대 1종의 보상 야구 아이템만 설정됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">배트, 글러브, 야구화 3종의 장비뽑기는 각각 다른 보상 야구 아이템이 있습니다. 한정 티켓 장비뽑기, 일반 티켓 장비뽑기 등 한 종류만의 장비뽑기는 1종의 보상 야구 아이템을 설정합니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">※장비뽑기는【보상 야구 아이템 설정된 장비뽑기】와 【보상 야구 아이템 설정이 되어 있지 않은 장비뽑기】 2개의 종류가 있습니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">보상 야구 아이템은 【보상】이 적혀 있는 리본이 달려 있습니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">보상 야구 아이템이 설정된 장비뽑기는 보증을 확인하실 수 있습니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">각 장비뽑기의 보상 야구 아이템은【장비뽑기 정보】나 【보증 정보】화면에서 확인하실 수 있습니다.
+</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">■보증에 관하여</span></div>
+<padding value="35"/>
+<div><span color="#000000">장비뽑기를 뽑을때 마다 보증 횟수가 상승합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">보상 야구 아이템을 뽑을 시 보증 횟수가 즉시 초기화됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">보증 횟수는 【보증 정보】에서 확인하실 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※배트 장비뽑기, 글러브 장비뽑기, 야구화 장비뽑기의 보증 횟수는 따로 집계합니다.
+</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">보상 야구 아이템을 계속 뽑지 못 했을 경우라도 지정된 횟수를 도달할 시 다음 뽑기는 특별 장비뽑기를 뽑을 수 있는 기회가 있습니다. 
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">　250회：『5성 확정 장비뽑기』</span></div>
+<div><span color="#000000">　500회：『5성 확정 장비뽑기』</span></div>
+<div><span color="#000000">　750회：『보상 확정 장비뽑기』</span></div>
+<padding value="35"/>
+<div><span color="#000000">예를 들면, 249회 뽑기를 진행하였지만 여전히 보상 야구 아이템을 못지 못 했을 경우 250회  뽑기를 진행할 시 특별 장비뽑기를 뽑을 수 있습니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">특별 장비뽑기를 뽑을 시 1번의 보증 횟수를 집계합니다. 보상 야구 아이템을 뽑을 시 보증 횟수가 즉시 초기화됩니다. 
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">※장비뽑기의 보증 횟수는 따로 집계되기 때문에 해당 장비뽑기에서 보상 야구 아이템을 뽑았다라도 다른 장비뽑기의 보증 횟수에 영향 받지 않습니다.
+</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">■【5성 확정 장비뽑기】에 관하여</span></div>
+<padding value="35"/>
+<div><span color="#000000">【5성 확정 장비뽑기】는 5성 야구 아이템을 확정 뽑을 수 있는 장비뽑기입니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">※【5성 확정 장비뽑기】에서 뽑은 야구아이템 종류는 이벤트 장비뽑기에서 뽑은 5성 야구아이템의 확률과 같습니다.
+</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">■【보상 확정 장비뽑기】에 관하여</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">【보상 확정 장비뽑기】는 보상 야구 아이템을 확정 뽑을 수 있는 장비뽑기입니다.
+</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">■이벤트 장비뽑기 종료 시 보증 횟수에 관하여
+</span></div>
+<padding value="35"/>
+<padding value="35"/>
+<div><span color="#000000">이벤트 장비뽑기 기간이 종료되면 해당 장비뽑기의 보증 횟수는 초기화됩니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">※장비뽑기의 보증 횟수는 따로 집계되므로 다른 이벤트 장비뽑기에 영향 받지 않습니다.
+</span></div>
+<padding value="35"/>
+<div><span color="#000000">장비뽑기의 보증 횟수가 초기화 되므로【5성 확정 장비뽑기】나 【보상 확정 장비뽑기】모두 뽑기를 진행할 수 없습니다.
+</span></div>
+<padding value="35"/>
+</post>

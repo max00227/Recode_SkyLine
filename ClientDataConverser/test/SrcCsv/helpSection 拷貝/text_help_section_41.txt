@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">전국 대회는</span></div>
+<div><span color="#000000">각 지역의 예선 대회에서</span></div>
+<div><span color="#000000">우승한 영웅팀이 모여</span></div>
+<div><span color="#000000">한국 제일의 야구팀을 결정하는 대회입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">예선 대회 마지막날의 다음날로 개최 된</span></div>
+<div><span color="#000000">하루 만에 우승팀이 결정납니다.</span></div>
+</post>

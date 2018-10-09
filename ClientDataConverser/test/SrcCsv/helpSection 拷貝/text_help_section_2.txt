@@ -1,0 +1,19 @@
+<post>
+<div><span color="#000000">야구는 두팀으로 나뉘어</span></div>
+<div><span color="#000000">경기하는 스포츠입니다.</span></div>
+<div><span color="#000000">한팀에 9명, 총2팀이 싸우므로 합계 18명이 필요한 경기입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">이 두팀이</span></div>
+<div><span color="#000000">공격과 수비를 상호 9번 반복하여</span></div>
+<div><span color="#000000">점수를 얻고 마지막 합계 득점이</span></div>
+<div><span color="#000000">높은 팀이 승리하게 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">우선 공격팀의 타자가 수비팀 투수가 던진 공을 배트로 칩니다.</span></div>
+<div><span color="#000000">친 후에는 베이스를 1루, 2루, 3루 순으로 돌아 마지막으로 본루에 도착하면! 1점 획득입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">수비팀은 공격팀의 타자가</span></div>
+<div><span color="#000000">본루에 도달하지 못하도록 아웃시켜야 합니다.</span></div>
+<div><span color="#000000">3명의 선수가 아웃되면 수비 측에서 공격 측으로 바뀝니다.</span></div>
+
+<div><span color="#000000">자! 이제 친구들을 야구팀으로 불러 함께 싸워볼까요?</span></div>
+</post>

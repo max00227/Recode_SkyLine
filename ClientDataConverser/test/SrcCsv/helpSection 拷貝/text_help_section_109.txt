@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">캐릭터에 따라 다양한 특징이 있습니다.</span></div>
+<div><span color="#000000">캐릭터마다 초기 능력이 다르고, 종합력이 리그 능력 한계에 도달했을 시에 순위가 다른 캐릭터와는 다른 캐릭터도 있습니다.</span></div>
+<div><span color="#000000">자신이 마음에 드는 캐릭터를</span></div>
+<div><span color="#000000">키워주세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■캐릭터 성격</span></div>
+<div><span color="#000000">캐릭터는 각각 성격이 다릅니다.</span></div>
+<div><span color="#000000">성격에 따라서 습득할 수 있는 캐릭터 스킬이 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">종합능력, 리그 제한에 대해서는 도움말 '종합능력이란?' 리그 능력 제한 설명을 참고해주시기 바랍니다.</span></div>
+</post>

@@ -1,0 +1,43 @@
+<post>
+<div><span color="#000000">팀 전원이 한 번도 로그인 하지 않은 팀은 오프 시즌에서 정리되어
+전원이 강제 탈퇴 됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■팀 정리기간 </span></div>
+<padding value="35"/>
+<div><span color="#000000">오프 시즌의 오전 중 </span></div>
+<padding value="35"/>
+<div><span color="#000000">■대상 팀</span></div>
+<padding value="35"/>
+<div><span color="#000000">실시하는 오프 시즌의 앞에 전국 대회 시즌에 예선, 대회 당일도 포함하여 팀 전원이 한 번도 로그인 하지 않은 팀</span></div>
+<padding value="35"/>
+<div><span color="#000000">※승인제·비승인제의 팀 전부 실행 
+ 대상 내입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※승인제 팀의 리더도 실행 대상 
+ 입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■실행 내용</span></div>
+<padding value="35"/>
+<div><span color="#000000">대상 팀에 소속한 팀 전원을 강제 탈퇴시킨다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※실행 개시 시점에서 팀 내의 팀원
+ 이 한 명이라도 로그인을 하면
+ 팀 전원은 탈퇴되지 않고 남게 됩
+ 니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※실행 개시 시점에서 대상 팀에게 한 명이라도
+ 이적을 하면 팀 전원이
+ 탈퇴되지 않고 남습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※팀 전원이 탈퇴한 팀이라도
+ 팀 타이틀은 남습니다.
+ 원래 팀으로 돌아가고 싶은 경우는
+ 야구팀 검색이 가능합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※승인제 팀의 팀 전원이 강제 탈퇴 
+ 된 경우, 비승인제 팀으로 바뀝
+ 니다.
+ 한 번 비승인제팀으로 바뀐 경우 
+ 승인제 팀으로 돌아갈 수
+ 없습니다.</span></div>
+</post>

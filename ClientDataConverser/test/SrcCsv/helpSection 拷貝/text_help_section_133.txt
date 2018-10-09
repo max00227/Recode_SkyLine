@@ -1,0 +1,28 @@
+<post>
+<div><span color="#000000">각 푸시 알림의 ON/OFF 설정이 가능합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■경기</span></div>
+<div><span color="#000000">경기의 일정, 작전 회의, 경기 시작을 알립니다.</span></div>
+<div><span color="#000000">또한 그날 하루 경기가 없어도 작전 회의와 경기 시작의 알림이 도착하므로 주의해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■이벤트</span></div>
+<div><span color="#000000">이벤트 정보를 알립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■체력 회복</span></div>
+<div><span color="#000000">체력이 MAX100까지 회복된 것을 알립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■단결 발동</span></div>
+<div><span color="#000000">팀원이 단결 카드를 발동한 것을 알립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■BP메가 상승</span></div>
+<div><span color="#000000">팀원이 BP 메가 상승 카드를 발동한 것을 알립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■친구</span></div>
+<div><span color="#000000">친구로부터의 메일이나 신청 승인이 도착한 것을 알립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■기타</span></div>
+<div><span color="#000000">상기 외 기타 운영팀이 보내는 안내를 알립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※푸시 알림은 통신 상태에 따라 지연되는 경우가 있습니다.</span></div>
+<div><span color="#000000">※푸시 알림에 관해서는 단말기의 설정도 함께 확인해주시기 바랍니다.</span></div>
+</post>

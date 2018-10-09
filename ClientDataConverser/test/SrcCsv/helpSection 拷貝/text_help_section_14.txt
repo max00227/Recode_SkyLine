@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">훈련은 체력을 소비하고 능력을 키웁니다.</span></div>
+<div><span color="#000000">주사위를 던지고 멈춘 지역에서 각기 다른 훈련을 하게 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">훈련에서는 능력을 상승시키거나</span></div>
+<div><span color="#000000">코인을 획득할 수 있습니다.</span></div>
+</post>

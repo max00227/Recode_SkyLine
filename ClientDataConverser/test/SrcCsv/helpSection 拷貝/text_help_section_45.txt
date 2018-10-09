@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">출전팀은 8개의 지역으로 나뉘어 예선 토너먼트를 겨루게 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">결승 토너먼트 대진표는</span></div>
+<div><span color="#000000">예선 대회 마지막 날 최종 경기 종료 후</span></div>
+<div><span color="#000000">발표됩니다.</span></div>
+</post>

@@ -1,0 +1,44 @@
+{
+"banner":[
+{
+"id":170101,
+"type":1,
+"assetbundle_name":"banner_match_00001",
+"link":"NewsScene",
+"sort_order":10,
+"start_at":"2017-03-03 00:00:00",
+"end_at":"2017-03-09 23:59:59",
+"platform_number":0
+},
+{
+"id":170102,
+"type":1,
+"assetbundle_name":"banner_mypage_11001",
+"link":"EventMainScene?341",
+"sort_order":20,
+"start_at":"2016-03-11 12:00:00",
+"end_at":"2016-03-17 12:59:59",
+"platform_number":0
+},
+{
+"id":170103,
+"type":1,
+"assetbundle_name":"banner_mypage_10210_keep",
+"link":"ShopEventScene",
+"sort_order":30,
+"start_at":"2017-03-03 12:00:00",
+"end_at":"2017-03-08 11:59:59",
+"platform_number":0
+},
+{
+"id":170104,
+"type":1,
+"assetbundle_name":"banner_gacha_17030301",
+"link":"GachaTopScene?30",
+"sort_order":40,
+"start_at":"",
+"end_at":"2017-03-10 11:59:59",
+"platform_number":0
+}
+]
+}

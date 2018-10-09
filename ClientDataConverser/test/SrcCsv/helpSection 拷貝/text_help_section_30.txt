@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">예선 대회에는 각 팀이 여러 개의</span></div>
+<div><span color="#000000">지역으로 나뉘어 같은 지역에 속해있는</span></div>
+<div><span color="#000000">팀과 경기를 합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">지역 내에 팀 순위가 집계되고</span></div>
+<div><span color="#000000">상위 팀만이 전국 대회에 출전할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">같은 예선 대회 중에 대전을 한 팀과</span></div>
+<div><span color="#000000">재경기할 수 있습니다.</span></div>
+</post>

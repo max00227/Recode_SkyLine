@@ -1,0 +1,15 @@
+<post>
+<div><span color="#000000">스페셜 기초훈련은</span></div>
+<div><span color="#000000">능력을 올리기 매우 쉬운 훈련스테이지입니다</span></div>
+<padding value="35"/>
+<div><span color="#000000">획득 포인트가 높은 능력치 UP칸이 배치되어、</span></div>
+<div><span color="#000000">능력치가 오르기 쉽도록 되어있습니다</span></div>
+<div><span color="#000000">그러나, 스탯총합이 300미만인 플레이어（스탯총합1～299）만 이용 가능합니다</span></div>
+<div><span color="#000000">스탯총합300이상의 캐릭터를 선택하고 있을 경우</span></div>
+<div><span color="#000000">훈련을 시작할 수 없습니다</span></div>
+<padding value="35"/>
+<div><span color="#000000">※훈련 캐릭터는 훈련메뉴 화면에서 변경할 수 있습니다</span></div>
+<div><span color="#000000">※능력은 1회의 훈련에서 1종류만 최대 25까지 올라갑니다</span></div>
+<div><span color="#000000">※훈련중에 각 능력이 랭크상한치에 도달하는 경우 더 올라가지 않습니다</span></div>
+<div link="HelpDetailScene?AboutCapacityup"><span color="#0000ff">능력치UP칸?</span></div>
+</post>

@@ -1,0 +1,26 @@
+<post>
+<div><span color="#000000">감독실에서는 감독에게 원하는 타순과 포지션 의견을 낼 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■야수·투수의 희망 타순</span></div>
+<div><span color="#000000">야수는 1번부터 9번까지 투수는 6번부터 9번까지 희망할 수 있습니다.</span></div>
+<div><span color="#000000">1번부터 5번에 희망을 내기 위해서는 지정된 조건 이상의 능력치가 필요합니다.</span></div>
+<div><span color="#000000">조건은 루키, 엘리트, 마스터에 따라 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■야수의 포지션 희망</span></div>
+<div><span color="#000000">투수 이외의 포지션 중에서 원하는 포지션 희망을 낼 수 있습니다.</span></div>
+<div><span color="#000000">또한, 야수의 포지션 희망은 선발 멤버 선출에 영향이 없습니다.</span></div>
+<div><span color="#000000">선발 멤버 결정 후에 포지션 희망이 고려됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■투수의 포지션 희망</span></div>
+<div><span color="#000000">선발, 중간 계투, 마무리 중 하나만 포지션 희망을 낼 수 있습니다.</span></div>
+<div><span color="#000000">또한, 투수의 경우는 포지션 희망을 내는 것으로 등반 순위 선발에 영향이 있습니다.</span></div>
+<div><span color="#000000">선발을 희망하는 선수가 겹치는 경우에 1명은 선발 멤버에서 제외됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■희망 리스트</span></div>
+<div><span color="#000000">팀의 다른 멤버가 어떤 타순과 포지션 희망을 낼지는 '경기장'＞'팀'＞'희망 리스트'에서 확인할 수 있습니다.</span></div>
+<padding value="35"/><div><span color="#000000">■주의
+팀내에서 희망 타순과 희망 포지션이 겹친 경우에는 종합능력, 적정 능력 순으로 선정됩니다.</span></div>
+<div><span color="#000000">반드시 희망 타순과 포지션이 되지는 않으므로 주의해주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">희망 타순은 여러 번 낼 수 있으며 선발 멤버 결정 직전에 변경해도 반영되지 않을 가능성이 있습니다.</span></div>
+</post>

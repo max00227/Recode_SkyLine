@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">장비 뽑기를 돌리면</span></div>
+<div><span color="#000000">야구 장비를 얻게 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">장비 뽑기에는</span></div>
+<div><span color="#000000">·장비 뽑기 티켓</span></div>
+<div><span color="#000000">·골드 장비 뽑기</span></div>
+<div><span color="#000000">총 2종류가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">장비 뽑기는 티켓으로 골드 장기 뽑기는 G머니로 돌릴 수 있습니다.</span></div>
+</post>

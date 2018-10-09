@@ -1,0 +1,69 @@
+<post>
+<div><span color="#000000">■'전국 지역 교류전'이란?</span></div>
+<padding value="35"/>
+<div><span color="#000000">전국 지역 교류전의 개최 기간은 보통 예선의 경기가 짜여있지 않고 다른 지역 팀과의 시합이 짜여져 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">경기는 1일에 최대 4회 이루어집니다. </span></div>
+<div><span color="#000000">'전국 지역 교류전' 기간 중에 경기 결과에 따라 전국 팀 순위가 집계됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">※보통 예선 팀 순위
+ 와는 달리, 리그 별 전 지역
+ 공통 순위가 집계됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">전국 팀 순위 상위 팀에게는 팀 타이틀과 메달이 주어집니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■예선 경기로의 영향에 대해서</span></div>
+<padding value="35"/>
+<div><span color="#000000">전국 지역 교류전은 보통 전국 대회 지구 예선 사이에 이뤄집니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">전국 지역 교류전의 일정은 해당 시즌의 지구 예선의 결과를 받아 추첨됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, '전국 지역 교류전'의 경기 결과는 해당 시즌 지구 예선의 팀 순위 및 개인 순위도 반영됩니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">■전국 팀 순위의 규정 시합
+ 에 대하여</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기를 일정 수 시행하지 않으면 전국 팀 순위에는 참여할 수 없습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">순위에 진입하기 위해서는 규정 시합 수의 조건을 만족해야 합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">이것을 만족하지 않으면 순위 대상에서 제외가 되므로 주의하세요. </span></div>
+<padding value="35"/>
+<div><span color="#000000">또한, 규정 경기 수는 아래의 계산에 의거합니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">현재 개최 중인 전국 지역 교류전에 대해서 소속하고 있는 리그의 그때까지 시행된 경기 수 x0.9 경기</span></div>
+<padding value="35"/>
+<div><span color="#000000">※규정 경기 수는 소수점 이하 버림</span></div>
+<padding value="35"/>
+
+<div><span color="#000000">■동순위의 경우에 대하여</span></div>
+<padding value="35"/>
+<div><span color="#000000">확률이 같은 팀은 아래의 순서로
+순위가 결정납니다.</span></div>
+<div><span color="#000000">1. 패전 수가 적음</span></div>
+<div><span color="#000000">2. 승리 수가 많음</span></div>
+<div><span color="#000000">3. 특실점사가 많음</span></div>
+<div><span color="#000000">4. 총득점</span></div>
+<div><span color="#000000">게다가 총득점도 같은 경우</span></div>
+<div><span color="#000000">운영 사무국에서 추첨을 시행합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■전국 팀 순위 보상의 획득 조 
+ 건</span></div>
+<padding value="35"/>
+<div><span color="#000000">예선 리그 개시 후 4일 이후에 그 야구팀에 가입한 팀원은 획득 대상 외입니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">예 : 12/10시작의 경우12/12
+ 23:59보다 나중에 가입한 경우는 획득 
+ 대상 외</span></div>
+<padding value="35"/>
+<div><span color="#000000">※보통의 전국 대회  보상의 획득 조건과
+ 같아집니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※'전국 지역 교류전' 상세에 
+ 대해서는 아래의 도움말을 참고해주시기
+ 바랍니다</span></div>
+<padding value="20"/>
+<div link="HelpDetailScene?AboutShowcase"><span color="#0000FF">대표 경기에 대해서</span></div>
+<padding value="20"/>
+<div link="HelpDetailScene?AboutWave"><span color="#0000FF">응원에 대해서</span></div>
+</post>

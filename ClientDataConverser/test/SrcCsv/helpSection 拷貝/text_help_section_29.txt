@@ -1,0 +1,24 @@
+<post>
+<div><span color="#000000">예선 대회에서는 매일 최대 4경기가 열립니다.</span></div>
+<div><span color="#000000">경기 시작 시간은 지역에 따라 다릅니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·서울 지역</span></div>
+<div><span color="#000000">·부산 지역</span></div>
+<div><span color="#000000">·인청·경기 지역</span></div>
+<div><span color="#000000">·대구 지역</span></div>
+<div><span color="#000000">·대전 지역</span></div>
+<div><span color="#000000">·광주 지역</span></div>
+<div><span color="#000000">위의 6지역은</span></div>
+<div><span color="#000000">7:50, 11:50, 17:50, 21:50</span></div>
+<padding value="35"/>
+<div><span color="#000000">·울산 지역</span></div>
+<div><span color="#000000">·경상도 지역</span></div>
+<div><span color="#000000">·전라도 지역</span></div>
+<div><span color="#000000">·충청도 지역</span></div>
+<div><span color="#000000">·강원도 지역</span></div>
+<div><span color="#000000">·제주도 지역</span></div>
+<div><span color="#000000">위의 6지역은</span></div>
+<div><span color="#000000">7:50, 11:50, 18:50,22:50</span></div>
+<padding value="35"/>
+<div><span color="#000000">단, 야구단 수와 경기의 조 편성에 따라서 하루의 경기 수가 4경기보다 적은 날도 있습니다.</span></div>
+</post>

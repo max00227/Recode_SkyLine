@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">경기 중 단계와 단계 사이에는</span></div>
+<div><span color="#000000">10분간의 작전 회의가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">작전 회의 중에는</span></div>
+<div><span color="#000000">응원·선수 교대·스킬 발동·</span></div>
+<div><span color="#000000">야구 장비의 변경·체력 회복을 시행할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">어떤식으로 경기에 도전할지</span></div>
+<div><span color="#000000">팀원들과 의논하여</span></div>
+<div><span color="#000000">작전을 짜보세요.</span></div>
+</post>

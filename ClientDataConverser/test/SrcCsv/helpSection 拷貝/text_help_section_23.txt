@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">수원이 야구 장비의</span></div>
+<div><span color="#000000">사용도를 올려줍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">사용도가 MAX가 되면</span></div>
+<div><span color="#000000">야구 장비를 투혼으로 바꿀 수 있습니다.</span></div>
+<div><span color="#000000">투혼을 하고 싶은 야구 장비를 수원이</span></div>
+<div><span color="#000000">쓰도록 하세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">투혼에 대해서는 도움말 '투혼이란'을 참고해주시기 바랍니다.</span></div>
+</post>

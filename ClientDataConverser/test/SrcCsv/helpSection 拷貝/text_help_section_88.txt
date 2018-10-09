@@ -1,0 +1,59 @@
+<post>
+<div><span color="#000000">리그에 의해 야구장비 장착 후의 능력에는 제한이 있습니다.</span></div>
+<div><span color="#000000">제한을 초과한 능력치의 야구장비를</span></div>
+<div><span color="#000000">장착한 경우 각 리그의 능력 상한치가 적용됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">제한을 초과하면 능력 란에 '!' 마크가 표시됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">제한은 야구장비 한 개씩 적용됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■투수의 경우</span></div>
+<padding value="35"/>
+<div><span color="#000000">·루키 리그</span></div>
+<div><span color="#000000"> - 구위 : 75</span></div>
+<div><span color="#000000"> - 컨트롤 : 75</span></div>
+<div><span color="#000000"> - 변화구 : 75</span></div>
+<div><span color="#000000"> - 수비 : 75</span></div>
+<padding value="35"/>
+<div><span color="#000000">·엘리트 리그</span></div>
+<div><span color="#000000"> - 구위 : 160</span></div>
+<div><span color="#000000"> - 컨트롤 : 160</span></div>
+<div><span color="#000000"> - 변화구 : 160</span></div>
+<div><span color="#000000"> - 수비 : 160</span></div>
+<padding value="35"/>
+<div><span color="#000000">·마스터 리그</span></div>
+<div><span color="#000000"> - 구위 : 350</span></div>
+<div><span color="#000000"> - 컨트롤 : 350</span></div>
+<div><span color="#000000"> - 변화구 : 350</span></div>
+<div><span color="#000000"> - 수비 : 350</span></div>
+<padding value="35"/>
+<div><span color="#000000">■야수의 경우</span></div>
+<padding value="35"/>
+<div><span color="#000000">·루키 리그</span></div>
+<div><span color="#000000"> - 파워 : 75</span></div>
+<div><span color="#000000"> - 선구 : 75</span></div>
+<div><span color="#000000"> - 주력 : 75</span></div>
+<div><span color="#000000"> - 수비 : 75</span></div>
+<padding value="35"/>
+<div><span color="#000000">·엘리트 리그</span></div>
+<div><span color="#000000"> - 파워 : 160</span></div>
+<div><span color="#000000"> - 선구 : 160</span></div>
+<div><span color="#000000"> - 주력 : 160</span></div>
+<div><span color="#000000"> - 수비 : 160</span></div>
+<padding value="35"/>
+<div><span color="#000000">·마스터 리그</span></div>
+<div><span color="#000000"> - 파워 : 350</span></div>
+<div><span color="#000000"> - 선구 : 350</span></div>
+<div><span color="#000000"> - 주력 : 350</span></div>
+<div><span color="#000000"> - 수비 : 350</span></div>
+<padding value="35"/>
+<div><span color="#000000">[예]</span></div>
+<div><span color="#000000">·소속 리그 : 루키 리그</span></div>
+<div><span color="#000000">·기본 파워치 : 60</span></div>
+<div><span color="#000000">·배트 A의 파워치 : 80
+ (※리그 제한에 의해 75)</span></div>
+<div><span color="#000000">·스파이크 B의 파워치 : 10
+ (리그제한 없음)</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기에서 발휘하는 파워치는 기본60+배트 A75+스파이크B10=145가 됩니다.</span></div>
+</post>

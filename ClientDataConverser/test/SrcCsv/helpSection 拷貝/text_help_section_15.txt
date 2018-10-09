@@ -1,0 +1,11 @@
+<post>
+<div><span color="#000000">훈련을 하기 위해서는 체력이 필요합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">체력이 부족하면 훈련을</span></div>
+<div><span color="#000000">할 수 없으므로 주의하세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">체력을 회복하기 위해서는</span></div>
+<div><span color="#000000">2분에 1회 회복되는 것을 기다리거나</span></div>
+<div><span color="#000000">아이템을 사용해 회복하는</span></div>
+<div><span color="#000000">2가지의 방법이 있습니다.</span></div>
+</post>

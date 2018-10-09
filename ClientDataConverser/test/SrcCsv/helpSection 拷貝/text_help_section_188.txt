@@ -1,0 +1,25 @@
+<post>
+<div><span color="#000000">탈의실에 야구장비, 투혼, 스킬 노트를 잠글 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">야구장비를 잠그면
+상점에서 판매하거나 강화 도장에서
+투혼으로 변경할 수 없게
+됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">투혼, 스킬 노트를 잠그면 상점에서 판매하거나 강화 도장에서
+야구장비나 내 캐릭터에 장착할 수
+없게 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">각각의 아이템 정보에서
+'잠금'을 누르면 아이템을 잠글 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">잠금을 해제하는 경우, 잠금된
+아이템의 아이템 정보에서
+'잠금 해제'를 누르세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">탈의실 이외의 화면에서는 잠금을
+설정할 수 없습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※ 본 기능은 ver3.2.0 이상에서
+ 이용할 수 있습니다.</span></div>
+</post>

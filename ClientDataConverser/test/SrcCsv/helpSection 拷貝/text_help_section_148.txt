@@ -1,0 +1,5 @@
+<post>
+<div><span color="#000000">경기는 매일 최대 4경기 시행됩니다.</span></div>
+<div><span color="#000000">단지 팀 수와 경기 일정에 의해 1일 경기 수가 4경기보다 적은 날도 있습니다.</span></div>
+<div><span color="#000000">미리 양해바랍니다.</span></div>
+</post>

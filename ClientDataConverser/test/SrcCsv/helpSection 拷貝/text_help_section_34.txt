@@ -1,0 +1,32 @@
+<post>
+<div><span color="#000000">선발 멤버란 맨 처음으로 출전하는 선수(스타팅 멤버)를 말합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■선발 멤버로 선정되기 위해서는?</span></div>
+<div><span color="#000000">야구 장비의 미장착 시 능력의 높음에 의해 선발 멤버로 선정되기 쉽습니다.</span></div>
+<div><span color="#000000">경기에서 체력이 줄어들면 능력치가 떨어지면서 선발 멤버 결정에 영향을 줍니다.</span></div>
+<div><span color="#000000">또한, 벤치 희망 선수는 선발 멤버로 선정되기 어렵습니다.</span></div>
+<div><span color="#000000">종합능력이 소속 리그의 상한치를 초과한 경우는 리그 제한이 적용 된 능력치로 선발 멤버를 결정합니다.</span></div>
+<div><span color="#000000">리그 제한에 대해서는 도움말 '리그 제한에 대해서'를 참고하여주시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">능력치가 동일한 경우에는 최종</span></div>
+<div><span color="#000000">가장 최근에 접속한 팀원이</span></div>
+<div><span color="#000000">우선 선정됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">투수의 경우 상기 이외에도 투수의 등판</span></div>
+<div><span color="#000000">순위나 포지션 희망 등</span></div>
+<div><span color="#000000">에 의해 선발 멤버가 바뀝니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">야수의 경우 능력 또는 최종 접속 일시에 의해 상위 8명의 선발 멤버가 선출되어 그 중에서 희망타순에 의한 타순과 포지션이 배정됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■등판 순위에 대해서</span></div>
+<div><span color="#000000">투수 선발 멤버는 2명의 투수</span></div>
+<div><span color="#000000">등판 순위로 선출됩니다.</span></div>
+<div><span color="#000000">당일의 이전 경기에서 등판한 투수는 선발</span></div>
+<div><span color="#000000">멤버로 선정되지 않습니다.</span></div>
+<div><span color="#000000">팀에  투수가 1명 뿐인 경우에는</span></div>
+<div><span color="#000000">연투가 되어 그 경우</span></div>
+<div><span color="#000000">선발 멤버 결정 시에 체력은 0이</span></div>
+<div><span color="#000000">됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">연투에 대해서는 도움 말 '투수의 연투 설명'을 참고해주시기 바랍니다.</span></div>
+</post>

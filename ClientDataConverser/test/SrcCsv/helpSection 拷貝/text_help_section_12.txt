@@ -1,0 +1,16 @@
+<post>
+<div><span color="#000000">야수의 포지션은 총8종류로</span></div>
+<div><span color="#000000">·포수</span></div>
+<div><span color="#000000">·1루수</span></div>
+<div><span color="#000000">·2루수</span></div>
+<div><span color="#000000">·3루수</span></div>
+<div><span color="#000000">·유격수</span></div>
+<div><span color="#000000">·좌익수</span></div>
+<div><span color="#000000">·중견수</span></div>
+<div><span color="#000000">·우익수</span></div>
+<div><span color="#000000">의 포지션이 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">팀에 속한 야수 중에서 능력의 높음과 최종 접속 일시에 따라 상위 9명이 선발 멤버로서 선출됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">선발 멤버에 대해서는 도움말 ‘선발 멤버 설명’을 참고해주시기 바랍니다.</span></div>
+</post>

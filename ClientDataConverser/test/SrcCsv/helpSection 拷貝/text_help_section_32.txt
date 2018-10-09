@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">오프 시즌은</span></div>
+<div><span color="#000000">전국 대회가 종료한 다음날부터</span></div>
+<div><span color="#000000">다음 예선 대회 개시일까지의</span></div>
+<div><span color="#000000">경기가 없는 기간을 말합니다.</span></div>
+<div><span color="#000000">오프 시즌 중에는 1일 중에 여러 번 이적이 가능하므로 자신과 맞는 팀을 찾아보세요!</span></div>
+</post>

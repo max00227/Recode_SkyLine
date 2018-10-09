@@ -1,0 +1,4 @@
+<post>
+<div><span color="#000000">순위는 정상적으로 반영될 때까지 시간차가 발생할 수 있습니다.</span></div>
+<div><span color="#000000">잠시만 기다려주십시요.</span></div>
+</post>

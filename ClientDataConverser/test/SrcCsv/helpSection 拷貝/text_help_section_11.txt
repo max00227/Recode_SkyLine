@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">포지션은 수비의 위치를 말합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">투수·야수 이외의 자세한 포지션은</span></div>
+<padding value="35"/>
+<div><span color="#000000">매 경기마다 감독에게 원하는 포지션을 전달할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">단, 야수⇔투수의 포지션은</span>
+</div><div><span color="#000000">변경할 수 없습니다.</span></div>
+</post>

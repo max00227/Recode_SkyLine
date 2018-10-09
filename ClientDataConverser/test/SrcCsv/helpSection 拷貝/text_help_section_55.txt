@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">상점에서 다양한 수집품을</span></div>
+<div><span color="#000000">수집하고 있는 리사 아줌마.</span></div>
+<padding value="35"/>
+<div><span color="#000000">수집품을 얻으면 리사 아줌마의 가게에서</span></div>
+<div><span color="#000000">아이템과 교환할 수 있습니다.</span></div>
+</post>

@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">강화 도장의 장혼</span></div>
+<padding value="35"/>
+<div><span color="#000000">평소엔 온화한 할아버지지만</span></div>
+<div><span color="#000000">도장에 들어선 순간! 딴 사람이 된다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">사용한 야구장비로 부터</span></div>
+<div><span color="#000000">투혼을 빼거나</span></div>
+<div><span color="#000000">야구장비에 투혼을 담아주기도 한다.</span></div>
+</post>

@@ -1,0 +1,6 @@
+<post>
+<div><span color="#000000">강화 도장에서 장혼이</span></div>
+<div><span color="#000000">사용도 MAX가 된</span></div>
+<div><span color="#000000">야구장비를 투혼으로 바꿔줍니다.</span></div>
+<div><span color="#000000">야구장비는 투혼으로 바뀌면 사라집니다.</span></div>
+</post>

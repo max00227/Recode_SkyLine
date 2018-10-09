@@ -1,0 +1,15 @@
+<post>
+<div><span color="#000000">아이템을 가지고 있으면 훈련과 경기에서 도움이 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■아이템 종류</span></div>
+<div><span color="#000000">·야구장비</span></div>
+<div><span color="#000000">·갈아입기 아이템</span></div>
+<div><span color="#000000">·코인</span></div>
+<div><span color="#000000">·G머니</span></div>
+<div><span color="#000000">·카드</span></div>
+<div><span color="#000000">·음료수</span></div>
+<div><span color="#000000">·수집품</span></div>
+<div><span color="#000000">·투혼</span></div>
+<padding value="35"/>
+<div><span color="#000000">이 외에도 이벤트 시에만 사용할 수 있는 아이템도 있습니다.</span></div>
+</post>

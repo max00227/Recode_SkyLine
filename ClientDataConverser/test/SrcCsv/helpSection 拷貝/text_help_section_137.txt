@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">게임 동작이 느리거나 멈췄을 시, 그림이 잘 표시되지 않을 시에는 캐시 데이터를 삭제해주시기 바랍니다. </span></div>
+<div><span color="#000000">개선되는 경우가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">캐시 데이터를 삭제한 후 데이터의 다운로드가 시작되므로</span></div>
+<div><span color="#000000">통신 환경이 좋은 장소에서 실행해주시기 바랍니다. </span></div>
+</post>

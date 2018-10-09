@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">전국 대회 예선 노터먼트의</span></div>
+<div><span color="#000000">각 지역의 승자 1팀만이</span></div>
+<div><span color="#000000">결승 토너먼트에 진출할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">토너먼트의 승자가 전국 대회 우승팀으로서 한국 제일의 명예을 얻게됩니다.</span></div>
+</post>

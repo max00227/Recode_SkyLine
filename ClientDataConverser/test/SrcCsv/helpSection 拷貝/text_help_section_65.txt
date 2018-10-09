@@ -1,0 +1,6 @@
+<post>
+<div><span color="#000000">G머니는 게임 내에서 사용하는 화폐입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">상점에서 상품을 구입하거나 로그인 보너스와 캠페인에서 획득할 수 있습니다.</span></div>
+<div><span color="#000000">코인과는 달리 훈련 중에 얻는 것은 불가능합니다.</span></div>
+</post>

@@ -1,0 +1,19 @@
+<post>
+<div><span color="#000000">체력 오버 회복이란?</span></div>
+<padding value="35"/>
+<div><span color="#000000">체력이 남은 상태에서 회복 아이템을 사용한 경우, 잔량+아이템 회복량이 체력 상한을 초과해도 상한 이상으로 회복합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">예 :  체력이 20인 상황에서 회복 음료수(대)를
+  사용한 경우, 체력이 120까지
+  회복.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※체력 오버 회복으로 체력이
+ 100 이상이 된 경우, 100 이상인
+ 체력은 자동 회복되지 않습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※체력 오버 회복으로 최대
+ 체력은 199가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">※체력이 100 이상인 경우, 회복
+ 아이템은 사용할 수 없습니다.</span></div>
+</post>

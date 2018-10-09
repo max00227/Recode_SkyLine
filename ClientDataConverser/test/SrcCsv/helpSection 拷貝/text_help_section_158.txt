@@ -1,0 +1,18 @@
+<post>
+<div><span color="#000000">내 캐릭터가 습득한 스킬은 같은 스킬 노트를
+사용하는 것으로 강화할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">캐릭터 스킬과 스킬 노트가 일치하면 양쪽의 레벨과는 관계없이 캐릭터 스킬 강화 게이지가 상승합니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">[예]</span></div>
+<div><span color="#000000">캐릭터 스킬 '빠른 발 Lv2'
++스킬 노트 '빠른 발의 노트 Lv1' 
+<padding value="35"/>
+→캐릭터 스킬 '빠른 발 Lv2'의 강화
+ 게이지가 올라간다</span></div>
+<padding value="35"/>
+<div><span color="#000000">캐릭터 스킬의 강화 게이지가 MAX가 되면 캐릭터 스킬이 1 상승합니다. </span></div>
+<div><span color="#000000">또한, 강화에 사용한 스킬 노트는
+없어지고 원래대로 돌아갈 수 없습니다.</span></div>
+<padding value="35"/>
+</post>

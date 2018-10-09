@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">야구팀의 구단주</span></div>
+<padding value="35"/>
+<div><span color="#000000">건실한 분위기를 풍기지만</span></div>
+<div><span color="#000000">항상 팀원들을 먼저 생각해주고</span></div>
+<div><span color="#000000">고민과 상담을 잘 들어주는 야구팀의 구단주!</span></div>
+<padding value="35"/>
+<div><span color="#000000">야구팀에 관한 상담은 구단주에게 물어보세요.</span></div>
+</post>

@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">■승리 투수의 결정법</span></div>
+<div><span color="#000000">승리 투수는 팀의 승리에</span></div>
+<div><span color="#000000">공헌한 투수가 선정됩니다.</span></div>
+<div><span color="#000000">마지막에 자신의 팀이 상대의 팀</span></div>
+<div><span color="#000000">보다 득점을 획득한 회에 등판</span></div>
+<div><span color="#000000">하고 있던 투수가 승리 투수가 됩니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">선발로 1~3회까지만의 등판이었던</span></div>
+<div><span color="#000000">경우에는 대상에서 제외가 되어 다음에 등판한</span></div>
+<div><span color="#000000">투수가 승리 투수가 됩니다.</span></div>
+</post>

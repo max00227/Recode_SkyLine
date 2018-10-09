@@ -1,0 +1,9 @@
+<post>
+<div><span color="#000000">보건소에서 팀원을 치유해주는 선생님입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">지쳐서 체력이 없어진 팀원을</span></div>
+<div><span color="#000000">순식간에 회복시켜주는 엄청난 실력!!</span></div>
+<padding value="35"/>
+<div><span color="#000000">아름 선생님이 말하길</span></div>
+<div><span color="#000000">'보건소에서 치료해주는 건 '하루에 한 번뿐이야'</span></div>
+</post>

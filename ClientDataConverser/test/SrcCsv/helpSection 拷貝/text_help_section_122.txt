@@ -1,0 +1,19 @@
+<post>
+<div><span color="#000000">일반 스킬·액티브 스킬의 스킬 레벨을 상승 시키기 위해서는 아래 조건이 필요합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">야구장비와 투혼 스킬이 같은 이름</span></div>
+<div><span color="#000000">·투혼 스킬 레벨이 야구장비의 스킬 레벨과 같거나 높을 때</span></div>
+<padding value="35"/>
+<div><span color="#000000">야구장비와 다른 스킬을 가진 투혼을 결합하거나,</span></div>
+<div><span color="#000000">투혼의 스킬 레벨이 야구장비보다 낮으면 스킬 레벨은 상승하지 않습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">스킬 레벨은 조건이 맞는 투혼을 하나 결합하는 것으로 1씩 레벨이 상승합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">[예1]</span></div>
+<div><span color="#000000">배트 A(대성원Lv1)＋투혼 A(대성원Lv1)＝배트 A(대성원Lv2)</span></div>
+<div><span color="#000000">배트 B(대성원Lv2)+투혼 B(대성원Lv3)=배트 B(대성원Lv3)</span></div>
+<padding value="35"/>
+<div><span color="#000000">[예2]</span></div>
+<div><span color="#000000">배트 C(대성원Lv1)+투혼C(배합분석Lv1)=배트C(대성원Lv1)</span></div>
+<div><span color="#000000">배트 D(대성원Lv2)+투혼 D(대성원Lv1)=배트 D(대성원Lv2)</span></div>
+</post>

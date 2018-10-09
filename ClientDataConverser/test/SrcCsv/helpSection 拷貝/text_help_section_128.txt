@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">야구팀이란 당신이 소속한 팀입니다.</span></div>
+<div><span color="#000000">같은 팀에 팀원들도 유저들입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">한팀에 소속할 수 있는 최대 명수는 15명까지 입니다. </span></div>
+<div><span color="#000000">그 중에 야수는 최대 13명까지, 투수는 최대 8명까지 포지션 범위가 있습니다.</span></div>
+<div><span color="#000000">예를 들어 야수 13명 투수 2명인 경우에는 야수가 꽉 차있으므로 투수는 야수로의 포지션 변경이 불가능합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">또한 거리＞야구팀에서는 팀과 관련한 다양한 기능이 있습니다.</span></div>
+</post>

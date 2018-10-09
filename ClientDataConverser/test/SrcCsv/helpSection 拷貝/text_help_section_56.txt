@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">유니폼과 모자 등</span></div>
+<div><span color="#000000">다양한 상품을 판매하는 스포츠 상점의 점장은 안타이다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">필요한 물건이 있을 때는</span></div>
+<div><span color="#000000">지성 '점장의 상점'에서 살 수 있습니다.</span></div>
+</post>

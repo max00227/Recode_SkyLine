@@ -1,0 +1,15 @@
+<post>
+<div><span color="#000000">아이템은 소지할 수 있는 상한 수가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■야구장비 상한</span></div>
+<div><span color="#000000">야구장비는 배트·글러브·스파이크를 모두 합쳐 400개까지 소지할 수 있습니다.</span></div>
+<div><span color="#000000">장비 뽑기를 할 때 상한 수를 초과하면 장비 뽑기를 할 수 없으므로</span></div>
+<div><span color="#000000">그때에는 상점에서 야구장비를 팔아주세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■G머니·코인 상한</span></div>
+<div><span color="#000000">G머니에 소지 상한은 없습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■그 외 아이템 상한</span></div>
+<div><span color="#000000">카드·음료수·갈아입기 아이템·수집품은 1개의 아이템에 따라 400개까지 소지할 수 있습니다.</span></div>
+<div><span color="#000000">아이템을 획득했을 시에 상한 수를 넘어버린 경우는 넘어간 분의 아이템은 선물박스로 보내집니다.</span></div>
+</post>

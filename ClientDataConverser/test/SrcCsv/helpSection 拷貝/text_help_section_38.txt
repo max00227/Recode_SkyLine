@@ -1,0 +1,16 @@
+<post>
+<div><span color="#000000">응원은 동료에게</span></div>
+<div><span color="#000000">보내는 것입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">응원을 보내면 상대의 체력을</span></div>
+<div><span color="#000000">10회복 시킬 수 있습니다.</span></div>
+<div><span color="#000000">서로에게 응원을 보내며 대전을 하시기 바랍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■1일의 응원 수</span></div>
+<padding value="35"/>
+<div><span color="#000000">루키 리그 : 1명 20회까지
+엘리트 리그 : 1인 22회까지
+마스터 리그 : 1인 2회까지
+</span></div>
+<div><span color="#000000">응원을 보낸 횟수는 매일 5시에 리셋됩니다.</span></div>
+</post>

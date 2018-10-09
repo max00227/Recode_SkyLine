@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">각 능력의 상한은 순위에 따라 결정됩니다.</span></div>
+<div><span color="#000000">순위가 올라가면 능력 상한도 올라갑니다.</span></div>
+<div><span color="#000000">특정 능력이 상승하지 않게 되면 다른 능력을 상승시켜 순위를 올리세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">순위의 능력 상한은 각 캐릭터 페이지의 ‘능력 최대치’에서 확인할 수 있습니다.</span></div>
+</post>

@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">리그에 의해 캐릭터 능력 제한이 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">·루키 리그 : 순위 1이상, 종합능력 271까지</span></div>
+<div><span color="#000000">·엘리트 리그 : 순위 20이상, 종합능력592까지</span></div>
+<div><span color="#000000">·마스터 리그 : 순위 "35" 이상</span></div>
+<padding value="35"/>
+<div><span color="#000000">위 능력의 범위 외에 캐릭터는 그 리그에서 메인 캐릭터로 설정할 수 없습니다.</span></div>
+<div><span color="#000000">·예 : 엘리트 리그 소속 중, 랭크 1의 캐릭터가 메인 캐릭터로 설정이 안된다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">훈련 스테이지 선택 화면에서 캐릭터 변경이 가능하므로 범위 외의 캐릭터를 범위 내까지 키워주세요. </span></div>
+</post>

@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">보건소에서는 아름 선생님이 체력을 회복해 줍니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">예선 리그 및 훈련 경기에서의 체력 회복은 1일 1회입니다.</span></div>
+<div><span color="#000000">전국 대회 당일, 출전팀은 1일 4회까지 회복할 수 있습니다.</span></div>
+<div><span color="#000000">1일에 회복할 수 있는 횟수 상한은 매일 아침 5:00에 초기화됩니다.</span></div>
+</post>

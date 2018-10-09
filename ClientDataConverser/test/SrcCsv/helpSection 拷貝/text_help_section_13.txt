@@ -1,0 +1,21 @@
+<post>
+<div><span color="#000000">투수는 총</span></div>
+<div><span color="#000000">·선발</span></div>
+<div><span color="#000000">·중간 계투</span></div>
+<div><span color="#000000">·마무리</span></div>
+<div><span color="#000000">3개의 역할이 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">선발은 1회부터 교체하는 선수.</span></div>
+<div><span color="#000000">중간 계투는 3회말·6회말의</span></div>
+<div><span color="#000000">작전 회의에서 교대하면 등판하는 선수.</span></div>
+<div><span color="#000000">마무리는 9회말의 작전 회의에서</span></div>
+<div><span color="#000000">교대하면 등판하는 선수로 역할이 나뉘어져 있습니다.</span></div>
+<div><span color="#000000">야수의 포지션과 같이</span></div>
+<div><span color="#000000">감독에게 원하는 포지션을 전할 수 있으므로</span></div>
+<div><span color="#000000">팀원들과 토론하여 각각의 포지션을</span></div>
+<div><span color="#000000">결정할 수 있습니다.</span></div>
+<div><span color="#000000">반드시 희망대로는 되지 않으</span></div>
+<div><span color="#000000">므로 참고해 주세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">투수의 선발 선수에 대해서는 도움말 '선정 멤버 설명'을 참고해주시기 바랍니다.</span></div>
+</post>

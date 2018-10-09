@@ -1,0 +1,16 @@
+<post>
+<div><span color="#000000">야수엔 총4개의 능력이 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■야수의 능력</span></div>
+<padding value="35"/>
+<div><span color="#000000">파워 : 안타, 장타의 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">선구 : 안타의 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">주력 : 내야안타, 도루의 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">수비 : 상대의 안타를 방어하는 확률, 자신의 실수 확률에 영향</span></div>
+<padding value="35"/>
+<div><span color="#000000">타석에 섰을 시와 진루했을 시</span></div>
+<div><span color="#000000">수비 시에 능력을 발휘합니다.</span></div>
+</post>

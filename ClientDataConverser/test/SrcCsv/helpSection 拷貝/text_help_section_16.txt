@@ -1,0 +1,5 @@
+<post>
+<div><span color="#000000">지역은 총 8개가 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">스테이지에 따라 나오는 지역에 따라 종류와 효과가 다릅니다.</span></div>
+</post>

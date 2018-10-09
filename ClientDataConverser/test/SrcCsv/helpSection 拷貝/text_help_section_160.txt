@@ -1,0 +1,12 @@
+<post>
+<div><span color="#000000">도전은 '거리'의 카페에서 확인할 수 있습니다. </span></div>
+<div><span color="#000000">카페에 가면 단골 손님들로부터 다양한 도전을 받을 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">도전을 달성하면 선물로 아이템을 획득할 수 있습니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">※도전 보상은 선물박스
+ 에 도착하지 않고 직접 수령할 
+ 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">도전을 달성하는 것으로 단골 손님들의 신뢰도가 상승하여 보다 어려운 도전을 받을 수 있습니다. </span></div>
+</post>

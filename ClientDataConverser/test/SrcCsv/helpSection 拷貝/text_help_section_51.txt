@@ -1,0 +1,4 @@
+<post>
+<div><span color="#000000">언제나 도와주는 동네 친구 아타루</span></div>
+<div><span color="#000000">야구팀에 소속되어 있지는 않지만 야구에 대해 굉장히 잘 알고있다.</span></div>
+</post>

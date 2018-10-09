@@ -1,0 +1,15 @@
+<post>
+<div><span color="#000000">매니저에게 아이템을 선물하면 매니저의 컨디션 나빠질 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">선물하는 아이템 종류에 따라 컨디션이 좋지 않은 상태로 바뀝니다. </span></div>
+<div><span color="#000000">·음식 아이템을 선물하면 녹초가 된 상태</span></div>
+<div><span color="#000000">·공부에 사용하는 아이템을 선물하면  졸린 상태</span></div>
+<div><span color="#000000">·화장에 사용하는 아아템을 선물하면 기력이 없는 상태</span></div>
+<div><span color="#000000">·호감도를 올리는 아이템을 선물하면 삐친 상태</span></div>
+<padding value="35"/>
+<div><span color="#000000">매니저의 상태가 안 좋을 때는 선물의 남은 사용 시간이 감소되지 않습니다.</span></div>
+<div><span color="#000000">매니저에게 회복 아이템을 사용하면 선물의 남은 시간이 다시 감소되기 시작합니다. </span></div>
+<div><span color="#000000">회복 아이템은 상점에서 구입할 수 있습니다. </span></div>
+<div><span color="#000000">※회복 아이템은 매니저의 상태가 안 좋을 때에만 사용 가능합니다.</span></div>
+<div><span color="#000000">※회복 아이템은 구입 후 락커에서 확인 가능합니다. </span></div>
+</post>

@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">코인 취득이 가능한 지역입니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">슬롯을 멈추면</span></div>
+<div><span color="#000000">나온 금액만큼 코인을 획득할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">코인 지역에서는</span></div>
+<div><span color="#000000">코인 지역(소)와 코인 지역(대)가 있습니다.</span></div>
+<div><span color="#000000">코인 지역(대)는 보다 많은 코인을 획득할 수 있습니다.</span></div>
+</post>

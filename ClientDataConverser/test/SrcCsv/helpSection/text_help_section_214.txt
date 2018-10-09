@@ -1,0 +1,34 @@
+<post>
+<div><span color="#000000">動画広告を視聴完了することで、
+様々な報酬を得ることができます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">動画広告で得られる報酬は下記の通りとなります。</span></div>
+<padding value="35"/>
+<div><span color="#000000">・1日に1回まで、50ポケGを獲得
+　できます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">・1日に1回まで、ぼくマネのプレゼ
+　ント使用時間を半減できます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">・1日に1回まで、体力を50回復
+　できます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">・1試合に1回まで、ガラポン
+　チケットを5枚獲得できます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">報酬は、動画の視聴が完全に終了してから付与されます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">動画視聴中に、アプリの中断や動画再生の中断をされた場合の補填対応は致しかねますので予めご了承ください。</span></div>
+<padding value="35"/>
+<div><span color="#000000">また、動画が何らかの原因で予期せぬ中断となった際も上記同様、補填対応は致しかねますのでご了承ください。</span></div>
+<padding value="35"/>
+<div><span color="#000000">動画広告は未視聴の動画が他にある場合、続けて視聴することができます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">例：50ポケGがもらえる動画広告を
+　視聴後、体力50回復の動画広告が
+　未視聴の場合、続けて視聴が可能。</span></div>
+<padding value="35"/>
+<div><span color="#000000">1日に動画広告を視聴できる回数の上限は毎朝5:00にリセットされます。</span></div>
+<padding value="35"/>
+<div><span color="#000000">動画広告の詳しい視聴場所や手順につきましては、ヘルプ「動画広告の視聴手順」をご参照ください。</span></div>
+</post>

@@ -1,0 +1,10 @@
+<post>
+<div><span color="#000000">내 매니저에게는 3개의 능력이 있습니다 </span></div>
+<padding value="35"/>
+<div><span color="#000000">활기 : 주로 음식 아이템을 선물하면 상승합니다. </span></div>
+<div><span color="#000000">학력 : 주로 공부에 사용하는 아이템을 선물하면 상승합니다 </span></div>
+<div><span color="#000000">미력 : 주로 화장에 사용하는 아이템을 선물하면 상승합니다. </span></div>
+<padding value="35"/>
+<div><span color="#000000">각각의 능력을 올리는 것으로 매니저가 '특성'을 몸에 지녀 더욱 능력을 상승시키는 것으로 '특성' 레벨이 상승합니다. </span></div>
+<div><span color="#000000">특성에 대해서는 도움말 '내 매니저 특성 설명'을 참고해주시기 바랍니다. </span></div>
+</post>

@@ -1,0 +1,45 @@
+<post>
+<div><span color="#000000">■팀 순위에 대해서</span></div>
+<div><span color="#000000">지역 내의 팀 순위는 예선</span></div>
+<div><span color="#000000">리그에서의 확률이 높은 순으로 정해집니다.</span></div>
+<div><span color="#000000">팀의 순위를 매기는 대상이 되기 위해</span></div>
+<div><span color="#000000">서는 규정 경기 수의 조건을 달성해야합니다.</span></div>
+<div><span color="#000000">※승률 계산방법은 아래와 같습니다.</span></div>
+<div><span color="#000000">승리 수(※무승부는 0.5승이라 한다)÷경기 수=승률</span></div>
+<padding value="35"/>
+<div><span color="#000000">■같은 순위인 경우에 대하여</span></div>
+<div><span color="#000000">확률이 같은 팀은 아래의 순서로 순위가 결정됩니다.</span></div>
+<div><span color="#000000">1. 실점이 적다.</span></div>
+<div><span color="#000000">2. 승점이 많다.</span></div>
+<div><span color="#000000">3. 득실점차가 많다.</span></div>
+<div><span color="#000000">4. 총득점.</span></div>
+<div><span color="#000000">총득점도 같은 경우</span></div>
+<div><span color="#000000">운영 사무국에서 추첨을 시행합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■규정 경기 수에 대하여</span></div>
+<div><span color="#000000">경기를 일정 수 시행하지 않으면 전국 대회</span></div>
+<div><span color="#000000">출전을 정하는 순위에 참가할 수</span></div>
+<div><span color="#000000">없습니다.</span></div>
+<div><span color="#000000">순위 진입을 위해서는</span></div>
+<div><span color="#000000">특정 경기 수의 조건을 달성해야</span></div>
+<div><span color="#000000">합니다.</span></div>
+<div><span color="#000000">이 조건이 충족되지 않으면</span></div>
+<div><span color="#000000">순위 대상이 될수 없으며</span></div>
+<div><span color="#000000">전국대회의 출전이 불가능하므로</span></div>
+<div><span color="#000000">주의해주시기 바랍니다.</span></div>
+<div><span color="#000000">또한 규정 경기 수는 아래 계산에 근거합니다. </span></div>
+<div><span color="#000000">현재 개최 중인 전국대회 예선 리그에 대하여 소속하고 있는 지역에서 그때까지 시행된 경기 수×0.8경기</span></div>
+<div><span color="#000000">※규정 경기 수는 소수점 이하 버립니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">■규정 경기 수에 달하지 않는 팀의</span></div>
+<div><span color="#000000">순위에 대하여</span></div>
+<div><span color="#000000">승점제로 순위를 집계합니다.</span></div>
+<div><span color="#000000">(승리 : 3점·무승부 : 1점)</span></div>
+<padding value="35"/>
+<div><span color="#000000">단, 규정 경기 수를 달하는 팀의</span></div>
+<div><span color="#000000">순위 하에 정해집니다.</span></div>
+<div><span color="#000000">또한 전국 대회에 출전하기 위해서는</span></div>
+<div><span color="#000000">규정 경기 수를 충족해야 합니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">경기 결과가 각 순위에 반영되기까지 시간이 지연될 수 있습니다.</span></div>
+</post>

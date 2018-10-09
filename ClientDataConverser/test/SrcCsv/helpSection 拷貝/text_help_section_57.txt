@@ -1,0 +1,7 @@
+<post>
+<div><span color="#000000">상점가의 장비 뽑기에서</span></div>
+<div><span color="#000000">일하고 있는 마오.</span></div>
+<padding value="35"/>
+<div><span color="#000000">장비 뽑기에 들어있은 아이템을 입고 관리하고 있다.</span></div>
+<div><span color="#000000">가끔 레어 아이템도 준다고 하니 장비 뽑기에 도전해보자!</span></div>
+</post>

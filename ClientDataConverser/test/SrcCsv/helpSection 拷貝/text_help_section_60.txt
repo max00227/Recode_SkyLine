@@ -1,0 +1,14 @@
+<post>
+<div><span color="#000000">리사 아줌마가 운영하는 상점.</span></div>
+<padding value="35"/>
+<div><span color="#000000">훈련 중에 발견한 수집품을</span></div>
+<div><span color="#000000">아이템과 교환해 줍니다.</span></div>
+<div><span color="#000000">메달과 아이템 교환도 상점에서 할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">좀처럼 손에 넣을 수 없는 수집품은</span></div>
+<div><span color="#000000">모집 게시판에서 팀원과 친구로부터 모집할 수 있습니다.</span></div>
+<padding value="35"/>
+<div><span color="#000000">팀원들과 협력해서 수집하세요.</span></div>
+<padding value="35"/>
+<div><span color="#000000">모집 게시판에 대해서는 도움말 '모집 게시판에 대해서'를 참고해주시기 바랍니다.</span></div>
+</post>
