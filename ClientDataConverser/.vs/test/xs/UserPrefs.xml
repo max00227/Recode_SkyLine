@@ -1,0 +1,16 @@
+﻿<Properties StartupConfiguration="{D8320123-F9D4-4ADD-9400-CF8C3F028C77}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="test/Main.cs">
+    <Files>
+      <File FileName="test/_Script/RequestReciever.cs" Line="90" Column="3" />
+      <File FileName="test/_Script/MethodElement.cs" Line="24" Column="40" />
+      <File FileName="test/Main.cs" Line="94" Column="10" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.ItemProperties.test PreferredExecutionTarget="Test1" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -1,0 +1,5 @@
+/Users/chien/Projects/test/test/obj/Debug/test.csproj.CoreCompileInputs.cache
+/Users/chien/Projects/test/test/bin/Debug/test.dll
+/Users/chien/Projects/test/test/bin/Debug/test.pdb
+/Users/chien/Projects/test/test/obj/Debug/test.dll
+/Users/chien/Projects/test/test/obj/Debug/test.pdb
