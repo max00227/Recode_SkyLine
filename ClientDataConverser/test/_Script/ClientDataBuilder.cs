@@ -156,6 +156,7 @@ namespace test
             }
 
             string json = JsonConvert.SerializeObject(clientDataDic);
+            string jsonData = SortClientData(json);
 
             //Console.WriteLine(json);
             if (File.Exists(clientDataTxt))
@@ -168,7 +169,174 @@ namespace test
             File.Delete(dataPath + "/ClientData.txt");
 
 
-            File.WriteAllText(dataPath + "/ClientData.txt", json);
+            File.WriteAllText(dataPath + "/ClientData.txt", jsonData);
+        }
+
+        static string SortClientData(string jdata)
+        {
+            Dictionary<string, int> sortDic = new Dictionary<string, int>();
+            string sortedData = string.Empty;
+            int subStart = 0;
+            int checkStart = 0;
+            int subEnd = 0;
+            int bigParent = 0;
+            int midParent = 0;
+            int parent;
+            int midParentCount = 0;
+            while ((subStart + subEnd) <= jdata.Length)
+            {
+                parent = bigParent + midParent;
+                subEnd++;
+                if (jdata.Substring(checkStart, 1) == "{")
+                {
+                    if (bigParent == 0)
+                    {
+                        sortDic.Add(jdata.Substring(subStart, subEnd), parent);
+                        subStart = subStart + subEnd;
+                        checkStart = subStart;
+                        subEnd = 0;
+                    }
+                    else
+                    {
+                        checkStart++;
+                    }
+
+                    bigParent++;
+                    parent = bigParent + midParent;
+                }
+                else if (jdata.Substring(checkStart, 1) == "}")
+                {
+                    bigParent--;
+                    parent = bigParent + midParent;
+                    if (bigParent == 1)
+                    {
+                        if (jdata.Substring(checkStart + 1, 1) == ",")
+                        {
+                            sortDic.Add(jdata.Substring(subStart, subEnd + 1), parent);
+                            subStart = subStart + subEnd + 1;
+                        }
+                        else
+                        {
+                                sortDic.Add(jdata.Substring(subStart, subEnd), parent);
+                                subStart = subStart + subEnd;
+                        }
+
+                        checkStart = subStart;
+                        subEnd = 0;
+                    }
+                    else
+                    {
+                        checkStart++;
+                        if (checkStart == jdata.Length)
+                        {
+                            break;
+                        }
+                    }
+                }
+                else if (jdata.Substring(checkStart, 1) == "[")
+                {
+                    if (midParent == 0)
+                    {
+
+                        if (jdata.Substring(checkStart + 1, 1) == "]")
+                        {
+                            sortDic.Add(jdata.Substring(subStart, subEnd + 2), parent);
+                            midParent--;
+                            subStart = subStart + subEnd + 2;
+                        }
+                        else
+                        {
+                            sortDic.Add(jdata.Substring(subStart, subEnd), parent);
+                            subStart = subStart + subEnd;
+                        }
+
+                        checkStart = subStart;
+
+                        subEnd = 0;
+                    }
+                    else
+                    {
+                        checkStart++;
+                    }
+
+                    midParent++;
+                    parent = bigParent + midParent;
+                }
+                else if (jdata.Substring(checkStart, 1) == "]")
+                {
+                    midParent--;
+                    parent = bigParent + midParent;
+                    if (midParent == 0)
+                    {
+                        if (jdata.Substring(checkStart + 1, 1) == ",")
+                        {
+                            sortDic.Add(jdata.Substring(subStart, subEnd + 1) + "mid" + midParentCount.ToString(), parent);
+                            midParentCount++;
+
+                            subStart = subStart + subEnd + 1;
+                            checkStart = subStart;
+                        }
+                        if (jdata.Substring(checkStart + 1, 1) == "}")
+                        {
+                            sortDic.Add(jdata.Substring(subStart, subEnd), parent);
+
+                            sortDic.Add("}", 0);
+                            break;
+                        }
+                        subEnd = 0;
+                    }
+                    else
+                    {
+                        checkStart++;
+                    }
+                }
+                else
+                {
+                    checkStart++;
+                }
+            }
+            foreach (KeyValuePair<string, int> kv in sortDic)
+            {
+                if (kv.Key.Length > 5)
+                {
+                    if (kv.Key.Substring(0, 5) == "],mid")
+                    {
+                        sortedData = sortedData + AddTab(kv.Key.Substring(0, 2).Replace("null", "0") + "\n", kv.Value);
+                    }
+                    else
+                    {
+                        sortedData = sortedData + AddTab(kv.Key.Replace("null", "0") + "\n", kv.Value);
+                    }
+                }
+                else if (kv.Key.Length == 1)
+                {
+                    if (kv.Key == "}")
+                    {
+                        sortedData = sortedData + AddTab(kv.Key.Replace("null", "0"), kv.Value);
+                    }
+                    else
+                    {
+                        sortedData = sortedData + AddTab(kv.Key.Replace("null", "0") + "\n", kv.Value);
+                    }
+                }
+                else
+                {
+                    sortedData = sortedData + AddTab(kv.Key + "\n", kv.Value);
+                }
+            }
+            return sortedData;
+        }
+
+        static string AddTab(string org, int tabCount)
+        {
+            string addedData = string.Empty;
+            for (int i = 0; i < tabCount; i++)
+            {
+                addedData = addedData + "\t";
+            }
+            addedData = addedData + org;
+
+            return addedData;
         }
            
 

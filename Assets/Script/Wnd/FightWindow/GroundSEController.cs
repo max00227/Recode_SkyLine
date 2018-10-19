@@ -10,7 +10,7 @@ public class GroundSEController : MonoBehaviour {
 	float showTime;
 	int showedCount;
 	int plusDamage;
-	float showDamage;
+	int showDamage;
 	float plusSpeed;
 	float hpRatio;
 	FightItemButton callbackTarget;
@@ -68,7 +68,7 @@ public class GroundSEController : MonoBehaviour {
 			showTime -= Time.deltaTime;
 			if ((int)seType == 1) {
 				damageTxts.SetActive (true);
-				showDamage = DataUtil.LimitInt (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage);
+				showDamage = (int)DataUtil.LimitFloat (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
 				foreach (Text txt in damageTxt) {
 					txt.text = "＋" + showDamage.ToString ();
 				}

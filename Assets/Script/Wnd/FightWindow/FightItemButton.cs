@@ -18,6 +18,8 @@ public class FightItemButton : MonoBehaviour {
 	[SerializeField]
 	Button btn;
 
+	bool isLock = false;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -28,13 +30,21 @@ public class FightItemButton : MonoBehaviour {
 		
 	}
 
-	public void SetEnable(bool isOpen){
-		btn.enabled = isOpen;
+	public void Init(){
+		isLock = false;
+		btn.interactable = true;
+	}
+
+	public void SetEnable(bool isOpen, bool dead = false){
+		if (isLock == false) {
+			btn.interactable = isOpen;
+			isLock = dead;
+		}
 	}
 
 	public void SetRatioTxt(int ratio, bool isShow = false){
 		if (isShow) {
-			ratioTxt.SetShowUp (ratio, 0.5f);
+			ratioTxt.SetShowUp (ratio);
 			ratioTxt.onComplete = Callback;
 		} else {
 			ratioTxt.SetNumber (ratio);
@@ -51,7 +61,8 @@ public class FightItemButton : MonoBehaviour {
 	}
 
 	public void SetHpBar(float hpRatio){
-		hpBar.SetBar (hpRatio);
+		hpBar.SetBar (hpRatio, true);
+		hpBar.OnRun ();
 	}
 
 	public void NumberShowRun(){
@@ -59,7 +70,6 @@ public class FightItemButton : MonoBehaviour {
 	}
 
 	public void SetExtra(int upRatio){
-		Debug.Log (this.name + " : " + upRatio);
 		ratioTxt.SetPlus (upRatio);
 	}
 

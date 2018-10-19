@@ -36,6 +36,7 @@ public class testLoader : MonoBehaviour {
 
 
 		MyUserData.UpdataUserdata (userData);
+
 		//Debug.Log (largeData.TeamListData.team);
 
 		/*StreamReader sr = new StreamReader (Application.dataPath + path);

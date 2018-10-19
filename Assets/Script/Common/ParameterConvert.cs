@@ -5,7 +5,7 @@ using model.data;
 
 public class ParameterConvert {
 
-	public static Dictionary<string, int> GetCharaAbility(CharaLargeData data,int charaLv){
+	public static Dictionary<string, int> GetCharaAbility(SoulLargeData data,int charaLv){
 		Dictionary<string, int> charaAbility = new Dictionary<string, int>();
 	
 		float radio = Mathf.Pow (charaLv, 0.7f) + Mathf.Ceil (charaLv / 10)*0.5f;
@@ -19,7 +19,7 @@ public class ParameterConvert {
 		return charaAbility;
 	}
 
-	public static Dictionary<string, int> GetMonsterAbility(MonsterLargeData data,int monsterLv){
+	public static Dictionary<string, int> GetMonsterAbility(SoulLargeData data,int monsterLv){
 		Dictionary<string, int> monsterAbility = new Dictionary<string, int>();
 
 		float calculate = Mathf.Pow (monsterLv, 0.2f + (0.005f * monsterLv)) + (24 * monsterLv / 120);

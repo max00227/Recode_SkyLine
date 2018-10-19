@@ -5,11 +5,11 @@ using model.data;
 
 public static class MasterDataManager {
 
-	private static List<CharaLargeData> charaLargeData;
+	private static List<SoulLargeData> soulLargeData;
 
-	public static List<CharaLargeData> GetCaraLargeData{
+	public static List<SoulLargeData> GetSoulLargeData{
 		get{ 
-			return charaLargeData;
+			return soulLargeData;
 		}
 	}
 
@@ -29,20 +29,8 @@ public static class MasterDataManager {
 		}
 	}
 
-	public static List<MonsterLargeData> monsterLargeData;
-
-	public static List<MonsterLargeData> GetMonsterLargeData{
-		get{ 
-			return monsterLargeData;
-		}
-	}
-
-	public static CharaLargeData GetCharaData(int id){
-		return DataUtil.GetById<CharaLargeData> (id, ref charaLargeData);
-	}
-
-	public static MonsterLargeData GetMonsterData(int id){
-		return DataUtil.GetById<MonsterLargeData> (id, ref monsterLargeData);
+	public static SoulLargeData GetSoulData(int id){
+		return DataUtil.GetById<SoulLargeData> (id, ref soulLargeData);
 	}
 
 	public static SkillLargeData GetSkillData(int id){
@@ -54,13 +42,11 @@ public static class MasterDataManager {
 	}
 
 	public static void UpdataMasterdata(ClientLargeData clientData){
-		charaLargeData = clientData.Chara;
+		soulLargeData = clientData.Soul;
 
 		skillLargeData = clientData.Skill;
 
 		ruleLargeData = clientData.Rule;
-
-		monsterLargeData = clientData.Monster;
 	}
 }
 

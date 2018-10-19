@@ -1,4 +1,11 @@
 {
+	"Chara":[
+		{"id":114001,"name":"惡鬼","detail":"劍＋暗","rank":4,"Job":0,"Ethnicity":7,"Attributes":6,"Atk":242,"Def":35,"mAtk":76,"mDef":47,"Hp":704,"Cri":14,"Act":[0,0,0],"ActSkill":100001,"NorSkill":200001},
+		{"id":114002,"name":"精靈","detail":"拳＋光","rank":4,"Job":1,"Ethnicity":3,"Attributes":5,"Atk":121,"Def":73,"mAtk":41,"mDef":51,"Hp":880,"Cri":18,"Act":[0,0,0],"ActSkill":100002,"NorSkill":200002},
+		{"id":114003,"name":"人","detail":"盾＋無","rank":4,"Job":2,"Ethnicity":1,"Attributes":0,"Atk":70,"Def":141,"mAtk":35,"mDef":114,"Hp":1679,"Cri":1,"Act":[0,0,0],"ActSkill":100003,"NorSkill":200003},
+		{"id":114004,"name":"機器人","detail":"弓＋無","rank":4,"Job":3,"Ethnicity":5,"Attributes":0,"Atk":73,"Def":33,"mAtk":60,"mDef":98,"Hp":821,"Cri":10,"Act":[0,0,0],"ActSkill":100004,"NorSkill":200004},
+		{"id":114005,"name":"光靈","detail":"杖＋光","rank":4,"Job":4,"Ethnicity":6,"Attributes":5,"Atk":37,"Def":10,"mAtk":236,"mDef":188,"Hp":367,"Cri":6,"Act":[0,0,0],"ActSkill":100005,"NorSkill":200005}
+	],
 	"Chara_Designation":[],
 	"Equip":[
 		{"id":0,"name":0,"rank":0,"type":"type","Atk":0,"Def":0,"mAtk":0,"mDef":0,"Cri":0}
@@ -13,6 +20,13 @@
 	],
 	"GradationPhase":[
 		{"id":1,"GradationMonster_id":[1,2,3,4,5]}
+	],
+	"Monster":[
+		{"id":124001,"name":"神","detail":"神","rank":4,"Job":0,"Ethnicity":1,"Attributes":0,"Atk":352,"Def":35,"mAtk":76,"mDef":47,"Hp":704,"Cri":14,"Act":0,"NorSkill":0},
+		{"id":124002,"name":"獸","detail":"獸","rank":4,"Job":1,"Ethnicity":5,"Attributes":0,"Atk":324,"Def":73,"mAtk":41,"mDef":51,"Hp":880,"Cri":18,"Act":0,"NorSkill":0},
+		{"id":124003,"name":"岩","detail":"岩","rank":4,"Job":2,"Ethnicity":4,"Attributes":0,"Atk":117,"Def":141,"mAtk":35,"mDef":114,"Hp":1679,"Cri":1,"Act":0,"NorSkill":0},
+		{"id":124004,"name":"魔","detail":"魔","rank":4,"Job":3,"Ethnicity":2,"Attributes":0,"Atk":323,"Def":33,"mAtk":60,"mDef":98,"Hp":821,"Cri":10,"Act":0,"NorSkill":0},
+		{"id":124005,"name":"龍","detail":"龍","rank":4,"Job":4,"Ethnicity":3,"Attributes":0,"Atk":103,"Def":10,"mAtk":236,"mDef":188,"Hp":367,"Cri":6,"Act":0,"NorSkill":0}
 	],
 	"Rule":[
 		{"id":100001,"Target":0,"isBuff":0,"RuleType":[1,30],"EffectType":[14,10],"ConvType":0,"Atk":0,"Def":0,"mAtk":0,"mDef":0,"Hp":0,"Cri":0},
@@ -42,17 +56,5 @@
 		{"id":100003,"name":"附加異常{300}","detail":"無，附加異常{300}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010,0],"isOr":0,"hasAnim":0},
 		{"id":100004,"name":"激活","detail":"自然傷害值(他)，激活","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100007,0],"isOr":0,"hasAnim":0},
 		{"id":100005,"name":"回血{10}","detail":"無，回血{10}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100008,0],"isOr":0,"hasAnim":0}
-	],
-	"Soul":[
-		{"id":114001,"name":"惡鬼","detail":"劍＋暗","soulType":0,"rank":4,"Job":0,"Ethnicity":7,"Attributes":6,"Atk":242,"Def":35,"mAtk":76,"mDef":47,"Hp":704,"Cri":14,"Act":[0,0,0],"ActSkill":100001,"NorSkill":200001},
-		{"id":114002,"name":"精靈","detail":"拳＋光","soulType":0,"rank":4,"Job":1,"Ethnicity":3,"Attributes":5,"Atk":121,"Def":73,"mAtk":41,"mDef":51,"Hp":880,"Cri":18,"Act":[0,0,0],"ActSkill":100002,"NorSkill":200002},
-		{"id":114003,"name":"人","detail":"盾＋無","soulType":0,"rank":4,"Job":2,"Ethnicity":1,"Attributes":0,"Atk":70,"Def":141,"mAtk":35,"mDef":114,"Hp":1679,"Cri":1,"Act":[0,0,0],"ActSkill":100003,"NorSkill":200003},
-		{"id":114004,"name":"機器人","detail":"弓＋無","soulType":0,"rank":4,"Job":3,"Ethnicity":5,"Attributes":0,"Atk":73,"Def":33,"mAtk":60,"mDef":98,"Hp":821,"Cri":10,"Act":[0,0,0],"ActSkill":100004,"NorSkill":200004},
-		{"id":114005,"name":"光靈","detail":"杖＋光","soulType":0,"rank":4,"Job":4,"Ethnicity":6,"Attributes":5,"Atk":37,"Def":10,"mAtk":236,"mDef":188,"Hp":367,"Cri":6,"Act":[0,0,0],"ActSkill":100005,"NorSkill":200005},
-		{"id":214001,"name":"神","detail":"神","soulType":1,"rank":4,"Job":0,"Ethnicity":1,"Attributes":0,"Atk":352,"Def":123,"mAtk":293,"mDef":176,"Hp":4400,"Cri":8,"Act":[0,0,0],"ActSkill":0,"NorSkill":0},
-		{"id":214002,"name":"獸","detail":"獸","soulType":1,"rank":4,"Job":1,"Ethnicity":5,"Attributes":0,"Atk":324,"Def":249,"mAtk":59,"mDef":73,"Hp":5867,"Cri":25,"Act":[0,0,0],"ActSkill":0,"NorSkill":0},
-		{"id":214003,"name":"岩","detail":"岩","soulType":1,"rank":4,"Job":2,"Ethnicity":4,"Attributes":0,"Atk":117,"Def":446,"mAtk":47,"mDef":343,"Hp":13200,"Cri":1,"Act":[0,0,0],"ActSkill":0,"NorSkill":0},
-		{"id":214004,"name":"魔","detail":"魔","soulType":1,"rank":4,"Job":3,"Ethnicity":2,"Attributes":0,"Atk":323,"Def":44,"mAtk":220,"mDef":147,"Hp":2053,"Cri":19,"Act":[0,0,0],"ActSkill":0,"NorSkill":0},
-		{"id":214005,"name":"龍","detail":"龍","soulType":1,"rank":4,"Job":4,"Ethnicity":3,"Attributes":0,"Atk":103,"Def":41,"mAtk":329,"mDef":329,"Hp":2567,"Cri":8,"Act":[0,0,0],"ActSkill":0,"NorSkill":0}
 	]
 }

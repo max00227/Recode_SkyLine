@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using model.data;
+using System.Linq;
 
 public class DataUtil{
 	public static T GetById<T>(int id,ref List<T> list)
@@ -18,9 +19,16 @@ public class DataUtil{
 		return default(T);
 	}
 
-	public static int LimitInt(int input, int limit){
-		if (input > limit) {
-			return limit;
+	public static float LimitFloat(float input, float limit, bool isReturnMin){
+		if (!isReturnMin) {
+			if (input > limit) {
+				return limit;
+			}
+		} 
+		else {
+			if (input < limit) {
+				return limit;
+			}
 		}
 		return input;
 	}
@@ -53,5 +61,17 @@ public class DataUtil{
 			}
 		}
 		return ListT;
+	}
+
+	public static Dictionary<T1,T2> ToDictionary<T1, T2>(KeyValuePair<T1, T2> kvp)
+	{
+		var dict = new Dictionary<T1, T2>();
+		Debug.LogError (kvp.Key);
+		dict.Add(kvp.Key, kvp.Value);
+		return dict;
+	}
+
+	public static bool CheckArray<T> (T[] array, T param){
+		return array.Any (f => f.Equals(param));
 	}
 }

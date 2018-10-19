@@ -15,11 +15,16 @@ public class NumberSetting : MonoBehaviour {
 
 	bool isRun;
 
-	public delegate void OnComplete();
+	[SerializeField]
+	float speed = 0;
 
+	public delegate void OnComplete();
 	public OnComplete onComplete;
 
 	bool isSet = false;
+
+	[SerializeField]
+	bool isReturnMin = false;
 
 	// Use this for initialization
 	void Start () {
@@ -30,18 +35,36 @@ public class NumberSetting : MonoBehaviour {
 	void Update () {
 		if (isSet) {
 			if (isRun) {
-				if (prevRatio < showRatio) {
-					prevRatio = DataUtil.LimitInt (Mathf.CeilToInt (prevRatio + upSpeed * Time.deltaTime), showRatio);
-					text.text = prevRatio.ToString ();
+				if (!isReturnMin) {
+					if (prevRatio < showRatio) {
+						prevRatio = (int)DataUtil.LimitFloat (Mathf.CeilToInt (prevRatio + upSpeed * Time.deltaTime), showRatio, isReturnMin);
+						text.text = prevRatio.ToString ();
+					} 
+					else {
+						text.text = showRatio.ToString ();
+						isRun = false;
+						isSet = false;
+						prevRatio = showRatio;
+						if (onComplete != null) {
+							onComplete.Invoke ();
+							onComplete = null;
+						}
+					}
 				} 
 				else {
-					text.text = showRatio.ToString ();
-					isRun = false;
-					isSet = false;
-					prevRatio = showRatio;
-					if (onComplete != null) {
-						onComplete.Invoke ();
-						onComplete = null;
+					if (prevRatio > showRatio) {
+						prevRatio = (int)DataUtil.LimitFloat (Mathf.CeilToInt (prevRatio + upSpeed * Time.deltaTime), showRatio, isReturnMin);
+						text.text = prevRatio.ToString ();
+					} 
+					else {
+						text.text = showRatio.ToString ();
+						isRun = false;
+						isSet = false;
+						prevRatio = showRatio;
+						if (onComplete != null) {
+							onComplete.Invoke ();
+							onComplete = null;
+						}
 					}
 				}
 			}
@@ -55,9 +78,9 @@ public class NumberSetting : MonoBehaviour {
 		text.text = number.ToString();
 	}
 
-	public void SetShowUp(int number, float speed) {
+	public void SetShowUp(int number) {
 		isRun = false;
-		upSpeed = (number - showRatio) / 0.5f;
+		upSpeed = (number - showRatio) / speed;
 
 		prevRatio = showRatio;
 

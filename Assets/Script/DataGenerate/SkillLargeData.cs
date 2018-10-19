@@ -10,6 +10,8 @@ namespace model.data{
 
 		public System.Collections.Generic.List<RuleLargeData> ruleData;
 
+		public System.Boolean isOr;
+
 		public void Merge(System.Collections.Generic.List<System.Int32> ids)
 		{
 			this.ruleData = new System.Collections.Generic.List<RuleLargeData> ();

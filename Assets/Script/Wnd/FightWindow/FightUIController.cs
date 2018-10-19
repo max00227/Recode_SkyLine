@@ -51,7 +51,7 @@ public class FightUIController : MonoBehaviour {
 
 	public Sprite[] CharaSprite;
 
-	int[] recJobRatios;
+	int[] recJobRatios = new int[5];
 
 	int[] preJobRatios;
 
@@ -75,7 +75,7 @@ public class FightUIController : MonoBehaviour {
 
 	List<GroundSEController> completeSe;
 
-	int[] recActLevel;
+	int[] recActLevel = new int[5];
 
 	public FightItemButton[] charaButton;
 
@@ -87,8 +87,6 @@ public class FightUIController : MonoBehaviour {
 	private NumberSetting energeNum;
 
 	private int spaceCount = 0;
-
-	bool fightStart;
 
 	int unCompleteCount;
 
@@ -137,12 +135,11 @@ public class FightUIController : MonoBehaviour {
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.onProtect = GetHasProtect;
 		fightController.onSkillCDEnd = OnSkillCDEnd;
+		fightController.onLockOrder = SetLockUI;
+		fightController.unLockOrder = SetUnLockUI;
 		fightController.SetData ();
 
 		lockOrder = new LinkedList<int> ();
-		SetLockUI ();
-
-
 
 		groundPool.SetController ();
 	}
@@ -182,14 +179,14 @@ public class FightUIController : MonoBehaviour {
 
 		lockCount = 0;
 
-		fightStart = false;
-
 		SetData ();
 
 		energe = 1;
 		energeNum.SetNumber (energe);
 
-		fightController.onLockButton = OnLockButton;
+		fightController.onCloseButton = OnSelectionDir;
+		fightController.onSelectComplete = OnOpenButton;
+		fightController.onDead = OnDead;
 
 		ResetGround(true);
 	}
@@ -282,9 +279,9 @@ public class FightUIController : MonoBehaviour {
 		fightController.FightStart (lockCount != 0, canAttack, recJobRatios, recActLevel);
 	}
 
-	private void OnShowFight(int orgIdx, DamageData damageData, InitiatorType iType){
-		FightItemButton org = iType == InitiatorType.Player ? charaButton [orgIdx] : enemyButton [orgIdx];
-		FightItemButton target = iType == InitiatorType.Enemy ? charaButton [damageData.targetIdx] : enemyButton [damageData.targetIdx];
+	private void OnShowFight(int orgIdx, int targetIdx, DamageData damageData, TargetType tType){
+		FightItemButton org = tType == TargetType.Enemy ? charaButton [orgIdx] : enemyButton [orgIdx];
+		FightItemButton target = tType == TargetType.Player ? charaButton [targetIdx] : enemyButton [targetIdx];
 
 		GroundSEController gse = SEPool.Dequeue ();
 		gse.SetDamageShow (org.transform.localPosition, target, damageData.hpRatio);
@@ -329,20 +326,19 @@ public class FightUIController : MonoBehaviour {
 			}
 		}
 
+		if (Input.GetKeyDown(KeyCode.Y)) {
+			fightController.ShowSoulData ();
+		}
+
+
 		if (Input.GetKeyDown(KeyCode.A)) {
-			if (!fightStart && spaceCount > 0) {
+			if (CheckStatus(FightStatus.RoundStart) && spaceCount > 0) {
 				CheckOut ();
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.E)) {
-			fightController.ShowHasAnim ();
-		}
-
 		if (Input.GetKeyDown(KeyCode.U)) {
-			foreach (GroundController gc in charaGc) {
-				Debug.LogWarning (gc.name + " : " + gc.isActived);
-			}
+			ChangeStatus (FightStatus.SelSkillTarget);
 		}
 
 		if (Input.GetKeyDown(KeyCode.O)) {
@@ -379,7 +375,7 @@ public class FightUIController : MonoBehaviour {
 			}
 		}
 
-		if (!fightStart) {
+		if (CheckStatus(FightStatus.RoundStart)) {
 			if (Input.GetKeyDown (KeyCode.Mouse0)) {
 				TouchDown (false);
 			}
@@ -444,7 +440,7 @@ public class FightUIController : MonoBehaviour {
 
 	void FightEnd(){
 		UpEnerge ();
-
+		ChangeStatus (FightStatus.FightEnd);
 		if (isResetGround) {
 			ResetGround ();
 		} else {
@@ -454,8 +450,10 @@ public class FightUIController : MonoBehaviour {
 
 
 	void RoundStart(bool isCenter = true){
+		ChangeStatus (FightStatus.RoundPrepare);
 		groundPool.SetCreateGround (CreateGround + (int)Mathf.Ceil (resetGroundCount / 2));
 		groundPool.RoundStart (isCenter);
+		ChangeStatus (FightStatus.RoundStart);
 	}
 
 	/// <summary>
@@ -463,8 +461,6 @@ public class FightUIController : MonoBehaviour {
 	/// </summary>
 	/// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
-		fightStart = false;
-
 		foreach (var v in charaButton) {
 			v.SetTextColor (Color.black);
 		}
@@ -475,9 +471,9 @@ public class FightUIController : MonoBehaviour {
 			ResetGround ();
 		};
 
-		foreach (FightItemButton cBtn in charaButton) {
-			cBtn.SetEnable (true);
-		}
+		OnOpenButton ();
+
+		ChangeStatus (FightStatus.RoundStart);
 	}
 
 	private void RoundEnd(bool hasDamage)
@@ -492,11 +488,9 @@ public class FightUIController : MonoBehaviour {
 		completeSe = new List<GroundSEController> ();
 		canAttack = new List<int> ();
 
-		fightStart = true;
+		ChangeStatus (FightStatus.FightStart);
 
-		foreach (FightItemButton cBtn in charaButton) {
-			cBtn.SetEnable (false);
-		}
+		OnCloseButton (TargetType.Both);
 
 		if (energe >= 3) {
 			MonsterCdDown (true);
@@ -910,7 +904,12 @@ public class FightUIController : MonoBehaviour {
 			gc.ResetType ();
 		}
 
-		recJobRatios = ratioCount = recActLevel =  new int[5] { 0, 0, 0, 0, 0 };
+		for (int i = 0; i < 5; i++) {
+			recJobRatios [i] = 0;
+			ratioCount [i] = 0;
+			recActLevel [i] = 0;
+		}
+
 		for (int i = 0; i < 5; i++) {
 			charaButton [i].ResetRatio ();
 		}
@@ -924,8 +923,6 @@ public class FightUIController : MonoBehaviour {
 
 		charaIdx = null;
 
-
-		fightStart = false;
 		isResetGround = false;
 		spaceCorrect = false;
 		spaceCount = 0;
@@ -942,10 +939,7 @@ public class FightUIController : MonoBehaviour {
 			fightController.SetResetRatio (Mathf.CeilToInt(resetGroundCount/2));
 		}
 
-		foreach (FightItemButton cBtn in charaButton) {
-			cBtn.SetEnable (true);
-		}
-
+		OnOpenButton ();
 
 		RoundStart ();
 	}
@@ -997,36 +991,41 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	public void SelectChara (int idx){
-		if (!fightStart) {
+		if (CheckStatus (FightStatus.RoundStart)) {
 			charaIdx = idx;
+		} 
+		else if (CheckStatus (FightStatus.SelSkillTarget)) {
+			fightController.SelectSkillTarget (TargetType.Player, idx);
 		}
 	}
 
 	LinkedList<int> lockOrder;
 
 	public void LockEnemy (int idx){
-		if (!fightStart) {
-			if (lockOrder.Count < 3) {
-				lockOrder = fightController.LockOrder (idx);
-			} 
-			else {
-				lockOrder = fightController.UnLockOrder ();
-			}
+		if (CheckStatus (FightStatus.RoundStart)) {
+			fightController.LockOrder (idx);
+		} 
+		else if (CheckStatus (FightStatus.SelSkillTarget)) {
+			fightController.SelectSkillTarget (TargetType.Enemy, idx);
 		}
-		SetLockUI ();
 	}
 
-	private void SetLockUI(){
-		if (lockOrder.Count == 0) {
+
+	private void SetLockUI(LinkedList<int> order){
+		if (order.Count == 0) {
 			for (int i = 0; i < enemyButton.Length; i++) {
 				enemyButton [i].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
 			}
 		} 
 		else {
-			for (int i = 0; i < lockOrder.Count; i++) {
-				enemyButton [lockOrder.ElementAt (i)].transform.GetChild (0).GetComponent<Text> ().text = (i + 1).ToString ();
+			for (int i = 0; i < order.Count; i++) {
+				enemyButton [order.ElementAt (i)].transform.GetChild (0).GetComponent<Text> ().text = (i + 1).ToString ();
 			}
 		}
+	}
+
+	private void SetUnLockUI(int idx){
+		enemyButton [idx].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
 	}
 
 	private void CreateSE(){
@@ -1045,8 +1044,74 @@ public class FightUIController : MonoBehaviour {
 		Debug.LogWarning ("Chara " + charaIdx + " Can Use Skill");
 	}
 
-	private void OnLockButton(int idx, InitiatorType atype){
-		
+	private void OnSelectionDir(List<int> idxList, TargetType tType){
+		OnCloseButton (TargetType.Both);
+
+		foreach (int idx in idxList) {
+			if (tType == TargetType.Player) {
+				charaButton [idx].SetEnable (true);
+			} 
+			else {
+				enemyButton [idx].SetEnable (true);
+			}
+		}
+
+
+	}
+
+	private void OnCloseButton(TargetType tType) {
+		if (tType == TargetType.Player) {
+			foreach (FightItemButton btn in charaButton) {
+				btn.SetEnable (false);
+			}
+		} else if (tType == TargetType.Enemy) {
+			foreach (FightItemButton btn in enemyButton) {
+				btn.SetEnable (false);
+			}
+		} 
+		else {
+			foreach (FightItemButton btn in charaButton) {
+				btn.SetEnable (false);
+			}
+			foreach (FightItemButton btn in enemyButton) {
+				btn.SetEnable (false);
+			}
+		}
+	}
+
+	private void OnOpenButton(){
+		foreach (FightItemButton btn in enemyButton) {
+			btn.SetEnable (true);
+		}
+		foreach (FightItemButton btn in charaButton) {
+			btn.SetEnable (true);
+		}
+	}
+
+	private void OnDead(int idx, TargetType tType){
+		if (tType == TargetType.Player) {
+			charaButton [idx].SetEnable (false, true);
+		} 
+		else {
+			enemyButton [idx].SetEnable (false, true);
+		}
+	}
+
+	private void SetButton(){
+		foreach (FightItemButton btn in enemyButton) {
+			btn.Init ();
+		}
+		foreach (FightItemButton btn in charaButton) {
+			btn.Init ();
+		}
+	}
+
+	public void ChangeStatus(FightStatus status){
+		fightController.fightStatus = status;
+	}
+
+	public bool CheckStatus(FightStatus status){
+		return fightController.fightStatus == status;
 	}
 }
 
@@ -1083,3 +1148,4 @@ public enum SpecailEffectType{
 	ExtraRatio = 2,
 	Damage = 3
 }
+

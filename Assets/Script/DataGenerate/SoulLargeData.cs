@@ -1,10 +1,11 @@
 ﻿namespace model.data
 {
 	[System.Serializable()]
-	public partial class CharaLargeData : LargeDataBase, AbilityDataBase
+	public partial class SoulLargeData : LargeDataBase, AbilityDataBase
     {
 		public System.Int32 rank;
 		public System.Int32 job;
+		public System.Int32 soulType;
 		public System.Int32 ethnicity;
 		public System.Int32 attributes;
 
@@ -102,13 +103,15 @@
             this.hp = data["Hp"];
         }
 
-		public void MergeSkill(System.Int32 aid, System.Int32 nid)
+		public void MergeSkill(System.Int32? aid, System.Int32? nid)
 		{
-			this._ActSkill = MasterDataManager.GetSkillData (aid);
-			if (this._ActSkill != null) {
-				this._ActSkill.Merge (this._ActSkill.rule_id);
+			if (aid != null) {
+				this._ActSkill = MasterDataManager.GetSkillData ((System.Int32)aid);
+				if (this._ActSkill != null) {
+					this._ActSkill.Merge (this._ActSkill.rule_id);
+				}
 			}
-			this._NorSkill = MasterDataManager.GetSkillData (nid);
+			this._NorSkill = MasterDataManager.GetSkillData ((System.Int32)nid);
 			if (this._NorSkill != null) {
 				this._NorSkill.Merge (this._NorSkill.rule_id);
 			}
