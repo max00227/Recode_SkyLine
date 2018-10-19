@@ -58,7 +58,7 @@ public class SkillController : MonoBehaviour {
 	}
 
 	private void OnTriggerSkill(int orgIdx ,int targetIdx, TargetType tType, DamageData damageData){
-		if (tType = TargetType.Player) {
+		if (tType == TargetType.Player) {
 			if (charaTriggerSkill [orgIdx] != null) {
 				OnSkillRule (orgIdx, orgIdx, charaTriggerSkill [orgIdx], tType, damageData);
 			}
