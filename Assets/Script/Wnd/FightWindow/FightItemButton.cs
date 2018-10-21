@@ -61,7 +61,7 @@ public class FightItemButton : MonoBehaviour {
 	}
 
 	public void SetHpBar(float hpRatio){
-		hpBar.SetBar (hpRatio, true);
+		hpBar.SetBar (hpRatio, true, false);
 		hpBar.OnRun ();
 	}
 

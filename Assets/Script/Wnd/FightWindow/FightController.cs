@@ -78,8 +78,6 @@ public class FightController : MonoBehaviour {
 	public delegate void OnLockOrder(LinkedList<int> order);
 	public OnLockOrder onLockOrder;
 
-	public Dictionary<int, List<DamageData>> damages;
-
 	public Dictionary<int, Dictionary<int, List<DamageData>>> damageShowSort;
 
 
@@ -208,7 +206,7 @@ public class FightController : MonoBehaviour {
 					}
 
 					for (int j = 0; j < order.Length; j++) {
-						SoulLargeData targetData = type == TargetType.Player ? characters [j] : monsters [j];
+						SoulLargeData targetData = type == TargetType.Player ? characters [order[j].index] : monsters [order[j].index];
 						if (targetData.hp > 0) {
 							int damage;
 							if (orgData.job <= 3) {
@@ -241,8 +239,9 @@ public class FightController : MonoBehaviour {
 		else {
 			damage = CalDamage (orgData.mAtk, targetData.mDef, 100, attriJob, minus, 0, isAll);
 		}
-			
-		if (tType == TargetType.Player) {
+
+
+        if (tType == TargetType.Player) {
 			return damage;
 		} 
 		else {
@@ -251,7 +250,7 @@ public class FightController : MonoBehaviour {
 	}
 
 	private void OnDamage (SoulLargeData orgData, SoulLargeData targetData, int orgIdx, int targetIdx, int damage, TargetType tType, DamageType dType){
-		if (damageShowSort.ContainsKey (orgIdx)) {
+        if (damageShowSort.ContainsKey (orgIdx)) {
 			if (damageShowSort [orgIdx].ContainsKey (targetIdx)) {
 
 				damageShowSort [orgIdx] [targetIdx].Add (GetDamageData (orgData, targetData, targetIdx, damage, tType, dType));
@@ -273,8 +272,8 @@ public class FightController : MonoBehaviour {
 	private DamageData GetDamageData(SoulLargeData orgData, SoulLargeData targetData, int targetIdx, int damage, TargetType tType, DamageType dType){
 		bool isDead = false;
 		targetData.hp -= damage;
-
-		if (targetData.hp <= 0) {
+        if (targetData.hp <= 0) {
+            Debug.LogError(targetIdx + " : Death");
 			targetData.hp = 0;
 			isDead = true;
 			if (targetData.job == 2) {
@@ -294,11 +293,15 @@ public class FightController : MonoBehaviour {
 
 		if (tType == TargetType.Player) {
 			ChangeAccordingHp (targetIdx, targetData.hp, tType);
-			return GetDamageData (damage, (float)targetData.hp / (float)charaFullHp [targetIdx], dType);
+            //Debug.LogWarning((float)targetData.hp + " :　" + (float)charaFullHp[targetIdx] + " :　" + (float)targetData.hp / (float)charaFullHp[targetIdx]);
+
+            return GetDamageData (damage, (float)targetData.hp / (float)charaFullHp [targetIdx], dType);
 		} 
 		else {
 			ChangeAccordingHp (targetIdx, targetData.hp, tType);
-			return GetDamageData (damage, (float)targetData.hp / (float)monsterFullHp [targetIdx], dType);
+            //Debug.LogError((float)targetData.hp + " :　" + (float)monsterFullHp[targetIdx] + " :　" + (float)targetData.hp / (float)monsterFullHp[targetIdx]);
+
+            return GetDamageData (damage, (float)targetData.hp / (float)monsterFullHp [targetIdx], dType);
 		}
 
 	}
@@ -363,12 +366,10 @@ public class FightController : MonoBehaviour {
 
 
 	IEnumerator ShowFight(int orgIdx, int targetIdx, List<DamageData> damageData, TargetType tType){
-		int count = 0;
 		foreach (DamageData data in damageData) {
 			if (onShowFight != null) {
 				onShowFight.Invoke (orgIdx, targetIdx, data, tType);
 			}
-			count++;
 			yield return new WaitForSeconds(0.5f);
 		}
 	}
@@ -451,7 +452,9 @@ public class FightController : MonoBehaviour {
 
 
 	private AccordingData[] CompareData(int orgIdx, TargetType tType){
-		AccordingData[] according = tType == TargetType.Player ? monsterAccording[orgIdx] : charaAccording [orgIdx];
+        AccordingData[] according = new AccordingData[0];
+
+        according = tType == TargetType.Player ? (AccordingData[])monsterAccording[orgIdx].Clone() : (AccordingData[])charaAccording [orgIdx].Clone();
 
 		return AccordingCompare (according, true);
 	}
@@ -573,10 +576,14 @@ public class FightController : MonoBehaviour {
 	private void GetAccordingDataDic(){
 		charaAccording = new Dictionary<int, AccordingData[]> ();
 		monsterAccording = new Dictionary<int, AccordingData[]> ();
-		for (int i = 0; i < characters.Length; i++) {
+        SoulLargeData[] charaData = new SoulLargeData[0];
+        charaData = (SoulLargeData[])characters.Clone();
+        SoulLargeData[] monsterData = new SoulLargeData[0];
+        monsterData = (SoulLargeData[])monsters.Clone();
+        for (int i = 0; i < characters.Length; i++) {
 			AccordingData[] data = new AccordingData[5];
 			for(int j = 0;j<monsters.Length; j++){
-				data [j] = GetAccordingDataDic (i, j, TargetType.Player);
+                data[j] = GetAccording(charaData[i], monsterData[j], j, TargetType.Player);
 			}
 			charaAccording.Add (i, data);
 		}
@@ -584,21 +591,14 @@ public class FightController : MonoBehaviour {
 		for (int i = 0; i < monsters.Length; i++) {
 			AccordingData[] data = new AccordingData[5];
 			for(int j = 0;j<characters.Length; j++){
-				data [j] = GetAccordingDataDic (i, j, TargetType.Enemy);
+                data[j] = GetAccording(monsterData[i], charaData[j], j, TargetType.Enemy);
 			}
 			monsterAccording.Add (i, data);
 		}
 	}
 
-	private AccordingData GetAccordingDataDic(int orgIdx, int targetIdx, TargetType tType){
-		if (tType == TargetType.Player) {
-			return GetAccording (characters [orgIdx], monsters [targetIdx], targetIdx, tType);
-		} else {
-			return GetAccording (monsters [orgIdx], characters [targetIdx], targetIdx, tType);
-		}
-	}
-
 	private AccordingData GetAccording(SoulLargeData orgData, SoulLargeData targetData, int targetIdx,TargetType tType){
+        
 		AccordingData data = new AccordingData ();
 		data.index = targetIdx;
 		data.attriJob = GetCalcRatio (orgData.job, targetData.job, orgData.attributes, targetData.attributes);
@@ -737,8 +737,7 @@ public class FightController : MonoBehaviour {
 
 	public void ShowSoulData(){
 		for (int i = 0; i < 5; i++) {
-			Debug.Log (characters [i].hp + " : " + charaFullHp [i]);
-			Debug.Log (monsters [i].hp + " : " + monsterFullHp [i]);
+            Debug.LogWarning(charaFullHp[i]);
 		}
 	}
 }

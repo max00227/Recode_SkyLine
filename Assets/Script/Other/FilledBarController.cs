@@ -39,9 +39,7 @@ public class FilledBarController : MonoBehaviour {
 							bar.color = setting [i].barColor;
 						}
 					}
-
 				}
-
 				if (!isReturnMin) {
 					if (bar.fillAmount >= final) {
 						Complete ();
@@ -71,7 +69,7 @@ public class FilledBarController : MonoBehaviour {
 		}
 	}
 
-	public void SetBar(float fillAmount, bool isShow = false){
+	public void SetBar(float fillAmount, bool isShow = false, bool isUp = true){
 		if (isShow = false) {
 			if (changeColor) {
 				for (int i = setting.Length - 1; i >= 0; i--) {
@@ -86,7 +84,33 @@ public class FilledBarController : MonoBehaviour {
 			bar.fillAmount = fillAmount;
 		} 
 		else {
-			final = fillAmount;
+            if (isSet && isRun)
+            {
+                if (isUp) {
+                    if (fillAmount >= final)
+                    {
+                        return;
+                    }
+                    else {
+                        final = fillAmount;
+                    }
+                }
+                else
+                {
+                    if (fillAmount <= final)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        final = fillAmount;
+                    }
+                }
+            }
+            else
+            {
+                final = fillAmount;
+            }
 			upSpeed = (fillAmount - bar.fillAmount) / speedRatio;
 			isSet = true;
 			isRun = false;
