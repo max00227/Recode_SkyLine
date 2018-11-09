@@ -4,6 +4,7 @@
     {
 		 System.Int32 _id;
 
+		[Newtonsoft.Json.JsonProperty("id")]
 		public System.Int32 id { get { return this._id; } set { this._id = value; } }
 
 

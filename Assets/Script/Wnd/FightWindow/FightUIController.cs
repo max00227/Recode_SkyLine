@@ -201,6 +201,7 @@ public class FightUIController : MonoBehaviour {
 		if (unShowed == 0) {
 			foreach (GroundSEController se in completeSe) {
 				se.gameObject.SetActive (false);
+				se.AllReset ();
 				se.CloseSE ();
 			}
 			foreach (FightItemButton btn in charaButton) {
@@ -284,16 +285,28 @@ public class FightUIController : MonoBehaviour {
 		FightItemButton target = tType == TargetType.Player ? charaButton [targetIdx] : enemyButton [targetIdx];
 
 		GroundSEController gse = SEPool.Dequeue ();
-		gse.SetDamageShow (org.transform.localPosition, target, damageData.hpRatio);
+		gse.SetAttackShow (org.transform.localPosition, target, damageData);
 		gse.onRecycleDamage = ShowFightEnd;
 		gse.gameObject.SetActive (true);
 		gse.Run ();
 	}
 
-	private void ShowFightEnd(GroundSEController gse, float ratio, FightItemButton target){
+	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target){
 		gse.gameObject.SetActive (false);
-		target.SetHpBar (ratio);
+		target.SetHpBar (damageData.hpRatio);
 		SEPool.Enqueue (gse);
+		gse.onRecycle = null;
+		gse.SetDamageShow (damageData, target.transform.localPosition);
+		gse.onRecycle = ShowDamageEnd;
+		gse.gameObject.SetActive (true);
+		gse.Run ();
+	}
+
+
+	private void ShowDamageEnd(GroundSEController gse){
+		gse.gameObject.SetActive (false);
+		SEPool.Enqueue (gse);
+		gse.CloseSE ();
 		gse.onRecycle = null;
 	}
 	#endregion
@@ -480,11 +493,6 @@ public class FightUIController : MonoBehaviour {
 	{
 		spCount++;
 
-		/*Debug.LogWarning ("ROUND " + spCount);
-		foreach (RaycastData data in allRatioData) {
-			Debug.LogWarning (data.ratio);
-		}*/
-
 		completeSe = new List<GroundSEController> ();
 		canAttack = new List<int> ();
 
@@ -528,6 +536,7 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		groundPool.RoundEnd ();
+		fightController.RoundEnd ();
 
 		hasDamage = false;
 		spaceCount = 0;
@@ -811,12 +820,19 @@ public class FightUIController : MonoBehaviour {
 	private void MonsterCdDown(bool overfill = false){
 		if (overfill) {
 			for (int i = 0; i < monsterCdTimes.Length; i++) {
-				monsterCdTimes [i]--;
+				if (monsterCdTimes [i] > 0) {
+					monsterCdTimes [i]--;
+				}
 			}
 			return;
 		}
 		for (int i = 0; i < monsterCdTimes.Length; i++) {
-			monsterCdTimes [i] = monsterCdTimes [i] - (spaceCount - 1);
+			if (monsterCdTimes [i] > 0) {
+				monsterCdTimes [i] = monsterCdTimes [i] - (spaceCount - 1);
+			}
+			if (monsterCdTimes [i] < 0) {
+				monsterCdTimes [i] = 0;
+			}
 		}
 
 		fightController.SetCDTime (monsterCdTimes);
@@ -1146,6 +1162,7 @@ public struct CharaImageData{
 public enum SpecailEffectType{
 	Reverse = 1,
 	ExtraRatio = 2,
-	Damage = 3
+	Attack = 3,
+	Damage = 4
 }
 

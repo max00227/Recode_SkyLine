@@ -12,7 +12,7 @@ public class GroundSEController : MonoBehaviour {
 	int plusDamage;
 	int showDamage;
 	float plusSpeed;
-	float hpRatio;
+	DamageData damageData;
 	FightItemButton callbackTarget;
 
 	bool isRun;
@@ -36,7 +36,7 @@ public class GroundSEController : MonoBehaviour {
 
 	public OnExtraUp onExtraUp;
 
-	public delegate void OnRecycleDamage(GroundSEController gse, float ratio, FightItemButton target);
+	public delegate void OnRecycleDamage(GroundSEController gse, DamageData damageData, FightItemButton target);
 
 	public OnRecycleDamage onRecycleDamage;
 
@@ -46,16 +46,29 @@ public class GroundSEController : MonoBehaviour {
 	private TweenPostion extraLight;
 
 	[SerializeField]
-	private GameObject damageTxts;
+	private GameObject ratioTxts;
 
 	[SerializeField]
 	private TweenPostion damageLight;
 
 	[SerializeField]
+	private Text[] ratioTxt;
+
+	[SerializeField]
+	private GameObject damageTxts;
+
+	[SerializeField]
 	private Text[] damageTxt;
+	int damageTxtIdx;
 
     [SerializeField]
     private Transform lightParant;
+
+	float speedRatio;
+
+	bool isShowDamage = false;
+
+	Color[] attriColor;
 
 
 	// Use this for initialization
@@ -65,16 +78,18 @@ public class GroundSEController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (setComplete && isRun) {
-			showTime -= Time.deltaTime;
 			if ((int)seType == 1) {
-				damageTxts.SetActive (true);
+				showTime -= Time.deltaTime;
+
+				ratioTxts.SetActive (true);
 				showDamage = (int)DataUtil.LimitFloat (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
-				foreach (Text txt in damageTxt) {
+				foreach (Text txt in ratioTxt) {
 					txt.text = "＋" + showDamage.ToString ();
 				}
+
 				if (showedCount < seGrounds.Count) {
 					if (showTime <= 0) {
-						foreach (Text txt in damageTxt) {
+						foreach (Text txt in ratioTxt) {
 							txt.GetComponent<TweenScale> ().PlayForward ();
 						}
 
@@ -89,18 +104,31 @@ public class GroundSEController : MonoBehaviour {
 						setComplete = false;
 					}
 				}
-			} 
-			else if ((int)seType == 2) {
+			} else if ((int)seType == 2) {
 				extraLight.runFinish = OnRunFinish;
 				extraLight.gameObject.SetActive (true);
 				extraLight.PlayForward ();
 				setComplete = false;
-			} 
-			else {
+			} else if ((int)seType == 3) {
 				damageLight.runFinish = OnRunFinish;
 				damageLight.gameObject.SetActive (true);
 				damageLight.PlayForward ();
 				setComplete = false;
+			} else {
+				damageTxts.SetActive (true);
+				damageTxt[damageTxtIdx].gameObject.SetActive (true);
+				if (!isShowDamage) {
+					damageTxt [damageTxtIdx].GetComponent<TweenPostion> ().PlayForward ();
+				}
+				showDamage = (int)DataUtil.LimitFloat (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
+				damageTxt[damageTxtIdx].text = showDamage.ToString ();
+				isShowDamage = true;
+				if (showDamage >= plusDamage) {
+					showTime -= Time.deltaTime;
+					if (showTime <= 0) {
+						OnRunFinish ();
+					}
+				}
 			}
 		}
 	}
@@ -112,8 +140,8 @@ public class GroundSEController : MonoBehaviour {
 		seGrounds = grounds;
 
 		for (int i = 0; i < positions.Count; i++) {
-			damageTxt [i].gameObject.SetActive (true);
-			damageTxt [i].transform.localPosition = positions [i];
+			ratioTxt [i].gameObject.SetActive (true);
+			ratioTxt [i].transform.localPosition = positions [i];
 		}
 
 		foreach (var ground in seGrounds) {
@@ -157,7 +185,7 @@ public class GroundSEController : MonoBehaviour {
 	/// <param name="idxs">角色編號</param>
 	/// <param name="upInt">上升值</param>
 	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs, int upInt){
-        extraLight.SetParabola(grounds[0].transform.localPosition, dir);
+		extraLight.SetParabola (grounds [0].transform.localPosition, dir);
 
         SetLightParent(grounds[0].transform.localPosition, dir);
 
@@ -174,13 +202,13 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
-	public void SetDamageShow(Vector3 org, FightItemButton target, float ratio){
+	public void SetAttackShow(Vector3 org, FightItemButton target, DamageData data){
 		SetLightParent(org, target.transform.localPosition);
 
-		hpRatio = ratio;
+		damageData = data;
 		callbackTarget = target;
 
-        seType = SpecailEffectType.Damage;
+        seType = SpecailEffectType.Attack;
 		damageLight.SetParabola (org, target.transform.localPosition);
 		setComplete = true;
 		isRun = false;
@@ -198,26 +226,44 @@ public class GroundSEController : MonoBehaviour {
 		}
     }
 
+	public void SetDamageShow(DamageData damageData, Vector3 orgPos){
+		showDamage = 0;
+		plusDamage = damageData.damage;
+ 		speedRatio = Random.Range (0.5f, 1.2f);
+		plusSpeed = damageData.damage / speedRatio;
+		seType = SpecailEffectType.Damage;
+		showTime = 0.5f;
 
-	private void OnRunFinish(TweenPostion tp){
-        lightParant.rotation = Quaternion.identity;
-        lightParant.localPosition = Vector3.zero;
-		tp.gameObject.SetActive (false);
-		tp.resetPosition ();
+		damageTxtIdx = System.Convert.ToInt32 (damageData.isCrt);
+		damageTxt [damageTxtIdx].GetComponent<TweenPostion> ().SetJump (orgPos, orgPos + Vector3.right * Random.Range (-50, 50), speedRatio);
+		damageTxt [damageTxtIdx].color = Const.attriColor [damageData.attributes];
+		setComplete = true;
+		isRun = false;
+		isShowDamage = false;
+	}
+
+
+	private void OnRunFinish(TweenPostion tp = null){
+		AllReset ();
+
+		if (tp != null) {
+			tp.gameObject.SetActive (false);
+			tp.resetPosition ();
+			tp.runFinish = null;
+		}
 
 		if (onExtraUp != null) {
 			onExtraUp.Invoke (this, charaIdx, upRatio);
 			onExtraUp = null;
 		}
 
-		tp.runFinish = null;
 		if (onRecycle != null) {
 			onRecycle.Invoke (this);
 			onRecycle = null;
 		}
 
 		if (onRecycleDamage != null) {
-			onRecycleDamage.Invoke (this, hpRatio, callbackTarget);
+			onRecycleDamage.Invoke (this, damageData, callbackTarget);
 			onRecycleDamage = null;
 		}
 	}
@@ -274,9 +320,29 @@ public class GroundSEController : MonoBehaviour {
 
 	public void CloseSE(){
 		extraLight.gameObject.SetActive (false);
-		foreach (Text txt in damageTxt) {
+		foreach (Text txt in ratioTxt) {
 			txt.gameObject.SetActive (false);
 		}
+		ratioTxts.SetActive (false);
+
+		foreach (Text txt in damageTxt) {
+			txt.gameObject.SetActive (false);
+			txt.color = Color.black;
+		}
 		damageTxts.SetActive (false);
+	}
+
+	public void AllReset(){
+		lightParant.rotation = Quaternion.identity;
+		lightParant.localPosition = Vector3.zero;
+		extraLight.gameObject.SetActive (false);
+		damageLight.gameObject.SetActive (false);
+
+		damageTxts.SetActive (false);
+		foreach (Text txt in damageTxt) {
+			txt.transform.localPosition = Vector3.zero;
+			txt.text = "";
+			txt.gameObject.SetActive (false);
+		}
 	}
 }

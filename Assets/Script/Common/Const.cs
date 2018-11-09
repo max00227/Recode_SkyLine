@@ -5,22 +5,22 @@ using UnityEngine;
 public static class Const {
 
 	public enum jobType{
-		none = 0,
-		sworder = 1,
-		boxer = 2,
-		shielder = 3,
+		None = 0,
+		Sworder = 1,
+		Boxer = 2,
+		Shielder = 3,
 		Archer = 4,
-		wizard = 5
+		Wizard = 5
 	}
 
 	public enum Attributes{
-		none = 0,
-		fire = 1,
-		earth = 2,
-		wind = 3,
-		water = 4,
-		light = 5,
-		dark = 6
+		None = 0,
+		Fire = 1,
+		Earth = 2,
+		Wind = 3,
+		Water = 4,
+		Light = 5,
+		Dark = 6
 	}
 
 	public enum SkillTarget{
@@ -39,4 +39,15 @@ public static class Const {
 		Trigger = 1,//觸發型
 		Stay = 2//常駐型
 	}
+
+	public static Color[] attriColor = new Color[7] {
+		new Color (0.26f, 0.08f, 0.08f, 1f),//Attributes.None
+		new Color (0.86f, 0f, 0f, 1f),//Attributes.Fire
+		new Color (0.55f, 0.48f, 0f, 1f),//Attributes.Earth
+		new Color (0.13f, 0.55f, 0f, 1f),//Attributes.Wind
+		new Color (0.13f, 0.68f, 1f, 1f),//Attributes.Water
+		new Color (1f, 0.95f, 0.49f, 1f),//Attributes.Litht
+		new Color (0.28f, 0f, 0.56f, 1f)//Attributes.Dark
+	};
+
 }

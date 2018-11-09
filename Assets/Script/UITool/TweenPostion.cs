@@ -21,8 +21,16 @@ public class TweenPostion : MonoBehaviour {
 	[SerializeField]
 	bool isPopupWnd = false;
 
+
+	public enum TweenType{
+		Normal,
+		Parabola,
+		Jump
+	}
     [SerializeField]
-    bool isParabola = false;
+	TweenType tweenType;
+
+
 
     [HideInInspector]
 	public GameObject showGameObject;
@@ -91,10 +99,13 @@ public class TweenPostion : MonoBehaviour {
 			}
 
             Vector3 deltaV3;
-            if (!isParabola)
+			if (tweenType == TweenType.Normal)
             {
                 deltaV3 = from + (to - from) * animationCurve.Evaluate(oriTime / TweenTime);
             }
+			else if (tweenType == TweenType.Jump) {
+				deltaV3 = new Vector3 (from.x + (to.x - from.x) * oriTime / TweenTime, from.y + parabolaPower * animationCurve.Evaluate (oriTime / TweenTime), from.z);
+			}
             else {
                 deltaV3 = new Vector3(from.x + (distance * (oriTime / TweenTime)), parabolaPower * animationCurve.Evaluate(oriTime / TweenTime), from.z);
             }
@@ -138,10 +149,20 @@ public class TweenPostion : MonoBehaviour {
 
         distance = Vector3.Distance(f, t);
         to = Vector3.forward * distance;
+
+
 		int isUp = (int)Mathf.Pow (-1, UnityEngine.Random.Range (0, 2));
 
 		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max) * isUp;
     }
+
+	public void SetJump(Vector3 f, Vector3 t, float speed){
+		SetFromAndTo (f, t);
+		TweenTime = speed;
+		distance = Vector3.Distance(f, t);
+		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max);
+	}
+
 
 
 

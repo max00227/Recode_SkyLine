@@ -3,7 +3,23 @@
 namespace model.data{
 	public partial class RuleLargeData : LargeDataBase,AbilityDataBase {
 
+		[Newtonsoft.Json.JsonProperty("Id")]
 		System.Int32 id;
+
+		[Newtonsoft.Json.JsonProperty("Target")]
+		public System.Int32 target{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("Rule")]
+		public System.Int32[] rule{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("NormalEffect")]
+		public System.Int32[] normalEffect{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("StatusEffect")]
+		public System.Int32[] statusEffect{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("ConvType")]
+		public System.Int32 convType{ get; set;}
 
 		System.Int32 _atk;
 		System.Int32 _def;
@@ -12,6 +28,7 @@ namespace model.data{
 		System.Int32 _hp;
 		System.Int32 _crt;
 
+		[Newtonsoft.Json.JsonProperty("Atk")]
 		public System.Int32 atk{
 			get
 			{
@@ -23,6 +40,7 @@ namespace model.data{
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("Def")]
 		public System.Int32 def{
 			get
 			{
@@ -34,6 +52,7 @@ namespace model.data{
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("mAtk")]
 		public System.Int32 mAtk{
 			get
 			{
@@ -45,6 +64,7 @@ namespace model.data{
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("mDef")]
 		public System.Int32 mDef{
 			get
 			{
@@ -56,6 +76,7 @@ namespace model.data{
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("Hp")]
 		public System.Int32 hp{
 			get
 			{
@@ -67,6 +88,7 @@ namespace model.data{
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("Crt")]
 		public System.Int32 crt{
 			get
 			{
@@ -77,11 +99,5 @@ namespace model.data{
 				this._crt = value;
 			}
 		}
-
-		public System.Int32 Target{ get; set;}
-		public System.Int32[] RuleType{ get; set;}
-		public System.Int32[] EffectType{ get; set;}
-		public System.Int32 ConvType{ get; set;}
-		public System.Boolean isBuff{ get; set;}
 	}
 }

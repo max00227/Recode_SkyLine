@@ -42,11 +42,11 @@ public static class MasterDataManager {
 	}
 
 	public static void UpdataMasterdata(ClientLargeData clientData){
-		soulLargeData = clientData.Soul;
+		soulLargeData = clientData.soul;
 
-		skillLargeData = clientData.Skill;
+		skillLargeData = clientData.skill;
 
-		ruleLargeData = clientData.Rule;
+		ruleLargeData = clientData.rule;
 	}
 }
 

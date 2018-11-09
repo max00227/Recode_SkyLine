@@ -136,9 +136,9 @@ public class fightBGMaker : MonoBehaviour {
 
         //GameObject go = PrefabUtility.InstantiatePrefab(srcObj) as GameObject;
         //go.transform.parent = Selection.activeGameObject.transform;
-        float myDis = 97f;
-        int myRadio = 4;
-        int myMaxHC = 7;
+        float myDis = 116f;
+        int myRadio = 5;
+        int myMaxHC = 9;
 
         int num = 0;
         for (int i = 0; i < myMaxHC; i++)
@@ -157,17 +157,20 @@ public class fightBGMaker : MonoBehaviour {
                     if (i == 0 || i == myMaxHC - 1)
                     {
                         backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
+						backGround.GetComponent<GroundController> ().ChangeSprite (GroundType.Caution);
                     }
                     else
                     {
                         if (j == 0 || j == myRadio + i - 1)
                         {
                             backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
+							backGround.GetComponent<GroundController> ().ChangeSprite (GroundType.Caution);
                         }
                         else
                         {
                             backGround.GetComponent<GroundController>()._groundType = GroundType.None;
-                        }
+							backGround.GetComponent<GroundController> ().ChangeSprite (GroundType.None);
+                       }
                     }
                 }
             }
@@ -185,21 +188,33 @@ public class fightBGMaker : MonoBehaviour {
                     if (i == 0 || i == myMaxHC - 1)
                     {
                         backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
+						backGround.GetComponent<GroundController> ().ChangeSprite (GroundType.Caution);
                     }
                     else
                     {
                         if (j == 0 || j == myRadio + ((myMaxHC - 1) - i) - 1)
                         {
                             backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
+							backGround.GetComponent<GroundController> ().ChangeSprite (GroundType.Caution);
                         }
                         else
                         {
                             backGround.GetComponent<GroundController>()._groundType = GroundType.None;
+							backGround.GetComponent<GroundController> ().ChangeSprite (GroundType.None);
                         }
                     }
                 }
             }
         }
+
+
+		Vector3 centerPos = new Vector3();
+		int bgCount = Selection.activeGameObject.transform.childCount;
+		centerPos = Selection.activeGameObject.transform.GetChild ((bgCount - 1) / 2).transform.localPosition;
+
+		for (int i = 0; i < bgCount; i++) {
+			Selection.activeGameObject.transform.GetChild (i).localPosition = Selection.activeGameObject.transform.GetChild (i).localPosition - centerPos;
+		}
     }
 
     [MenuItem("MyProject/SetType")]

@@ -5,10 +5,13 @@ namespace model.data
 {
     public class ClientLargeData
     {
-		public System.Collections.Generic.List<SoulLargeData> Soul { get; set; }
+		[Newtonsoft.Json.JsonProperty("Soul")]
+		public System.Collections.Generic.List<SoulLargeData> soul { get; set; }
         
-		public System.Collections.Generic.List<SkillLargeData> Skill{ get; set;}
+		[Newtonsoft.Json.JsonProperty("Skill")]
+		public System.Collections.Generic.List<SkillLargeData> skill{ get; set;}
 
-		public System.Collections.Generic.List<RuleLargeData> Rule{ get; set;}
+		[Newtonsoft.Json.JsonProperty("Rule")]
+		public System.Collections.Generic.List<RuleLargeData> rule{ get; set;}
     }
 }

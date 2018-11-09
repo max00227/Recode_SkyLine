@@ -57,7 +57,7 @@ public class FightController : MonoBehaviour {
 	private List<int> excludeChara = new List<int> ();
 	private List<int> excludeMonster = new List<int> ();
 
-	int resetRatio;
+	float resetRatio;
 
 	bool isLock = false;
 
@@ -87,6 +87,7 @@ public class FightController : MonoBehaviour {
 	public Dictionary<int, List<RuleLargeData>> monsterTriggers;
 
 
+
 	public FightStatus fightStatus;
 
 
@@ -100,7 +101,7 @@ public class FightController : MonoBehaviour {
 
 
 	public void SetData(){
-
+		resetRatio = 1;
 		SetCharaData ();
 		SetMonsterData ();
 
@@ -134,7 +135,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
 			monsters[i] = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
 			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
-			monsters [i].MergeSkill (null, monsters [i].NorSkill);
+			monsters [i].Merge (monsters [i].actSkill, monsters [i].norSkill);
 			monsterFullHp [i] = monsters [i].hp;
 
 			monsterBuffStatus [i] = new List<int> ();
@@ -158,14 +159,13 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
 			characters[i] = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
-			characters [i].MergeSkill (characters [i].ActSkill, characters [i].NorSkill); 
-
+			characters [i].Merge (characters [i].actSkill, characters [i].norSkill);
 			charaFullHp [i] = characters [i].hp;
 
 			charaBuffStatus [i] = new List<int> ();
 
-			skillCdTime [i] = (int)characters [i]._NorSkill.CD;
-			skillInitCD [i] = (int)characters [i]._NorSkill.CD;
+			skillCdTime [i] = (int)characters[i]._norSkill.cdTime;
+			skillInitCD [i] = (int)characters[i]._norSkill.cdTime;
 			if (characters [i].job == 2) {
 				charaProtect++;
 			}
@@ -208,17 +208,18 @@ public class FightController : MonoBehaviour {
 					for (int j = 0; j < order.Length; j++) {
 						SoulLargeData targetData = type == TargetType.Player ? characters [order[j].index] : monsters [order[j].index];
 						if (targetData.hp > 0) {
-							int damage;
+							DamageData damage;
 							if (orgData.job <= 3) {
 								damage = GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Physical, isAll);
-								OnDamage (orgData, targetData, i, order [j].index, damage, type, DamageType.Physical);
+								OnDamage (targetData, i, order [j].index, damage, type);
 							}
 
 							if (orgData.job >= 3) {
 								damage = GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Magic, isAll);
-								OnDamage (orgData, targetData, i, order [j].index, damage, type, DamageType.Physical);
+								OnDamage (targetData, i, order [j].index, damage, type);
 							}
-						}
+						} 
+
 
 						if (!isAll) {
 							break;
@@ -231,32 +232,38 @@ public class FightController : MonoBehaviour {
 		CallbackProtect ();
 	}
 
-	private int GetDamage (SoulLargeData orgData, SoulLargeData targetData, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll){
-		int damage;
+	private DamageData GetDamage (SoulLargeData orgData, SoulLargeData targetData, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll){
+		DamageData damageData;
+		int actRatio = tType == TargetType.Player ? 0 : jobActLevel [orgData.job];
+		int ratio = tType == TargetType.Player ? 0 : jobRatio [orgData.job];
 		if (dType == DamageType.Physical) {
-			damage = CalDamage (orgData.atk, targetData.def, 100, attriJob, minus, 0, isAll);
+			damageData = CalDamage (orgData.atk, targetData.def, ratio, attriJob, minus, actRatio, orgData.crt, isAll);
+			damageData.damageType = DamageType.Physical;
 		} 
 		else {
-			damage = CalDamage (orgData.mAtk, targetData.mDef, 100, attriJob, minus, 0, isAll);
+			damageData = CalDamage (orgData.mAtk, targetData.mDef, ratio, attriJob, minus, actRatio, orgData.crt, isAll);
+			damageData.damageType = DamageType.Magic;
 		}
 
+		damageData.attributes = orgData.act [jobActLevel [orgData.job]];
 
         if (tType == TargetType.Player) {
-			return damage;
+			return damageData;
 		} 
 		else {
-			return damage * (10 - monsterProtect) / 10;
+			damageData.damage = (damageData.damage * (10 - monsterProtect) / 10) < 1 ? 1 : (damageData.damage * (10 - monsterProtect) / 10);
+			return damageData;
 		}
 	}
 
-	private void OnDamage (SoulLargeData orgData, SoulLargeData targetData, int orgIdx, int targetIdx, int damage, TargetType tType, DamageType dType){
+	private void OnDamage (SoulLargeData targetData, int orgIdx, int targetIdx, DamageData damageData, TargetType tType){
         if (damageShowSort.ContainsKey (orgIdx)) {
 			if (damageShowSort [orgIdx].ContainsKey (targetIdx)) {
 
-				damageShowSort [orgIdx] [targetIdx].Add (GetDamageData (orgData, targetData, targetIdx, damage, tType, dType));
+				damageShowSort [orgIdx] [targetIdx].Add (OnDamage (targetData, targetIdx, damageData, tType));
 			} else {
 				List<DamageData> data = new List<DamageData> ();
-				data.Add (GetDamageData (orgData, targetData, targetIdx, damage, tType, dType));
+				data.Add (OnDamage (targetData, targetIdx, damageData, tType));
 				damageShowSort [orgIdx].Add (targetIdx, data);
 			}
 		} 
@@ -264,16 +271,16 @@ public class FightController : MonoBehaviour {
 			damageShowSort.Add (orgIdx, new Dictionary<int, List<DamageData>> ());
 
 			List<DamageData> data = new List<DamageData> ();
-			data.Add (GetDamageData (orgData, targetData, targetIdx, damage, tType, dType));
+			data.Add (OnDamage (targetData, targetIdx, damageData, tType));
 			damageShowSort [orgIdx].Add (targetIdx, data);
 		}
 	}
 
-	private DamageData GetDamageData(SoulLargeData orgData, SoulLargeData targetData, int targetIdx, int damage, TargetType tType, DamageType dType){
+	private DamageData OnDamage(SoulLargeData targetData, int targetIdx, DamageData damageData, TargetType tType){
+		DamageData data = damageData;
 		bool isDead = false;
-		targetData.hp -= damage;
-        if (targetData.hp <= 0) {
-            Debug.LogError(targetIdx + " : Death");
+		targetData.hp -= data.damage;
+		if (targetData.hp <= 0) {
 			targetData.hp = 0;
 			isDead = true;
 			if (targetData.job == 2) {
@@ -286,53 +293,48 @@ public class FightController : MonoBehaviour {
 			}
 		}
 
-
 		if (isDead) {
 			OnDeath (targetIdx, tType);
 		}
 
 		if (tType == TargetType.Player) {
 			ChangeAccordingHp (targetIdx, targetData.hp, tType);
-            //Debug.LogWarning((float)targetData.hp + " :　" + (float)charaFullHp[targetIdx] + " :　" + (float)targetData.hp / (float)charaFullHp[targetIdx]);
-
-            return GetDamageData (damage, (float)targetData.hp / (float)charaFullHp [targetIdx], dType);
+			data.hpRatio = (float)targetData.hp / (float)charaFullHp [targetIdx];
+			return data;
 		} 
 		else {
 			ChangeAccordingHp (targetIdx, targetData.hp, tType);
-            //Debug.LogError((float)targetData.hp + " :　" + (float)monsterFullHp[targetIdx] + " :　" + (float)targetData.hp / (float)monsterFullHp[targetIdx]);
-
-            return GetDamageData (damage, (float)targetData.hp / (float)monsterFullHp [targetIdx], dType);
+			data.hpRatio = (float)targetData.hp / (float)monsterFullHp [targetIdx];
+			return data;
 		}
 
-	}
-
-	private DamageData GetDamageData(int damage, float hpRatio, DamageType dType){
-		DamageData data = new DamageData ();
-		data.damage = damage;
-		data.hpRatio = hpRatio;
-		data.damageType = dType;
-
-		return data;
 	}
 
 	private void OnDeath(int idx, TargetType tType){
 		onDead.Invoke (idx, tType);
 	}
 
-	public int CalDamage(int atk, int def, int ratio, float ratioAJ, int minus,int actLevel, bool isAll){
+	public DamageData CalDamage(int atk, int def, int ratio, float ratioAJ, int minus,int actLevel, int crt, bool isAll){
+		DamageData damageData = new DamageData ();
 		int actRatio;
+		Debug.Log (actLevel);
 		if (actLevel != 0) {
 			actRatio = 50 * (int)Mathf.Pow (2, actLevel - 1);
 		} else {
 			actRatio = 0;
 		}
+		bool isCrt = UnityEngine.Random.Range (0, 101) <= crt;
+
+		damageData.isCrt = isCrt;
+		float crtRatio = Mathf.Pow (1.5f, Convert.ToInt32 (isCrt));
 
 		float randomRatio = isAll != true ? UnityEngine.Random.Range (75, 101) : UnityEngine.Random.Range (40, 75);
 
-		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (ratio + actRatio) / 100 * ratioAJ * (int)Mathf.Pow (1.5f, resetRatio) - def) * (100 - minus) / 100);
-		//((Atk * randamRatio * (ratio + actRatio) * ratioAJ * resetCount) - def) * minus
+		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (100 + ratio + actRatio) / 100 * ratioAJ * resetRatio * crtRatio - def) * (100 - minus) / 100);
+		//((Atk * randamRatio * (100 + ratio + actRatio) * ratioAJ * resetCount) * isCrt - def) * minus
+		damageData.damage = damage <= 0 ? 1 : damage;
 
-		return damage <= 0 ? 1 : damage;
+		return damageData;
 	}
 
 	IEnumerator ShowFight(TargetType tType, bool Callback){
@@ -370,7 +372,7 @@ public class FightController : MonoBehaviour {
 			if (onShowFight != null) {
 				onShowFight.Invoke (orgIdx, targetIdx, data, tType);
 			}
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(0.2f);
 		}
 	}
 
@@ -540,7 +542,7 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void SetResetRatio(int count){
-		resetRatio = count;
+		resetRatio = Mathf.Pow (1.5f, count);
 	}
 
 	struct AccordingData{
@@ -737,7 +739,16 @@ public class FightController : MonoBehaviour {
 
 	public void ShowSoulData(){
 		for (int i = 0; i < 5; i++) {
-            Debug.LogWarning(charaFullHp[i]);
+			Debug.LogWarning (charaFullHp [i]);
+			Debug.LogError (monsterFullHp [i]);
+		}
+	}
+
+	public void RoundEnd(){
+		for (int i = 0; i < skillCdTime.Length; i++) {
+			if (skillCdTime[i] > 0) {
+				skillCdTime [i]--;
+			}
 		}
 	}
 }
@@ -752,6 +763,8 @@ public struct DamageData{
 	public int damage;
 	public float hpRatio;
 	public DamageType damageType;
+	public int attributes;
+	public bool isCrt;
 }
 
 public enum FightStatus{

@@ -16,7 +16,7 @@
 		System.Int32 _hp;
 		System.Int32 _crt;
 
-
+		[Newtonsoft.Json.JsonProperty("Atk")]
 		public System.Int32 atk{
 			get
 			{
@@ -28,6 +28,7 @@
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("Def")]
 		public System.Int32 def{
 			get
 			{
@@ -39,6 +40,7 @@
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("mAtk")]
 		public System.Int32 mAtk{
 			get
 			{
@@ -50,6 +52,7 @@
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("mDef")]
 		public System.Int32 mDef{
 			get
 			{
@@ -61,6 +64,7 @@
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("Hp")]
 		public System.Int32 hp{
 			get
 			{
@@ -72,6 +76,7 @@
 			}
 		}
 
+		[Newtonsoft.Json.JsonProperty("Crt")]
 		public System.Int32 crt{
 			get
 			{
@@ -84,15 +89,16 @@
 		}
 
 
-		public System.Int32[] Act { get; set; }
+		[Newtonsoft.Json.JsonProperty("Act")]
+		public System.Int32[] act { get; set; }
 
-		public System.Int32 ActSkill { get; set; }
-		public System.Int32 NorSkill { get; set; }
+		[Newtonsoft.Json.JsonProperty("ActSkill")]
+		public System.Int32 actSkill { get; set; }
+		public SkillLargeData _actSkill;
 
-		public SkillLargeData _ActSkill;
-		public SkillLargeData _NorSkill;
-
-
+		[Newtonsoft.Json.JsonProperty("NorSkill")]
+		public System.Int32 norSkill { get; set; }
+		public SkillLargeData _norSkill;
 
         public void Merge(System.Collections.Generic.Dictionary<string, int> data)
         {
@@ -103,17 +109,15 @@
             this.hp = data["Hp"];
         }
 
-		public void MergeSkill(System.Int32? aid, System.Int32? nid)
-		{
-			if (aid != null) {
-				this._ActSkill = MasterDataManager.GetSkillData ((System.Int32)aid);
-				if (this._ActSkill != null) {
-					this._ActSkill.Merge (this._ActSkill.rule_id);
-				}
+		public void Merge(System.Int32 actId, System.Int32 norId){
+			if (actId != 0) {
+				_actSkill = MasterDataManager.GetSkillData (actId);
+				_actSkill.Merge (_actSkill.rule_id);
 			}
-			this._NorSkill = MasterDataManager.GetSkillData ((System.Int32)nid);
-			if (this._NorSkill != null) {
-				this._NorSkill.Merge (this._NorSkill.rule_id);
+
+			if (norId != 0) {
+				_norSkill = MasterDataManager.GetSkillData (norId);
+				_norSkill.Merge (_norSkill.rule_id);
 			}
 		}
     }
