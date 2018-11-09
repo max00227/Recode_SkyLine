@@ -208,16 +208,18 @@ public class FightController : MonoBehaviour {
 					for (int j = 0; j < order.Length; j++) {
 						SoulLargeData targetData = type == TargetType.Player ? characters [order[j].index] : monsters [order[j].index];
 						if (targetData.hp > 0) {
-							DamageData damage;
+							List<DamageData> allDamage = new List<DamageData> ();
 							if (orgData.job <= 3) {
-								damage = GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Physical, isAll);
-								OnDamage (targetData, i, order [j].index, damage, type);
+								allDamage.Add(GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Physical, isAll));
 							}
 
 							if (orgData.job >= 3) {
-								damage = GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Magic, isAll);
-								OnDamage (targetData, i, order [j].index, damage, type);
+								allDamage.Add (GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Magic, isAll));
 							}
+
+							OnDamage (targetData, i, order [j].index, allDamage, type);
+							skillController.OnTriggerSkill (i, order [j].index, TargetType.Player, allDamage);
+
 						} 
 
 
@@ -256,23 +258,24 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	private void OnDamage (SoulLargeData targetData, int orgIdx, int targetIdx, DamageData damageData, TargetType tType){
-        if (damageShowSort.ContainsKey (orgIdx)) {
-			if (damageShowSort [orgIdx].ContainsKey (targetIdx)) {
+	private void OnDamage (SoulLargeData targetData, int orgIdx, int targetIdx, List<DamageData> allDamage, TargetType tType){
+		foreach (DamageData damageData in allDamage) {
+			if (damageShowSort.ContainsKey (orgIdx)) {
+				if (damageShowSort [orgIdx].ContainsKey (targetIdx)) {
 
-				damageShowSort [orgIdx] [targetIdx].Add (OnDamage (targetData, targetIdx, damageData, tType));
+					damageShowSort [orgIdx] [targetIdx].Add (OnDamage (targetData, targetIdx, damageData, tType));
+				} else {
+					List<DamageData> data = new List<DamageData> ();
+					data.Add (OnDamage (targetData, targetIdx, damageData, tType));
+					damageShowSort [orgIdx].Add (targetIdx, data);
+				}
 			} else {
+				damageShowSort.Add (orgIdx, new Dictionary<int, List<DamageData>> ());
+
 				List<DamageData> data = new List<DamageData> ();
 				data.Add (OnDamage (targetData, targetIdx, damageData, tType));
 				damageShowSort [orgIdx].Add (targetIdx, data);
 			}
-		} 
-		else {
-			damageShowSort.Add (orgIdx, new Dictionary<int, List<DamageData>> ());
-
-			List<DamageData> data = new List<DamageData> ();
-			data.Add (OnDamage (targetData, targetIdx, damageData, tType));
-			damageShowSort [orgIdx].Add (targetIdx, data);
 		}
 	}
 
