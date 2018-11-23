@@ -12,25 +12,32 @@ public class SkillController : MonoBehaviour {
 
 	[HideInInspector]
 	public SkillLargeData[] charaNorSkill;
-	private SkillLargeData[] monsterNorSkill;
+	private Dictionary<int, SkillLargeData> charaTriggerSkill;
+	private Dictionary<int, SkillLargeData> charaRoundSkill;
 
-	private SkillLargeData[] charaTriggerSkill;
-	private SkillLargeData[] charaRoundSkill;
-	private SkillLargeData[] monsterTriggerSkill;
+	private Dictionary<int, SkillLargeData> monsterNorSkill;
+	private Dictionary<int, SkillLargeData> monsterTriggerSkill;
 
 	private int charaCount;
 	private int monsterCount;
 
 	private RuleLargeData selLockRuleData;
 
+	private int dirOrgIdx;
+	private int dirTargetIdx;
+	private TargetType dirTargetType;
+
+	private SoulLargeData dirOrgData;
+	private SoulLargeData dirTargetData;
+
 	public void SetData(SoulLargeData[] charaData, SoulLargeData[] monsterData){
 		charaCount = charaData.Length;
 		monsterCount = monsterData.Length;
 		charaNorSkill = new SkillLargeData[charaCount];
-		charaTriggerSkill = new SkillLargeData[charaCount];
-		charaRoundSkill = new SkillLargeData[charaCount];
-		monsterNorSkill = new SkillLargeData[monsterCount];
-		monsterTriggerSkill = new SkillLargeData[monsterCount];
+		charaTriggerSkill = new Dictionary<int, SkillLargeData> ();
+		charaRoundSkill = new Dictionary<int, SkillLargeData> ();
+		monsterNorSkill = new Dictionary<int, SkillLargeData> ();
+		monsterTriggerSkill = new Dictionary<int, SkillLargeData> ();
 
 		for (int i = 0; i < charaCount; i++) {
 			if (charaData [i]._norSkill != null) {
@@ -39,9 +46,9 @@ public class SkillController : MonoBehaviour {
 
 			if (charaData [i]._actSkill != null) {
 				if (charaData [i]._actSkill.launchType == 0) {
-					charaTriggerSkill [i] =charaData [i]._actSkill; 	
+					charaTriggerSkill.Add(i,charaData[i]._actSkill); 	
 				} else {
-					charaRoundSkill [i] = charaData [i]._actSkill;
+					charaRoundSkill.Add(i,charaData[i]._actSkill); 	
 				}
 			}
 		}
@@ -49,10 +56,10 @@ public class SkillController : MonoBehaviour {
 		for (int i = 0; i < monsterCount; i++) {
 			if (monsterData [i]._norSkill != null) {
 				if (monsterData[i]._norSkill.launchType == 0) {
-					monsterTriggerSkill [i] = monsterData[i]._norSkill;
+					monsterTriggerSkill.Add(i, monsterData[i]._norSkill);
 				} 
 				else {
-					monsterNorSkill [i] = monsterData[i]._norSkill;
+					monsterNorSkill.Add(i, monsterData[i]._norSkill);
 				}
 			}
 		}
@@ -62,27 +69,52 @@ public class SkillController : MonoBehaviour {
 		
 	}
 
-	public void OnTriggerSkill(int orgIdx, int targetIdx, TargetType tType, List<DamageData> damageData = null){
-		if (tType == TargetType.Player) {
-			if (charaTriggerSkill [orgIdx] != null) {
-				OnSkillSelfRule (orgIdx, targetIdx, charaTriggerSkill [orgIdx], tType, damageData);
+	/// <summary>
+	/// 攻擊時觸發技能
+	/// </summary>
+	/// <param name="orgData">攻擊者資料</param>
+	/// <param name="targetData">被攻擊者資料</param>
+	/// <param name="allDamage">傷害資料</param>
+	public void OnTriggerSkill(SoulLargeData orgData, SoulLargeData targetData, List<DamageData> allDamage){
+		dirOrgIdx = allDamage [0].orgIdx;
+		dirTargetIdx = allDamage [0].targetIdx;
+		dirTargetType = allDamage [0].tType;
+		dirOrgData = orgData;
+		dirTargetData = targetData;
+
+		if (allDamage[0].tType == TargetType.Enemy) {
+			if (charaTriggerSkill.ContainsKey(dirOrgIdx)) {
+				OnSkillSelfRule (charaTriggerSkill [dirOrgIdx], allDamage);
 			}
-			if (monsterTriggerSkill [targetIdx] != null) {
-				OnSkillUnSelfRule (orgIdx, targetIdx, monsterTriggerSkill [orgIdx], tType, damageData);
+			if (monsterTriggerSkill.ContainsKey(dirTargetIdx)) {
+				OnSkillUnSelfRule (monsterTriggerSkill [dirTargetIdx], allDamage);
 			}
 		} 
 		else {
-			if (monsterTriggerSkill [orgIdx] != null) {
-				OnSkillSelfRule (orgIdx, targetIdx, monsterTriggerSkill [orgIdx], tType, damageData);
+			if (monsterTriggerSkill.ContainsKey(dirOrgIdx)) {
+				OnSkillSelfRule (monsterTriggerSkill [dirOrgIdx], allDamage);
 			}
-			if (charaTriggerSkill [targetIdx] != null) {
-				OnSkillUnSelfRule (orgIdx, targetIdx, charaTriggerSkill [orgIdx], tType, damageData);
+			if (charaTriggerSkill.ContainsKey(dirTargetIdx)) {
+				OnSkillUnSelfRule (charaTriggerSkill [dirTargetIdx], allDamage);
 			}
 		}
 	}
 
+	public void OnRoundSkill(){
+		foreach (KeyValuePair<int, SkillLargeData> kv in charaRoundSkill) {
+			dirOrgIdx = kv.Key;
+			dirOrgData = fightController.GetSoulData (TargetType.Player, dirOrgIdx);
+			OnSkillSelfRule (kv.Value);
+		}
+	}
 
-	private void OnSkillSelfRule (int orgIdx, int targetIdx, SkillLargeData data, TargetType tType, List<DamageData> damageData){
+	/// <summary>
+	/// 觸發條件為攻擊者
+	/// <param name="orgData">攻擊者資料</param>
+	/// <param name="targetData">被攻擊者資料</param>
+	/// <param name="data">技能資料</param>
+	/// <param name="allDamage">傷害資料</param>
+	private void OnSkillSelfRule (SkillLargeData data, List<DamageData> allDamage = null){
 		int parameter = 0;
 		bool[] meets = new bool[data.ruleData.Count];
 		for (int i = 0; i < data.ruleData.Count; i++) {
@@ -91,16 +123,16 @@ public class SkillController : MonoBehaviour {
 				meets [i] = true;
 				break;
 			case (int)Rule.HpLess:
-				meets [i] = fightController.OnRuleMeets (orgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], tType);
+				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], dirTargetType);
 				break;
 			case (int)Rule.HpBest:
-				meets [i] = fightController.OnRuleMeets (orgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], tType);
+				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], dirTargetType);
 				break;
 			case (int)Rule.OnDmg:
-				meets [i] = damageData != null;
+				meets [i] = allDamage.Count > 0;
 				break;
 			default:
-				meets [i] = true;
+				meets [i] = false;
 				break;
 			}
 		}
@@ -108,20 +140,25 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					OnEffectTarget (orgIdx, targetIdx, data.ruleData [i], tType, parameter);
+					OnEffectTarget (AddParameter (false, data.ruleData [i], parameter));
 				}
 			}
 		} 
 		else {
 			if (!DataUtil.CheckArray<bool> (meets, false)) {
 				for (int i = 0; i < data.ruleData.Count; i++) {
-					OnEffectTarget (orgIdx, targetIdx, data.ruleData[i], tType, parameter);
+					OnEffectTarget (AddParameter (false, data.ruleData [i], parameter));
 				}
 			}
 		}
 	}
 
-	private void OnSkillUnSelfRule (int orgIdx, int targetIdx, SkillLargeData data, TargetType tType, List<DamageData> allDamage){
+	/// <summary>
+	/// 觸發條件為被攻擊者
+	/// </summary>
+	/// <param name="data">技能資料</param>
+	/// <param name="allDamage">傷害資料</param>
+	private void OnSkillUnSelfRule (SkillLargeData data, List<DamageData> allDamage = null){
 		bool[] meets = new bool[data.ruleData.Count];
 		int parameter = 0;
 		foreach(DamageData damageData in allDamage){
@@ -130,7 +167,7 @@ public class SkillController : MonoBehaviour {
 					if (data.ruleData [i].rule [0] == (int)Rule.Death) {
 						meets [i] = true;
 						if (data.isOr) {
-							OnEffectTarget (orgIdx, targetIdx, data.ruleData [i], tType);
+							OnEffectTarget (data.ruleData [i]);
 							return;
 						}
 					}
@@ -140,6 +177,9 @@ public class SkillController : MonoBehaviour {
 
 		for (int i = 0; i < data.ruleData.Count; i++) {
 			switch (data.ruleData[i].rule [0]) {
+			case (int)Rule.None:
+				meets [i] = true;
+				break;
 			case (int)Rule.norDmg:
 				meets [i] = allDamage.Count > 0;
 				foreach (DamageData damageData in allDamage) {
@@ -147,7 +187,7 @@ public class SkillController : MonoBehaviour {
 				}
 				break;
 			case (int)Rule.norDmgP:
-				if (allDamage.Count == 1 && allDamage [0].damageType == DamageType.Magic) {
+				if (allDamage.Count > 0 && allDamage [0].damageType == DamageType.Physical) {
 					meets [i] = true;
 					parameter = allDamage [0].damage;
 				}
@@ -156,10 +196,12 @@ public class SkillController : MonoBehaviour {
 				}
 				break;
 			case (int)Rule.norDmgM:
+				//兩種傷害時，傷害一 物理：傷害二 魔法
 				if (allDamage.Count == 2) {
 					meets [i] = true;
 					parameter = allDamage [1].damage;
 				} 
+				//但種傷害時，因傷害一可能為物理傷害，所以必須檢查
 				else if (allDamage.Count == 1) {
 					if (allDamage [0].damageType == DamageType.Magic) {
 						meets [i] = true;
@@ -175,39 +217,43 @@ public class SkillController : MonoBehaviour {
 				}
 				break;
 			default:
-				meets [i] = true;
+				meets [i] = false;
 				break;
 			}
-
 		}
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					OnEffectTarget (orgIdx, targetIdx, data.ruleData [i], tType, parameter);
+					OnEffectTarget (AddParameter (true, data.ruleData [i], parameter));
 				}
 			}
 		} 
 		else {
 			if (!DataUtil.CheckArray<bool> (meets, false)) {
 				for (int i = 0; i < data.ruleData.Count; i++) {
-					OnEffectTarget (orgIdx, targetIdx, data.ruleData[i], tType, parameter);
+					OnEffectTarget (AddParameter (true, data.ruleData [i], parameter));
 				}
 			}
 		}
 	}
 		
-	private void OnEffectTarget(int orgIdx, int targetIdx, RuleLargeData data, TargetType tType, int paramater = 0){
+	/// <summary>
+	/// 決定技能效果目標
+	/// </summary>
+	/// <param name="data">技能效果資料</param>
+	/// <param name="paramater">效果參數</param>
+	private void OnEffectTarget(RuleLargeData data){
 		List<int> idxList = new List<int>();
-		TargetType targetType;
+		TargetType effectTarget = TargetType.Both;
 		if (data.target >= 1 && data.target <= 4) {
-			targetType = tType;
+			effectTarget = dirTargetType;
 			if (data.target > 1) {
 				for (int i = 0; i < charaCount; i++) {
 					idxList.Add (i);
 				}
 			}
 		} else if (data.target > 4 && data.target <= 7) {
-			targetType = ReverseTarget (tType);
+			effectTarget = ReverseTarget (dirTargetType);
 			if (data.target < 7) {
 				for (int i = 0; i < monsterCount; i++) {
 					idxList.Add (i);
@@ -219,88 +265,110 @@ public class SkillController : MonoBehaviour {
 		case (int)Target.None:
 			break;
 		case (int)Target.Self:
-			idxList.Add (targetIdx);
+			idxList.Add (dirTargetIdx);
 			break;
 		case (int)Target.DirTeam:
 			selLockRuleData = data;
 			fightController.OnSelectSkillTarget (idxList, TargetType.Player);
 			return;
 		case (int)Target.OnlyMate://移除發動者
-			idxList.Remove (orgIdx);
+			idxList.Remove (dirOrgIdx);
 			break;
 		case (int)Target.DirEnemy:
 			selLockRuleData = data;
 			fightController.OnSelectSkillTarget (idxList, TargetType.Enemy);
 			return;
 		case (int)Target.Trigger:
-			idxList.Add (targetIdx);
+			idxList.Add (dirTargetIdx);
 			break;
 		}
 
-		OnSkillEffect (idxList, data, tType, paramater);
-	}
-
-	private void OnSkillEffect(List<int> idxList, RuleLargeData data, TargetType tType = TargetType.Player, int paramater = 0){
-		if (data.normalEffect [0] != 0) {
-			OnNormal (idxList, data, tType, paramater);
-		}
-
-		if (data.statusEffect [0] != 0) {
-			OnStatus (idxList, data, tType, paramater);
-		}
+		fightController.OnSkillEffect (idxList, data, effectTarget);
 	}
 
 
-	/*Recovery = 1,
-	Act = 2,
-	Cover = 3,
-	RmAlarm = 4,
-	RmNerf = 5,
-	Dmg = 6,
-	Exchange = 7,
-	Call = 8,*/
-	private void OnNormal(List<int> idxList, RuleLargeData data, TargetType tType = TargetType.Player, int paramater = 0){
-		switch (data.normalEffect [0]) {
-		case (int)Normal.Recovery:
-			break;
-		}
-	}
-
-
-	/*UnDef = 1,
-	UnNerf = 2,
-	AddNerf = 3,
-	Suffer = 4,
-	Maximum = 5,
-	Ability = 6,
-	UnDirect = 7*/
-	private void OnStatus(List<int> idxList, RuleLargeData data, TargetType tType = TargetType.Player, int paramater = 0){
-		
-	}
 
 	public void SelectSkillTarget(TargetType tType, int idx){
-		OnSkillEffect (new List<int> (new int[1]{ idx }), selLockRuleData, tType);
+		fightController.OnSkillEffect (new List<int> (new int[1]{ idx }), selLockRuleData, tType);
 	}
 
-	public void OverRecovery(int orgIdx , int targetIdx, int over, TargetType tType){
+	/// <summary>
+	/// 補血超過該角色上限時觸發
+	/// </summary>
+	/// <param name="org">補血者</param>
+	/// <param name="target">被補血者</param>
+	/// <param name="over">超過數值</param>
+	/// <param name="tType">被補血者陣營</param>
+	public void OverRecovery(int org , int target, int over, TargetType tType){
+		dirOrgIdx = org;
+		dirTargetIdx = target;
+		dirTargetType = tType;
+
 		if (tType == TargetType.Player) {
-			if (charaTriggerSkill [orgIdx] != null) {
-				foreach (RuleLargeData data in charaTriggerSkill[orgIdx].ruleData) {
+			if (charaTriggerSkill [dirOrgIdx] != null) {
+				foreach (RuleLargeData data in charaTriggerSkill[dirOrgIdx].ruleData) {
 					if (data.rule [0] == (int)Rule.Over) {
-						OnEffectTarget (orgIdx, targetIdx, data, tType);
+						dirOrgData = fightController.GetSoulData (TargetType.Player, dirOrgIdx);
+						OnEffectTarget (AddParameter (false, data, over));
 					}
 				}
 			}
 		} 
 		else {
-			if (monsterTriggerSkill [orgIdx] != null) {
-				foreach (RuleLargeData data in monsterTriggerSkill[orgIdx].ruleData) {
+			if (monsterTriggerSkill [dirOrgIdx] != null) {
+				foreach (RuleLargeData data in monsterTriggerSkill[dirOrgIdx].ruleData) {
 					if (data.rule [0] == (int)Rule.Over) {
-						OnEffectTarget (orgIdx, targetIdx, data, tType);
+						dirOrgData = fightController.GetSoulData (TargetType.Enemy, dirOrgIdx);
+						OnEffectTarget (AddParameter (false, data, over));
 					}
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// 將當RuleLatgeData.Effect參數數量大於1又為0時補上缺少的Parameter
+	/// </summary>
+	public RuleLargeData AddParameter(bool isRev, RuleLargeData data, int parameter = 0){
+		RuleLargeData rData = new RuleLargeData ();
+		rData = data;
+		if (rData.effect.Length > 1) {
+			if (rData.effect [1] == 0) {
+				if (parameter != 0) {
+					rData.effect [1] = parameter;
+				} else {
+					rData.effect [1] = GetParameter (isRev, data, parameter);
+				}
+			} 
+			else {
+				if (parameter != 0 && rData.convType == 1) {
+					rData.effect [1] = rData.effect [1] * parameter / 100;	
+				}
+			}
+		} 
+
+		return rData;
+	}
+		
+	public int GetParameter(bool isRev, RuleLargeData data){
+		foreach (KeyValuePair<string,int> kv in data.abilitys) {
+			if (kv.Value != 0) {
+				if (data.convType == 0) {
+					return kv.Value;
+				} 
+				else {
+					if (isRev) {
+						if (dirTargetData != null) {
+							return dirTargetData.abilitys [kv.Key] * kv.Value / 100;
+						}
+					} 
+					else {
+						return dirOrgData.abilitys [kv.Key] * kv.Value / 100;
+					}
+				}
+			}
+		}
+		return 0;
 	}
 		
 	public TargetType ReverseTarget(TargetType tType){
@@ -314,8 +382,8 @@ public class SkillController : MonoBehaviour {
 }
 /// <summary>
 /// Rule type.
-/// None (無),HpLess (血量(少於)),HpBest (血量(多於含)),Nerf (異常狀態),norDmg (自然傷害值(自)),norDmgP (自然傷害值(物自))
-/// norDmgM (自然傷害值(魔自)),SpDmg (自然傷害值(他)),DeathCount (隊友死亡數),Over (溢補值),Death (自己死亡)
+/// None (無),HpLess (血量(少於)),HpBest (血量(多於含)),Nerf (異常狀態),norDmg (自身傷害(全)),norDmgP (自身傷害(物))
+/// norDmgM (自身傷害(魔)),OnDmg (對方傷害),DeathCount (隊友死亡數),Over (溢補值),Death (自己死亡)
 /// </summary>
 public enum Rule {
 	None = 0,
@@ -379,15 +447,5 @@ public enum Status {
 	Maximum = 5,
 	Ability = 6,
 	UnDirect = 7
-}
-
-/// <summary>
-/// Converse type.
-/// None(無),Amount(純數值),Ratio(比率)
-/// </summary>
-public enum converseType {
-	None = 0,
-	Amount = 1,
-	Ratio = 2
 }
 

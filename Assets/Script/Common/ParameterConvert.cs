@@ -10,11 +10,11 @@ public class ParameterConvert {
 	
 		float radio = Mathf.Pow (charaLv, 0.7f) + Mathf.Ceil (charaLv / 10)*0.5f;
 
-		charaAbility.Add ("Atk", (int)Mathf.Ceil (data.atk * radio));
-		charaAbility.Add ("Def", (int)Mathf.Ceil (data.def * radio));
-		charaAbility.Add ("MAtk", (int)Mathf.Ceil (data.mAtk * radio));
-		charaAbility.Add ("MDef", (int)Mathf.Ceil (data.mDef * radio));
-		charaAbility.Add ("Hp", (int)Mathf.Ceil (data.hp * radio));
+		charaAbility.Add ("Atk", (int)Mathf.Ceil (data.abilitys["Atk"] * radio));
+		charaAbility.Add ("Def", (int)Mathf.Ceil (data.abilitys["Def"] * radio));
+		charaAbility.Add ("MAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
+		charaAbility.Add ("MDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
+		charaAbility.Add ("Hp", (int)Mathf.Ceil (data.abilitys["Hp"] * radio));
 
 		return charaAbility;
 	}
@@ -26,11 +26,11 @@ public class ParameterConvert {
 
 		float radio = calculate<2f?1:calculate;
 
-		monsterAbility.Add ("Atk", (int)Mathf.Ceil (data.atk * radio));
-		monsterAbility.Add ("Def", (int)Mathf.Ceil (data.def * radio));
-		monsterAbility.Add ("MAtk", (int)Mathf.Ceil (data.mAtk * radio));
-		monsterAbility.Add ("MDef", (int)Mathf.Ceil (data.mDef * radio));
-		monsterAbility.Add ("Hp", (int)Mathf.Ceil (data.hp * radio));
+		monsterAbility.Add ("Atk", (int)Mathf.Ceil (data.abilitys["Atk"] * radio));
+		monsterAbility.Add ("Def", (int)Mathf.Ceil (data.abilitys["Def"] * radio));
+		monsterAbility.Add ("mAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
+		monsterAbility.Add ("mDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
+		monsterAbility.Add ("Hp", (int)Mathf.Ceil (data.abilitys["Hp"] * radio));
 
 		return monsterAbility;
 	}

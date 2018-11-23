@@ -131,7 +131,7 @@ public class FightUIController : MonoBehaviour {
 	bool hasProtect;
 
 	void SetData() {
-		monsterCdTimes = new int[5]{7,5,3,1,6};
+		monsterCdTimes = new int[5]{7,5,3,10,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.onProtect = GetHasProtect;
 		fightController.onSkillCDEnd = OnSkillCDEnd;
@@ -280,20 +280,40 @@ public class FightUIController : MonoBehaviour {
 		fightController.FightStart (lockCount != 0, canAttack, recJobRatios, recActLevel);
 	}
 
-	private void OnShowFight(int orgIdx, int targetIdx, DamageData damageData, TargetType tType){
-		FightItemButton org = tType == TargetType.Enemy ? charaButton [orgIdx] : enemyButton [orgIdx];
-		FightItemButton target = tType == TargetType.Player ? charaButton [targetIdx] : enemyButton [targetIdx];
-
-		GroundSEController gse = SEPool.Dequeue ();
-		gse.SetAttackShow (org.transform.localPosition, target, damageData);
-		gse.onRecycleDamage = ShowFightEnd;
-		gse.gameObject.SetActive (true);
-		gse.Run ();
+	private void OnShowFight(List<DamageData> allDamage){
+		StartCoroutine (OnShowAllFight (allDamage));
 	}
+
+	private IEnumerator OnShowAllFight(List<DamageData> allDamage){
+		for (int i = 0; i < allDamage.Count; i++) {
+			FightItemButton org = allDamage [i].tType == TargetType.Enemy ? charaButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
+			FightItemButton target = allDamage [i].tType == TargetType.Player ? charaButton [allDamage [i].targetIdx] : enemyButton [allDamage [i].targetIdx];
+
+			GroundSEController gse = SEPool.Dequeue ();
+			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
+			gse.onRecycleDamage = ShowFightEnd;
+			gse.gameObject.SetActive (true);
+			gse.Run ();
+
+			if (i == 0) {
+				if (allDamage.Count == 1) {
+					yield return new WaitForSeconds (0.5f);//該名角色最後攻擊所需時間
+				}
+				yield return new WaitForSeconds (0.2f);//該名角色的物理及魔法攻擊的顯示間隔
+			} 
+			else {
+				yield return new WaitForSeconds (0.5f);//該名角色最後攻擊所需時間
+			}
+		}
+
+		fightController.OnTriggerSkill (allDamage);
+	}
+
 
 	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target){
 		gse.gameObject.SetActive (false);
 		target.SetHpBar (damageData.hpRatio);
+		//fightController.OnTriggerSkill (damageData);
 		SEPool.Enqueue (gse);
 		gse.onRecycle = null;
 		gse.SetDamageShow (damageData, target.transform.localPosition);

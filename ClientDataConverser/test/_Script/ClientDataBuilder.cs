@@ -168,7 +168,7 @@ namespace test
             }
             File.Delete(dataPath + "/ClientData.txt");
 
-
+           
             File.WriteAllText(dataPath + "/ClientData.txt", jsonData);
         }
 
@@ -391,24 +391,48 @@ namespace test
                         {
                             if (content.Substring(0, 1) == "{" && content.Substring(content.Length - 1, 1) == "}")
                             {
-                                List<object> elemList = new List<object>();
                                 string[] elems = content.Substring(1, content.Length - 2).Split(',');
-                                int ev = 0;
-                                foreach (var elem in elems)
+                                if (!elems[0].Contains(":"))
                                 {
-                                    if (Int32.TryParse(elem, out ev))
+                                    int ev = 0;
+
+                                    List<object> elemList = new List<object>();
+                                    foreach (var elem in elems)
                                     {
-                                        elemList.Add(ev);
-                                    }
-                                    else
-                                    {
-                                        if (elem == "")
+                                        if (Int32.TryParse(elem, out ev))
                                         {
-                                            elemList.Add(null);
+                                            elemList.Add(ev);
+                                        }
+                                        else
+                                        {
+                                            if (elem == "")
+                                            {
+                                                elemList.Add(null);
+                                            }
                                         }
                                     }
+                                    parameterContent.Add(valueKey[i], elemList);
                                 }
-                                parameterContent.Add(valueKey[i], elemList);
+                                else{
+                                    Dictionary<string, object> elemList = new Dictionary<string, object>();
+                                    foreach (var elem in elems)
+                                    {
+                                        int ev = 0;
+                                        string[] a = elem.Split(':');
+                                        if (Int32.TryParse(a[1], out ev))
+                                        {
+                                            elemList.Add(a[0].Trim().Replace("\"", ""),ev);
+                                        }
+                                        else
+                                        {
+                                            if (elem == "")
+                                            {
+                                                elemList.Add(a[0].Trim().Replace("\"",""),null);
+                                            }
+                                        }
+                                    }
+                                    parameterContent.Add(valueKey[i], elemList);
+                                }
                             }
                             else
                             {

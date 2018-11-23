@@ -62,7 +62,7 @@ public class FightController : MonoBehaviour {
 	bool isLock = false;
 
 
-	public delegate void OnShowFight(int orgIdx , int targetIdx ,DamageData damageData, TargetType tType);
+	public delegate void OnShowFight(List<DamageData> damageData);
 	public OnShowFight onShowFight;
 
 	public delegate void OnProtect(bool hasProtect);
@@ -136,7 +136,7 @@ public class FightController : MonoBehaviour {
 			monsters[i] = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
 			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
 			monsters [i].Merge (monsters [i].actSkill, monsters [i].norSkill);
-			monsterFullHp [i] = monsters [i].hp;
+			monsterFullHp [i] = monsters [i].abilitys["Hp"];
 
 			monsterBuffStatus [i] = new List<int> ();
 			if (monsters [i].job == 2) {
@@ -160,7 +160,7 @@ public class FightController : MonoBehaviour {
 			characters[i] = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
 			characters [i].Merge (characters [i].actSkill, characters [i].norSkill);
-			charaFullHp [i] = characters [i].hp;
+			charaFullHp [i] = characters [i].abilitys["Hp"];
 
 			charaBuffStatus [i] = new List<int> ();
 
@@ -182,12 +182,16 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	private void OnFight(TargetType type){
+	/// <summary>
+	/// 計算傷害值
+	/// </summary>
+	/// <param name="type">目標類型</param>
+	private void OnFight(TargetType tType){
 		damageShowSort = new Dictionary<int, Dictionary<int, List<DamageData>>> ();
-		int count = type == TargetType.Player ? monsters.Length : characters.Length;
+		int count = tType == TargetType.Player ? monsters.Length : characters.Length;
 		for (int i = 0; i < count; i++) {
-			SoulLargeData orgData = type == TargetType.Player ? monsters[i] : characters[i];
-			if (orgData.hp > 0) {
+			SoulLargeData orgData = tType == TargetType.Player ? monsters[i] : characters[i];
+			if (orgData.abilitys["Hp"] > 0) {
 				if (fightPairs.ContainsKey (i)) {
 					AccordingData[] order;
 					fightPairs.TryGetValue (i, out order);
@@ -195,7 +199,7 @@ public class FightController : MonoBehaviour {
 					//判斷是否全體攻擊
 					bool isAll = false;
 					if (orgData.job >= 3) {
-						if (type == TargetType.Enemy) {
+						if (tType == TargetType.Enemy) {
 							if (jobActLevel [i] >= 2) {
 								isAll = true;
 							}
@@ -206,20 +210,18 @@ public class FightController : MonoBehaviour {
 					}
 
 					for (int j = 0; j < order.Length; j++) {
-						SoulLargeData targetData = type == TargetType.Player ? characters [order[j].index] : monsters [order[j].index];
-						if (targetData.hp > 0) {
+						SoulLargeData targetData = tType == TargetType.Player ? characters [order[j].index] : monsters [order[j].index];
+						if (targetData.abilitys["Hp"] > 0) {
 							List<DamageData> allDamage = new List<DamageData> ();
 							if (orgData.job <= 3) {
-								allDamage.Add(GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Physical, isAll));
+								allDamage.Add (GetDamage (orgData, targetData, i, order [j].index, order [j].attriJob, order [j].minus, tType, DamageType.Physical, isAll));
 							}
 
 							if (orgData.job >= 3) {
-								allDamage.Add (GetDamage (orgData, targetData, order [j].index, order [j].attriJob, order [j].minus, type, DamageType.Magic, isAll));
+								allDamage.Add (GetDamage (orgData, targetData, i, order [j].index, order [j].attriJob, order [j].minus, tType, DamageType.Magic, isAll));
 							}
 
-							OnDamage (targetData, i, order [j].index, allDamage, type);
-							skillController.OnTriggerSkill (i, order [j].index, TargetType.Player, allDamage);
-
+							OnDamage (targetData, allDamage);
 						} 
 
 
@@ -234,60 +236,69 @@ public class FightController : MonoBehaviour {
 		CallbackProtect ();
 	}
 
-	private DamageData GetDamage (SoulLargeData orgData, SoulLargeData targetData, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll){
+	/// <summary>
+	/// 建立傷害資料
+	/// </summary>
+	/// <returns>The damage.</returns>
+	/// <param name="orgData">攻擊者資料</param>
+	/// <param name="targetData">被攻擊者資料</param>
+	/// <param name="orgIdx">攻擊者索引值，建立傷害資料用</param>
+	/// <param name="targetIdx">被攻擊者索引值，建立傷害資料用</param>
+	/// <param name="attriJob">攻剋倍率</param>
+	/// <param name="minus">檢傷值</param>
+	/// <param name="tType">目標陣營.</param>
+	/// <param name="dType">傷害類型</param>
+	/// <param name="isAll">是否為全體攻擊，會影響浮動值</param>
+	private DamageData GetDamage (SoulLargeData orgData, SoulLargeData targetData, int orgIdx, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll){
 		DamageData damageData;
 		int actRatio = tType == TargetType.Player ? 0 : jobActLevel [orgData.job];
 		int ratio = tType == TargetType.Player ? 0 : jobRatio [orgData.job];
 		if (dType == DamageType.Physical) {
-			damageData = CalDamage (orgData.atk, targetData.def, ratio, attriJob, minus, actRatio, orgData.crt, isAll);
+			damageData = CalDamage (orgData.abilitys["Atk"], targetData.abilitys["Def"], ratio, attriJob, minus, actRatio, orgData.abilitys["Cri"], isAll);
 			damageData.damageType = DamageType.Physical;
 		} 
 		else {
-			damageData = CalDamage (orgData.mAtk, targetData.mDef, ratio, attriJob, minus, actRatio, orgData.crt, isAll);
+			damageData = CalDamage (orgData.abilitys["mAtk"], targetData.abilitys["mDef"], ratio, attriJob, minus, actRatio, orgData.abilitys["Cri"], isAll);
 			damageData.damageType = DamageType.Magic;
 		}
 
+		damageData.tType = tType;
 		damageData.attributes = orgData.act [jobActLevel [orgData.job]];
+		damageData.orgIdx = orgIdx;
+		damageData.targetIdx = targetIdx;
 
-        if (tType == TargetType.Player) {
-			return damageData;
+		return damageData;
+	}
+
+	private void OnDamage (SoulLargeData targetData, List<DamageData> allDamage){
+		if (damageShowSort.ContainsKey (allDamage[0].orgIdx)) {
+			damageShowSort [allDamage[0].orgIdx].Add (allDamage[0].targetIdx, OnDamageList (targetData, allDamage));
 		} 
 		else {
-			damageData.damage = (damageData.damage * (10 - monsterProtect) / 10) < 1 ? 1 : (damageData.damage * (10 - monsterProtect) / 10);
-			return damageData;
+			damageShowSort.Add (allDamage[0].orgIdx, new Dictionary<int, List<DamageData>> ());
+			damageShowSort [allDamage[0].orgIdx].Add (allDamage[0].targetIdx, OnDamageList (targetData, allDamage));
 		}
 	}
 
-	private void OnDamage (SoulLargeData targetData, int orgIdx, int targetIdx, List<DamageData> allDamage, TargetType tType){
+	private List<DamageData> OnDamageList(SoulLargeData targetData, List<DamageData> allDamage){
+		List<DamageData> damageList = new List<DamageData> ();
 		foreach (DamageData damageData in allDamage) {
-			if (damageShowSort.ContainsKey (orgIdx)) {
-				if (damageShowSort [orgIdx].ContainsKey (targetIdx)) {
-
-					damageShowSort [orgIdx] [targetIdx].Add (OnDamage (targetData, targetIdx, damageData, tType));
-				} else {
-					List<DamageData> data = new List<DamageData> ();
-					data.Add (OnDamage (targetData, targetIdx, damageData, tType));
-					damageShowSort [orgIdx].Add (targetIdx, data);
-				}
-			} else {
-				damageShowSort.Add (orgIdx, new Dictionary<int, List<DamageData>> ());
-
-				List<DamageData> data = new List<DamageData> ();
-				data.Add (OnDamage (targetData, targetIdx, damageData, tType));
-				damageShowSort [orgIdx].Add (targetIdx, data);
-			}
+			damageList.Add (OnDamageData (targetData, damageData));
 		}
+
+		return damageList;
 	}
 
-	private DamageData OnDamage(SoulLargeData targetData, int targetIdx, DamageData damageData, TargetType tType){
+
+	private DamageData OnDamageData(SoulLargeData targetData, DamageData damageData){
 		DamageData data = damageData;
 		bool isDead = false;
-		targetData.hp -= data.damage;
-		if (targetData.hp <= 0) {
-			targetData.hp = 0;
+		targetData.abilitys["Hp"] -= data.damage;
+		if (targetData.abilitys["Hp"] <= 0) {
+			targetData.abilitys["Hp"] = 0;
 			isDead = true;
 			if (targetData.job == 2) {
-				if (tType == TargetType.Player) {
+				if (damageData.tType == TargetType.Player) {
 					charaProtect--;
 				}
 				else{
@@ -297,17 +308,17 @@ public class FightController : MonoBehaviour {
 		}
 
 		if (isDead) {
-			OnDeath (targetIdx, tType);
+			OnDeath (damageData.targetIdx, damageData.tType);
 		}
 
-		if (tType == TargetType.Player) {
-			ChangeAccordingHp (targetIdx, targetData.hp, tType);
-			data.hpRatio = (float)targetData.hp / (float)charaFullHp [targetIdx];
+		if (damageData.tType == TargetType.Player) {
+			ChangeAccordingHp (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType);
+			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)charaFullHp [damageData.targetIdx];
 			return data;
 		} 
 		else {
-			ChangeAccordingHp (targetIdx, targetData.hp, tType);
-			data.hpRatio = (float)targetData.hp / (float)monsterFullHp [targetIdx];
+			ChangeAccordingHp (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType);
+			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)monsterFullHp [damageData.targetIdx];
 			return data;
 		}
 
@@ -317,10 +328,12 @@ public class FightController : MonoBehaviour {
 		onDead.Invoke (idx, tType);
 	}
 
+	/// <summary>
+	/// 計算傷害值
+	/// </summary>
 	public DamageData CalDamage(int atk, int def, int ratio, float ratioAJ, int minus,int actLevel, int crt, bool isAll){
 		DamageData damageData = new DamageData ();
 		int actRatio;
-		Debug.Log (actLevel);
 		if (actLevel != 0) {
 			actRatio = 50 * (int)Mathf.Pow (2, actLevel - 1);
 		} else {
@@ -340,6 +353,12 @@ public class FightController : MonoBehaviour {
 		return damageData;
 	}
 
+	/// <summary>
+	/// 表現傷害動畫
+	/// </summary>
+	/// <returns>The fight.</returns>
+	/// <param name="tType">被攻擊者陣營</param>
+	/// <param name="Callback">是否戰鬥結束的Callback</param>
 	IEnumerator ShowFight(TargetType tType, bool Callback){
 		int count = 0;
 		while (count < damageShowSort.Count) {
@@ -362,42 +381,53 @@ public class FightController : MonoBehaviour {
 		}
 	} 
 
+	/// <summary>
+	/// 回調UI執行傷害動畫
+	/// </summary>
+	/// <param name="orgIdx">Org index.</param>
+	/// <param name="damageData">Damage data.</param>
+	/// <param name="tType">T type.</param>
 	void ShowFight(int orgIdx, Dictionary<int, List<DamageData>> damageData, TargetType tType){
 		foreach (KeyValuePair<int, List<DamageData>> data in damageData) {
-			StartCoroutine(ShowFight (orgIdx, data.Key, data.Value, tType));
+			onShowFight.Invoke (data.Value);
 		}
 	}
-
-
-
-	IEnumerator ShowFight(int orgIdx, int targetIdx, List<DamageData> damageData, TargetType tType){
-		foreach (DamageData data in damageData) {
-			if (onShowFight != null) {
-				onShowFight.Invoke (orgIdx, targetIdx, data, tType);
-			}
-			yield return new WaitForSeconds(0.2f);
-		}
-	}
-
+		
+	/// <summary>
+	/// 開始進行戰鬥，先決定可攻擊者的攻擊目標順序，然後計算傷害值，最後執行戰鬥動畫
+	/// </summary>
+	/// <param name="lockEnemy">玩家是否有鎖定敵人</param>
+	/// <param name="canAttack">玩家角色是否有可能攻擊者</param>
+	/// <param name="ratios">職業攻擊力加成</param>
+	/// <param name="actLevel">攻擊者攻擊階級</param>
 	public void FightStart(bool lockEnemy, List<int> canAttack, int[] ratios, int[] actLevel){
 		jobRatio = ratios;
 		jobActLevel = actLevel;
 		bool enemyFight = DataUtil.CheckArray<int> (cdTime, 0);
 
 		if (canAttack.Count > 0) {
-			FightStart (canAttack.ToArray (), TargetType.Enemy, actLevel);
+			FightPairs (canAttack.ToArray (), TargetType.Enemy, actLevel);
 			OnFight (TargetType.Enemy);
 			StartCoroutine (ShowFight (TargetType.Enemy, !enemyFight));
 		}
 	}
 
+	/// <summary>
+	/// 敵人攻擊
+	/// </summary>
 	public void EnemyFight(){
-		FightStart (cdTime, TargetType.Player);
+		FightPairs (cdTime, TargetType.Player);
 		OnFight (TargetType.Player);
 		StartCoroutine (ShowFight (TargetType.Player, true));
 	}
 
-	private void FightStart(int[] attackIdx, TargetType tType, int[] actLevel = null){
+	/// <summary>
+	/// 攻擊目標配對
+	/// </summary>
+	/// <param name="attackIdx">可攻擊清單</param>
+	/// <param name="tType">目標陣營.</param>
+	/// <param name="actLevel">攻擊者攻擊階級<param>
+	private void FightPairs(int[] attackIdx, TargetType tType, int[] actLevel = null){
 		fightPairs = new Dictionary<int, AccordingData[]> ();
 		if (tType == TargetType.Enemy) {
 			foreach (int idx in attackIdx) {
@@ -413,6 +443,12 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// 配對攻擊目標並排列順序
+	/// </summary>
+	/// <returns>The target.</returns>
+	/// <param name="idx">攻擊者索引值</param>
+	/// <param name="tType">被攻擊者陣營</param>
 	private AccordingData[] matchTarget(int idx, TargetType tType){
 
 		AccordingData[] compareOrder = CompareData (idx, tType);
@@ -455,17 +491,28 @@ public class FightController : MonoBehaviour {
 		onProtect.Invoke (charaProtect > 0);
 	}
 
-
+	/// <summary>
+	/// 建立比對值進行排序
+	/// </summary>
+	/// <returns>The data.</returns>
+	/// <param name="orgIdx">攻擊者索引值</param>
+	/// <param name="tType">被攻擊者陣營</param>
 	private AccordingData[] CompareData(int orgIdx, TargetType tType){
         AccordingData[] according = new AccordingData[0];
 
         according = tType == TargetType.Player ? (AccordingData[])monsterAccording[orgIdx].Clone() : (AccordingData[])charaAccording [orgIdx].Clone();
 
-		return AccordingCompare (according, true);
+		return AccordingCompare (according, tType);
 	}
 
-	private AccordingData[] AccordingCompare(AccordingData[] according, bool isPlayer = false){
-		if (isPlayer) {
+	/// <summary>
+	/// 進行目標排序，目標為敵人時因為玩家可做簡單排序，因此只對克制加成做排序，若目標為玩家會以克制加成>>當下血量>>爆擊值>>減傷>>攻擊傷害順序做排列
+	/// </summary>
+	/// <returns>The compare.</returns>
+	/// <param name="according">根據值</param>
+	/// <param name="isPlayer">被攻擊者陣營</param>
+	private AccordingData[] AccordingCompare(AccordingData[] according, TargetType tType){
+		if (tType == TargetType.Enemy) {
 			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
 				return(x.attriJob.CompareTo (y.attriJob)) * -1;
 			});
@@ -495,6 +542,11 @@ public class FightController : MonoBehaviour {
 		return according;
 	}
 		
+	/// <summary>
+	/// 鎖定排序
+	/// </summary>
+	/// <param name="idx">選取敵人索引值</param>
+	/// <param name="isDead">是否死亡</param>
 	public void LockOrder (int idx, bool isDead = false){
 		if (lockOrderIdx.Contains (idx)) {
 			foreach (var v in lockOrderIdx) {
@@ -535,15 +587,19 @@ public class FightController : MonoBehaviour {
 			for (int i = 0; i < charaAccording.Count; i++) {
 				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
 					if (cdTime [j] == 0) {
-						charaAccording.ElementAt (i).Value [j].minus = 0;
+						charaAccording.ElementAt (i).Value [j].minus = 0 + monsterProtect * 10;
 					} else {
-						charaAccording.ElementAt (i).Value [j].minus = 50;
+						charaAccording.ElementAt (i).Value [j].minus = 50 * (10 - monsterProtect) / 10;
 					}
 				}
 			}
 		}
 	}
 
+	/// <summary>
+	/// 加快該局後期節奏，會因重製版面次數影響倍率
+	/// </summary>
+	/// <param name="count">Count.</param>
 	public void SetResetRatio(int count){
 		resetRatio = Mathf.Pow (1.5f, count);
 	}
@@ -557,6 +613,12 @@ public class FightController : MonoBehaviour {
 		public int crt;
 	}
 
+	/// <summary>
+	/// 變更根據值
+	/// </summary>
+	/// <param name="idx">Index.</param>
+	/// <param name="hp">Hp.</param>
+	/// <param name="tType">T type.</param>
 	private void ChangeAccordingHp(int idx, int hp, TargetType tType){
 		if (tType == TargetType.Enemy) {
 			for (int i = 0; i < charaAccording.Count; i++) {
@@ -578,6 +640,9 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// 建立各角色對相對陣營的攻擊順序根據值清單
+	/// </summary>
 	private void GetAccordingDataDic(){
 		charaAccording = new Dictionary<int, AccordingData[]> ();
 		monsterAccording = new Dictionary<int, AccordingData[]> ();
@@ -602,16 +667,24 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// 建立攻擊順序根據值
+	/// </summary>
+	/// <returns>The according.</returns>
+	/// <param name="orgData">攻擊者資料</param>
+	/// <param name="targetData">被攻擊者資料</param>
+	/// <param name="targetIdx">被攻擊者索引值</param>
+	/// <param name="tType">目標陣營，減傷值會因陣營有所不同</param>
 	private AccordingData GetAccording(SoulLargeData orgData, SoulLargeData targetData, int targetIdx,TargetType tType){
         
 		AccordingData data = new AccordingData ();
 		data.index = targetIdx;
 		data.attriJob = GetCalcRatio (orgData.job, targetData.job, orgData.attributes, targetData.attributes);
-		data.mAtkAtk = new int[3] { targetData.mAtk, targetData.atk, orgData.mAtk + orgData.atk };
-		data.hp = targetData.hp;
-		data.crt = targetData.crt;
+		data.mAtkAtk = new int[3] { targetData.abilitys["mAtk"], targetData.abilitys["Atk"], orgData.abilitys["mAtk"] + orgData.abilitys["Atk"] };
+		data.hp = targetData.abilitys["Hp"];
+		data.crt = targetData.abilitys["Cri"];
 		if (tType == TargetType.Player) {
-			data.minus = cdTime [targetIdx] == 0 ? 0 : 50;
+			data.minus = cdTime [targetIdx] == 0 + monsterProtect * 10 ? 0 : 50 * (10 - monsterProtect) / 10;
 		} 
 		else {
 			data.minus = protectJob [targetData.job];
@@ -620,12 +693,19 @@ public class FightController : MonoBehaviour {
 		return data;
 	}
 
-	private AccordingData GetAccordingData(int orgIdx, int idx, TargetType tType){
-		if (tType == TargetType.Player) {
-			return charaAccording [orgIdx] [idx];
+	/// <summary>
+	/// 取得根據值資料
+	/// </summary>
+	/// <returns>The according data.</returns>
+	/// <param name="orgIdx">攻擊者索引</param>
+	/// <param name="idx">被攻擊者索引</param>
+	/// <param name="tType">被攻擊者索引值</param>
+	private AccordingData GetAccordingData(int orgIdx, int targetIdx, TargetType tType){
+		if (tType == TargetType.Enemy) {
+			return charaAccording [orgIdx] [targetIdx];
 		}
 		else {
-			return monsterAccording [orgIdx] [idx];
+			return monsterAccording [orgIdx] [targetIdx];
 		}
 	}
 
@@ -688,38 +768,46 @@ public class FightController : MonoBehaviour {
 	public void OnRecovery(int orgIdx, List<int> recoveryList, int recovery, TargetType tType){
 		foreach (int idx in recoveryList) {
 			if (tType == TargetType.Player) {
-				characters [idx].hp += recovery;
-				if (characters [idx].hp > charaFullHp [idx]) {
-					skillController.OverRecovery (idx, orgIdx, characters [idx].hp - charaFullHp [idx], tType);
-					characters [idx].hp = charaFullHp [idx];
+				characters [idx].abilitys["Hp"] += recovery;
+				if (characters [idx].abilitys["Hp"] > charaFullHp [idx]) {
+					skillController.OverRecovery (idx, orgIdx, characters [idx].abilitys["Hp"] - charaFullHp [idx], tType);
+					characters [idx].abilitys["Hp"] = charaFullHp [idx];
 				}
+				ChangeAccordingHp (idx, characters [idx].abilitys["Hp"], tType);
 			} else {
-				monsters [idx].hp += recovery;
-				if (monsters [idx].hp > monsterFullHp [idx]) {
-					skillController.OverRecovery (idx, orgIdx, monsters [idx].hp - monsterFullHp [idx], tType);
-					monsters [idx].hp = monsterFullHp [idx];
+				monsters [idx].abilitys["Hp"] += recovery;
+				if (monsters [idx].abilitys["Hp"] > monsterFullHp [idx]) {
+					skillController.OverRecovery (idx, orgIdx, monsters [idx].abilitys["Hp"] - monsterFullHp [idx], tType);
+					monsters [idx].abilitys["Hp"] = monsterFullHp [idx];
 				}
+				ChangeAccordingHp (idx, monsters [idx].abilitys["Hp"], tType);
 			}
 		}
 	}
 
+	/// <summary>
+	/// 技能條件是否符合
+	/// </summary>
+	/// <param name="idx">Index.</param>
+	/// <param name="ruleId">Rule identifier.</param>
+	/// <param name="param">Parameter.</param>
+	/// <param name="tType">T type.</param>
 	public bool OnRuleMeets(int idx ,int ruleId, int param, TargetType tType){
 		if (tType == TargetType.Player) {
-			OnCharacterRule (idx, ruleId, param);
+			return OnCharacterRule (idx, ruleId, param);
 		} 
 		else {
-			OnMonsterRule (idx, ruleId, param);
+			return OnMonsterRule (idx, ruleId, param);
 		}
-		return false;
 	}
 
 	public bool OnCharacterRule(int idx ,int ruleId, int param){
 		if (jobActLevel [characters [idx].job] > 0) {
 			switch (ruleId) {
 			case 1:
-				return (characters [idx].hp / charaFullHp [idx] * 100) < param;
+				return (characters [idx].abilitys["Hp"] / charaFullHp [idx] * 100) < param;
 			case 2:
-				return (characters [idx].hp / charaFullHp [idx] * 100) >= param;
+				return (characters [idx].abilitys["Hp"] / charaFullHp [idx] * 100) >= param;
 			}
 		}
 		return false;
@@ -728,9 +816,9 @@ public class FightController : MonoBehaviour {
 	public bool OnMonsterRule(int idx ,int ruleId, int param){
 		switch (ruleId) {
 		case 1:
-			return (monsters [idx].hp / monsterFullHp [idx] * 100) < param;
+			return (monsters [idx].abilitys["Hp"] / monsterFullHp [idx] * 100) < param;
 		case 2:
-			return (monsters [idx].hp / monsterFullHp [idx] * 100) >= param;
+			return (monsters [idx].abilitys["Hp"] / monsterFullHp [idx] * 100) >= param;
 		}
 		return false;
 	}
@@ -748,11 +836,76 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void RoundEnd(){
+		skillController.OnRoundSkill ();
 		for (int i = 0; i < skillCdTime.Length; i++) {
 			if (skillCdTime[i] > 0) {
 				skillCdTime [i]--;
 			}
 		}
+	}
+
+	public void OnTriggerSkill(List<DamageData> allDamage){
+		SoulLargeData orgData;
+		SoulLargeData targetData;
+		if (allDamage [0].tType == TargetType.Enemy) {
+			orgData = characters [allDamage [0].orgIdx];
+			targetData = monsters [allDamage [0].targetIdx];
+
+		} 
+		else {
+			orgData = monsters [allDamage [0].orgIdx];
+			targetData = characters [allDamage [0].targetIdx];
+		}
+		skillController.OnTriggerSkill (orgData, targetData, allDamage);
+	}
+
+	public SoulLargeData GetSoulData(TargetType tType,int index){
+		if (tType == TargetType.Player) {
+			return characters [index];
+		} 
+		else {
+			return monsters [index];
+		}
+	}
+
+	/// <summary>
+	/// 發動效果，技能分為一般跟狀態類效果
+	/// </summary>
+	/// <param name="idxList">對象清單</param>
+	/// <param name="data">技能效果資料</param>
+	/// <param name="targetType">目標類型 玩家：敵人</param>
+	/// <param name="paramater">效果參數</param>
+	public void OnSkillEffect(List<int> idxList, RuleLargeData data, TargetType targetType){
+		if (data.effectType == 1) {
+			OnStatus (idxList, data);
+		} 
+		else {
+			OnNormal (idxList, data);
+		}
+	}
+
+
+	/// <summary>
+	/// 一般類型既能函式
+	/// </summary>
+	/// <param name="idxList">目標情單.</param>
+	/// <param name="data">技能效果資料.Recovery = 1,Act = 2,Cover = 3,RmAlarm = 4,RmNerf = 5,Dmg = 6,Exchange = 7,Call = 8</param>
+	/// <param name="paramater">效果參數.</param>
+	private void OnNormal(List<int> targetList, RuleLargeData data){
+		switch (data.effectType) {
+		case (int)Normal.Recovery:
+			break;
+		}
+	}
+
+	/// <summary>
+	/// 狀態附加類型技能函式
+	/// </summary>
+	/// <param name="idxList">目標情單.</param>
+	/// <param name="data">技能效果資料.UnDef = 1,UnNerf = 2,AddNerf = 3,Suffer = 4,Maximum = 5,Ability = 6,UnDirect = 7</param>
+	/// <param name="paramater">效果參數.</param>
+	private void OnStatus(List<int> targetList, RuleLargeData data){
+
 	}
 }
 
@@ -763,11 +916,14 @@ public enum TargetType{
 }
 
 public struct DamageData{
+	public int orgIdx;
+	public int targetIdx;
 	public int damage;
 	public float hpRatio;
 	public DamageType damageType;
 	public int attributes;
 	public bool isCrt;
+	public TargetType tType;
 }
 
 public enum FightStatus{

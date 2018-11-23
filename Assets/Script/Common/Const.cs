@@ -50,4 +50,47 @@ public static class Const {
 		new Color (0.28f, 0f, 0.56f, 1f)//Attributes.Dark
 	};
 
+
+	/// <summary>
+	/// Effect type.
+	/// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
+	/// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
+	/// </summary>
+	public enum NormalType {
+		None = 0,
+		Recovery = 1,
+		Act = 2,
+		Cover = 3,
+		RmAlarm = 4,
+		RmNerf = 5,
+		Dmg = 6,
+		Exchange = 7,
+		Call = 8,
+	}
+
+	/// <summary>
+	/// Effect type.
+	/// None(無),UnDef(無視防禦),UnNerf(異常免疫),AddNerf(附加異常),Suffer(根性)
+	/// ,Maximum(傷害值最大化),Ability(能力變化),UnDirect(反鎖定)
+	/// </summary>
+	public enum StatusType {
+		None = 0,
+		UnDef = 1,
+		UnNerf = 2,
+		AddNerf = 3,
+		Suffer = 4,
+		Maximum = 5,
+		Ability = 6,
+		UnDirect = 7
+	}
+
+	/// <summary>
+	/// Converse type.
+	/// None(無),Amount(純數值),Ratio(比率)
+	/// </summary>
+	public enum converseType {
+		None = 0,
+		Amount = 1,
+		Ratio = 2
+	}
 }
