@@ -363,6 +363,10 @@ public class FightUIController : MonoBehaviour {
 			fightController.ShowSoulData ();
 		}
 
+		if (Input.GetKeyDown(KeyCode.O)) {
+			fightController.ShowSkillData ();
+		}
+
 
 		if (Input.GetKeyDown(KeyCode.A)) {
 			if (CheckStatus(FightStatus.RoundStart) && spaceCount > 0) {

@@ -32,16 +32,16 @@
 		{"id":100015,"Target":0,"Rule":[0,0],"EffectType":0,"Effect":[1,0],"ConvType":0,"Ability":{}}
 	],
 	"Skill":[
-		{"id":200001,"name":"警戒解除","detail":"血量(少於){30}，警戒解除","Type":1,"CD":15,"LaunchType":0,"Round":1,"rule_id":[100001,0],"isOr":1,"hasAnim":0},
-		{"id":200002,"name":"無視防禦","detail":"無，無視防禦","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100002,0],"isOr":1,"hasAnim":0},
-		{"id":200003,"name":"回血{10}","detail":"無，回血{10}","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100003,0],"isOr":1,"hasAnim":0},
-		{"id":200004,"name":"回血{10}","detail":"無，回血{10}","Type":1,"CD":7,"LaunchType":0,"Round":1,"rule_id":[100004,0],"isOr":1,"hasAnim":0},
-		{"id":200005,"name":"回血{20}","detail":"血量(多於含){50}，回血{20}","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100005,0],"isOr":1,"hasAnim":0},
-		{"id":100001,"name":"回血{0}","detail":"無，回血{0}","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100006,0],"isOr":1,"hasAnim":0},
-		{"id":100002,"name":"回血{10}","detail":"無，回血{10}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100007,0],"isOr":1,"hasAnim":0},
-		{"id":100003,"name":"回血{300}","detail":"無，回血{300}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100008,0],"isOr":1,"hasAnim":0},
-		{"id":100004,"name":"回血{}","detail":"自然傷害值(他)，回血{}","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100009,0],"isOr":1,"hasAnim":0},
-		{"id":100005,"name":"回血{10}","detail":"無，回血{10}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010,0],"isOr":1,"hasAnim":0}
+		{"id":200001,"name":"警戒解除","detail":"血量(少於){30}，警戒解除","Type":1,"CD":15,"LaunchType":0,"Round":1,"rule_id":[100001],"isOr":1,"hasAnim":0},
+		{"id":200002,"name":"無視防禦","detail":"無，無視防禦","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100002],"isOr":1,"hasAnim":0},
+		{"id":200003,"name":"回血{10}","detail":"無，回血{10}","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100003],"isOr":1,"hasAnim":0},
+		{"id":200004,"name":"回血{10}","detail":"無，回血{10}","Type":1,"CD":7,"LaunchType":0,"Round":1,"rule_id":[100004],"isOr":1,"hasAnim":0},
+		{"id":200005,"name":"回血{20}","detail":"血量(多於含){50}，回血{20}","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100005],"isOr":1,"hasAnim":0},
+		{"id":100001,"name":"回血{0}","detail":"無，回血{0}","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100006],"isOr":1,"hasAnim":0},
+		{"id":100002,"name":"回血{10}","detail":"無，回血{10}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100007],"isOr":1,"hasAnim":0},
+		{"id":100003,"name":"回血{300}","detail":"無，回血{300}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100008],"isOr":1,"hasAnim":0},
+		{"id":100004,"name":"回血{}","detail":"自然傷害值(他)，回血{}","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100009],"isOr":1,"hasAnim":0},
+		{"id":100005,"name":"回血{10}","detail":"無，回血{10}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010],"isOr":1,"hasAnim":0}
 	],
 	"Soul":[
 		{"id":114001,"name":"惡鬼","detail":"劍＋暗","soulType":0,"rank":4,"Job":0,"Ethnicity":7,"Attributes":6,"Ability":{"Atk":242,"Def":35,"mAtk":76,"mDef":47,"Hp":704,"Cri":14},"Act":[0,0,0],"ActSkill":100001,"NorSkill":200001},

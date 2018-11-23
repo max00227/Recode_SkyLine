@@ -828,13 +828,6 @@ public class FightController : MonoBehaviour {
 
 	}
 
-	public void ShowSoulData(){
-		for (int i = 0; i < 5; i++) {
-			Debug.LogWarning (charaFullHp [i]);
-			Debug.LogError (monsterFullHp [i]);
-		}
-	}
-
 	public void RoundEnd(){
 		skillController.OnRoundSkill ();
 		for (int i = 0; i < skillCdTime.Length; i++) {
@@ -906,6 +899,21 @@ public class FightController : MonoBehaviour {
 	/// <param name="paramater">效果參數.</param>
 	private void OnStatus(List<int> targetList, RuleLargeData data){
 
+	}
+
+
+
+
+
+	public void ShowSoulData(){
+		for (int i = 0; i < 5; i++) {
+			Debug.LogWarning (charaFullHp [i]);
+			Debug.LogError (monsterFullHp [i]);
+		}
+	}
+
+	public void ShowSkillData(){
+		skillController.ShowRuleData ();
 	}
 }
 

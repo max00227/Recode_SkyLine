@@ -131,9 +131,6 @@ public class SkillController : MonoBehaviour {
 			case (int)Rule.OnDmg:
 				meets [i] = allDamage.Count > 0;
 				break;
-			default:
-				meets [i] = false;
-				break;
 			}
 		}
 
@@ -215,9 +212,6 @@ public class SkillController : MonoBehaviour {
 					meets [i] = false;
 
 				}
-				break;
-			default:
-				meets [i] = false;
 				break;
 			}
 		}
@@ -337,11 +331,11 @@ public class SkillController : MonoBehaviour {
 				if (parameter != 0) {
 					rData.effect [1] = parameter;
 				} else {
-					rData.effect [1] = GetParameter (isRev, data, parameter);
+					rData.effect [1] = GetParameter (isRev, data);
 				}
 			} 
 			else {
-				if (parameter != 0 && rData.convType == 1) {
+				if (parameter != 0 && rData.convType == Const.converseType.Ratio) {
 					rData.effect [1] = rData.effect [1] * parameter / 100;	
 				}
 			}
@@ -377,6 +371,14 @@ public class SkillController : MonoBehaviour {
 		} 
 		else {
 			return TargetType.Player;
+		}
+	}
+
+	public void ShowRuleData(){
+		foreach (KeyValuePair<int, SkillLargeData> kv in charaTriggerSkill) {
+			foreach (RuleLargeData data in kv.Value.ruleData) {
+				Debug.Log (data.id + " , " + data.abilitys.Count);
+			}
 		}
 	}
 }
