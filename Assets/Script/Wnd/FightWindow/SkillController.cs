@@ -129,7 +129,7 @@ public class SkillController : MonoBehaviour {
 				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], dirTargetType);
 				break;
 			case (int)Rule.OnDmg:
-				meets [i] = allDamage.Count > 0;
+				meets [i] = allDamage !=null && allDamage.Count > 0;
 				break;
 			}
 		}

@@ -111,7 +111,7 @@ public class FightController : MonoBehaviour {
 			monsterCdTimes [i] = 5;
 		}
 
-		GetAccordingDataDic ();
+		SetAccordingDataDic ();
 
 		CallbackProtect ();
 
@@ -177,7 +177,11 @@ public class FightController : MonoBehaviour {
 
 		for (int i = 0; i < monsterAccording.Count; i++) {
 			for (int j = 0; j < monsterAccording.ElementAt (i).Value.Length; j++) {
-				monsterAccording.ElementAt (i).Value [j].minus = protectJob [characters [monsterAccording.ElementAt (i).Value [j].index].job];
+				monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (
+					monsterAccording.ElementAt (i).Value [j], 
+					protectJob [characters [monsterAccording.ElementAt (i).Value [j].index].job],
+					AccChangeType.Minus
+				);
 			}
 		}
 	}
@@ -214,11 +218,11 @@ public class FightController : MonoBehaviour {
 						if (targetData.abilitys["Hp"] > 0) {
 							List<DamageData> allDamage = new List<DamageData> ();
 							if (orgData.job <= 3) {
-								allDamage.Add (GetDamage (orgData, targetData, i, order [j].index, order [j].attriJob, order [j].minus, tType, DamageType.Physical, isAll));
+								allDamage.Add (GetDamage (orgData, targetData, i, order [j].index, order [j].attriRatio * order [j].jobRatio, order [j].minus, tType, DamageType.Physical, isAll));
 							}
 
 							if (orgData.job >= 3) {
-								allDamage.Add (GetDamage (orgData, targetData, i, order [j].index, order [j].attriJob, order [j].minus, tType, DamageType.Magic, isAll));
+								allDamage.Add (GetDamage (orgData, targetData, i, order [j].index, order [j].attriRatio * order [j].jobRatio, order [j].minus, tType, DamageType.Magic, isAll));
 							}
 
 							OnDamage (targetData, allDamage);
@@ -312,12 +316,12 @@ public class FightController : MonoBehaviour {
 		}
 
 		if (damageData.tType == TargetType.Player) {
-			ChangeAccordingHp (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType);
+			ChangeAccordingData (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType, AccChangeType.Hp);
 			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)charaFullHp [damageData.targetIdx];
 			return data;
 		} 
 		else {
-			ChangeAccordingHp (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType);
+			ChangeAccordingData (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType, AccChangeType.Hp);
 			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)monsterFullHp [damageData.targetIdx];
 			return data;
 		}
@@ -498,6 +502,19 @@ public class FightController : MonoBehaviour {
 	/// <param name="orgIdx">攻擊者索引值</param>
 	/// <param name="tType">被攻擊者陣營</param>
 	private AccordingData[] CompareData(int orgIdx, TargetType tType){
+		foreach(AccordingData data in (AccordingData[])charaAccording [orgIdx]){
+			Debug.LogWarning (data.attriRatio);
+		}
+		//因應玩家角色攻擊屬性會變換更改According資料
+		if (tType == TargetType.Enemy) {
+			for (int i = 0; i < ((AccordingData[])charaAccording [orgIdx]).Length; i++) {
+				((AccordingData[])charaAccording [orgIdx]) [i] = ChangeAccordingData (
+					((AccordingData[])charaAccording [orgIdx]) [i], 
+					ParameterConvert.AttriRatioCal (characters [orgIdx].act [jobActLevel[characters [orgIdx].job]], monsters [i].attributes)
+					, AccChangeType.AttriRatio
+				);
+			}
+		}
         AccordingData[] according = new AccordingData[0];
 
         according = tType == TargetType.Player ? (AccordingData[])monsterAccording[orgIdx].Clone() : (AccordingData[])charaAccording [orgIdx].Clone();
@@ -514,13 +531,13 @@ public class FightController : MonoBehaviour {
 	private AccordingData[] AccordingCompare(AccordingData[] according, TargetType tType){
 		if (tType == TargetType.Enemy) {
 			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return(x.attriJob.CompareTo (y.attriJob)) * -1;
+				return((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio)) * -1;
 			});
 		} 
 		else {
 			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				if (x.attriJob.CompareTo (y.attriJob) == 0) {
-					if (x.mAtkAtk[3].CompareTo (y.mAtkAtk[3]) == 0) {
+				if ((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio) == 0) {
+					if (x.mAtkAtk.CompareTo (y.mAtkAtk) == 0) {
 						if (x.hp.CompareTo (y.hp) == 0) {
 							if (x.minus.CompareTo (y.minus) == 0) {
 								return x.crt.CompareTo (y.crt);
@@ -531,10 +548,10 @@ public class FightController : MonoBehaviour {
 							return x.hp.CompareTo (y.hp);
 						}
 					} else {
-						return(x.mAtkAtk[3].CompareTo (y.mAtkAtk[3])) * -1;
+						return(x.mAtkAtk.CompareTo (y.mAtkAtk)) * -1;
 					}
 				} else {
-					return(x.attriJob.CompareTo (y.attriJob)) * -1;
+					return((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio)) * -1;
 				}
 			});
 		}
@@ -587,9 +604,10 @@ public class FightController : MonoBehaviour {
 			for (int i = 0; i < charaAccording.Count; i++) {
 				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
 					if (cdTime [j] == 0) {
-						charaAccording.ElementAt (i).Value [j].minus = 0 + monsterProtect * 10;
-					} else {
-						charaAccording.ElementAt (i).Value [j].minus = 50 * (10 - monsterProtect) / 10;
+						charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], 0 + monsterProtect * 10, AccChangeType.Minus);
+					} 
+					else {
+						charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], 50 * (10 - monsterProtect) / 10, AccChangeType.Minus);
 					}
 				}
 			}
@@ -606,11 +624,21 @@ public class FightController : MonoBehaviour {
 
 	struct AccordingData{
 		public int index;
-		public float attriJob;
-		public int[] mAtkAtk;
+		public float attriRatio;
+		public float jobRatio;
+		public int mAtkAtk;
 		public int hp;
 		public int minus;
 		public int crt;
+	}
+
+	private enum AccChangeType{
+		AttriRatio,
+		JobRatio,
+		MAtkAtk,
+		Hp,
+		Minus,
+		Crt
 	}
 
 	/// <summary>
@@ -619,12 +647,12 @@ public class FightController : MonoBehaviour {
 	/// <param name="idx">Index.</param>
 	/// <param name="hp">Hp.</param>
 	/// <param name="tType">T type.</param>
-	private void ChangeAccordingHp(int idx, int hp, TargetType tType){
+	private void ChangeAccordingData(int idx, int parameter, TargetType tType, AccChangeType acType){
 		if (tType == TargetType.Enemy) {
 			for (int i = 0; i < charaAccording.Count; i++) {
 				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
 					if (charaAccording.ElementAt (i).Value [j].index == idx) {
-						charaAccording.ElementAt (i).Value [j].hp = hp;
+						charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], parameter, acType);
 					}
 				}
 			}
@@ -633,17 +661,44 @@ public class FightController : MonoBehaviour {
 			for (int i = 0; i < monsterAccording.Count; i++) {
 				for (int j = 0; j < monsterAccording.ElementAt (i).Value.Length; j++) {
 					if (monsterAccording.ElementAt (i).Value [j].index == idx) {
-						monsterAccording.ElementAt (i).Value [j].hp = hp;
+						if (acType != AccChangeType.AttriRatio) {
+							monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (monsterAccording.ElementAt (i).Value [j], parameter, acType);
+						}
 					}
 				}
 			}
 		}
 	}
 
+	private AccordingData ChangeAccordingData(AccordingData data, float param, AccChangeType acType){
+		AccordingData accData = data;
+		switch (acType) {
+		case AccChangeType.AttriRatio:
+			accData.attriRatio = param;
+			break;
+		case AccChangeType.JobRatio:
+			accData.jobRatio = param;
+			break;
+		case AccChangeType.MAtkAtk:
+			accData.mAtkAtk = Convert.ToInt32 (param);
+			break;
+		case AccChangeType.Hp:
+			accData.hp = Convert.ToInt32 (param);;
+			break;
+		case AccChangeType.Minus:
+			accData.minus = Convert.ToInt32 (param);;
+			break;
+		case AccChangeType.Crt:
+			accData.crt = Convert.ToInt32 (param);;
+			break;
+		}
+		return accData;
+	}
+
 	/// <summary>
 	/// 建立各角色對相對陣營的攻擊順序根據值清單
 	/// </summary>
-	private void GetAccordingDataDic(){
+	private void SetAccordingDataDic(){
 		charaAccording = new Dictionary<int, AccordingData[]> ();
 		monsterAccording = new Dictionary<int, AccordingData[]> ();
         SoulLargeData[] charaData = new SoulLargeData[0];
@@ -679,14 +734,16 @@ public class FightController : MonoBehaviour {
         
 		AccordingData data = new AccordingData ();
 		data.index = targetIdx;
-		data.attriJob = GetCalcRatio (orgData.job, targetData.job, orgData.attributes, targetData.attributes);
-		data.mAtkAtk = new int[3] { targetData.abilitys["mAtk"], targetData.abilitys["Atk"], orgData.abilitys["mAtk"] + orgData.abilitys["Atk"] };
+		data.mAtkAtk = orgData.abilitys["mAtk"] + orgData.abilitys["Atk"];
 		data.hp = targetData.abilitys["Hp"];
 		data.crt = targetData.abilitys["Cri"];
+		data.jobRatio = ParameterConvert.JobRatioCal (orgData.job, targetData.job);
 		if (tType == TargetType.Player) {
+			data.attriRatio = 1;
 			data.minus = cdTime [targetIdx] == 0 + monsterProtect * 10 ? 0 : 50 * (10 - monsterProtect) / 10;
 		} 
 		else {
+			data.attriRatio = ParameterConvert.AttriRatioCal (orgData.act [0], targetData.attributes);
 			data.minus = protectJob [targetData.job];
 		}
 
@@ -773,14 +830,14 @@ public class FightController : MonoBehaviour {
 					skillController.OverRecovery (idx, orgIdx, characters [idx].abilitys["Hp"] - charaFullHp [idx], tType);
 					characters [idx].abilitys["Hp"] = charaFullHp [idx];
 				}
-				ChangeAccordingHp (idx, characters [idx].abilitys["Hp"], tType);
+				ChangeAccordingData (idx, characters [idx].abilitys["Hp"], tType,AccChangeType.Hp);
 			} else {
 				monsters [idx].abilitys["Hp"] += recovery;
 				if (monsters [idx].abilitys["Hp"] > monsterFullHp [idx]) {
 					skillController.OverRecovery (idx, orgIdx, monsters [idx].abilitys["Hp"] - monsterFullHp [idx], tType);
 					monsters [idx].abilitys["Hp"] = monsterFullHp [idx];
 				}
-				ChangeAccordingHp (idx, monsters [idx].abilitys["Hp"], tType);
+				ChangeAccordingData (idx, monsters [idx].abilitys["Hp"], tType,AccChangeType.Hp);
 			}
 		}
 	}
