@@ -502,9 +502,6 @@ public class FightController : MonoBehaviour {
 	/// <param name="orgIdx">攻擊者索引值</param>
 	/// <param name="tType">被攻擊者陣營</param>
 	private AccordingData[] CompareData(int orgIdx, TargetType tType){
-		foreach(AccordingData data in (AccordingData[])charaAccording [orgIdx]){
-			Debug.LogWarning (data.attriRatio);
-		}
 		//因應玩家角色攻擊屬性會變換更改According資料
 		if (tType == TargetType.Enemy) {
 			for (int i = 0; i < ((AccordingData[])charaAccording [orgIdx]).Length; i++) {
