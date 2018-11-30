@@ -16,7 +16,7 @@ public class FightController : MonoBehaviour {
 
 	private int[] monsterCdTimes = new int[5];
 
-	private int[] jobRatio;
+	private int[] charaRatio;
 
 	LinkedList<int> lockOrderIdx;
 
@@ -33,9 +33,9 @@ public class FightController : MonoBehaviour {
 	private int[] skillCdTime;
 	private int[] skillInitCD;
 
-	private int[] protectJob;
+	private int[] protectChara;
 
-	private int[] jobActLevel;
+	private int[] charaActLevel;
 
 	private int[] charaFullHp;
 	private int[] monsterFullHp;
@@ -151,9 +151,9 @@ public class FightController : MonoBehaviour {
 		skillCdTime = new int[MyUserData.GetTeamData(0).Team.Count];
 		skillInitCD = new int[MyUserData.GetTeamData(0).Team.Count];
 		charaBuffStatus = new List<int>[MyUserData.GetTeamData(0).Team.Count];
-		protectJob = new int[5]{ 0, 0, 0, 0, 0 };
-
-
+		protectChara = new int[MyUserData.GetTeamData(0).Team.Count];
+		charaActLevel = new int[MyUserData.GetTeamData (0).Team.Count];
+		charaRatio = new int[MyUserData.GetTeamData (0).Team.Count];
 
 
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
@@ -172,17 +172,17 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	public void SetProtect(int[] protects){
-		protectJob = protects;
-
-		for (int i = 0; i < monsterAccording.Count; i++) {
-			for (int j = 0; j < monsterAccording.ElementAt (i).Value.Length; j++) {
-				monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (
-					monsterAccording.ElementAt (i).Value [j], 
-					protectJob [characters [monsterAccording.ElementAt (i).Value [j].index].job],
-					AccChangeType.Minus
-				);
+	public void SetProtect(int[] jobProtects){
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < characters.Length; j++) {
+				if (characters [j].job == i) {
+					protectChara [j] = jobProtects [i];
+				}
 			}
+		}
+
+		for (int i = 0; i < protectChara.Length; i++) {
+			ChangeAccordingData (i, protectChara [i], TargetType.Player, AccChangeType.Minus);
 		}
 	}
 
@@ -204,7 +204,7 @@ public class FightController : MonoBehaviour {
 					bool isAll = false;
 					if (orgData.job >= 3) {
 						if (tType == TargetType.Enemy) {
-							if (jobActLevel [i] >= 2) {
+							if (charaActLevel [i] >= 2) {
 								isAll = true;
 							}
 						}
@@ -255,19 +255,19 @@ public class FightController : MonoBehaviour {
 	/// <param name="isAll">是否為全體攻擊，會影響浮動值</param>
 	private DamageData GetDamage (SoulLargeData orgData, SoulLargeData targetData, int orgIdx, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll){
 		DamageData damageData;
-		int actRatio = tType == TargetType.Player ? 0 : jobActLevel [orgData.job];
-		int ratio = tType == TargetType.Player ? 0 : jobRatio [orgData.job];
+		int actLevel = tType == TargetType.Player ? 0 : charaActLevel [orgIdx];
+		int ratio = tType == TargetType.Player ? 0 : charaRatio [orgIdx];
 		if (dType == DamageType.Physical) {
-			damageData = CalDamage (orgData.abilitys["Atk"], targetData.abilitys["Def"], ratio, attriJob, minus, actRatio, orgData.abilitys["Cri"], isAll);
+			damageData = CalDamage (orgData.abilitys["Atk"], targetData.abilitys["Def"], ratio, attriJob, minus, actLevel, orgData.abilitys["Cri"], isAll);
 			damageData.damageType = DamageType.Physical;
 		} 
 		else {
-			damageData = CalDamage (orgData.abilitys["mAtk"], targetData.abilitys["mDef"], ratio, attriJob, minus, actRatio, orgData.abilitys["Cri"], isAll);
+			damageData = CalDamage (orgData.abilitys["mAtk"], targetData.abilitys["mDef"], ratio, attriJob, minus, actLevel, orgData.abilitys["Cri"], isAll);
 			damageData.damageType = DamageType.Magic;
 		}
 
 		damageData.tType = tType;
-		damageData.attributes = orgData.act [jobActLevel [orgData.job]];
+		damageData.attributes = orgData.act [charaActLevel [orgIdx] - 1];
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
 
@@ -404,13 +404,20 @@ public class FightController : MonoBehaviour {
 	/// <param name="canAttack">玩家角色是否有可能攻擊者</param>
 	/// <param name="ratios">職業攻擊力加成</param>
 	/// <param name="actLevel">攻擊者攻擊階級</param>
-	public void FightStart(bool lockEnemy, List<int> canAttack, int[] ratios, int[] actLevel){
-		jobRatio = ratios;
-		jobActLevel = actLevel;
+	public void FightStart(bool lockEnemy, List<int> canAttack, int[] jobRatio, int[] jabActLevel){
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < characters.Length; j++) {
+				if (characters [j].job == i) {
+					charaRatio [j] = jobRatio [i];
+					charaActLevel [j] = jabActLevel [i];
+				}
+			}
+		}
+
 		bool enemyFight = DataUtil.CheckArray<int> (cdTime, 0);
 
 		if (canAttack.Count > 0) {
-			FightPairs (canAttack.ToArray (), TargetType.Enemy, actLevel);
+			FightPairs (canAttack.ToArray (), TargetType.Enemy);
 			OnFight (TargetType.Enemy);
 			StartCoroutine (ShowFight (TargetType.Enemy, !enemyFight));
 		}
@@ -431,7 +438,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="attackIdx">可攻擊清單</param>
 	/// <param name="tType">目標陣營.</param>
 	/// <param name="actLevel">攻擊者攻擊階級<param>
-	private void FightPairs(int[] attackIdx, TargetType tType, int[] actLevel = null){
+	private void FightPairs(int[] attackIdx, TargetType tType){
 		fightPairs = new Dictionary<int, AccordingData[]> ();
 		if (tType == TargetType.Enemy) {
 			foreach (int idx in attackIdx) {
@@ -507,7 +514,7 @@ public class FightController : MonoBehaviour {
 			for (int i = 0; i < ((AccordingData[])charaAccording [orgIdx]).Length; i++) {
 				((AccordingData[])charaAccording [orgIdx]) [i] = ChangeAccordingData (
 					((AccordingData[])charaAccording [orgIdx]) [i], 
-					ParameterConvert.AttriRatioCal (characters [orgIdx].act [jobActLevel[characters [orgIdx].job]], monsters [i].attributes)
+					ParameterConvert.AttriRatioCal (characters [orgIdx].act [charaActLevel [orgIdx]-1], monsters [i].attributes)
 					, AccChangeType.AttriRatio
 				);
 			}
@@ -601,10 +608,10 @@ public class FightController : MonoBehaviour {
 			for (int i = 0; i < charaAccording.Count; i++) {
 				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
 					if (cdTime [j] == 0) {
-						charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], 0 + monsterProtect * 10, AccChangeType.Minus);
+						ChangeAccordingData (j, 0 + monsterProtect * 10, TargetType.Enemy, AccChangeType.Minus);
 					} 
 					else {
-						charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], 50 * (10 - monsterProtect) / 10, AccChangeType.Minus);
+						ChangeAccordingData (j, 50 * (10 - monsterProtect) / 10, TargetType.Enemy, AccChangeType.Minus);
 					}
 				}
 			}
@@ -648,19 +655,26 @@ public class FightController : MonoBehaviour {
 		if (tType == TargetType.Enemy) {
 			for (int i = 0; i < charaAccording.Count; i++) {
 				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
-					if (charaAccording.ElementAt (i).Value [j].index == idx) {
-						charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], parameter, acType);
-					}
+					if (idx != null) {
+						if (charaAccording.ElementAt (i).Value [j].index == idx) {
+							charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], parameter, acType);
+						}
+					} 
 				}
 			}
 		} 
 		else {
 			for (int i = 0; i < monsterAccording.Count; i++) {
 				for (int j = 0; j < monsterAccording.ElementAt (i).Value.Length; j++) {
-					if (monsterAccording.ElementAt (i).Value [j].index == idx) {
-						if (acType != AccChangeType.AttriRatio) {
-							monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (monsterAccording.ElementAt (i).Value [j], parameter, acType);
+					if (idx != null) {
+						if (monsterAccording.ElementAt (i).Value [j].index == idx) {
+							if (acType != AccChangeType.AttriRatio) {
+								monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (monsterAccording.ElementAt (i).Value [j], parameter, acType);
+							}
 						}
+					}
+					else {
+						monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (monsterAccording.ElementAt (i).Value [j], parameter, acType);
 					}
 				}
 			}
@@ -741,7 +755,7 @@ public class FightController : MonoBehaviour {
 		} 
 		else {
 			data.attriRatio = ParameterConvert.AttriRatioCal (orgData.act [0], targetData.attributes);
-			data.minus = protectJob [targetData.job];
+			data.minus = protectChara [targetIdx];
 		}
 
 		return data;
@@ -827,14 +841,14 @@ public class FightController : MonoBehaviour {
 					skillController.OverRecovery (idx, orgIdx, characters [idx].abilitys["Hp"] - charaFullHp [idx], tType);
 					characters [idx].abilitys["Hp"] = charaFullHp [idx];
 				}
-				ChangeAccordingData (idx, characters [idx].abilitys["Hp"], tType,AccChangeType.Hp);
+				ChangeAccordingData (idx, characters [idx].abilitys ["Hp"], tType, AccChangeType.Hp);
 			} else {
 				monsters [idx].abilitys["Hp"] += recovery;
 				if (monsters [idx].abilitys["Hp"] > monsterFullHp [idx]) {
 					skillController.OverRecovery (idx, orgIdx, monsters [idx].abilitys["Hp"] - monsterFullHp [idx], tType);
 					monsters [idx].abilitys["Hp"] = monsterFullHp [idx];
 				}
-				ChangeAccordingData (idx, monsters [idx].abilitys["Hp"], tType,AccChangeType.Hp);
+				ChangeAccordingData (idx, monsters [idx].abilitys ["Hp"], tType, AccChangeType.Hp);
 			}
 		}
 	}
@@ -856,7 +870,7 @@ public class FightController : MonoBehaviour {
 	}
 
 	public bool OnCharacterRule(int idx ,int ruleId, int param){
-		if (jobActLevel [characters [idx].job] > 0) {
+		if (charaActLevel [idx] > 0) {
 			switch (ruleId) {
 			case 1:
 				return (characters [idx].abilitys["Hp"] / charaFullHp [idx] * 100) < param;
@@ -878,8 +892,7 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void AddExclude(int idx, TargetType tType){
-		//if(tType)
-
+		
 	}
 
 	public void RoundEnd(){
@@ -915,6 +928,8 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
+
+	#region Skill
 	/// <summary>
 	/// 發動效果，技能分為一般跟狀態類效果
 	/// </summary>
@@ -924,10 +939,10 @@ public class FightController : MonoBehaviour {
 	/// <param name="paramater">效果參數</param>
 	public void OnSkillEffect(List<int> idxList, RuleLargeData data, TargetType targetType){
 		if (data.effectType == 1) {
-			OnStatus (idxList, data);
+			OnStatus (idxList, data, targetType);
 		} 
 		else {
-			OnNormal (idxList, data);
+			OnNormal (idxList, data, targetType);
 		}
 	}
 
@@ -938,7 +953,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="idxList">目標情單.</param>
 	/// <param name="data">技能效果資料.Recovery = 1,Act = 2,Cover = 3,RmAlarm = 4,RmNerf = 5,Dmg = 6,Exchange = 7,Call = 8</param>
 	/// <param name="paramater">效果參數.</param>
-	private void OnNormal(List<int> targetList, RuleLargeData data){
+	private void OnNormal(List<int> targetList, RuleLargeData data, TargetType targetType){
 		switch (data.effectType) {
 		case (int)Normal.Recovery:
 			break;
@@ -951,10 +966,23 @@ public class FightController : MonoBehaviour {
 	/// <param name="idxList">目標情單.</param>
 	/// <param name="data">技能效果資料.UnDef = 1,UnNerf = 2,AddNerf = 3,Suffer = 4,Maximum = 5,Ability = 6,UnDirect = 7</param>
 	/// <param name="paramater">效果參數.</param>
-	private void OnStatus(List<int> targetList, RuleLargeData data){
+	private void OnStatus(List<int> targetList, RuleLargeData data, TargetType targetType){
 
 	}
 
+	private void OnRecovery(List<int> targetList, RuleLargeData data, TargetType targetType){
+		foreach (int tIdx in targetList) {
+			if (targetType == TargetType.Player) {
+				characters [tIdx].abilitys ["Hp"] += data.effect [1];
+				//ChangeAccordingData()
+			} 
+			else {
+				monsters [tIdx].abilitys ["Hp"] += data.effect [1];
+			}
+		}
+	}
+
+	#endregion
 
 
 

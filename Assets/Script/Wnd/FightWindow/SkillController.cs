@@ -321,9 +321,9 @@ public class SkillController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 將當RuleLatgeData.Effect參數數量大於1又為0時補上缺少的Parameter
+	/// 將當RuleLatgeData.Effect參數數量大於1又為0時補上缺少的Parameter，IsRev為True時會用TargetData
 	/// </summary>
-	public RuleLargeData AddParameter(bool isRev, RuleLargeData data, int parameter = 0){
+	private RuleLargeData AddParameter(bool isRev, RuleLargeData data, int parameter = 0){
 		RuleLargeData rData = new RuleLargeData ();
 		rData = data;
 		if (rData.effect.Length > 1) {
@@ -344,7 +344,7 @@ public class SkillController : MonoBehaviour {
 		return rData;
 	}
 		
-	public int GetParameter(bool isRev, RuleLargeData data){
+	private int GetParameter(bool isRev, RuleLargeData data){
 		foreach (KeyValuePair<string,int> kv in data.abilitys) {
 			if (kv.Value != 0) {
 				if (data.convType == 0) {
