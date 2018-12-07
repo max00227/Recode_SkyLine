@@ -12,8 +12,8 @@ public class ParameterConvert {
 
 		charaAbility.Add ("Atk", (int)Mathf.Ceil (data.abilitys["Atk"] * radio));
 		charaAbility.Add ("Def", (int)Mathf.Ceil (data.abilitys["Def"] * radio));
-		charaAbility.Add ("MAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
-		charaAbility.Add ("MDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
+		charaAbility.Add ("mAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
+		charaAbility.Add ("mDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
 		charaAbility.Add ("Hp", (int)Mathf.Ceil (data.abilitys["Hp"] * radio));
 
 		return charaAbility;

@@ -131,13 +131,17 @@ public class FightUIController : MonoBehaviour {
 	bool hasProtect;
 
 	void SetData() {
-		monsterCdTimes = new int[5]{7,5,3,10,6};
+		monsterCdTimes = new int[5]{7,5,1,0,6};
 		fightController.SetCDTime (monsterCdTimes, false);
-		fightController.onProtect = GetHasProtect;
-		fightController.onSkillCDEnd = OnSkillCDEnd;
-		fightController.onLockOrder = SetLockUI;
-		fightController.unLockOrder = SetUnLockUI;
 		fightController.SetData ();
+
+		foreach (FightItemButton btn in charaButton) {
+			btn.SetHpBar (1, false);
+		}
+
+		foreach (FightItemButton btn in enemyButton) {
+			btn.SetHpBar (1, false);
+		}
 
 		lockOrder = new LinkedList<int> ();
 
@@ -183,10 +187,6 @@ public class FightUIController : MonoBehaviour {
 
 		energe = 1;
 		energeNum.SetNumber (energe);
-
-		fightController.onCloseButton = OnSelectionDir;
-		fightController.onSelectComplete = OnOpenButton;
-		fightController.onDead = OnDead;
 
 		ResetGround(true);
 	}
@@ -273,14 +273,12 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void OnFight(){
-		fightController.onComplete = FightEnd;
 		CheckActLevel ();
 		fightController.SetProtect (protectJob);
-		fightController.onShowFight = OnShowFight;
 		fightController.FightStart (lockCount != 0, canAttack, recJobRatios, recActLevel);
 	}
 
-	private void OnShowFight(List<DamageData> allDamage){
+	public void OnShowFight(List<DamageData> allDamage){
 		StartCoroutine (OnShowAllFight (allDamage));
 	}
 
@@ -313,7 +311,6 @@ public class FightUIController : MonoBehaviour {
 	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target){
 		gse.gameObject.SetActive (false);
 		target.SetHpBar (damageData.hpRatio);
-		//fightController.OnTriggerSkill (damageData);
 		SEPool.Enqueue (gse);
 		gse.onRecycle = null;
 		gse.SetDamageShow (damageData, target.transform.localPosition);
@@ -475,8 +472,9 @@ public class FightUIController : MonoBehaviour {
 
 	}
 
-	void FightEnd(){
+	public void FightEnd(){
 		UpEnerge ();
+		fightController.FightEnd ();
 		ChangeStatus (FightStatus.FightEnd);
 		if (isResetGround) {
 			ResetGround ();
@@ -554,13 +552,10 @@ public class FightUIController : MonoBehaviour {
 			StartCoroutine (CheckRatio ());
 		} 
 		else {
-			fightController.onComplete = FightEnd;
-			fightController.onShowFight = OnShowFight;
 			fightController.EnemyFight ();
 		}
 
 		groundPool.RoundEnd ();
-		fightController.RoundEnd ();
 
 		hasDamage = false;
 		spaceCount = 0;
@@ -839,7 +834,15 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
+	public void OnRecovery(int idx, TargetType tType, float hpRatio){
+		if (tType == TargetType.Player) {
+			charaButton [idx].SetHpBar (hpRatio, true, true);
+		} 
+		else {
+			enemyButton [idx].SetHpBar (hpRatio, true, true);
+		}
 
+	}
 
 	private void MonsterCdDown(bool overfill = false){
 		if (overfill) {
@@ -991,7 +994,7 @@ public class FightUIController : MonoBehaviour {
 		endGc = null;
 	}
 
-	private void GetHasProtect(bool isHas){
+	public void GetHasProtect(bool isHas){
 		hasProtect = isHas;
 		if (!hasProtect) {
 			protectJob = new int[5]{ 0, 0, 0, 0, 0 };
@@ -1051,7 +1054,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 
-	private void SetLockUI(LinkedList<int> order){
+	public void SetLockUI(LinkedList<int> order){
 		if (order.Count == 0) {
 			for (int i = 0; i < enemyButton.Length; i++) {
 				enemyButton [i].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
@@ -1064,7 +1067,7 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void SetUnLockUI(int idx){
+	public void SetUnLockUI(int idx){
 		enemyButton [idx].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
 	}
 
@@ -1080,11 +1083,11 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void OnSkillCDEnd(int charaIdx){
+	public void OnSkillCDEnd(int charaIdx){
 		Debug.LogWarning ("Chara " + charaIdx + " Can Use Skill");
 	}
 
-	private void OnSelectionDir(List<int> idxList, TargetType tType){
+	public void OnSelectionDir(List<int> idxList, TargetType tType){
 		OnCloseButton (TargetType.Both);
 
 		foreach (int idx in idxList) {
@@ -1095,8 +1098,6 @@ public class FightUIController : MonoBehaviour {
 				enemyButton [idx].SetEnable (true);
 			}
 		}
-
-
 	}
 
 	private void OnCloseButton(TargetType tType) {
@@ -1128,7 +1129,7 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void OnDead(int idx, TargetType tType){
+	public void OnDead(int idx, TargetType tType){
 		if (tType == TargetType.Player) {
 			charaButton [idx].SetEnable (false, true);
 		} 

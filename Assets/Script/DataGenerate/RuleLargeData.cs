@@ -34,5 +34,21 @@ namespace model.data{
 				this._abilitys = value;
 			}
 		}
+
+		public RuleLargeData DeepCopy()
+		{
+			RuleLargeData copyData = (RuleLargeData) this.MemberwiseClone();
+			copyData.id = this.id;
+			copyData.target = this.target;
+			copyData.rule = this.rule;
+			copyData.effectType = this.effectType;
+			copyData.effect = new int[this.effect.Length];
+			Array.Copy (this.effect, copyData.effect, this.effect.Length);
+			copyData.convType = this.convType;
+			copyData.abilitys = this.abilitys;
+
+
+			return copyData;
+		}
 	}
 }

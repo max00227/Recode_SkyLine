@@ -69,8 +69,13 @@ public class FilledBarController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// 設置Bar條.
+	/// <param name="hpRatio">Bar條參數</param>
+	/// <param name="isShow">效果表現</param>
+	/// <param name="isUp">是否上升</param>
 	public void SetBar(float fillAmount, bool isShow = false, bool isUp = true){
-		if (isShow = false) {
+		if (isShow == false) {
 			if (changeColor) {
 				for (int i = setting.Length - 1; i >= 0; i--) {
 					if (fillAmount <= setting [i].section) {
@@ -114,6 +119,7 @@ public class FilledBarController : MonoBehaviour {
 			upSpeed = (fillAmount - bar.fillAmount) / speedRatio;
 			isSet = true;
 			isRun = false;
+			isReturnMin = !isUp;
 		}
 	}
 

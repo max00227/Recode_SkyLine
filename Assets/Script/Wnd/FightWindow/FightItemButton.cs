@@ -60,9 +60,17 @@ public class FightItemButton : MonoBehaviour {
 		ratioTxt.SetColor (Color.black);
 	}
 
-	public void SetHpBar(float hpRatio){
-		hpBar.SetBar (hpRatio, true, false);
-		hpBar.OnRun ();
+	/// <summary>
+	/// 設置血量條.
+	/// <param name="hpRatio">Bar條參數</param>
+	/// <param name="isShow">效果表現</param>
+	/// <param name="isUp">是否上升</param>
+	public void SetHpBar(float hpRatio, bool isShow = true, bool isUp = false){
+		hpBar.SetBar (hpRatio, isShow, isUp);
+
+		if (isShow) {
+			hpBar.OnRun ();
+		}
 	}
 
 	public void NumberShowRun(){

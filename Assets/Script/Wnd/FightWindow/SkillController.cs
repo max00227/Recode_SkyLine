@@ -15,8 +15,8 @@ public class SkillController : MonoBehaviour {
 	private Dictionary<int, SkillLargeData> charaTriggerSkill;
 	private Dictionary<int, SkillLargeData> charaRoundSkill;
 
-	private Dictionary<int, SkillLargeData> monsterNorSkill;
-	private Dictionary<int, SkillLargeData> monsterTriggerSkill;
+	private Dictionary<int, SkillLargeData> enemyNorSkill;
+	private Dictionary<int, SkillLargeData> enemyTriggerSkill;
 
 	private int charaCount;
 	private int monsterCount;
@@ -25,6 +25,7 @@ public class SkillController : MonoBehaviour {
 
 	private int dirOrgIdx;
 	private int dirTargetIdx;
+	private int dirOrgRadio;
 	private TargetType dirTargetType;
 
 	private SoulLargeData dirOrgData;
@@ -36,8 +37,8 @@ public class SkillController : MonoBehaviour {
 		charaNorSkill = new SkillLargeData[charaCount];
 		charaTriggerSkill = new Dictionary<int, SkillLargeData> ();
 		charaRoundSkill = new Dictionary<int, SkillLargeData> ();
-		monsterNorSkill = new Dictionary<int, SkillLargeData> ();
-		monsterTriggerSkill = new Dictionary<int, SkillLargeData> ();
+		enemyNorSkill = new Dictionary<int, SkillLargeData> ();
+		enemyTriggerSkill = new Dictionary<int, SkillLargeData> ();
 
 		for (int i = 0; i < charaCount; i++) {
 			if (charaData [i]._norSkill != null) {
@@ -56,10 +57,10 @@ public class SkillController : MonoBehaviour {
 		for (int i = 0; i < monsterCount; i++) {
 			if (monsterData [i]._norSkill != null) {
 				if (monsterData[i]._norSkill.launchType == 0) {
-					monsterTriggerSkill.Add(i, monsterData[i]._norSkill);
+					enemyTriggerSkill.Add(i, monsterData[i]._norSkill);
 				} 
 				else {
-					monsterNorSkill.Add(i, monsterData[i]._norSkill);
+					enemyNorSkill.Add(i, monsterData[i]._norSkill);
 				}
 			}
 		}
@@ -71,7 +72,6 @@ public class SkillController : MonoBehaviour {
 
 	/// <summary>
 	/// 攻擊時觸發技能
-	/// </summary>
 	/// <param name="orgData">攻擊者資料</param>
 	/// <param name="targetData">被攻擊者資料</param>
 	/// <param name="allDamage">傷害資料</param>
@@ -86,13 +86,13 @@ public class SkillController : MonoBehaviour {
 			if (charaTriggerSkill.ContainsKey(dirOrgIdx)) {
 				OnSkillSelfRule (charaTriggerSkill [dirOrgIdx], allDamage);
 			}
-			if (monsterTriggerSkill.ContainsKey(dirTargetIdx)) {
-				OnSkillUnSelfRule (monsterTriggerSkill [dirTargetIdx], allDamage);
+			if (enemyTriggerSkill.ContainsKey(dirTargetIdx)) {
+				OnSkillUnSelfRule (enemyTriggerSkill [dirTargetIdx], allDamage);
 			}
 		} 
 		else {
-			if (monsterTriggerSkill.ContainsKey(dirOrgIdx)) {
-				OnSkillSelfRule (monsterTriggerSkill [dirOrgIdx], allDamage);
+			if (enemyTriggerSkill.ContainsKey(dirOrgIdx)) {
+				OnSkillSelfRule (enemyTriggerSkill [dirOrgIdx], allDamage);
 			}
 			if (charaTriggerSkill.ContainsKey(dirTargetIdx)) {
 				OnSkillUnSelfRule (charaTriggerSkill [dirTargetIdx], allDamage);
@@ -104,6 +104,8 @@ public class SkillController : MonoBehaviour {
 		foreach (KeyValuePair<int, SkillLargeData> kv in charaRoundSkill) {
 			dirOrgIdx = kv.Key;
 			dirOrgData = fightController.GetSoulData (TargetType.Player, dirOrgIdx);
+			dirOrgRadio = fightController.GetRadio (TargetType.Player, dirOrgIdx);
+			dirTargetType = TargetType.Player;
 			OnSkillSelfRule (kv.Value);
 		}
 	}
@@ -152,7 +154,6 @@ public class SkillController : MonoBehaviour {
 
 	/// <summary>
 	/// 觸發條件為被攻擊者
-	/// </summary>
 	/// <param name="data">技能資料</param>
 	/// <param name="allDamage">傷害資料</param>
 	private void OnSkillUnSelfRule (SkillLargeData data, List<DamageData> allDamage = null){
@@ -233,7 +234,6 @@ public class SkillController : MonoBehaviour {
 		
 	/// <summary>
 	/// 決定技能效果目標
-	/// </summary>
 	/// <param name="data">技能效果資料</param>
 	/// <param name="paramater">效果參數</param>
 	private void OnEffectTarget(RuleLargeData data){
@@ -277,18 +277,17 @@ public class SkillController : MonoBehaviour {
 			break;
 		}
 
-		fightController.OnSkillEffect (idxList, data, effectTarget);
+		fightController.OnSkillEffect (dirOrgIdx, idxList, data, effectTarget);
 	}
 
 
 
 	public void SelectSkillTarget(TargetType tType, int idx){
-		fightController.OnSkillEffect (new List<int> (new int[1]{ idx }), selLockRuleData, tType);
+		fightController.OnSkillEffect (dirOrgIdx, new List<int> (new int[1]{ idx }), selLockRuleData, tType);
 	}
 
 	/// <summary>
 	/// 補血超過該角色上限時觸發
-	/// </summary>
 	/// <param name="org">補血者</param>
 	/// <param name="target">被補血者</param>
 	/// <param name="over">超過數值</param>
@@ -299,7 +298,7 @@ public class SkillController : MonoBehaviour {
 		dirTargetType = tType;
 
 		if (tType == TargetType.Player) {
-			if (charaTriggerSkill [dirOrgIdx] != null) {
+			if (charaTriggerSkill.ContainsKey(dirOrgIdx)) {
 				foreach (RuleLargeData data in charaTriggerSkill[dirOrgIdx].ruleData) {
 					if (data.rule [0] == (int)Rule.Over) {
 						dirOrgData = fightController.GetSoulData (TargetType.Player, dirOrgIdx);
@@ -309,8 +308,8 @@ public class SkillController : MonoBehaviour {
 			}
 		} 
 		else {
-			if (monsterTriggerSkill [dirOrgIdx] != null) {
-				foreach (RuleLargeData data in monsterTriggerSkill[dirOrgIdx].ruleData) {
+			if (enemyTriggerSkill.ContainsKey(dirOrgIdx)) {
+				foreach (RuleLargeData data in enemyTriggerSkill[dirOrgIdx].ruleData) {
 					if (data.rule [0] == (int)Rule.Over) {
 						dirOrgData = fightController.GetSoulData (TargetType.Enemy, dirOrgIdx);
 						OnEffectTarget (AddParameter (false, data, over));
@@ -322,10 +321,8 @@ public class SkillController : MonoBehaviour {
 
 	/// <summary>
 	/// 將當RuleLatgeData.Effect參數數量大於1又為0時補上缺少的Parameter，IsRev為True時會用TargetData
-	/// </summary>
 	private RuleLargeData AddParameter(bool isRev, RuleLargeData data, int parameter = 0){
-		RuleLargeData rData = new RuleLargeData ();
-		rData = data;
+		RuleLargeData rData = data.DeepCopy ();
 		if (rData.effect.Length > 1) {
 			if (rData.effect [1] == 0) {
 				if (parameter != 0) {
@@ -357,7 +354,7 @@ public class SkillController : MonoBehaviour {
 						}
 					} 
 					else {
-						return dirOrgData.abilitys [kv.Key] * kv.Value / 100;
+						return dirOrgData.abilitys [kv.Key] * kv.Value / 100 * dirOrgRadio / 100;
 					}
 				}
 			}
@@ -386,7 +383,6 @@ public class SkillController : MonoBehaviour {
 /// Rule type.
 /// None (無),HpLess (血量(少於)),HpBest (血量(多於含)),Nerf (異常狀態),norDmg (自身傷害(全)),norDmgP (自身傷害(物))
 /// norDmgM (自身傷害(魔)),OnDmg (對方傷害),DeathCount (隊友死亡數),Over (溢補值),Death (自己死亡)
-/// </summary>
 public enum Rule {
 	None = 0,
 	HpLess = 1,
@@ -404,7 +400,6 @@ public enum Rule {
 /// <summary>
 /// Target type
 /// None(無),Self(自身),DirTeam(指定成員),OnlyMate(僅隊友),Team(全隊),Enemy(全敵人),DirEnemy(指定敵人),Trigger(觸發者)
-/// </summary>
 public enum Target {
 	None = 0,
 	Self = 1,
@@ -422,7 +417,6 @@ public enum Target {
 /// Effect type.
 /// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
 /// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
-/// </summary>
 public enum Normal {
 	None = 0,
 	Recovery = 1,
@@ -439,7 +433,6 @@ public enum Normal {
 /// Effect type.
 /// None(無),UnDef(無視防禦),UnNerf(異常免疫),AddNerf(附加異常),Suffer(根性)
 /// ,Maximum(傷害值最大化),Ability(能力變化),UnDirect(反鎖定)
-/// </summary>
 public enum Status {
 	None = 0,
 	UnDef = 1,
