@@ -12,14 +12,12 @@ public class FightController : MonoBehaviour {
 	[SerializeField]
 	FightUIController fightUIController;
 
+	/*[HideInInspector]
+	private SoulLargeData[] characters;
 	[HideInInspector]
-	public SoulLargeData[] characters;
-	[HideInInspector]
-	public SoulLargeData[] monsters;
+	private SoulLargeData[] enemys;*/
 
-	private int[] monsterCdTimes = new int[5];
-
-	private int[] charaRatio;
+	private int[] enemyCdTimes = new int[5];
 
 	LinkedList<int> lockOrderIdx = new LinkedList<int>();
 
@@ -32,27 +30,17 @@ public class FightController : MonoBehaviour {
 
 	private int[] protectChara;
 
-	private int[] charaActLevel;
-
-	private int[] charaFullHp;
-	private int[] monsterFullHp;
-
-	private int monsterProtect;
+	private int enemyProtect;
 
 	private int charaProtect;
 
-	private Dictionary<int, AccordingData[]> charaAccording;
 
-	private Dictionary<int, AccordingData[]> monsterAccording;
+	[HideInInspector]
+	public ChessData[] characters;
+	[HideInInspector]
+	public ChessData[] enemys;
 
-	private List<int>[] charaBuffStatus;
-	private List<int>[] charaNerfStatus;
 
-	private List<int>[] monsterBuffStatus;
-	private List<int>[] monsterNerfStatus;
-
-	private List<int> excludeChara = new List<int> ();
-	private List<int> excludeMonster = new List<int> ();
 
 	float resetRatio;
 
@@ -61,7 +49,7 @@ public class FightController : MonoBehaviour {
 	public Dictionary<int, Dictionary<int, List<DamageData>>> damageShowSort;
 
 	public Dictionary<int, List<RuleLargeData>> charaTriggers;
-	public Dictionary<int, List<RuleLargeData>> monsterTriggers;
+	public Dictionary<int, List<RuleLargeData>> enemyTriggers;
 
 
 
@@ -71,7 +59,7 @@ public class FightController : MonoBehaviour {
 	void Update(){
 		if (Input.GetKeyDown (KeyCode.P)) {
 			for (int i = 0; i < 5; i++) {
-				Debug.Log (monsterAccording [0] [i].minus);
+				Debug.Log (enemys [0].according [i].minus);
 			}
 		}
 	}
@@ -79,13 +67,11 @@ public class FightController : MonoBehaviour {
 
 	public void SetData(){
 		resetRatio = 1;
-		SetCharaData ();
-		SetMonsterData ();
 
-		skillController.SetData (characters, monsters);
+		skillController.SetData (SetCharaData (), SetEnemyData ());
 
-		for (int i = 0; i < monsterCdTimes.Length; i++) {
-			monsterCdTimes [i] = 5;
+		for (int i = 0; i < enemyCdTimes.Length; i++) {
+			enemyCdTimes [i] = 5;
 		}
 
 		SetAccordingDataDic ();
@@ -95,8 +81,9 @@ public class FightController : MonoBehaviour {
 		UnLockOrder ();
 	}
 
-	private void SetMonsterData(){
-		monsterProtect = 0;
+	private SoulLargeData[] SetEnemyData(){
+		
+		enemyProtect = 0;
 
 		string enemyDataPath = "/ClientData/EnemyData.txt";
 
@@ -105,54 +92,54 @@ public class FightController : MonoBehaviour {
 
 		EnemyLargeData enemyData = JsonConversionExtensions.ConvertJson<EnemyLargeData>(json);
 
-		monsters = new SoulLargeData[enemyData.TeamData[0].Team.Count];
-		monsterFullHp = new int[enemyData.TeamData[0].Team.Count];
-		monsterBuffStatus = new List<int>[MyUserData.GetTeamData(0).Team.Count];
+		SoulLargeData[] soulData = new SoulLargeData[enemyData.TeamData[0].Team.Count];
+		enemys = new ChessData[enemyData.TeamData [0].Team.Count];
 
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
-			monsters[i] = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
-			monsters [i].Merge (ParameterConvert.GetMonsterAbility (monsters [i], enemyData.TeamData[0].Team[i].lv));
-			monsters [i].Merge (monsters [i].actSkill, monsters [i].norSkill);
-			monsterFullHp [i] = monsters [i].abilitys["Hp"];
+			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
+			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.TeamData[0].Team[i].lv));
+			enemys[i].soulData.Merge (enemys[i].soulData.actSkill, enemys[i].soulData.norSkill);
+			enemys[i].fullHp = enemys[i].soulData.abilitys["Hp"];
+			enemys [i].status = new List<int> ();
+			enemys [i].abiChange = new Dictionary<string, int> ();
+			soulData [i] = enemys [i].soulData;
 
-			monsterBuffStatus [i] = new List<int> ();
-			if (monsters [i].job == 2) {
-				monsterProtect++;
+
+			if (enemys[i].soulData.job == 2) {
+				enemyProtect++;
 			}
 		}
+		return soulData;
 	}
 
-	private void SetCharaData(){
-		characters = new SoulLargeData[MyUserData.GetTeamData(0).Team.Count];
-		charaFullHp = new int[MyUserData.GetTeamData(0).Team.Count];
+	private SoulLargeData[] SetCharaData(){
+		SoulLargeData[] soulData = new SoulLargeData[MyUserData.GetTeamData(0).Team.Count];
 		skillCdTime = new int[MyUserData.GetTeamData(0).Team.Count];
 		skillInitCD = new int[MyUserData.GetTeamData(0).Team.Count];
-		charaBuffStatus = new List<int>[MyUserData.GetTeamData(0).Team.Count];
+		characters = new ChessData[MyUserData.GetTeamData (0).Team.Count];
 		protectChara = new int[MyUserData.GetTeamData(0).Team.Count];
-		charaActLevel = new int[MyUserData.GetTeamData (0).Team.Count];
-		charaRatio = new int[MyUserData.GetTeamData (0).Team.Count];
 
 
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
-			characters[i] = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
-			characters [i].Merge (ParameterConvert.GetCharaAbility (characters [i], MyUserData.GetTeamData (0).Team [i].lv));
-			characters [i].Merge (characters [i].actSkill, characters [i].norSkill);
-			charaFullHp [i] = characters [i].abilitys["Hp"];
+			characters [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
+			characters [i].soulData.Merge (ParameterConvert.GetCharaAbility (characters [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
+			characters [i].soulData.Merge (characters [i].soulData.actSkill, characters [i].soulData.norSkill);
+			characters [i].fullHp = characters [i].soulData.abilitys["Hp"];
+			characters[i].initCD = (int)characters [i].soulData._norSkill.cdTime;
+			characters [i].status = new List<int> ();
+			characters [i].abiChange = new Dictionary<string, int> ();
+			soulData [i] = characters [i].soulData;
 
-			charaBuffStatus [i] = new List<int> ();
 
-			skillCdTime [i] = (int)characters[i]._norSkill.cdTime;
-			skillInitCD [i] = (int)characters[i]._norSkill.cdTime;
-			if (characters [i].job == 2) {
-				charaProtect++;
-			}
+			skillCdTime [i] = (int)characters [i].soulData._norSkill.cdTime;
 		}
+		return soulData;
 	}
 
 	public void SetProtect(int[] jobProtects){
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < characters.Length; j++) {
-				if (characters [j].job == i) {
+				if (characters [j].soulData.job == i) {
 					protectChara [j] = jobProtects [i];
 				}
 			}
@@ -168,9 +155,9 @@ public class FightController : MonoBehaviour {
 	/// <param name="type">目標類型</param>
 	private void OnFight(TargetType tType){
 		damageShowSort = new Dictionary<int, Dictionary<int, List<DamageData>>> ();
-		int count = tType == TargetType.Player ? monsters.Length : characters.Length;
+		int count = tType == TargetType.Player ? enemys.Length : characters.Length;
 		for (int i = 0; i < count; i++) {
-			SoulLargeData orgData = tType == TargetType.Player ? monsters[i] : characters[i];
+			SoulLargeData orgData = tType == TargetType.Player ? enemys[i].soulData : characters[i].soulData;
 			if (orgData.abilitys["Hp"] > 0) {
 				if (fightPairs.ContainsKey (i)) {
 					AccordingData[] order;
@@ -180,7 +167,7 @@ public class FightController : MonoBehaviour {
 					bool isAll = false;
 					if (orgData.job >= 3) {
 						if (tType == TargetType.Enemy) {
-							if (charaActLevel [i] >= 2) {
+							if (fightUIController.GetActLevel (orgData.job) >= 2) {
 								isAll = true;
 							}
 						}
@@ -190,7 +177,7 @@ public class FightController : MonoBehaviour {
 					}
 						
 					for (int j = 0; j < order.Length; j++) {
-						SoulLargeData targetData = tType == TargetType.Player ? characters [order[j].index] : monsters [order[j].index];
+						SoulLargeData targetData = tType == TargetType.Player ? characters [order[j].index].soulData : enemys [order[j].index].soulData;
 						if (targetData.abilitys["Hp"] > 0) {
 							List<DamageData> allDamage = new List<DamageData> ();
 							if (orgData.job <= 3) {
@@ -230,19 +217,36 @@ public class FightController : MonoBehaviour {
 	/// <param name="isAll">是否為全體攻擊，會影響浮動值</param>
 	private DamageData GetDamage (SoulLargeData orgData, SoulLargeData targetData, int orgIdx, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll){
 		DamageData damageData;
-		int actLevel = tType == TargetType.Player ? 0 : charaActLevel [orgIdx];
-		int ratio = tType == TargetType.Player ? 0 : charaRatio [orgIdx];
+		int actLevel = tType == TargetType.Player ? 0 : fightUIController.GetActLevel (orgData.job);
+		int ratio = tType == TargetType.Player ? 0 : fightUIController.GetCharaRatio (orgData.job);
+		int orgChanged = 100;
+		int targetChanged= 100;
+		string titleKey;
 		if (dType == DamageType.Physical) {
-			damageData = CalDamage (orgData.abilitys["Atk"], targetData.abilitys["Def"], ratio, attriJob, minus, actLevel, orgData.abilitys["Cri"], isAll);
+			titleKey = "";
+		} else {
+			titleKey = "m";
+		}
+
+		if (tType == TargetType.Player) {
+			orgChanged = enemys[orgIdx].abiChange.ContainsKey (titleKey + "Atk") == true ? enemys[orgIdx].abiChange [titleKey + "Atk"] : orgChanged;
+			orgChanged = characters[targetIdx].abiChange.ContainsKey (titleKey + "Atk") == true ? characters[targetIdx].abiChange [titleKey + "Atk"] : targetChanged;
+		} else {
+			orgChanged = characters[orgIdx].abiChange.ContainsKey (titleKey + "Atk") == true ? characters[orgIdx].abiChange [titleKey + "Atk"] : orgChanged;
+			targetChanged = enemys[targetIdx].abiChange.ContainsKey (titleKey + "Def") == true ? enemys[targetIdx].abiChange [titleKey + "Def"] : targetChanged;
+		}
+			
+		if (dType == DamageType.Physical) {
+			damageData = CalDamage (orgData.abilitys ["Atk"] * orgChanged / 100, targetData.abilitys ["Def"] * targetChanged / 100, ratio, attriJob, minus, actLevel, orgData.abilitys ["Cri"], isAll);
 			damageData.damageType = DamageType.Physical;
 		} 
 		else {
-			damageData = CalDamage (orgData.abilitys["mAtk"], targetData.abilitys["mDef"], ratio, attriJob, minus, actLevel, orgData.abilitys["Cri"], isAll);
+			damageData = CalDamage (orgData.abilitys ["mAtk"] * orgChanged / 100, targetData.abilitys ["mDef"] * targetChanged / 100, ratio, attriJob, minus, actLevel, orgData.abilitys ["Cri"], isAll);
 			damageData.damageType = DamageType.Magic;
 		}
 
 		damageData.tType = tType;
-		damageData.attributes = tType == TargetType.Player ? orgData.act [0] : orgData.act [charaActLevel [orgIdx] - 1];
+		damageData.attributes = tType == TargetType.Player ? orgData.act [0] : orgData.act [actLevel - 1];
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
 
@@ -281,7 +285,7 @@ public class FightController : MonoBehaviour {
 					charaProtect--;
 				}
 				else{
-					monsterProtect--;
+					enemyProtect--;
 				}
 			}
 		}
@@ -292,12 +296,12 @@ public class FightController : MonoBehaviour {
 
 		if (damageData.tType == TargetType.Player) {
 			ChangeAccordingData (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType, AccChangeType.Hp);
-			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)charaFullHp [damageData.targetIdx];
+			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)characters [damageData.targetIdx].fullHp;
 			return data;
 		} 
 		else {
 			ChangeAccordingData (damageData.targetIdx, targetData.abilitys["Hp"], damageData.tType, AccChangeType.Hp);
-			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)monsterFullHp [damageData.targetIdx];
+			data.hpRatio = (float)targetData.abilitys["Hp"] / (float)enemys [damageData.targetIdx].fullHp;
 			return data;
 		}
 
@@ -310,6 +314,7 @@ public class FightController : MonoBehaviour {
 	/// <summary>
 	/// 計算傷害值
 	public DamageData CalDamage(int atk, int def, int ratio, float ratioAJ, int minus,int actLevel, int crt, bool isAll){
+		Debug.LogWarning (atk);
 		DamageData damageData = new DamageData ();
 		int actRatio;
 		if (actLevel != 0) {
@@ -372,16 +377,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="canAttack">玩家角色是否有可能攻擊者</param>
 	/// <param name="ratios">職業攻擊力加成</param>
 	/// <param name="actLevel">攻擊者攻擊階級</param>
-	public void FightStart(bool lockEnemy, List<int> canAttack, int[] jobRatio, int[] jabActLevel){
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < characters.Length; j++) {
-				if (characters [j].job == i) {
-					charaRatio [j] = jobRatio [i];
-					charaActLevel [j] = jabActLevel [i];
-				}
-			}
-		}
-
+	public void FightStart(bool lockEnemy, List<int> canAttack){
 		bool enemyFight = DataUtil.CheckArray<int> (cdTime, 0);
 
 		if (canAttack.Count > 0) {
@@ -429,7 +425,7 @@ public class FightController : MonoBehaviour {
 
 		AccordingData[] compareOrder = CompareData (idx, tType);
 
-		int orderCount = tType == TargetType.Player ? characters.Length : monsters.Length;
+		int orderCount = tType == TargetType.Player ? characters.Length : enemys.Length;
 
 		AccordingData[] atkOrder = new AccordingData[orderCount];
 		AccordingData[] lockOrder = new AccordingData[lockOrderIdx.Count];
@@ -464,10 +460,6 @@ public class FightController : MonoBehaviour {
 				}
 			}
 
-			foreach (AccordingData data in atkOrder) {
-				Debug.LogWarning (data.index);
-			}
-
 			return atkOrder;
 		}
 	}
@@ -484,17 +476,17 @@ public class FightController : MonoBehaviour {
 	private AccordingData[] CompareData(int orgIdx, TargetType tType){
 		//因應玩家角色攻擊屬性會變換更改According資料
 		if (tType == TargetType.Enemy) {
-			for (int i = 0; i < ((AccordingData[])charaAccording [orgIdx]).Length; i++) {
-				((AccordingData[])charaAccording [orgIdx]) [i] = ChangeAccordingData (
-					((AccordingData[])charaAccording [orgIdx]) [i], 
-					ParameterConvert.AttriRatioCal (characters [orgIdx].act [charaActLevel [orgIdx]-1], monsters [i].attributes)
+			for (int i = 0; i < characters [orgIdx].according.Length; i++) {
+				characters [orgIdx].according[i] = ChangeAccordingData (
+					characters [orgIdx].according[i], 
+					ParameterConvert.AttriRatioCal (characters [orgIdx].soulData.act [fightUIController.GetActLevel(characters [orgIdx].soulData.job)-1], enemys [i].soulData.attributes)
 					, AccChangeType.AttriRatio
 				);
 			}
 		}
         AccordingData[] according = new AccordingData[0];
 
-        according = tType == TargetType.Player ? (AccordingData[])monsterAccording[orgIdx].Clone() : (AccordingData[])charaAccording [orgIdx].Clone();
+		according = tType == TargetType.Player ? (AccordingData[])enemys[orgIdx].according.Clone() : (AccordingData[])characters[orgIdx].according.Clone();
 
 		return AccordingCompare (according, tType);
 	}
@@ -576,13 +568,13 @@ public class FightController : MonoBehaviour {
 	public void SetCDTime(int[] cd, bool isInit = true){
 		cdTime = cd;
 		if (isInit) {
-			for (int i = 0; i < charaAccording.Count; i++) {
-				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
+			for (int i = 0; i < characters.Length; i++) {
+				for (int j = 0; j < characters[i].according.Length; j++) {
 					if (cdTime [j] == 0) {
-						ChangeAccordingData (j, 0 + monsterProtect * 10, TargetType.Enemy, AccChangeType.Minus);
+						ChangeAccordingData (j, 0 + enemyProtect * 10, TargetType.Enemy, AccChangeType.Minus);
 					} 
 					else {
-						ChangeAccordingData (j, 50 * (10 + monsterProtect) / 10, TargetType.Enemy, AccChangeType.Minus);
+						ChangeAccordingData (j, 50 * (10 + enemyProtect) / 10, TargetType.Enemy, AccChangeType.Minus);
 					}
 				}
 			}
@@ -594,16 +586,6 @@ public class FightController : MonoBehaviour {
 	/// <param name="count">Count.</param>
 	public void SetResetRatio(int count){
 		resetRatio = Mathf.Pow (1.5f, count);
-	}
-
-	struct AccordingData{
-		public int index;
-		public float attriRatio;
-		public float jobRatio;
-		public int mAtkAtk;
-		public int hp;
-		public int minus;
-		public int crt;
 	}
 
 	private enum AccChangeType{
@@ -622,28 +604,24 @@ public class FightController : MonoBehaviour {
 	/// <param name="tType">T type.</param>
 	private void ChangeAccordingData(int idx, int parameter, TargetType tType, AccChangeType acType){
 		if (tType == TargetType.Enemy) {
-			for (int i = 0; i < charaAccording.Count; i++) {
-				for (int j = 0; j < charaAccording.ElementAt (i).Value.Length; j++) {
+			for (int i = 0; i < characters.Length; i++) {
+				for (int j = 0; j < characters[i].according.Length; j++) {
 					if (idx != null) {
-						if (charaAccording.ElementAt (i).Value [j].index == idx) {
-							charaAccording.ElementAt (i).Value [j] = ChangeAccordingData (charaAccording.ElementAt (i).Value [j], parameter, acType);
-						}
+						characters[i].according [j] = ChangeAccordingData (characters[i].according [j], parameter, acType);
 					} 
 				}
 			}
 		} 
 		else {
-			for (int i = 0; i < monsterAccording.Count; i++) {
-				for (int j = 0; j < monsterAccording.ElementAt (i).Value.Length; j++) {
+			for (int i = 0; i < enemys.Length; i++) {
+				for (int j = 0; j < enemys[i].according.Length; j++) {
 					if (idx != null) {
-						if (monsterAccording.ElementAt (i).Value [j].index == idx) {
-							if (acType != AccChangeType.AttriRatio) {
-								monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (monsterAccording.ElementAt (i).Value [j], parameter, acType);
-							}
+						if (acType != AccChangeType.AttriRatio) {
+							enemys [i].according [j] = ChangeAccordingData (enemys [i].according [j], parameter, acType);
 						}
 					}
 					else {
-						monsterAccording.ElementAt (i).Value [j] = ChangeAccordingData (monsterAccording.ElementAt (i).Value [j], parameter, acType);
+						enemys [i].according [j] = ChangeAccordingData (enemys [i].according [j], parameter, acType);
 					}
 				}
 			}
@@ -678,26 +656,25 @@ public class FightController : MonoBehaviour {
 	/// <summary>
 	/// 建立各角色對相對陣營的攻擊順序根據值清單
 	private void SetAccordingDataDic(){
-		charaAccording = new Dictionary<int, AccordingData[]> ();
-		monsterAccording = new Dictionary<int, AccordingData[]> ();
-        SoulLargeData[] charaData = new SoulLargeData[0];
-        charaData = (SoulLargeData[])characters.Clone();
-        SoulLargeData[] monsterData = new SoulLargeData[0];
-        monsterData = (SoulLargeData[])monsters.Clone();
-        for (int i = 0; i < characters.Length; i++) {
-			AccordingData[] data = new AccordingData[5];
-			for(int j = 0;j<monsters.Length; j++){
-                data[j] = GetAccording(charaData[i], monsterData[j], j, TargetType.Player);
+		
+		ChessData[] charaData = new ChessData[0];
+		charaData = (ChessData[])characters.Clone();
+		ChessData[] enemyData = new ChessData[0];
+		enemyData = (ChessData[])enemys.Clone();
+		for (int i = 0; i < charaData.Length; i++) {
+			AccordingData[] data = new AccordingData[enemys.Length];
+			for(int j = 0;j<enemyData.Length; j++){
+				data[j] = GetAccording(charaData[i].soulData, enemyData[j].soulData, j, TargetType.Player);
 			}
-			charaAccording.Add (i, data);
+			characters [i].according = data;
 		}
 
-		for (int i = 0; i < monsters.Length; i++) {
+		for (int i = 0; i < enemyData.Length; i++) {
 			AccordingData[] data = new AccordingData[5];
-			for(int j = 0;j<characters.Length; j++){
-                data[j] = GetAccording(monsterData[i], charaData[j], j, TargetType.Enemy);
+			for(int j = 0;j<charaData.Length; j++){
+				data[j] = GetAccording(enemyData[i].soulData, charaData[j].soulData, j, TargetType.Enemy);
 			}
-			monsterAccording.Add (i, data);
+			enemys [i].according = data;
 		}
 	}
 
@@ -712,13 +689,13 @@ public class FightController : MonoBehaviour {
         
 		AccordingData data = new AccordingData ();
 		data.index = targetIdx;
-		data.mAtkAtk = orgData.abilitys["mAtk"] + orgData.abilitys["Atk"];
+		data.mAtkAtk = targetData.abilitys["mAtk"] + targetData.abilitys["Atk"];
 		data.hp = targetData.abilitys["Hp"];
 		data.crt = targetData.abilitys["Cri"];
 		data.jobRatio = ParameterConvert.JobRatioCal (orgData.job, targetData.job);
 		if (tType == TargetType.Player) {
 			data.attriRatio = 1;
-			data.minus = cdTime [targetIdx] == 0 ? 0 + monsterProtect * 10 : 50 * (10 + monsterProtect) / 10;
+			data.minus = cdTime [targetIdx] == 0 ? 0 + enemyProtect * 10 : 50 * (10 + enemyProtect) / 10;
 		} 
 		else {
 			data.attriRatio = ParameterConvert.AttriRatioCal (orgData.act [0], targetData.attributes);
@@ -736,10 +713,10 @@ public class FightController : MonoBehaviour {
 	/// <param name="tType">被攻擊者索引值</param>
 	private AccordingData GetAccordingData(int orgIdx, int targetIdx, TargetType tType){
 		if (tType == TargetType.Enemy) {
-			return charaAccording [orgIdx] [targetIdx];
+			return characters[orgIdx].according[targetIdx];
 		}
 		else {
-			return monsterAccording [orgIdx] [targetIdx];
+			return enemys[orgIdx].according[targetIdx];
 		}
 	}
 
@@ -779,61 +756,24 @@ public class FightController : MonoBehaviour {
 	}
 
 	public List<int> ExcludeTarget(List<int> idxList, TargetType tType){
-		List<int> checkList = idxList;
+		int count = tType == TargetType.Player ? characters.Length : enemys.Length;
 
-		for(int i = 0;i<idxList.Count;i++){
+
+		for(int i = 0;i<count;i++){
 			if (tType == TargetType.Player) {
-				if (excludeChara.Contains (checkList [i])) {
-					checkList.Remove (checkList [i]);
+				if (characters [i].exclube == true) {
+					idxList.Remove (i);
 				}
 			} else {
-				if (excludeMonster.Contains (idxList [i])) {
-					checkList.Remove (checkList [i]);
+				if (enemys [i].exclube == true) {
+					idxList.Remove (i);
 				}
 			}
 		}
 
-		return checkList;
+		return idxList;
 	}
 
-	public void OnRecovery(int orgIdx, List<int> recoveryList, int recovery, TargetType tType){
-		foreach (int idx in recoveryList) {
-			int over = 0;
-			if (tType == TargetType.Player) {
-				//Debug.LogWarning (characters [idx].abilitys ["Hp"] + " , " + charaFullHp [idx]);
-				if (characters [idx].abilitys ["Hp"] < charaFullHp [idx]) {
-					characters [idx].abilitys ["Hp"] += recovery;
-					if (characters [idx].abilitys ["Hp"] > charaFullHp [idx]) {
-						over = characters [idx].abilitys ["Hp"] - charaFullHp [idx];
-						characters [idx].abilitys ["Hp"] = charaFullHp [idx];
-					}
-
-					fightUIController.OnRecovery (idx, tType, (float)characters [idx].abilitys ["Hp"] / (float)charaFullHp [idx]);
-
-					if (over > 0) {
-						skillController.OverRecovery (idx, orgIdx, over, tType);
-					}
-					ChangeAccordingData (idx, characters [idx].abilitys ["Hp"], tType, AccChangeType.Hp);
-				}
-			} 
-			else {
-				if (monsters [idx].abilitys ["Hp"] < monsterFullHp [idx]) {
-					monsters [idx].abilitys ["Hp"] += recovery;
-					if (monsters [idx].abilitys ["Hp"] > monsterFullHp [idx]) {
-						over = monsters [idx].abilitys ["Hp"] - monsterFullHp [idx];
-						monsters [idx].abilitys ["Hp"] = monsterFullHp [idx];
-					}
-
-					fightUIController.OnRecovery (idx, tType, (float)monsters [idx].abilitys ["Hp"] / (float)monsterFullHp [idx]);
-
-					if (over > 0) {
-						skillController.OverRecovery (idx, orgIdx, over, tType);
-					}
-					ChangeAccordingData (idx, monsters [idx].abilitys ["Hp"], tType, AccChangeType.Hp);
-				}
-			}
-		}
-	}
 
 	/// <summary>
 	/// 技能條件是否符合
@@ -846,28 +786,30 @@ public class FightController : MonoBehaviour {
 			return OnCharacterRule (idx, ruleId, param);
 		} 
 		else {
-			return OnMonsterRule (idx, ruleId, param);
+			return OnenemyRule (idx, ruleId, param);
 		}
 	}
 
 	public bool OnCharacterRule(int idx ,int ruleId, int param){
-		if (charaActLevel [idx] > 0) {
+		if (fightUIController.GetActLevel(characters [idx].soulData.job) > 0) {
 			switch (ruleId) {
+			case 0:
+				return true;
 			case 1:
-				return (characters [idx].abilitys["Hp"] / charaFullHp [idx] * 100) < param;
+				return (characters [idx].soulData.abilitys["Hp"] / characters [idx].fullHp * 100) < param;
 			case 2:
-				return (characters [idx].abilitys["Hp"] / charaFullHp [idx] * 100) >= param;
+				return (characters [idx].soulData.abilitys["Hp"] / characters [idx].fullHp * 100) >= param;
 			}
 		}
 		return false;
 	}
 
-	public bool OnMonsterRule(int idx ,int ruleId, int param){
+	public bool OnenemyRule(int idx ,int ruleId, int param){
 		switch (ruleId) {
 		case 1:
-			return (monsters [idx].abilitys["Hp"] / monsterFullHp [idx] * 100) < param;
+			return (enemys [idx].soulData.abilitys["Hp"] / enemys [idx].fullHp * 100) < param;
 		case 2:
-			return (monsters [idx].abilitys["Hp"] / monsterFullHp [idx] * 100) >= param;
+			return (enemys [idx].soulData.abilitys["Hp"] / enemys [idx].fullHp * 100) >= param;
 		}
 		return false;
 	}
@@ -886,35 +828,44 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void OnTriggerSkill(List<DamageData> allDamage){
-		SoulLargeData orgData;
-		SoulLargeData targetData;
+		ChessData orgData;
+		ChessData targetData;
 		if (allDamage [0].tType == TargetType.Enemy) {
 			orgData = characters [allDamage [0].orgIdx];
-			targetData = monsters [allDamage [0].targetIdx];
+			targetData = enemys [allDamage [0].targetIdx];
 
 		} 
 		else {
-			orgData = monsters [allDamage [0].orgIdx];
+			orgData = enemys [allDamage [0].orgIdx];
 			targetData = characters [allDamage [0].targetIdx];
 		}
 		skillController.OnTriggerSkill (orgData, targetData, allDamage);
 	}
 
-	public SoulLargeData GetSoulData(TargetType tType,int index){
+	public ChessData GetChessData(TargetType tType,int index){
 		if (tType == TargetType.Player) {
 			return characters [index];
 		} 
 		else {
-			return monsters [index];
+			return enemys [index];
 		}
 	}
 
 	public int GetRadio(TargetType tType,int index){
 		if (tType == TargetType.Player) {
-			return charaRatio [index];
+			return fightUIController.GetCharaRatio (characters [index].soulData.job);
 		} 
 		else {
 			return 10000;
+		}
+	}
+
+	public int GetJob(TargetType tType,int index){
+		if (tType == TargetType.Player) {
+			return characters [index].soulData.job;
+		} 
+		else {
+			return enemys [index].soulData.job;
 		}
 	}
 
@@ -927,12 +878,22 @@ public class FightController : MonoBehaviour {
 	/// <param name="data">技能效果資料</param>
 	/// <param name="targetType">目標類型 玩家：敵人</param>
 	/// <param name="paramater">效果參數</param>
-	public void OnSkillEffect(int orgIdx, List<int> idxList, RuleLargeData data, TargetType targetType){
+	public void OnSkillEffect(int orgIdx, List<int> idxList, RuleLargeData data, TargetType targetType ,int skillId){
 		if (data.effectType == 1) {
-			OnStatus (orgIdx, idxList, data, targetType);
+			foreach (int idx in idxList) {
+				if (characters[idx].status == null || !characters[idx].status.Contains (skillId)) {
+					if (characters[idx].status == null) {
+						characters[idx].status = new List<int> ();
+					}
+					characters[idx].status.Add (skillId);
+					OnStatus (orgIdx, idx, data, targetType);
+				}
+			}
 		} 
 		else {
-			OnNormal (orgIdx, idxList, data, targetType);
+			foreach (int idx in idxList) {
+				OnNormal (orgIdx, idx, data, targetType);
+			}
 		}
 	}
 
@@ -942,10 +903,10 @@ public class FightController : MonoBehaviour {
 	/// <param name="idxList">目標情單.</param>
 	/// <param name="data">技能效果資料.Recovery = 1,Act = 2,Cover = 3,RmAlarm = 4,RmNerf = 5,Dmg = 6,Exchange = 7,Call = 8</param>
 	/// <param name="paramater">效果參數.</param>
-	private void OnNormal(int orgIdx, List<int> targetList, RuleLargeData data, TargetType tType){
+	private void OnNormal(int orgIdx, int idx, RuleLargeData data, TargetType tType){
 		switch (data.effect[0]) {
 		case (int)Normal.Recovery:
-			OnRecovery (orgIdx, targetList, data.effect[1], tType);
+			OnRecovery (orgIdx, idx, data, tType);
 			break;
 		}
 	}
@@ -955,47 +916,120 @@ public class FightController : MonoBehaviour {
 	/// <param name="idxList">目標情單.</param>
 	/// <param name="data">技能效果資料.UnDef = 1,UnNerf = 2,AddNerf = 3,Suffer = 4,Maximum = 5,Ability = 6,UnDirect = 7</param>
 	/// <param name="paramater">效果參數.</param>
-	private void OnStatus(int orgIdx, List<int> targetList, RuleLargeData data, TargetType tType){
-
+	private void OnStatus(int orgIdx, int idx, RuleLargeData data, TargetType tType){
+		switch (data.effect [0]) {
+		case (int)Status.Ability:
+			OnAbilityChanged (idx, data.abilitys, tType);
+			break;
+		}
 	}
 
-	private void OnRecovery(int orgIdx, List<int> targetList, RuleLargeData data, TargetType tType){
-		foreach (int tIdx in targetList) {
-			if (tType == TargetType.Player) {
-				characters [tIdx].abilitys ["Hp"] += data.effect [1];
-				if (characters [tIdx].abilitys["Hp"] > charaFullHp [tIdx]) {
-					skillController.OverRecovery (orgIdx, tIdx, characters [tIdx].abilitys["Hp"] - charaFullHp [tIdx], tType);
-					characters [tIdx].abilitys["Hp"] = charaFullHp [tIdx];
+	private void OnRecovery(int orgIdx, int idx, RuleLargeData data, TargetType tType){
+		int over = 0;
+		if (tType == TargetType.Player) {
+			characters [idx].soulData.abilitys ["Hp"] += data.effect [1];
+			if (characters [idx].soulData.abilitys ["Hp"] > characters [idx].fullHp) {
+				over = characters [idx].soulData.abilitys ["Hp"] - characters [idx].fullHp;
+				characters [idx].soulData.abilitys ["Hp"] = characters [idx].fullHp;
+			}
+			fightUIController.OnRecovery (idx, tType, (float)characters [idx].soulData.abilitys ["Hp"] / (float)characters [idx].fullHp);
+
+			if (over > 0) {
+				skillController.OverRecovery (idx, orgIdx, over, tType);
+			}
+			ChangeAccordingData (idx, characters [idx].soulData.abilitys ["Hp"], tType, AccChangeType.Hp);
+		} 
+		else {
+			enemys [idx].soulData.abilitys ["Hp"] += data.effect [1];
+			if (enemys [idx].soulData.abilitys ["Hp"] > enemys [idx].fullHp) {
+				over = enemys [idx].soulData.abilitys ["Hp"] - enemys [idx].fullHp;
+				enemys [idx].soulData.abilitys ["Hp"] = enemys [idx].fullHp;
+			}
+
+			fightUIController.OnRecovery (idx, tType, (float)enemys [idx].soulData.abilitys ["Hp"] / (float)enemys [idx].fullHp);
+
+			if (over > 0) {
+				skillController.OverRecovery (idx, orgIdx, over, tType);
+			}
+			ChangeAccordingData (idx, enemys [idx].soulData.abilitys ["Hp"], tType, AccChangeType.Hp);
+		}
+	}
+
+
+	#endregion
+
+	private void OnAbilityChanged(int idx, Dictionary<string, int> ability, TargetType tType){
+		if (tType == TargetType.Player) {
+			characters[idx].abiChange = OnAbilityChanged (characters[idx].abiChange, ability);
+			for(int i=0;i<enemys.Length;i++){
+				if (characters [idx].abiChange.ContainsKey ("Atk") || characters [idx].abiChange.ContainsKey ("mAtk")) {
+					int atk = characters [idx].soulData.abilitys ["Atk"];
+					int mAtk = characters [idx].soulData.abilitys ["mAtk"];
+					if (characters [idx].abiChange.ContainsKey ("Atk")) {
+						atk = atk * characters [idx].abiChange ["Atk"]/100;
+					}
+					if (characters [idx].abiChange.ContainsKey ("mAtk")) {
+						mAtk = mAtk * characters [idx].abiChange ["mAtk"]/100;
+					}
+					ChangeAccordingData (i, atk + mAtk, TargetType.Player, AccChangeType.MAtkAtk);
 				}
 
-				ChangeAccordingData (tIdx, characters [tIdx].abilitys ["Hp"], tType, AccChangeType.Hp);
-			} 
-			else {
-				monsters [tIdx].abilitys ["Hp"] += data.effect [1];
-				if (monsters [tIdx].abilitys["Hp"] > monsterFullHp [tIdx]) {
-					skillController.OverRecovery (orgIdx, tIdx, monsters [tIdx].abilitys["Hp"] - monsterFullHp [tIdx], tType);
-					monsters [tIdx].abilitys["Hp"] = monsterFullHp [tIdx];
+			}
+		} else {
+			enemys[idx].abiChange = OnAbilityChanged (enemys[idx].abiChange, ability);
+			for(int i=0;i<characters.Length;i++){
+				if (enemys [idx].abiChange.ContainsKey ("Atk") || enemys [idx].abiChange.ContainsKey ("mAtk")) {
+					int atk = enemys [idx].soulData.abilitys ["Atk"];
+					int mAtk = enemys [idx].soulData.abilitys ["mAtk"];
+					if (enemys [idx].abiChange.ContainsKey ("Atk")) {
+						atk = atk * enemys [idx].abiChange ["Atk"]/100;
+					}
+					if (enemys [idx].abiChange.ContainsKey ("mAtk")) {
+						mAtk = mAtk * enemys [idx].abiChange ["mAtk"]/100;
+					}
+					ChangeAccordingData (i, atk + mAtk, TargetType.Player, AccChangeType.MAtkAtk);
 				}
-				ChangeAccordingData (tIdx, monsters [tIdx].abilitys ["Hp"], tType, AccChangeType.Hp);
+
 			}
 		}
 	}
 
-	#endregion
+	private Dictionary<string, int> OnAbilityChanged(Dictionary<string, int> abiChanged, Dictionary<string, int> ability)
+	{
+		foreach (KeyValuePair<string, int> kv in ability) { 
+			if (abiChanged.ContainsKey (kv.Key)) {
+				abiChanged [kv.Key] += kv.Value;
+			} else {
+				abiChanged.Add (kv.Key, 100 + kv.Value);
+			}
+		}
 
-
+		return abiChanged;
+	}
 
 
 	public void ShowSoulData(){
-		for (int i = 0; i < 5; i++) {
-			Debug.LogWarning (charaFullHp [i]);
-			//Debug.LogError (monsterFullHp [i]);
-		}
+		/*if (character.abiChange.ContainsKey (3)) {
+			foreach (KeyValuePair<string, int> kv in character.abiChange[3]) {
+				Debug.LogWarning (kv.Key + " : " + kv.Value);
+			}
+		} else {
+			Debug.LogWarning ("Null");
+		}*/
+		/*foreach (KeyValuePair<string, int> kv in characters [3].soulData.abilitys) {
+			Debug.LogWarning (kv.Key + " : " + kv.Value);
+		}*/
+		/*foreach (AccordingData acD in enemys[3].according) {
+			Debug.LogWarning (acD.index);
+		}*/
+		Debug.LogWarning (characters [3].soulData.abilitys ["Atk"] + " : " + characters [3].soulData.abilitys ["mAtk"] + " : " + enemys [3].according [3].index + " : " + enemys [3].according [3].mAtkAtk);
 	}
 
 	public void ShowSkillData(){
 		skillController.ShowRuleData ();
 	}
+
+
 }
 
 public enum TargetType{
@@ -1030,3 +1064,22 @@ public enum DamageType{
 	Magic
 }
 
+public struct ChessData{
+	public SoulLargeData soulData;
+	public AccordingData[] according;
+	public int fullHp;
+	public List<int> status;
+	public Dictionary<string,int> abiChange;
+	public int initCD;
+	public bool exclube;
+}
+
+public struct AccordingData{
+	public int index;
+	public float attriRatio;
+	public float jobRatio;
+	public int mAtkAtk;
+	public int hp;
+	public int minus;
+	public int crt;
+}

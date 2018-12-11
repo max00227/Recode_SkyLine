@@ -19,7 +19,7 @@ public class ParameterConvert {
 		return charaAbility;
 	}
 
-	public static Dictionary<string, int> GetMonsterAbility(SoulLargeData data,int monsterLv){
+	public static Dictionary<string, int> GetEnemyAbility(SoulLargeData data,int monsterLv){
 		Dictionary<string, int> monsterAbility = new Dictionary<string, int>();
 
 		float calculate = Mathf.Pow (monsterLv, 0.2f + (0.005f * monsterLv)) + (24 * monsterLv / 120);

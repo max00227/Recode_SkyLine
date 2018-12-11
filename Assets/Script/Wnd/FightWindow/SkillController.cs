@@ -26,10 +26,11 @@ public class SkillController : MonoBehaviour {
 	private int dirOrgIdx;
 	private int dirTargetIdx;
 	private int dirOrgRadio;
+	private int dirSkillId;
 	private TargetType dirTargetType;
 
-	private SoulLargeData dirOrgData;
-	private SoulLargeData dirTargetData;
+	private ChessData dirOrgData;
+	private ChessData dirTargetData;
 
 	public void SetData(SoulLargeData[] charaData, SoulLargeData[] monsterData){
 		charaCount = charaData.Length;
@@ -75,7 +76,7 @@ public class SkillController : MonoBehaviour {
 	/// <param name="orgData">攻擊者資料</param>
 	/// <param name="targetData">被攻擊者資料</param>
 	/// <param name="allDamage">傷害資料</param>
-	public void OnTriggerSkill(SoulLargeData orgData, SoulLargeData targetData, List<DamageData> allDamage){
+	public void OnTriggerSkill(ChessData orgData, ChessData targetData, List<DamageData> allDamage){
 		dirOrgIdx = allDamage [0].orgIdx;
 		dirTargetIdx = allDamage [0].targetIdx;
 		dirTargetType = allDamage [0].tType;
@@ -103,7 +104,7 @@ public class SkillController : MonoBehaviour {
 	public void OnRoundSkill(){
 		foreach (KeyValuePair<int, SkillLargeData> kv in charaRoundSkill) {
 			dirOrgIdx = kv.Key;
-			dirOrgData = fightController.GetSoulData (TargetType.Player, dirOrgIdx);
+			dirOrgData = fightController.GetChessData (TargetType.Player, dirOrgIdx);
 			dirOrgRadio = fightController.GetRadio (TargetType.Player, dirOrgIdx);
 			dirTargetType = TargetType.Player;
 			OnSkillSelfRule (kv.Value);
@@ -117,16 +118,14 @@ public class SkillController : MonoBehaviour {
 	/// <param name="data">技能資料</param>
 	/// <param name="allDamage">傷害資料</param>
 	private void OnSkillSelfRule (SkillLargeData data, List<DamageData> allDamage = null){
+		dirSkillId = data.id;
+
 		int parameter = 0;
 		bool[] meets = new bool[data.ruleData.Count];
 		for (int i = 0; i < data.ruleData.Count; i++) {
 			switch (data.ruleData [i].rule [0]) {
 			case (int)Rule.None:
-				meets [i] = true;
-				break;
 			case (int)Rule.HpLess:
-				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], dirTargetType);
-				break;
 			case (int)Rule.HpBest:
 				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], dirTargetType);
 				break;
@@ -219,14 +218,14 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					OnEffectTarget (AddParameter (true, data.ruleData [i], parameter));
+					OnEffectTarget (AddParameter (true, data.ruleData [i], parameter), false);
 				}
 			}
 		} 
 		else {
 			if (!DataUtil.CheckArray<bool> (meets, false)) {
 				for (int i = 0; i < data.ruleData.Count; i++) {
-					OnEffectTarget (AddParameter (true, data.ruleData [i], parameter));
+					OnEffectTarget (AddParameter (true, data.ruleData [i], parameter), false);
 				}
 			}
 		}
@@ -236,7 +235,7 @@ public class SkillController : MonoBehaviour {
 	/// 決定技能效果目標
 	/// <param name="data">技能效果資料</param>
 	/// <param name="paramater">效果參數</param>
-	private void OnEffectTarget(RuleLargeData data){
+	private void OnEffectTarget(RuleLargeData data, bool isSelf = true){
 		List<int> idxList = new List<int>();
 		TargetType effectTarget = TargetType.Both;
 		if (data.target >= 1 && data.target <= 4) {
@@ -259,7 +258,11 @@ public class SkillController : MonoBehaviour {
 		case (int)Target.None:
 			break;
 		case (int)Target.Self:
-			idxList.Add (dirTargetIdx);
+			if (isSelf) {
+				idxList.Add (dirOrgIdx);
+			} else {
+				idxList.Add (dirTargetIdx);
+			}
 			break;
 		case (int)Target.DirTeam:
 			selLockRuleData = data;
@@ -273,17 +276,21 @@ public class SkillController : MonoBehaviour {
 			fightController.OnSelectSkillTarget (idxList, TargetType.Enemy);
 			return;
 		case (int)Target.Trigger:
-			idxList.Add (dirTargetIdx);
+			if (isSelf) {
+				idxList.Add (dirTargetIdx);
+			} else {
+				idxList.Add (dirOrgIdx);
+			}
 			break;
 		}
 
-		fightController.OnSkillEffect (dirOrgIdx, idxList, data, effectTarget);
+		fightController.OnSkillEffect (dirOrgIdx, idxList, data, effectTarget, dirSkillId);
 	}
 
 
 
 	public void SelectSkillTarget(TargetType tType, int idx){
-		fightController.OnSkillEffect (dirOrgIdx, new List<int> (new int[1]{ idx }), selLockRuleData, tType);
+		fightController.OnSkillEffect (dirOrgIdx, new List<int> (new int[1]{ idx }), selLockRuleData, tType, dirSkillId);
 	}
 
 	/// <summary>
@@ -301,7 +308,7 @@ public class SkillController : MonoBehaviour {
 			if (charaTriggerSkill.ContainsKey(dirOrgIdx)) {
 				foreach (RuleLargeData data in charaTriggerSkill[dirOrgIdx].ruleData) {
 					if (data.rule [0] == (int)Rule.Over) {
-						dirOrgData = fightController.GetSoulData (TargetType.Player, dirOrgIdx);
+						dirOrgData = fightController.GetChessData (TargetType.Player, dirOrgIdx);
 						OnEffectTarget (AddParameter (false, data, over));
 					}
 				}
@@ -311,7 +318,7 @@ public class SkillController : MonoBehaviour {
 			if (enemyTriggerSkill.ContainsKey(dirOrgIdx)) {
 				foreach (RuleLargeData data in enemyTriggerSkill[dirOrgIdx].ruleData) {
 					if (data.rule [0] == (int)Rule.Over) {
-						dirOrgData = fightController.GetSoulData (TargetType.Enemy, dirOrgIdx);
+						dirOrgData = fightController.GetChessData (TargetType.Enemy, dirOrgIdx);
 						OnEffectTarget (AddParameter (false, data, over));
 					}
 				}
@@ -343,18 +350,23 @@ public class SkillController : MonoBehaviour {
 		
 	private int GetParameter(bool isRev, RuleLargeData data){
 		foreach (KeyValuePair<string,int> kv in data.abilitys) {
+			int abiChange = 100;
 			if (kv.Value != 0) {
 				if (data.convType == 0) {
 					return kv.Value;
 				} 
 				else {
 					if (isRev) {
-						if (dirTargetData != null) {
-							return dirTargetData.abilitys [kv.Key] * kv.Value / 100;
+						if (dirTargetData.soulData != null) {
+							abiChange += dirTargetData.abiChange.ContainsKey (kv.Key) ? dirTargetData.abiChange [kv.Key] : 0;
+
+							return dirTargetData.soulData.abilitys [kv.Key] * kv.Value / 100 * abiChange / 100;
 						}
 					} 
 					else {
-						return dirOrgData.abilitys [kv.Key] * kv.Value / 100 * dirOrgRadio / 100;
+						abiChange += dirOrgData.abiChange.ContainsKey (kv.Key) ? dirTargetData.abiChange [kv.Key] : 0;
+
+						return dirOrgData.soulData.abilitys [kv.Key] * kv.Value / 100 * dirOrgRadio / 100 * abiChange / 100;
 					}
 				}
 			}
