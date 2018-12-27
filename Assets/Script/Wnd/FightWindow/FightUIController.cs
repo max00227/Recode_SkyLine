@@ -57,6 +57,9 @@ public class FightUIController : MonoBehaviour {
 
 	int[] jobRatios;
 
+	Dictionary<int, Dictionary<int,StatusLargeData>> charaStatus;
+	Dictionary<int, Dictionary<int,StatusLargeData>> enemyStatus;
+
 	/*[SerializeField]
 	public NumberSetting[] ratioTxt;*/
 
@@ -104,6 +107,8 @@ public class FightUIController : MonoBehaviour {
 
 	bool startCover, endCover;
 
+	List<RaycastData> newRaycastData;
+
 	#region GroundShow 格子轉換效果
 	[SerializeField]
 	GroundSEController showGrounds;
@@ -131,7 +136,7 @@ public class FightUIController : MonoBehaviour {
 	bool hasProtect;
 
 	void SetData() {
-		monsterCdTimes = new int[5]{7,5,0,0,6};
+		monsterCdTimes = new int[5]{7,5,10,10,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.SetData ();
 
@@ -361,7 +366,7 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.O)) {
-			fightController.ShowSkillData ();
+			//fightController.ShowSkillData ();
 		}
 
 
@@ -488,7 +493,19 @@ public class FightUIController : MonoBehaviour {
 		ChangeStatus (FightStatus.RoundPrepare);
 		groundPool.SetCreateGround (CreateGround + (int)Mathf.Ceil (resetGroundCount / 2));
 		groundPool.RoundStart (isCenter);
+		CheckLockStatus ();
+
 		ChangeStatus (FightStatus.RoundStart);
+	}
+
+	private void CheckLockStatus (){
+		/*foreach (KeyValuePair<int,Dictionary<int,StatusLargeData>> kv in charaStatus) {
+			foreach (KeyValuePair<int,StatusLargeData> kv2 in kv) {
+				if (kv2.Value.charaStatus [0] == Nerf.UnTake) {
+					charaButton [kv.Key].SetEnable (false);
+				}
+			}
+		}*/
 	}
 
 	/// <summary>
@@ -508,6 +525,7 @@ public class FightUIController : MonoBehaviour {
 
 		OnOpenButton ();
 
+		newRaycastData = new List<RaycastData> ();
 		ChangeStatus (FightStatus.RoundStart);
 	}
 
@@ -780,11 +798,43 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		if (allRatioData.Count != recAllRatioData.Count) {
+			if (isTouchUp || (!isTouchUp && isRoundEnd)) {
+				CheckHitCount ();
+			}
 			hasDamage = true;
 		}
 
 		ChangeCharaRatio ();
 		return hasDamage;
+	}
+
+	private void CheckHitCount(){
+		int newCount = 0;
+		int job = 0;
+		List<RaycastData> newRData = new List<RaycastData> ();
+		foreach (RaycastData newData in allRatioData) {
+			bool isNew = true;
+			foreach (RaycastData oldData in recAllRatioData) {
+				if (newData.start.name == oldData.start.name && newData.end.name == oldData.end.name) {
+					isNew = false;
+				}
+			}
+
+			if (isNew) {
+				bool isNewR = true;
+				foreach (RaycastData oldData in newRaycastData) {
+					if (newData.start.name == oldData.start.name && newData.end.name == oldData.end.name) {
+						isNewR = false;
+					}
+				}
+
+				if (isNewR) {
+					newRData.Add (newData);
+				}
+			}
+		}
+
+		fightController.OnHitCountStatus (newRData);
 	}
 
 	private void ResponseData(List<RaycastData> raycastData){
@@ -834,6 +884,7 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
+	#region Skill
 	public void OnRecovery(int idx, TargetType tType, float hpRatio){
 		if (tType == TargetType.Player) {
 			charaButton [idx].SetHpBar (hpRatio, true, true);
@@ -841,8 +892,16 @@ public class FightUIController : MonoBehaviour {
 		else {
 			enemyButton [idx].SetHpBar (hpRatio, true, true);
 		}
-
 	}
+
+	public void OnRmAlarm(int cdtime, int idx){
+		monsterCdTimes[idx] = cdtime;
+	}
+
+	public void OnCover(){
+		canCover = true;
+	}
+	#endregion
 
 	private void MonsterCdDown(bool overfill = false){
 		if (overfill) {
@@ -962,6 +1021,8 @@ public class FightUIController : MonoBehaviour {
 
 		charaGc = new LinkedList<GroundController> ();
 		extraedGc = new List<ExtraRatioData> ();
+
+		newRaycastData = new List<RaycastData> ();
 
 
 		charaIdx = null;
@@ -1144,6 +1205,22 @@ public class FightUIController : MonoBehaviour {
 		}
 		foreach (FightItemButton btn in charaButton) {
 			btn.Init ();
+		}
+	}
+
+	public void OnStatus(int idx, StatusLargeData data, int level, TargetType tType){
+		if (tType == TargetType.Player) {
+			if (charaStatus.ContainsKey (idx)) {
+				if (charaStatus [idx].ContainsKey (data.id)) {
+					charaStatus [idx] [data.id] = data;
+				} else {
+					charaStatus [idx].Add (data.id, data);
+				}
+			} else {
+				Dictionary<int, StatusLargeData> sData = new Dictionary<int, StatusLargeData>();
+				sData.Add (data.id, data);
+				charaStatus.Add (idx, sData);
+			}
 		}
 	}
 

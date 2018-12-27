@@ -246,7 +246,7 @@ public class SkillController : MonoBehaviour {
 				}
 			}
 		} else if (data.target > 4 && data.target <= 7) {
-			effectTarget = ReverseTarget (dirTargetType);
+			effectTarget = DataUtil.ReverseTarget (dirTargetType);
 			if (data.target < 7) {
 				for (int i = 0; i < monsterCount; i++) {
 					idxList.Add (i);
@@ -358,13 +358,16 @@ public class SkillController : MonoBehaviour {
 				else {
 					if (isRev) {
 						if (dirTargetData.soulData != null) {
-							abiChange += dirTargetData.abiChange.ContainsKey (kv.Key) ? dirTargetData.abiChange [kv.Key] : 0;
-
+							foreach(var value in dirTargetData.abiChange.Values){
+								abiChange += value.ContainsKey (kv.Key) ? value [kv.Key] : 0;
+							}
 							return dirTargetData.soulData.abilitys [kv.Key] * kv.Value / 100 * abiChange / 100;
 						}
 					} 
 					else {
-						abiChange += dirOrgData.abiChange.ContainsKey (kv.Key) ? dirTargetData.abiChange [kv.Key] : 0;
+						foreach (var value in dirOrgData.abiChange.Values) {
+							abiChange += value.ContainsKey (kv.Key) ? value [kv.Key] : 0;
+						}
 
 						return dirOrgData.soulData.abilitys [kv.Key] * kv.Value / 100 * dirOrgRadio / 100 * abiChange / 100;
 					}
@@ -372,15 +375,6 @@ public class SkillController : MonoBehaviour {
 			}
 		}
 		return 0;
-	}
-		
-	public TargetType ReverseTarget(TargetType tType){
-		if (tType == TargetType.Player) {
-			return TargetType.Enemy;
-		} 
-		else {
-			return TargetType.Player;
-		}
 	}
 
 	public void ShowRuleData(){
@@ -426,7 +420,7 @@ public enum Target {
 
 
 /// <summary>
-/// Effect type.
+/// Normal Effect type.
 /// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
 /// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
 public enum Normal {
@@ -442,7 +436,7 @@ public enum Normal {
 }
 
 /// <summary>
-/// Effect type.
+/// Status Effect type.
 /// None(無),UnDef(無視防禦),UnNerf(異常免疫),AddNerf(附加異常),Suffer(根性)
 /// ,Maximum(傷害值最大化),Ability(能力變化),UnDirect(反鎖定)
 public enum Status {
@@ -456,3 +450,17 @@ public enum Status {
 	UnDirect = 7
 }
 
+/// <summary>
+/// Nerf Effect type.
+/// None(無),Damage(傷害),UnTake(無法擺放),Death(死亡),RcyDown(恢復下降)
+/// ,DmgUp(受傷上升),AtkDown(攻擊下降),Confusion(隨意攻擊)
+public enum Nerf {
+	None = 0,
+	Damage = 1,
+	UnTake = 2,
+	Death = 3,
+	RcyDown = 4,
+	DmgUp = 5,
+	AtkDown = 6,
+	Confusion = 7
+}

@@ -29,6 +29,14 @@ public static class MasterDataManager {
 		}
 	}
 
+	private static List<StatusLargeData> statusLargeData;
+
+	public static List<StatusLargeData> GetStatusLargeData{
+		get{ 
+			return statusLargeData;
+		}
+	}
+
 	public static SoulLargeData GetSoulData(int id){
 		return DataUtil.GetById<SoulLargeData> (id, ref soulLargeData);
 	}
@@ -41,12 +49,18 @@ public static class MasterDataManager {
 		return DataUtil.GetById<RuleLargeData> (id, ref ruleLargeData);
 	}
 
+	public static StatusLargeData GetStatusData(int id){
+		return DataUtil.GetById<StatusLargeData> (id, ref statusLargeData);
+	}
+
 	public static void UpdataMasterdata(ClientLargeData clientData){
 		soulLargeData = clientData.soul;
 
 		skillLargeData = clientData.skill;
 
 		ruleLargeData = clientData.rule;
+
+		statusLargeData = clientData.nerfStatus;
 	}
 }
 

@@ -13,5 +13,8 @@ namespace model.data
 
 		[Newtonsoft.Json.JsonProperty("Rule")]
 		public System.Collections.Generic.List<RuleLargeData> rule{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("NerfStatus")]
+		public System.Collections.Generic.List<StatusLargeData> nerfStatus{ get; set;}
     }
 }
