@@ -14,6 +14,18 @@
 	"GradationPhase":[
 		{"id":1,"GradationMonster_id":[1,2,3,4,5]}
 	],
+	"NerfStatus":[
+		{"id":0,"name":"失血","detail":" ","CharaDetail":"當回合每連線一格扣除{0}％血量，","EnemyDetail":0,"EffectType":0,"CharaStatus":[1,0,0],"EnemysStatus":[0,0,0],"StatusParam":[2,4,6,8,10],"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":1,"name":"灼傷","detail":"自帶屬性轉為火","CharaDetail":"當回合每連線一格扣除{0}％血量，","EnemyDetail":0,"EffectType":1,"CharaStatus":[1,1,0],"EnemysStatus":[0,1,0],"StatusParam":[2,4,6,8,10],"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":2,"name":"束縛","detail":"自帶屬性轉為地，防禦歸零","CharaDetail":"無法攻擊，","EnemyDetail":0,"EffectType":2,"CharaStatus":[2,2,100],"EnemysStatus":[0,2,100],"StatusParam":[0],"RmType":0,"RmParam":5,"ConvertType":0,"CanRemove":1,"ImmunityType":2},
+		{"id":3,"name":"痲痹","detail":"自帶屬性轉為風，防禦歸零","CharaDetail":"無法攻擊，","EnemyDetail":0,"EffectType":3,"CharaStatus":[2,3,100],"EnemysStatus":[0,3,100],"StatusParam":[0],"RmType":0,"RmParam":5,"ConvertType":0,"CanRemove":1,"ImmunityType":2},
+		{"id":4,"name":"凍傷","detail":"自帶屬性轉為水","CharaDetail":"所受傷害增加{0}％，","EnemyDetail":0,"EffectType":4,"CharaStatus":[5,4,0],"EnemysStatus":[0,4,0],"StatusParam":[20,40,60,80,100],"RmType":0,"RmParam":3,"ConvertType":0,"CanRemove":1,"ImmunityType":2},
+		{"id":5,"name":"閃光","detail":"自帶屬性轉為光","CharaDetail":"攻擊傷害減少{0}％，","EnemyDetail":0,"EffectType":5,"CharaStatus":[6,5,0],"EnemysStatus":[0,5,0],"StatusParam":[10,20,30,40,50],"RmType":0,"RmParam":3,"ConvertType":0,"CanRemove":1,"ImmunityType":2},
+		{"id":6,"name":"詛咒","detail":"自帶屬性轉為暗","CharaDetail":"治療效果減少{0}％，","EnemyDetail":0,"EffectType":6,"CharaStatus":[4,6,0],"EnemysStatus":[0,6,0],"StatusParam":[20,40,60,80,100],"RmType":0,"RmParam":3,"ConvertType":0,"CanRemove":1,"ImmunityType":2},
+		{"id":7,"name":"死亡","detail":" ","CharaDetail":"{0}回合後立即死亡，","EnemyDetail":0,"EffectType":7,"CharaStatus":[3,0,0],"EnemysStatus":[0,0,0],"StatusParam":[0],"RmType":2,"RmParam":0,"ConvertType":0,"CanRemove":0,"ImmunityType":0},
+		{"id":8,"name":"睡眠","detail":" ","CharaDetail":"無法攻擊，","EnemyDetail":0,"EffectType":8,"CharaStatus":[2,0,0],"EnemysStatus":[0,0,0],"StatusParam":[0],"RmType":1,"RmParam":0,"ConvertType":0,"CanRemove":0,"ImmunityType":1},
+		{"id":9,"name":"狂暴化","detail":"，防禦力減少50％","CharaDetail":"攻擊傷害上升{0}％，且不分敵我，","EnemyDetail":0,"EffectType":9,"CharaStatus":[7,0,50],"EnemysStatus":[0,0,50],"StatusParam":[20,40,60,80,100],"RmType":0,"RmParam":5,"ConvertType":0,"CanRemove":1,"ImmunityType":1}
+	],
 	"Rule":[
 		{"id":100001,"Target":0,"Rule":[0,0],"EffectType":0,"Effect":[0],"ConvType":0,"Ability":{}},
 		{"id":100002,"Target":1,"Rule":[0,0],"EffectType":1,"Effect":[0],"ConvType":0,"Ability":{}},
@@ -39,8 +51,8 @@
 		{"id":200005,"name":"無","detail":"無，無","Type":1,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100005],"isOr":1,"hasAnim":0},
 		{"id":100001,"name":"無","detail":"無，無","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100006],"isOr":1,"hasAnim":0},
 		{"id":100002,"name":"無","detail":"無，無","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100007],"isOr":1,"hasAnim":0},
-		{"id":100003,"name":"能力變化","detail":"無，能力變化","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100008],"isOr":1,"hasAnim":0},
-		{"id":100004,"name":"能力變化","detail":"無，能力變化","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100009],"isOr":1,"hasAnim":0},
+		{"id":100003,"name":"能力變化","detail":"無，能力變化","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100008],"isOr":1,"hasAnim":0},
+		{"id":100004,"name":"能力變化","detail":"無，能力變化","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100009],"isOr":1,"hasAnim":0},
 		{"id":100005,"name":"回血{}","detail":"無，回血{}","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010],"isOr":1,"hasAnim":0}
 	],
 	"Soul":[
