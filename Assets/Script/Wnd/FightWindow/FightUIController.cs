@@ -57,8 +57,8 @@ public class FightUIController : MonoBehaviour {
 
 	int[] jobRatios;
 
-	Dictionary<int, Dictionary<int,StatusLargeData>> charaStatus;
-	Dictionary<int, Dictionary<int,StatusLargeData>> enemyStatus;
+	Dictionary<int, Dictionary<StatusLargeData,int>> charaStatus;
+	Dictionary<int, Dictionary<StatusLargeData,int>> enemyStatus;
 
 	/*[SerializeField]
 	public NumberSetting[] ratioTxt;*/
@@ -139,6 +139,8 @@ public class FightUIController : MonoBehaviour {
 		monsterCdTimes = new int[5]{7,5,10,10,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.SetData ();
+		charaStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
+		enemyStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
 
 		foreach (FightItemButton btn in charaButton) {
 			btn.SetHpBar (1, false);
@@ -289,8 +291,14 @@ public class FightUIController : MonoBehaviour {
 
 	private IEnumerator OnShowAllFight(List<DamageData> allDamage){
 		for (int i = 0; i < allDamage.Count; i++) {
-			FightItemButton org = allDamage [i].tType == TargetType.Enemy ? charaButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
-			FightItemButton target = allDamage [i].tType == TargetType.Player ? charaButton [allDamage [i].targetIdx] : enemyButton [allDamage [i].targetIdx];
+			FightItemButton org = null;
+			FightItemButton target = null;
+			if (allDamage [0].isSelf) {
+				org = allDamage [i].tType == TargetType.Enemy ? enemyButton [allDamage [i].orgIdx] : charaButton [allDamage [i].orgIdx];
+			} else {
+				org = allDamage [i].tType == TargetType.Enemy ? charaButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
+			}
+			target = allDamage [i].tType == TargetType.Player ? charaButton [allDamage [i].targetIdx] : enemyButton [allDamage [i].targetIdx];
 
 			GroundSEController gse = SEPool.Dequeue ();
 			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
@@ -364,6 +372,13 @@ public class FightUIController : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Y)) {
 			fightController.ShowSoulData ();
 		}
+		if (Input.GetKey(KeyCode.K)) {
+			fightController.ShowSoulDataC ();
+		}
+
+		if (Input.GetKeyDown(KeyCode.T)) {
+			fightController.TestFunction ();
+		}
 
 		if (Input.GetKeyDown(KeyCode.O)) {
 			//fightController.ShowSkillData ();
@@ -378,40 +393,6 @@ public class FightUIController : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.U)) {
 			ChangeStatus (FightStatus.SelSkillTarget);
-		}
-
-		if (Input.GetKeyDown(KeyCode.O)) {
-			testAllRatioData = new List<RaycastData> ();
-			List<string[]> arraySt = new List<string[]> ();
-			foreach (GroundController gc in charaGc) {
-				foreach (var data in gc.OnChangeType(false, false, true)) {
-					string str = data.start.name;
-					string end = data.end.name;
-					if (arraySt.Count == 0) {
-						arraySt.Add (new string[2]{ str, end });
-						testAllRatioData.Add (data);
-					} else {
-						bool has = false;
-
-						for (int i = 0; i < arraySt.Count; i++) {
-							if ((arraySt [i] [0] == str && arraySt [i] [1] == end) || (arraySt [i] [1] == str && arraySt [i] [0] == end)) {
-								has = true;
-							} 
-						}
-
-						if (!has) {
-							arraySt.Add (new string[2]{ str, end });
-							testAllRatioData.Add (data);
-						}
-					}
-				}
-
-			}
-
-			string dataString = string.Empty;
-			foreach (var data in testAllRatioData) {
-				Debug.LogWarning (data.start.name + " : " + data.end.name + " : " + data.ratio);
-			}
 		}
 
 		if (CheckStatus(FightStatus.RoundStart)) {
@@ -499,13 +480,13 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void CheckLockStatus (){
-		/*foreach (KeyValuePair<int,Dictionary<int,StatusLargeData>> kv in charaStatus) {
-			foreach (KeyValuePair<int,StatusLargeData> kv2 in kv) {
-				if (kv2.Value.charaStatus [0] == Nerf.UnTake) {
+		foreach (KeyValuePair<int,Dictionary<StatusLargeData,int>> kv in charaStatus) {
+			foreach (KeyValuePair<StatusLargeData,int> kv2 in kv.Value) {
+				if (kv2.Key.charaStatus [0] == (int)Nerf.UnTake) {
 					charaButton [kv.Key].SetEnable (false);
 				}
 			}
-		}*/
+		}
 	}
 
 	/// <summary>
@@ -526,6 +507,8 @@ public class FightUIController : MonoBehaviour {
 		OnOpenButton ();
 
 		newRaycastData = new List<RaycastData> ();
+		CheckLockStatus ();
+
 		ChangeStatus (FightStatus.RoundStart);
 	}
 
@@ -823,12 +806,14 @@ public class FightUIController : MonoBehaviour {
 			if (isNew) {
 				bool isNewR = true;
 				foreach (RaycastData oldData in newRaycastData) {
+					
 					if (newData.start.name == oldData.start.name && newData.end.name == oldData.end.name) {
 						isNewR = false;
 					}
 				}
 
 				if (isNewR) {
+					newRaycastData.Add (newData);
 					newRData.Add (newData);
 				}
 			}
@@ -884,14 +869,18 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	#region Skill
-	public void OnRecovery(int idx, TargetType tType, float hpRatio){
+	public void ChangeHpBar(int idx, TargetType tType, float hpRatio, bool isUp){
 		if (tType == TargetType.Player) {
-			charaButton [idx].SetHpBar (hpRatio, true, true);
+			charaButton [idx].SetHpBar (hpRatio, true, isUp);
 		} 
 		else {
-			enemyButton [idx].SetHpBar (hpRatio, true, true);
+			enemyButton [idx].SetHpBar (hpRatio, true, isUp);
 		}
+	}
+
+	#region Skill
+	public void OnRecovery(int idx, TargetType tType, float hpRatio){
+		ChangeHpBar (idx, tType, hpRatio, true);
 	}
 
 	public void OnRmAlarm(int cdtime, int idx){
@@ -1211,16 +1200,66 @@ public class FightUIController : MonoBehaviour {
 	public void OnStatus(int idx, StatusLargeData data, int level, TargetType tType){
 		if (tType == TargetType.Player) {
 			if (charaStatus.ContainsKey (idx)) {
-				if (charaStatus [idx].ContainsKey (data.id)) {
-					charaStatus [idx] [data.id] = data;
-				} else {
-					charaStatus [idx].Add (data.id, data);
+				if (!charaStatus [idx].ContainsKey (data)) {
+					charaStatus [idx].Add (data, level);
+				} 
+				else {
+					charaStatus [idx] [data] = level;
 				}
 			} else {
-				Dictionary<int, StatusLargeData> sData = new Dictionary<int, StatusLargeData>();
-				sData.Add (data.id, data);
+				Dictionary<StatusLargeData,int> sData = new Dictionary<StatusLargeData, int> ();
+				sData.Add (data, level);
 				charaStatus.Add (idx, sData);
 			}
+		}
+		else {
+			if (enemyStatus.ContainsKey (idx)) {
+				if (!enemyStatus [idx].ContainsKey (data)) {
+					enemyStatus [idx].Add (data, level);
+				} 
+				else {
+					enemyStatus [idx] [data] = level;
+				}
+			} else {
+				Dictionary<StatusLargeData,int> sData = new Dictionary<StatusLargeData, int> ();
+				sData.Add (data, level);
+				enemyStatus.Add (idx, sData);
+			}
+		}
+	}
+
+	public void OnStatusDown(int idx, StatusLargeData key, int time, TargetType tType){
+		if (tType == TargetType.Player) {
+			if (charaStatus.ContainsKey (idx)) {
+				if (charaStatus [idx].ContainsKey (key)) {
+					if (time == 0) {
+						charaStatus [idx].Remove (key);
+					} 
+					else {
+					
+					}
+				}
+			}
+		}
+		else {
+			if (enemyStatus.ContainsKey (idx)) {
+				if (enemyStatus [idx].ContainsKey (key)) {
+					if (time == 0) {
+						enemyStatus [idx].Remove (key);
+					} 
+					else {
+
+					}
+				}
+			}
+		}
+	}
+
+	public void RmStatus(int idx, StatusLargeData key, TargetType tType){
+		if (tType == TargetType.Player) {
+			charaStatus [idx].Remove (key);
+		} else {
+			enemyStatus [idx].Remove (key);
 		}
 	}
 
