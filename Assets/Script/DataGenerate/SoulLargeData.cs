@@ -26,13 +26,9 @@
 		[Newtonsoft.Json.JsonProperty("Act")]
 		public System.Int32[] act { get; set; }
 
-		[Newtonsoft.Json.JsonProperty("ActSkill")]
-		public System.Int32 actSkill { get; set; }
-		public SkillLargeData _actSkill;
-
-		[Newtonsoft.Json.JsonProperty("NorSkill")]
-		public System.Int32 norSkill { get; set; }
-		public SkillLargeData _norSkill;
+		[Newtonsoft.Json.JsonProperty("Skill")]
+		public System.Int32 skill { get; set; }
+		public SkillLargeData _skill;
 
         public void Merge(System.Collections.Generic.Dictionary<string, int> data)
         {
@@ -41,15 +37,10 @@
 			}
         }
 
-		public void Merge(System.Int32 actId, System.Int32 norId){
-			if (actId != 0) {
-				_actSkill = MasterDataManager.GetSkillData (actId);
-				_actSkill.Merge (_actSkill.rule_id);
-			}
-
-			if (norId != 0) {
-				_norSkill = MasterDataManager.GetSkillData (norId);
-				_norSkill.Merge (_norSkill.rule_id);
+		public void Merge(System.Int32 skillId){
+			if (skillId != 0) {
+                _skill = MasterDataManager.GetSkillData (skillId);
+                _skill.Merge (_skill.rule_id);
 			}
 		}
     }

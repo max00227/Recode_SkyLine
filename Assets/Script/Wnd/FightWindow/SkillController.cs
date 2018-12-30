@@ -42,27 +42,36 @@ public class SkillController : MonoBehaviour {
 		enemyTriggerSkill = new Dictionary<int, SkillLargeData> ();
 
 		for (int i = 0; i < charaCount; i++) {
-			if (charaData [i]._norSkill != null) {
-				charaNorSkill [i] = charaData [i]._norSkill;
-			}
-
-			if (charaData [i]._actSkill != null) {
-				if (charaData [i]._actSkill.launchType == 0) {
-					charaTriggerSkill.Add(i,charaData[i]._actSkill); 	
-				} else {
-					charaRoundSkill.Add(i,charaData[i]._actSkill); 	
-				}
-			}
+            if (charaData[i]._skill != null)
+            {
+                if (charaData[i]._skill.type == 1)
+                {
+                    if (charaData[i]._skill.launchType == 0)
+                    {
+                        charaTriggerSkill.Add(i, charaData[i]._skill);
+                    }
+                    else
+                    {
+                        charaRoundSkill.Add(i, charaData[i]._skill);
+                    }
+                }
+            }
 		}
 
 		for (int i = 0; i < monsterCount; i++) {
-			if (monsterData [i]._norSkill != null) {
-				if (monsterData[i]._norSkill.launchType == 0) {
-					enemyTriggerSkill.Add(i, monsterData[i]._norSkill);
-				} 
-				else {
-					enemyNorSkill.Add(i, monsterData[i]._norSkill);
-				}
+            if (monsterData[i]._skill != null)
+            {
+                if (monsterData[i]._skill.type == 1)
+                {
+                    if (monsterData[i]._skill.launchType == 0)
+                    {
+                        enemyTriggerSkill.Add(i, monsterData[i]._skill);
+                    }
+                    else
+                    {
+                        enemyNorSkill.Add(i, monsterData[i]._skill);
+                    }
+                }
 			}
 		}
 	}
@@ -127,7 +136,7 @@ public class SkillController : MonoBehaviour {
 			case (int)Rule.None:
 			case (int)Rule.HpLess:
 			case (int)Rule.HpBest:
-				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule [0], data.ruleData [i].rule [1], dirTargetType);
+				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule, dirTargetType);
 				break;
 			case (int)Rule.OnDmg:
 				meets [i] = allDamage !=null && allDamage.Count > 0;

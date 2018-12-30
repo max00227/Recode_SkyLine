@@ -103,7 +103,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
 			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
 			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.TeamData[0].Team[i].lv));
-			enemys[i].soulData.Merge (enemys[i].soulData.actSkill, enemys[i].soulData.norSkill);
+			enemys[i].soulData.Merge (enemys[i].soulData.skill);
 			enemys[i].fullHp = enemys[i].soulData.abilitys["Hp"];
 			enemys [i].status = new Dictionary<StatusLargeData, int> ();
 			enemys [i].recStatus = new Dictionary<StatusLargeData, int> ();
@@ -132,9 +132,9 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
 			characters [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].soulData.Merge (ParameterConvert.GetCharaAbility (characters [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
-			characters [i].soulData.Merge (characters [i].soulData.actSkill, characters [i].soulData.norSkill);
+			characters [i].soulData.Merge (characters [i].soulData.skill);
 			characters [i].fullHp = characters [i].soulData.abilitys["Hp"];
-			characters[i].initCD = (int)characters [i].soulData._norSkill.cdTime;
+			characters[i].initCD = (int)characters [i].soulData._skill.cdTime;
 			characters [i].status = new Dictionary<StatusLargeData, int> ();
 			characters [i].recStatus = new Dictionary<StatusLargeData, int> ();
 			characters [i].statusTime = new Dictionary<StatusLargeData, int> ();
@@ -144,7 +144,7 @@ public class FightController : MonoBehaviour {
 			soulData [i] = characters [i].soulData;
 
 
-			skillCdTime [i] = (int)characters [i].soulData._norSkill.cdTime;
+			//skillCdTime [i] = (int)characters [i].soulData._norSkill.cdTime;
 		}
 		return soulData;
 	}
@@ -452,27 +452,23 @@ public class FightController : MonoBehaviour {
 	private void OnDeath(int idx, TargetType tType){
 		targetsChess = tType == TargetType.Player ? characters : enemys;
 		orgsChess = tType == TargetType.Enemy ? characters : enemys;
-		int[] deleteKey = tType == TargetType.Player ? 
-			new int[2]{characters [idx].soulData.actSkill,characters [idx].soulData.norSkill} 
-			: new int[2]{enemys [idx].soulData.actSkill,enemys [idx].soulData.norSkill} ;
+        int deleteKey = tType == TargetType.Player ? characters[idx].soulData.skill : enemys[idx].soulData.skill;
 
-		//我方陣營附加狀態
-		foreach (var data in targetsChess) {
-			foreach (int key in deleteKey) {
-				if (data.abiChange.ContainsKey (key)) {
-					data.abiChange.Remove (key);
-				}
-			}
-		}
+        //我方陣營附加狀態
+        foreach (var data in targetsChess){
+            if (data.abiChange.ContainsKey(deleteKey))
+            {
+                data.abiChange.Remove(deleteKey);
+            }
+        }
 
-		//敵對陣營附加狀態
-		foreach (var data in orgsChess) {
-			foreach (int key in deleteKey) {
-				if (data.abiChange.ContainsKey (key)) {
-					data.abiChange.Remove (key);
-				}
-			}
-		}
+        //敵對陣營附加狀態
+        foreach (var data in orgsChess){
+            if (data.abiChange.ContainsKey(deleteKey))
+            {
+                data.abiChange.Remove(deleteKey);
+            }
+        }
 
 
 		fightUIController.OnDead(idx,tType);
@@ -1011,36 +1007,41 @@ public class FightController : MonoBehaviour {
 	/// <param name="ruleId">Rule identifier.</param>
 	/// <param name="param">Parameter.</param>
 	/// <param name="tType">T type.</param>
-	public bool OnRuleMeets(int idx ,int ruleId, int param, TargetType tType){
+	public bool OnRuleMeets(int idx ,int[] ruleId, TargetType tType){
 		if (tType == TargetType.Player) {
-			return OnCharacterRule (idx, ruleId, param);
+			return OnCharacterRule (idx, ruleId);
 		} 
 		else {
-			return OnEnemyRule (idx, ruleId, param);
+			return OnEnemyRule (idx, ruleId);
 		}
 	}
 
-	public bool OnCharacterRule(int idx ,int ruleId, int param){
+	public bool OnCharacterRule(int idx ,int[] ruleId){
 		if (fightUIController.GetActLevel(characters [idx].soulData.job) > 0 && characters [idx].soulData.abilitys["Hp"]>0) {
-			switch (ruleId) {
-			case 0:
-				return true;
-			case 1:
-				return (characters [idx].soulData.abilitys["Hp"] / characters [idx].fullHp * 100) < param;
-			case 2:
-				return (characters [idx].soulData.abilitys["Hp"] / characters [idx].fullHp * 100) >= param;
-			}
-		}
+            switch (ruleId[0])
+            {
+                case 0:
+                    return true;
+                case 1:
+                    return (characters[idx].soulData.abilitys["Hp"] / characters[idx].fullHp * 100) < ruleId[1];
+                case 2:
+                    return (characters[idx].soulData.abilitys["Hp"] / characters[idx].fullHp * 100) >= ruleId[1];
+                case 11:
+                    return true;
+                case 12:
+                    return true;
+            }
+        }
 		return false;
 	}
 
-	public bool OnEnemyRule(int idx ,int ruleId, int param){
+	public bool OnEnemyRule(int idx ,int[] ruleId){
 		if (enemys [idx].soulData.abilitys ["Hp"] > 0) {
-			switch (ruleId) {
+			switch (ruleId[0]) {
 			case 1:
-				return (enemys [idx].soulData.abilitys ["Hp"] / enemys [idx].fullHp * 100) < param;
+				return (enemys [idx].soulData.abilitys ["Hp"] / enemys [idx].fullHp * 100) < ruleId[1];
 			case 2:
-				return (enemys [idx].soulData.abilitys ["Hp"] / enemys [idx].fullHp * 100) >= param;
+				return (enemys [idx].soulData.abilitys ["Hp"] / enemys [idx].fullHp * 100) >= ruleId[1];
 			}
 		}
 		return false;
