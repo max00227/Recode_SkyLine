@@ -48,6 +48,7 @@ public class GroundRaycastController : MonoBehaviour {
 				hits = GetRaycastHits(center.gc.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + center.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + center.randomList[randomI] * 60))), 0.97f);
 				if (hits.Length > 0) {
 					foreach (var hit in hits) {
+                        Debug.LogWarning(hit.collider.name + " : " + hit.collider.transform.parent.name);
 						hit.collider.GetComponent<GroundController> ().ChangeType (false, true);
 					}
 				}
