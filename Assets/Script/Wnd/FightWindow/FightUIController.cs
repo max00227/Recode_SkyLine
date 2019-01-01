@@ -192,7 +192,7 @@ public class FightUIController : MonoBehaviour {
 
 		SetData ();
 
-		energe = 1;
+		energe = 2;
 		energeNum.SetNumber (energe);
 
 		ResetGround(true);
@@ -523,15 +523,6 @@ public class FightUIController : MonoBehaviour {
 
 		OnCloseButton (TargetType.Both);
 
-		if (energe >= 3) {
-			MonsterCdDown (true);
-		}
-
-		if (spaceCount > 1) {
-			MonsterCdDown ();
-		}
-
-
 		ResetDamage (false);
 
 		for (int i = 0; i < jobRatios.Length; i++) {
@@ -548,6 +539,8 @@ public class FightUIController : MonoBehaviour {
 		}
 			
 		recJobRatios = jobRatios;
+
+        MonsterCdDown();
 
 		if (hasDamage) {
 			StartCoroutine (CheckRatio ());
@@ -571,8 +564,8 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void UpEnerge(){
-		if (energe < 3) {
-			energe++;
+		if (energe < 5) {
+            energe += 2;
 			energeNum.SetNumber (energe);
 		}
 	}
@@ -707,12 +700,10 @@ public class FightUIController : MonoBehaviour {
 						if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99) {
 							isResetGround = true;
 						}
-							
 
-						if (spaceCount > 0) {
-							energe--;
-							energeNum.SetNumber (energe);
-						}
+
+                        energe = energe - (spaceCount + 1);
+					    energeNum.SetNumber (energe);
 
 						if (energe > 0 && !isResetGround) {
 							ResetStatus ();
@@ -892,21 +883,10 @@ public class FightUIController : MonoBehaviour {
 	}
 	#endregion
 
-	private void MonsterCdDown(bool overfill = false){
-		if (overfill) {
-			for (int i = 0; i < monsterCdTimes.Length; i++) {
-				if (monsterCdTimes [i] > 0) {
-					monsterCdTimes [i]--;
-				}
-			}
-			return;
-		}
+	private void MonsterCdDown(){
 		for (int i = 0; i < monsterCdTimes.Length; i++) {
 			if (monsterCdTimes [i] > 0) {
-				monsterCdTimes [i] = monsterCdTimes [i] - (spaceCount - 1);
-			}
-			if (monsterCdTimes [i] < 0) {
-				monsterCdTimes [i] = 0;
+				monsterCdTimes [i]--;
 			}
 		}
 
@@ -1278,6 +1258,10 @@ public class FightUIController : MonoBehaviour {
 	public int GetActLevel(int job){
 		return recActLevel [job];
 	}
+
+    public int GetEnerge() {
+        return energe;
+    }
 }
 
 public enum GroundType{
