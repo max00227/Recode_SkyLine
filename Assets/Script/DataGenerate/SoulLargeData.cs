@@ -26,7 +26,7 @@
 		[Newtonsoft.Json.JsonProperty("Act")]
 		public System.Int32[] act { get; set; }
 
-		[Newtonsoft.Json.JsonProperty("Skill")]
+		[Newtonsoft.Json.JsonProperty("ActSkill")]
 		public System.Int32 skill { get; set; }
 		public SkillLargeData _skill;
 
@@ -39,8 +39,8 @@
 
 		public void Merge(System.Int32 skillId){
 			if (skillId != 0) {
-                _skill = MasterDataManager.GetSkillData (skillId);
-                _skill.Merge (_skill.rule_id);
+                //_skill = MasterDataManager.GetSkillData (skillId);
+                //_skill.Merge (_skill.rule_id);
 			}
 		}
     }

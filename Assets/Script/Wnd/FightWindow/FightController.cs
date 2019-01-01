@@ -103,7 +103,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
 			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
 			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.TeamData[0].Team[i].lv));
-			enemys[i].soulData.Merge (enemys[i].soulData.skill);
+			//enemys[i].soulData.Merge (enemys[i].soulData.skill);
 			enemys[i].fullHp = enemys[i].soulData.abilitys["Hp"];
 			enemys [i].status = new Dictionary<StatusLargeData, int> ();
 			enemys [i].recStatus = new Dictionary<StatusLargeData, int> ();
@@ -132,9 +132,9 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
 			characters [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			characters [i].soulData.Merge (ParameterConvert.GetCharaAbility (characters [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
-			characters [i].soulData.Merge (characters [i].soulData.skill);
+			//characters [i].soulData.Merge (characters [i].soulData.skill);
 			characters [i].fullHp = characters [i].soulData.abilitys["Hp"];
-			characters[i].initCD = (int)characters [i].soulData._skill.cdTime;
+			//characters[i].initCD = (int)characters [i].soulData._skill.cdTime;
 			characters [i].status = new Dictionary<StatusLargeData, int> ();
 			characters [i].recStatus = new Dictionary<StatusLargeData, int> ();
 			characters [i].statusTime = new Dictionary<StatusLargeData, int> ();
