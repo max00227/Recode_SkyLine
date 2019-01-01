@@ -86,8 +86,8 @@ public class GroundRaycastController : MonoBehaviour {
 
 	private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
 		LayerMask mask = 1 << 8;
+        Debug.LogError(org.x + " : " + org.y + " , " + dir.x + " : " + dir.y);
 		RaycastHit2D[] hits = Physics2D.RaycastAll(org, dir, dis);
-        Debug.LogError(hits.Length);
 
 		return hits;
 	}
