@@ -158,7 +158,7 @@ namespace test
             string json = JsonConvert.SerializeObject(clientDataDic);
             string jsonData = SortClientData(json);
 
-            //Console.WriteLine(json);
+
             if (File.Exists(clientDataTxt))
             {
                 string[] bacFilePath = Directory.GetFiles(dataPath + "/bac", "*.bac", SearchOption.TopDirectoryOnly);
@@ -354,6 +354,9 @@ namespace test
             csv.Configuration.HasHeaderRecord = true;
 
 
+
+            //Console.WriteLine(srcPath);
+
             while (csv.Read())
             {
                 Dictionary<string, object> parameterContent = new Dictionary<string, object>();
@@ -419,16 +422,37 @@ namespace test
                                     {
                                         int ev = 0;
                                         string[] a = elem.Split(':');
+
                                         if (Int32.TryParse(a[1], out ev))
                                         {
-                                            elemList.Add(a[0].Trim().Replace("\"", ""),ev);
+                                            elemList.Add(a[0].Trim().Replace("\"", ""), ev);
                                         }
                                         else
                                         {
+                                            if (valueKey[i] == "StatusParam")
+                                            {
+                                                //Console.WriteLine(elem + " , " + a[1]);
+                                            }
                                             if (elem == "")
                                             {
-                                                elemList.Add(a[0].Trim().Replace("\"",""),null);
+                                                elemList.Add(a[0].Trim().Replace("\"", ""), null);
                                             }
+                                            else{
+                                                if (a[1] != "{}" && a[1] !=string.Empty && a[1]!= null && a[1].Length>1)
+                                                {
+                                                    string[] elemInside = a[1].Substring(1, a[1].Length - 2).Split('/');
+                                                    List<int> intInsige = new List<int>();
+                                                    foreach (string s in elemInside)
+                                                    {
+                                                        intInsige.Add(Int32.Parse(s));
+                                                    }
+                                                    elemList.Add(a[0].Trim().Replace("\"", ""), intInsige);
+                                                }
+                                                else{
+                                                    //elemList.Add(a[0].Trim().Replace("\"", ""), "");
+                                                }
+                                            }
+                                            
                                         }
                                     }
                                     parameterContent.Add(valueKey[i], elemList);
