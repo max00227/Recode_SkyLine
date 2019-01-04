@@ -26,7 +26,7 @@
 		[Newtonsoft.Json.JsonProperty("Act")]
 		public System.Int32[] act { get; set; }
 
-		[Newtonsoft.Json.JsonProperty("ActSkill")]
+		[Newtonsoft.Json.JsonProperty("Skill")]
 		public System.Int32 skill { get; set; }
 		public SkillLargeData _skill;
 

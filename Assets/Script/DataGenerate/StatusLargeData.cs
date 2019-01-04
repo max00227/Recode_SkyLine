@@ -17,13 +17,13 @@
 		public System.Int32[] enemyStatus{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("StatusParam")]
-		public System.Int32[] statusParam{ get; set;}
+		public System.Collections.Generic.Dictionary<System.String,System.Int32[]> statusParam{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("RmType")]
-		public System.Int32 timeType{ get; set;}
+		public System.Int32 rmType{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("RmParam")]	
-		public System.Int32 time{ get; set;}
+		public System.Int32 rmParam{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("ConvertType")]
 		public System.Int32 convertType{ get; set;}

@@ -60,9 +60,6 @@ public class FightUIController : MonoBehaviour {
 	Dictionary<int, Dictionary<StatusLargeData,int>> charaStatus;
 	Dictionary<int, Dictionary<StatusLargeData,int>> enemyStatus;
 
-	/*[SerializeField]
-	public NumberSetting[] ratioTxt;*/
-
 	private bool spaceCorrect;
 
 	//bool hasDamage;
@@ -253,7 +250,7 @@ public class FightUIController : MonoBehaviour {
 			List<GroundController> org = new List<GroundController> ();
 			org.Add (data.gc);
 			recJobRatios [data.extraJob] += 25;
-			for (int i = 0; i < fightController.characters.Length; i++) {
+			for (int i = 0; i < fightController.player.Length; i++) {
 				if (fightController.GetJob (TargetType.Player, i) == data.extraJob) {
 					GroundSEController gse = SEPool.Dequeue ();
 					gse.SetExtraSE (org, charaButton [i].transform.localPosition, i, data.upRatio);
@@ -285,6 +282,7 @@ public class FightUIController : MonoBehaviour {
 		fightController.FightStart (lockCount != 0, canAttack);
 	}
 
+	int fightC = 0;
 	public void OnShowFight(List<DamageData> allDamage){
 		StartCoroutine (OnShowAllFight (allDamage));
 	}
@@ -298,7 +296,11 @@ public class FightUIController : MonoBehaviour {
 			} else {
 				org = allDamage [i].tType == TargetType.Enemy ? charaButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
 			}
-			target = allDamage [i].tType == TargetType.Player ? charaButton [allDamage [i].targetIdx] : enemyButton [allDamage [i].targetIdx];
+
+			//當TargetIdx重複時會加10，此時需要減去10
+			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
+
+			target = allDamage [i].tType == TargetType.Player ? charaButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
 
 			GroundSEController gse = SEPool.Dequeue ();
 			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
@@ -370,7 +372,7 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.Y)) {
-			fightController.ShowSoulData ();
+			fightController.ShowData ();
 		}
 		if (Input.GetKey(KeyCode.K)) {
 			fightController.ShowSoulDataC ();
@@ -527,7 +529,7 @@ public class FightUIController : MonoBehaviour {
 
 		for (int i = 0; i < jobRatios.Length; i++) {
 			if (jobRatios [i] != recJobRatios [i]) {
-				for (int j = 0; j < fightController.characters.Length; j++) {
+				for (int j = 0; j < fightController.player.Length; j++) {
 					if (fightController.GetJob(TargetType.Player, j) == i) {
 						AddCanAttack (j);
 						charaButton [j].SetRatioTxt (jobRatios [i], true);
@@ -564,8 +566,11 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void UpEnerge(){
-		if (energe < 5) {
+		if (energe < 6) {
             energe += 2;
+			if (energe > 6) {
+				energe = 6;
+			}
 			energeNum.SetNumber (energe);
 		}
 	}
@@ -705,7 +710,7 @@ public class FightUIController : MonoBehaviour {
                         energe = energe - (spaceCount + 1);
 					    energeNum.SetNumber (energe);
 
-						if (energe > 0 && !isResetGround) {
+						if (energe > (spaceCount + 1) && !isResetGround) {
 							ResetStatus ();
 							onlyAdd = true;
 						}
@@ -827,7 +832,7 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		for (int i = 0; i < jobRatios.Length; i++) {
-			for (int j = 0; j < fightController.characters.Length; j++) {
+			for (int j = 0; j < fightController.player.Length; j++) {
 				if (fightController.GetJob(TargetType.Player, j) == i) {
 					charaButton [j].SetRatioTxt (jobRatios [i]);
 					if (recJobRatios [fightController.GetJob(TargetType.Player, i)] != jobRatios [fightController.GetJob(TargetType.Player, i)]) {
@@ -915,7 +920,7 @@ public class FightUIController : MonoBehaviour {
 				{
 					//Debug.LogWarning (data.ratio);
 					List<Vector3> postions = new List<Vector3> ();
-					for (int i = 0; i < fightController.characters.Length; i++) {
+					for (int i = 0; i < fightController.player.Length; i++) {
 						if (fightController.GetJob(TargetType.Player, i) == data.CharaJob) {
 							postions.Add (charaButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
 							ratioCount [i]++;
@@ -943,7 +948,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void ResetDamage(bool isPrev) {
-		for (int i = 0; i < fightController.characters.Length; i++) {
+		for (int i = 0; i < fightController.player.Length; i++) {
 			if (!isPrev) {
 				charaButton [i].SetRatioTxt (recJobRatios [fightController.GetJob(TargetType.Player, i)]);
 			} else {
@@ -1259,9 +1264,30 @@ public class FightUIController : MonoBehaviour {
 		return recActLevel [job];
 	}
 
-    public int GetEnerge() {
-        return energe;
+	public bool GetEnerge(int need) {
+		return energe >= need;
     }
+
+	public int GetJobGround(int job){
+		int count = 0;
+		foreach (GroundController gc in allGcs) {
+			if (gc._groundType == GroundType.Chara && gc.charaJob == job) {
+				count++;
+			}
+		}
+
+		return count / 2;
+	}
+
+	public int GetLayerGround(int layer){
+		int count = 0;
+		foreach (GroundController gc in allGcs) {
+			if ((int)gc._groundType >= layer && gc._groundType != GroundType.Chara && gc._groundType != GroundType.Caution) {
+				count++;
+			}
+		}
+		return count;
+	}
 }
 
 public enum GroundType{

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace model.data{
-	public partial class RuleLargeData : LargeDataBase, AbilityDataBase {
+	public partial class RuleLargeData : LargeDataBase {
 
 		[Newtonsoft.Json.JsonProperty("Id")]
 		System.Int32 id;
@@ -17,6 +17,9 @@ namespace model.data{
 
 		[Newtonsoft.Json.JsonProperty("Effect")]
 		public System.Int32[] effect{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("Energe")]
+		public System.Int32 energe{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("ConvType")]
 		public Const.converseType convType{ get; set;}
