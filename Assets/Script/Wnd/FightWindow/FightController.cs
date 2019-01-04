@@ -457,6 +457,11 @@ public class FightController : MonoBehaviour {
             }
         }
 
+		targetChess.abiChange = new Dictionary<int, Dictionary<string, int>> ();
+		targetChess.status = new Dictionary<StatusLargeData, int> ();
+		targetChess.recStatus = new Dictionary<StatusLargeData, int> ();
+		targetChess.statusTime = new Dictionary<StatusLargeData, int> ();
+		targetChess.hasStatus = new bool[Enum.GetNames (typeof(Status)).Length];
 
 		fightUIController.OnDead(idx,tType);
 	}

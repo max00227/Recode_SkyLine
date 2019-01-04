@@ -57,7 +57,7 @@ public class FightUIController : MonoBehaviour {
 
 	int[] jobRatios;
 
-	Dictionary<int, Dictionary<StatusLargeData,int>> charaStatus;
+	Dictionary<int, Dictionary<StatusLargeData,int>> playerStatus;
 	Dictionary<int, Dictionary<StatusLargeData,int>> enemyStatus;
 
 	private bool spaceCorrect;
@@ -77,7 +77,7 @@ public class FightUIController : MonoBehaviour {
 
 	int[] recActLevel = new int[5];
 
-	public FightItemButton[] charaButton;
+	public FightItemButton[] playerButton;
 
 	public FightItemButton[] enemyButton;
 
@@ -136,10 +136,10 @@ public class FightUIController : MonoBehaviour {
 		monsterCdTimes = new int[5]{7,5,10,10,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.SetData ();
-		charaStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
+		playerStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
 		enemyStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
 
-		foreach (FightItemButton btn in charaButton) {
+		foreach (FightItemButton btn in playerButton) {
 			btn.SetHpBar (1, false);
 		}
 
@@ -208,7 +208,7 @@ public class FightUIController : MonoBehaviour {
 				se.AllReset ();
 				se.CloseSE ();
 			}
-			foreach (FightItemButton btn in charaButton) {
+			foreach (FightItemButton btn in playerButton) {
 				btn.NumberShowRun ();
 			}
 		}
@@ -253,7 +253,7 @@ public class FightUIController : MonoBehaviour {
 			for (int i = 0; i < fightController.player.Length; i++) {
 				if (fightController.GetJob (TargetType.Player, i) == data.extraJob) {
 					GroundSEController gse = SEPool.Dequeue ();
-					gse.SetExtraSE (org, charaButton [i].transform.localPosition, i, data.upRatio);
+					gse.SetExtraSE (org, playerButton [i].transform.localPosition, i, data.upRatio);
 					gse.onRecycle = RecycleExtraItem;
 					gse.onExtraUp = ExtraRatioUp;
 					SEingPool.Enqueue (gse);
@@ -273,7 +273,7 @@ public class FightUIController : MonoBehaviour {
 
 	private void ExtraRatioUp(GroundSEController gse, int idx, int upRatio){
 		gse.gameObject.SetActive (false);
-		charaButton [idx].SetExtra (upRatio);
+		playerButton [idx].SetExtra (upRatio);
 	}
 
 	private void OnFight(){
@@ -291,15 +291,15 @@ public class FightUIController : MonoBehaviour {
 			FightItemButton org = null;
 			FightItemButton target = null;
 			if (allDamage [0].isSelf) {
-				org = allDamage [i].tType == TargetType.Enemy ? enemyButton [allDamage [i].orgIdx] : charaButton [allDamage [i].orgIdx];
+				org = allDamage [i].tType == TargetType.Enemy ? enemyButton [allDamage [i].orgIdx] : playerButton [allDamage [i].orgIdx];
 			} else {
-				org = allDamage [i].tType == TargetType.Enemy ? charaButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
+				org = allDamage [i].tType == TargetType.Enemy ? playerButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
 			}
 
 			//當TargetIdx重複時會加10，此時需要減去10
 			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
 
-			target = allDamage [i].tType == TargetType.Player ? charaButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
+			target = allDamage [i].tType == TargetType.Player ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
 
 			GroundSEController gse = SEPool.Dequeue ();
 			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
@@ -481,10 +481,10 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void CheckLockStatus (){
-		foreach (KeyValuePair<int,Dictionary<StatusLargeData,int>> kv in charaStatus) {
+		foreach (KeyValuePair<int,Dictionary<StatusLargeData,int>> kv in playerStatus) {
 			foreach (KeyValuePair<StatusLargeData,int> kv2 in kv.Value) {
 				if (kv2.Key.charaStatus [0] == (int)Nerf.UnTake) {
-					charaButton [kv.Key].SetEnable (false);
+					playerButton [kv.Key].SetEnable (false);
 				}
 			}
 		}
@@ -495,7 +495,7 @@ public class FightUIController : MonoBehaviour {
 	/// </summary>
 	/// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
-		foreach (var v in charaButton) {
+		foreach (var v in playerButton) {
 			v.SetTextColor (Color.black);
 		}
 
@@ -531,8 +531,8 @@ public class FightUIController : MonoBehaviour {
 				for (int j = 0; j < fightController.player.Length; j++) {
 					if (fightController.GetJob(TargetType.Player, j) == i) {
 						AddCanAttack (j);
-						charaButton [j].SetRatioTxt (jobRatios [i], true);
-						charaButton[j].onComplete = RecycleShowUp;
+						playerButton [j].SetRatioTxt (jobRatios [i], true);
+						playerButton[j].onComplete = RecycleShowUp;
 						unCompleteCount++;
 					}
 				}
@@ -833,11 +833,11 @@ public class FightUIController : MonoBehaviour {
 		for (int i = 0; i < jobRatios.Length; i++) {
 			for (int j = 0; j < fightController.player.Length; j++) {
 				if (fightController.GetJob(TargetType.Player, j) == i) {
-					charaButton [j].SetRatioTxt (jobRatios [i]);
+					playerButton [j].SetRatioTxt (jobRatios [i]);
 					if (recJobRatios [fightController.GetJob(TargetType.Player, i)] != jobRatios [fightController.GetJob(TargetType.Player, i)]) {
-						charaButton [i].SetTextColor (Color.red);
+						playerButton [i].SetTextColor (Color.red);
 					} else {
-						charaButton [i].SetTextColor (Color.black);
+						playerButton [i].SetTextColor (Color.black);
 					}
 				}
 			}
@@ -866,7 +866,7 @@ public class FightUIController : MonoBehaviour {
 
 	public void ChangeHpBar(int idx, TargetType tType, float hpRatio, bool isUp){
 		if (tType == TargetType.Player) {
-			charaButton [idx].SetHpBar (hpRatio, true, isUp);
+			playerButton [idx].SetHpBar (hpRatio, true, isUp);
 		} 
 		else {
 			enemyButton [idx].SetHpBar (hpRatio, true, isUp);
@@ -921,7 +921,7 @@ public class FightUIController : MonoBehaviour {
 					List<Vector3> postions = new List<Vector3> ();
 					for (int i = 0; i < fightController.player.Length; i++) {
 						if (fightController.GetJob(TargetType.Player, i) == data.CharaJob) {
-							postions.Add (charaButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
+							postions.Add (playerButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
 							ratioCount [i]++;
 						}
 					}
@@ -949,11 +949,11 @@ public class FightUIController : MonoBehaviour {
 	private void ResetDamage(bool isPrev) {
 		for (int i = 0; i < fightController.player.Length; i++) {
 			if (!isPrev) {
-				charaButton [i].SetRatioTxt (recJobRatios [fightController.GetJob(TargetType.Player, i)]);
+				playerButton [i].SetRatioTxt (recJobRatios [fightController.GetJob(TargetType.Player, i)]);
 			} else {
-				charaButton [i].SetRatioTxt (preJobRatios [fightController.GetJob(TargetType.Player, i)]);
+				playerButton [i].SetRatioTxt (preJobRatios [fightController.GetJob(TargetType.Player, i)]);
 			}
-			charaButton [i].SetTextColor (Color.black);
+			playerButton [i].SetTextColor (Color.black);
 		}
 	}
 
@@ -986,7 +986,7 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		for (int i = 0; i < 5; i++) {
-			charaButton [i].ResetRatio ();
+			playerButton [i].ResetRatio ();
 		}
 
 		allRatioData = new List<RaycastData> ();
@@ -1126,7 +1126,7 @@ public class FightUIController : MonoBehaviour {
 
 		foreach (int idx in idxList) {
 			if (tType == TargetType.Player) {
-				charaButton [idx].SetEnable (true);
+				playerButton [idx].SetEnable (true);
 			} 
 			else {
 				enemyButton [idx].SetEnable (true);
@@ -1136,7 +1136,7 @@ public class FightUIController : MonoBehaviour {
 
 	private void OnCloseButton(TargetType tType) {
 		if (tType == TargetType.Player) {
-			foreach (FightItemButton btn in charaButton) {
+			foreach (FightItemButton btn in playerButton) {
 				btn.SetEnable (false);
 			}
 		} else if (tType == TargetType.Enemy) {
@@ -1145,7 +1145,7 @@ public class FightUIController : MonoBehaviour {
 			}
 		} 
 		else {
-			foreach (FightItemButton btn in charaButton) {
+			foreach (FightItemButton btn in playerButton) {
 				btn.SetEnable (false);
 			}
 			foreach (FightItemButton btn in enemyButton) {
@@ -1158,16 +1158,19 @@ public class FightUIController : MonoBehaviour {
 		foreach (FightItemButton btn in enemyButton) {
 			btn.SetEnable (true);
 		}
-		foreach (FightItemButton btn in charaButton) {
+		foreach (FightItemButton btn in playerButton) {
 			btn.SetEnable (true);
 		}
 	}
 
 	public void OnDead(int idx, TargetType tType){
 		if (tType == TargetType.Player) {
-			charaButton [idx].SetEnable (false, true);
+			playerStatus.Remove (idx);
+			playerButton [idx].SetEnable (false, true);
+
 		} 
 		else {
+			enemyStatus.Remove (idx);
 			enemyButton [idx].SetEnable (false, true);
 		}
 	}
@@ -1176,24 +1179,24 @@ public class FightUIController : MonoBehaviour {
 		foreach (FightItemButton btn in enemyButton) {
 			btn.Init ();
 		}
-		foreach (FightItemButton btn in charaButton) {
+		foreach (FightItemButton btn in playerButton) {
 			btn.Init ();
 		}
 	}
 
 	public void OnStatus(int idx, StatusLargeData data, int level, TargetType tType){
 		if (tType == TargetType.Player) {
-			if (charaStatus.ContainsKey (idx)) {
-				if (!charaStatus [idx].ContainsKey (data)) {
-					charaStatus [idx].Add (data, level);
+			if (playerStatus.ContainsKey (idx)) {
+				if (!playerStatus [idx].ContainsKey (data)) {
+					playerStatus [idx].Add (data, level);
 				} 
 				else {
-					charaStatus [idx] [data] = level;
+					playerStatus [idx] [data] = level;
 				}
 			} else {
 				Dictionary<StatusLargeData,int> sData = new Dictionary<StatusLargeData, int> ();
 				sData.Add (data, level);
-				charaStatus.Add (idx, sData);
+				playerStatus.Add (idx, sData);
 			}
 		}
 		else {
@@ -1214,10 +1217,10 @@ public class FightUIController : MonoBehaviour {
 
 	public void OnStatusDown(int idx, StatusLargeData key, int time, TargetType tType){
 		if (tType == TargetType.Player) {
-			if (charaStatus.ContainsKey (idx)) {
-				if (charaStatus [idx].ContainsKey (key)) {
+			if (playerStatus.ContainsKey (idx)) {
+				if (playerStatus [idx].ContainsKey (key)) {
 					if (time == 0) {
-						charaStatus [idx].Remove (key);
+						playerStatus [idx].Remove (key);
 					} 
 					else {
 					
@@ -1241,7 +1244,7 @@ public class FightUIController : MonoBehaviour {
 
 	public void RmStatus(int idx, StatusLargeData key, TargetType tType){
 		if (tType == TargetType.Player) {
-			charaStatus [idx].Remove (key);
+			playerStatus [idx].Remove (key);
 		} else {
 			enemyStatus [idx].Remove (key);
 		}
