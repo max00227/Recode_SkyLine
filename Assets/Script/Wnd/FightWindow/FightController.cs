@@ -1198,6 +1198,13 @@ public class FightController : MonoBehaviour {
 		case (int)Normal.RmNerf:
 			OnRmNerf (idx, tType);
 			break;
+		case (int)Normal.Revive:
+			OnRevive (orgIdx, idx, data, tType);
+			break;
+		case (int)Normal.Energe:
+			break;
+		case (int)Normal.DelJob:
+			break;
 		}
 	}
 
@@ -1257,6 +1264,15 @@ public class FightController : MonoBehaviour {
 				fightUIController.RmStatus (idx, kv.Key, tType);
 				targetChess.status.Remove (kv.Key);
 			}
+		}
+	}
+
+	private void OnRevive(int orgIdx, int idx, RuleLargeData data, TargetType tType){
+		if (targetChess.soulData.abilitys ["Hp"] <= 0) {
+
+			targetChess.soulData.abilitys ["Hp"] += targetChess.fullHp * data.effect [1] / 100;
+			fightUIController.OnRecovery (idx, tType, (float)targetChess.soulData.abilitys ["Hp"] / (float)targetChess.fullHp);
+			ChangeAccordingData (idx, targetChess.soulData.abilitys ["Hp"], tType, AccChangeType.Hp);
 		}
 	}
 

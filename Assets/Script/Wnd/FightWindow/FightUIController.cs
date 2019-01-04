@@ -282,7 +282,6 @@ public class FightUIController : MonoBehaviour {
 		fightController.FightStart (lockCount != 0, canAttack);
 	}
 
-	int fightC = 0;
 	public void OnShowFight(List<DamageData> allDamage){
 		StartCoroutine (OnShowAllFight (allDamage));
 	}
@@ -1267,6 +1266,11 @@ public class FightUIController : MonoBehaviour {
 	public bool GetEnerge(int need) {
 		return energe >= need;
     }
+
+	public void AddEnerge(int erg){
+		energe += erg;
+		energeNum.SetNumber (energe);
+	}
 
 	public int GetJobGround(int job){
 		int count = 0;

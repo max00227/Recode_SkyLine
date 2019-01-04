@@ -487,6 +487,7 @@ public enum Target {
 /// Normal Effect type.
 /// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
 /// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
+/// ,Revive(復活),Energe(恢復能量),DelJob(移除指定職業格子)
 public enum Normal {
 	None = 0,
 	Recovery = 1,
@@ -497,6 +498,9 @@ public enum Normal {
 	Dmg = 6,
 	Exchange = 7,
 	Call = 8,
+	Revive = 9,
+	Energe = 10,
+	DelJob = 11
 }
 
 /// <summary>
