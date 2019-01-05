@@ -527,8 +527,6 @@ public enum Nerf {
 	Hit = 1,
 	UnTake = 2,
 	Death = 3,
-	RcyDown = 4,
-	DmgUp = 5,
-	AtkDown = 6,
-	Confusion = 7
+	Confusion = 4,
+	UnAct = 5
 }
