@@ -199,6 +199,7 @@ public class FightController : MonoBehaviour {
 	}
 
 	private void NormalFight(AccordingData[] order, int selfIdx, TargetType tType, bool isAll){
+        //自動攻擊之敵人跳過盾職
 		bool ignore = false;
 		if(tType == TargetType.Player){
 			for (int i = 0; i < order.Length; i++) {
