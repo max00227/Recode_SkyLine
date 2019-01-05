@@ -199,11 +199,27 @@ public class FightController : MonoBehaviour {
 	}
 
 	private void NormalFight(AccordingData[] order, int selfIdx, TargetType tType, bool isAll){
+		bool ignore = false;
+		if(tType == TargetType.Player){
+			for (int i = 0; i < order.Length; i++) {
+				if (player [order [i].index].soulData.abilitys ["Hp"] > 0 && 
+					player [order [i].index].soulData.job != (int)Const.jobType.Shielder){
+					ignore = true;
+				}
+			}
+		}
+
+
 		for (int i = 0; i < order.Length; i++) {
 			targetChess = tType == TargetType.Player ? player [order [i].index] : enemys [order [i].index];
 
 			if (targetChess.soulData.abilitys ["Hp"] > 0) {
-				OnDamage (FightDamageData (selfIdx, order [i], tType, isAll));
+				if (ignore && targetChess.soulData.job == (int)Const.jobType.Shielder){
+                    continue;
+				}
+				else{
+					OnDamage (FightDamageData (selfIdx, order [i], tType, isAll));	
+				}
 			} 
 
 
@@ -564,12 +580,12 @@ public class FightController : MonoBehaviour {
 	private void ParameterStatus(int param, int statusType, ChessData chessData, TargetType tType, int? idx){
 		foreach (KeyValuePair<StatusLargeData, int> kv in chessData.recStatus) {
 			if (tType == TargetType.Player) {
-				if (kv.Key.charaStatus[0] == statusType) {
+				if (kv.Key.charaStatus == statusType) {
 					OnStatusParam (kv.Key, kv.Value, param, chessData, idx);
 				}
 			} 
 			else {
-				if (kv.Key.enemyStatus[0] == statusType) {
+				if (kv.Key.enemyStatus == statusType) {
 					OnStatusParam (kv.Key, kv.Value, param, chessData, idx);
 				}
 			}
@@ -1222,10 +1238,9 @@ public class FightController : MonoBehaviour {
 		orgChess = tType == TargetType.Player ? player [idx] : enemys [idx];
 		orgChess.hasStatus [data.effect [0]] = true;
 
+		OnAbilityChanged (idx, data, tType, skillId);
+
 		switch (data.effect [0]) {
-		case (int)Status.Ability:
-			OnAbilityChanged (idx, data, tType, skillId);
-			break;
 		case (int)Status.AddNerf:
 			OnAddNerf (idx,skillId);
 			break;

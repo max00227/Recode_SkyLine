@@ -133,7 +133,7 @@ public class FightUIController : MonoBehaviour {
 	bool hasProtect;
 
 	void SetData() {
-		monsterCdTimes = new int[5]{7,5,10,10,6};
+		monsterCdTimes = new int[5]{7,5,1,10,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.SetData ();
 		playerStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
@@ -483,7 +483,7 @@ public class FightUIController : MonoBehaviour {
 	private void CheckLockStatus (){
 		foreach (KeyValuePair<int,Dictionary<StatusLargeData,int>> kv in playerStatus) {
 			foreach (KeyValuePair<StatusLargeData,int> kv2 in kv.Value) {
-				if (kv2.Key.charaStatus [0] == (int)Nerf.UnTake) {
+				if (kv2.Key.charaStatus == (int)Nerf.UnTake) {
 					playerButton [kv.Key].SetEnable (false);
 				}
 			}
