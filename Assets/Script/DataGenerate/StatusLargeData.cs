@@ -11,10 +11,13 @@
 		public System.String enemyDetail{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("CharaStatus")]
-		public System.Int32[] charaStatus{ get; set;}
+		public System.Int32 charaStatus{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("EnemyStatus")]
-		public System.Int32[] enemyStatus{ get; set;}
+		public System.Int32 enemyStatus{ get; set;}
+
+		[Newtonsoft.Json.JsonProperty("ChgAttri")]
+		public System.Int32 chgAttri{ get; set;}
 
 		[Newtonsoft.Json.JsonProperty("StatusParam")]
 		public System.Collections.Generic.Dictionary<System.String,System.Int32[]> statusParam{ get; set;}

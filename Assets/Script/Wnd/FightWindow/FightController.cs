@@ -546,12 +546,12 @@ public class FightController : MonoBehaviour {
 	private bool CheckStatus(int statusType, ChessData chessData, TargetType tType){
 		foreach (KeyValuePair<StatusLargeData, int> kv in chessData.recStatus) {
 			if (tType == TargetType.Player) {
-				if (kv.Key.charaStatus[0] == statusType) {
+				if (kv.Key.charaStatus == statusType) {
 					return true;
 				}
 			} 
 			else {
-				if (kv.Key.enemyStatus[0] == statusType) {
+				if (kv.Key.enemyStatus == statusType) {
 					return true;
 				}
 			}
