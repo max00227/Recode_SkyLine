@@ -290,16 +290,12 @@ public class FightUIController : MonoBehaviour {
 		for (int i = 0; i < allDamage.Count; i++) {
 			FightItemButton org = null;
 			FightItemButton target = null;
-			if (allDamage [0].isSelf) {
-				org = allDamage [i].tType == TargetType.Enemy ? enemyButton [allDamage [i].orgIdx] : playerButton [allDamage [i].orgIdx];
-			} else {
-				org = allDamage [i].tType == TargetType.Enemy ? playerButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
-			}
+            org = allDamage[i].tType[0] == "P" ? playerButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
 
 			//當TargetIdx重複時會加10，此時需要減去10
 			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
 
-			target = allDamage [i].tType == TargetType.Player ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
+			target = allDamage[1].tType[0] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
 
 			GroundSEController gse = SEPool.Dequeue ();
 			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
@@ -864,8 +860,8 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	public void ChangeHpBar(int idx, TargetType tType, float hpRatio, bool isUp){
-		if (tType == TargetType.Player) {
+	public void ChangeHpBar(int idx, string targetString, float hpRatio, bool isUp){
+		if (targetString == "P") {
 			playerButton [idx].SetHpBar (hpRatio, true, isUp);
 		} 
 		else {
@@ -874,8 +870,8 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	#region Skill
-	public void OnRecovery(int idx, TargetType tType, float hpRatio){
-		ChangeHpBar (idx, tType, hpRatio, true);
+	public void OnRecovery(int idx, string targetString, float hpRatio){
+		ChangeHpBar (idx, targetString, hpRatio, true);
 	}
 
 	public void OnRmAlarm(int cdtime, int idx){
@@ -1072,7 +1068,7 @@ public class FightUIController : MonoBehaviour {
 			charaIdx = idx;
 		} 
 		else if (CheckStatus (FightStatus.SelSkillTarget)) {
-			fightController.SelectSkillTarget (TargetType.Player, idx);
+			fightController.SelectSkillTarget ("P", idx);
 		}
 	}
 
@@ -1083,7 +1079,7 @@ public class FightUIController : MonoBehaviour {
 			fightController.LockOrder (idx);
 		} 
 		else if (CheckStatus (FightStatus.SelSkillTarget)) {
-			fightController.SelectSkillTarget (TargetType.Enemy, idx);
+			fightController.SelectSkillTarget ("E", idx);
 		}
 	}
 
@@ -1121,12 +1117,12 @@ public class FightUIController : MonoBehaviour {
 		Debug.LogWarning ("Chara " + charaIdx + " Can Use Skill");
 	}
 
-	public void OnSelectionDir(List<int> idxList, TargetType tType){
-		OnCloseButton (TargetType.Both);
+	public void OnSelectionDir(List<int> idxList, string targetString){
+		OnCloseButton (TargetType.All.ToString());
 
 		foreach (int idx in idxList) {
-			if (tType == TargetType.Player) {
-				playerButton [idx].SetEnable (true);
+            if (targetString == "P"){
+                playerButton[idx].SetEnable (true);
 			} 
 			else {
 				enemyButton [idx].SetEnable (true);
@@ -1134,12 +1130,12 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private void OnCloseButton(TargetType tType) {
-		if (tType == TargetType.Player) {
+	private void OnCloseButton(string targetString) {
+		if (targetString == "P") {
 			foreach (FightItemButton btn in playerButton) {
 				btn.SetEnable (false);
 			}
-		} else if (tType == TargetType.Enemy) {
+		} else if (targetString == "E") {
 			foreach (FightItemButton btn in enemyButton) {
 				btn.SetEnable (false);
 			}
@@ -1163,8 +1159,8 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	public void OnDead(int idx, TargetType tType){
-		if (tType == TargetType.Player) {
+	public void OnDead(int idx, string[] tType){
+		if (tType[1] == "P") {
 			playerStatus.Remove (idx);
 			playerButton [idx].SetEnable (false, true);
 
@@ -1184,8 +1180,8 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	public void OnStatus(int idx, StatusLargeData data, int level, TargetType tType){
-		if (tType == TargetType.Player) {
+	public void OnStatus(int idx, StatusLargeData data, int level, string targeString){
+		if (targeString == "P") {
 			if (playerStatus.ContainsKey (idx)) {
 				if (!playerStatus [idx].ContainsKey (data)) {
 					playerStatus [idx].Add (data, level);
@@ -1215,9 +1211,9 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	public void OnStatusDown(int idx, StatusLargeData key, int time, TargetType tType){
-		if (tType == TargetType.Player) {
-			if (playerStatus.ContainsKey (idx)) {
+	public void OnStatusDown(int idx, StatusLargeData key, int time, string targeString){
+        if (targeString == "P"){
+            if (playerStatus.ContainsKey (idx)) {
 				if (playerStatus [idx].ContainsKey (key)) {
 					if (time == 0) {
 						playerStatus [idx].Remove (key);
@@ -1242,13 +1238,14 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	public void RmStatus(int idx, StatusLargeData key, TargetType tType){
-		if (tType == TargetType.Player) {
-			playerStatus [idx].Remove (key);
-		} else {
-			enemyStatus [idx].Remove (key);
-		}
-	}
+    public void RmStatus(int idx, StatusLargeData key, string targetString){
+        if (targetString == "P"){
+            playerStatus[idx].Remove(key);
+        }
+        else{
+            enemyStatus[idx].Remove(key);
+        }
+    }
 
 	public void ChangeStatus(FightStatus status){
 		fightController.fightStatus = status;

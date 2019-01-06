@@ -41,6 +41,7 @@ public class FightController : MonoBehaviour {
 	private ChessData targetChess;
 	private ChessData[] targetsChess;
 
+    private string[] target;
 
 	float resetRatio;
 
@@ -154,18 +155,18 @@ public class FightController : MonoBehaviour {
 		}
 
 		for (int i = 0; i < protectChara.Length; i++) {
-			ChangeAccordingData (i, protectChara [i], TargetType.Player, AccChangeType.Minus);
+			ChangeAccordingData (i, protectChara [i], "P", AccChangeType.Minus);
 		}
 	}
 
 	/// <summary>
 	/// 產生傷害資料，並進行傷害公式
 	/// <param name="type">目標類型</param>
-	private void OnFight(TargetType tType){
+	private void OnFight(){
 		damageShowSort = new Dictionary<int, Dictionary<int, List<DamageData>>> ();
-		int count = tType == TargetType.Player ? enemys.Length : player.Length;
+		int count = target[0] == "E" ? enemys.Length : player.Length;
 		for (int i = 0; i < count; i++) {
-			orgChess = tType == TargetType.Player ? enemys[i] : player[i];
+			orgChess = target[0] == "E" ? enemys[i] : player[i];
 			if (orgChess.soulData.abilitys["Hp"] > 0) {
 				if (fightPairs.ContainsKey (i)) {
 					AccordingData[] order;
@@ -174,7 +175,7 @@ public class FightController : MonoBehaviour {
 					//判斷是否全體攻擊
 					bool isAll = false;
 					if (orgChess.soulData.job >= 3) {
-						if (tType == TargetType.Enemy) {
+						if (target[0] == "E") {
 							if (fightUIController.GetActLevel (orgChess.soulData.job) >= 2) {
 								isAll = true;
 							}
@@ -185,11 +186,11 @@ public class FightController : MonoBehaviour {
 					}
 
 					bool atkTeam = false;
-					if (CheckStatus ((int)Nerf.Confusion, orgChess, DataUtil.ReverseTarget(tType))) {
-						RandomFight (i, tType, isAll);
+					if (CheckStatus ((int)Nerf.Confusion, orgChess, target[0])) {
+						RandomFight (i, isAll);
 					}
 					else {
-						NormalFight (order, i, tType, isAll);
+						NormalFight (order, i, isAll);
 					}
 				}
 			}
@@ -198,10 +199,10 @@ public class FightController : MonoBehaviour {
 		CallbackProtect ();
 	}
 
-	private void NormalFight(AccordingData[] order, int selfIdx, TargetType tType, bool isAll){
+	private void NormalFight(AccordingData[] order, int selfIdx, bool isAll){
         //自動攻擊之敵人跳過盾職
 		bool ignore = false;
-		if(tType == TargetType.Player){
+        if (target[1] == "P"){
 			for (int i = 0; i < order.Length; i++) {
 				if (player [order [i].index].soulData.abilitys ["Hp"] > 0 && 
 					player [order [i].index].soulData.job != (int)Const.jobType.Shielder){
@@ -212,14 +213,14 @@ public class FightController : MonoBehaviour {
 
 
 		for (int i = 0; i < order.Length; i++) {
-			targetChess = tType == TargetType.Player ? player [order [i].index] : enemys [order [i].index];
+            targetChess = target[1] == "E" ? enemys[order[i].index] : player[order[i].index];
 
-			if (targetChess.soulData.abilitys ["Hp"] > 0) {
+            if (targetChess.soulData.abilitys ["Hp"] > 0) {
 				if (ignore && targetChess.soulData.job == (int)Const.jobType.Shielder){
                     continue;
 				}
 				else{
-					OnDamage (FightDamageData (selfIdx, order [i], tType, isAll));	
+					OnDamage (FightDamageData (selfIdx, order [i], isAll));	
 				}
 			} 
 
@@ -230,90 +231,79 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	private void RandomFight(int selfIdx, TargetType tType, bool isAll){
+	private void RandomFight(int selfIdx, bool isAll){
 		if (!isAll) {
 			int randomIdx = UnityEngine.Random.Range (0, player.Length + enemys.Length);
-			while (!CheckRandomDirect (randomIdx,selfIdx,tType)) {
+			while (!CheckRandomDirect (randomIdx,selfIdx)) {
 				randomIdx = UnityEngine.Random.Range (0, player.Length + enemys.Length);
 			}
+            target[1] = randomIdx >= player.Length ? "E" : "P";
 
-			RandomFight (selfIdx, tType, isAll, randomIdx);
+			RandomFight (selfIdx, isAll, randomIdx);
 		} 
 		else {
 			for (int i = 0; i < player.Length + enemys.Length; i++) {
-				if (CheckRandomDirect (i, selfIdx, tType)) {
-					RandomFight (selfIdx, tType, isAll, i);
+				if (CheckRandomDirect (i, selfIdx)) {
+					RandomFight (selfIdx, isAll, i);
 				}
 			}
 		}
 	}
 
-	private void RandomFight(int selfIdx, TargetType tType, bool isAll, int randomIdx){
-		bool isSelfTeam = false;
-		if (randomIdx >= player.Length) {
-			if (tType == TargetType.Player) {
-				isSelfTeam = true;
-			}
-		} 
-		else {
-			if (tType == TargetType.Enemy) {
-				isSelfTeam = true;
-			}
-		}
-
+	private void RandomFight(int selfIdx, bool isAll, int randomIdx){
 		int idx = randomIdx >= player.Length ? randomIdx - (player.Length) : randomIdx;
 		targetChess = randomIdx >= player.Length ? enemys [idx] : player [idx];
-		if (isSelfTeam) {
-			//打自己人時需重新計算傷害加成值
-			int actLevel = tType == TargetType.Player ? 0 : fightUIController.GetActLevel (orgChess.soulData.job) - 1;
+		if (target[1] == target[0]) {
+            //打自己人時需重新計算傷害加成值
+            int actLevel = target[1] == "P" ? 0 : fightUIController.GetActLevel(orgChess.soulData.job) - 1;
 			float attriRatio = ParameterConvert.AttriRatioCal (orgChess.soulData.act [actLevel], targetChess.soulData.attributes);
 			float jobRatio = ParameterConvert.AttriRatioCal (orgChess.soulData.job, targetChess.soulData.job);
-			OnDamage (FightDamageData (selfIdx, attriRatio, jobRatio, targetChess.according [idx], DataUtil.ReverseTarget (tType), isAll));
+			OnDamage (FightDamageData (selfIdx, attriRatio, jobRatio, targetChess.according [idx], isAll));
 		} 
 		else {
-			OnDamage (FightDamageData (selfIdx, orgChess.according [idx], tType, isAll));
+			OnDamage (FightDamageData (selfIdx, orgChess.according [idx], isAll));
 		}
 	}
 
-	private List<DamageData> FightDamageData(int selfIdx, AccordingData orderData, TargetType tType, bool isAll){
+	private List<DamageData> FightDamageData(int selfIdx, AccordingData orderData, bool isAll){
 		List<DamageData> allDamage = new List<DamageData> ();
 		if (orgChess.soulData.job <= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, orderData.minus, tType, DamageType.Physical, isAll));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, orderData.minus, DamageType.Physical, isAll));
 		}
 
 		if (orgChess.soulData.job >= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, orderData.minus, tType, DamageType.Magic, isAll));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, orderData.minus, DamageType.Magic, isAll));
 		}
 
 		return allDamage;
 	}
 
-	private List<DamageData> FightDamageData(int selfIdx, float attriRatio, float jobRatio, AccordingData orderData, TargetType tType, bool isAll){
+	private List<DamageData> FightDamageData(int selfIdx, float attriRatio, float jobRatio, AccordingData orderData, bool isAll){
 		List<DamageData> allDamage = new List<DamageData> ();
 		if (orgChess.soulData.job <= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, orderData.minus, tType, DamageType.Physical, isAll, true));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, orderData.minus, DamageType.Physical, isAll));
 		}
 
 		if (orgChess.soulData.job >= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, orderData.minus, tType, DamageType.Magic, isAll, true));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, orderData.minus, DamageType.Magic, isAll));
 		}
 
 		return allDamage;
 	}
 
-	private bool CheckRandomDirect(int randomIdx, int selfIdx, TargetType tType){
+	private bool CheckRandomDirect(int randomIdx, int selfIdx){
 		if (randomIdx >= player.Length + enemys.Length) {
 			return false;
 		}
 		if (randomIdx >= player.Length) {
-			if (tType == TargetType.Player) {
+			if (target[1] == "P") {
 				if ((randomIdx - (player.Length - 1)) == selfIdx) {
 					return false;
 				}
 			}
 		}
 		else {
-			if (tType == TargetType.Enemy) {
+			if (target[1] == "E") {
 				if (randomIdx == selfIdx) {
 					return false;
 				}
@@ -335,14 +325,14 @@ public class FightController : MonoBehaviour {
 	/// <param name="tType">目標陣營.</param>
 	/// <param name="dType">傷害類型</param>
 	/// <param name="isAll">是否為全體攻擊，會影響浮動值</param>
-	private DamageData GetDamage (int orgIdx, int targetIdx,float attriJob, int minus, TargetType tType, DamageType dType, bool isAll, bool isSelfTeam = false){
+	private DamageData GetDamage (int orgIdx, int targetIdx,float attriJob, int minus, DamageType dType, bool isAll){
 		DamageData damageData;
-		int actLevel = tType == TargetType.Player ? 0 : fightUIController.GetActLevel (orgChess.soulData.job) - 1;
-		int ratio = tType == TargetType.Player ? 0 : fightUIController.GetCharaRatio (orgChess.soulData.job);
+		int actLevel = target[0] == "E" ? 0 : fightUIController.GetActLevel (orgChess.soulData.job) - 1;
+		int ratio = target[0] == "E" ? 0 : fightUIController.GetCharaRatio (orgChess.soulData.job);
 
 		string titleKey = dType == DamageType.Physical ? "" : "m";
-		int orgChanged = GetAbiChange(orgIdx,tType,titleKey + "Atk");
-		int targetChanged = GetAbiChange(orgIdx,DataUtil.ReverseTarget(tType),titleKey + "Def");
+        int orgChanged = GetAbiChange(orgIdx, 0, titleKey + "Atk");
+        int targetChanged = GetAbiChange(orgIdx, 1, titleKey + "Def");
 
 		//Status Affect
 		int orgStatusRatio = 100 + GetAbilityStatus ("Atk", true);
@@ -358,13 +348,12 @@ public class FightController : MonoBehaviour {
 			orgChess.soulData.abilitys ["Cri"], 
 			isAll
 		);
-		damageData.damageType = dType; 
+		damageData.damageType = dType;
 
-		damageData.tType = tType;
+        damageData.tType = target;
 		damageData.attributes = orgChess.soulData.act [actLevel];
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
-		damageData.isSelf = isSelfTeam;
 
 		return damageData;
 	}
@@ -429,21 +418,21 @@ public class FightController : MonoBehaviour {
 			if (targetChess.hasStatus [(int)Status.Suffer] == false) {
 				targetChess.soulData.abilitys ["Hp"] = 0;
 				isDead = true;
-				if (targetChess.soulData.job == 2 && damageData.tType == TargetType.Enemy) {
-					enemyProtect--;
-				}
+                if (targetChess.soulData.job == 2 && target[1] == "E"){
+                    enemyProtect--;
+                }
 			} else {
 				targetChess.soulData.abilitys ["Hp"] = 1;
 			}
 		}
 
 		if (isDead) {
-			OnDeath (damageData.targetIdx, damageData.tType);
+			OnDeath (damageData.targetIdx);
 		}
 
-		ChangeAccordingData (damageData.targetIdx, targetChess.soulData.abilitys["Hp"], damageData.tType, AccChangeType.Hp);
+		ChangeAccordingData (damageData.targetIdx, targetChess.soulData.abilitys["Hp"], target[1], AccChangeType.Hp);
 
-		if (damageData.tType == TargetType.Player) {
+		if (damageData.tType[1] == "P") {
 			data.hpRatio = (float)targetChess.soulData.abilitys["Hp"] / (float)player [damageData.targetIdx].fullHp;
 		} 
 		else {
@@ -453,10 +442,10 @@ public class FightController : MonoBehaviour {
 	}
 
 
-	private void OnDeath(int idx, TargetType tType){
-		targetsChess = tType == TargetType.Player ? player : enemys;
-		orgsChess = tType == TargetType.Enemy ? player : enemys;
-        int deleteKey = tType == TargetType.Player ? player[idx].soulData.skill : enemys[idx].soulData.skill;
+	private void OnDeath(int idx){
+		targetsChess = target[1] == "P" ? player : enemys;
+		orgsChess = target[0] == "E" ? player : enemys;
+        int deleteKey = target[1] == "P" ? player[idx].soulData.skill : enemys[idx].soulData.skill;
 
         //我方陣營附加狀態
         foreach (var data in targetsChess){
@@ -480,7 +469,7 @@ public class FightController : MonoBehaviour {
 		targetChess.statusTime = new Dictionary<StatusLargeData, int> ();
 		targetChess.hasStatus = new bool[Enum.GetNames (typeof(Status)).Length];
 
-		fightUIController.OnDead(idx,tType);
+		fightUIController.OnDead(idx,target);
 	}
 
 	/// <summary>
@@ -517,22 +506,22 @@ public class FightController : MonoBehaviour {
 	}
 
 	private void CheckSoulStatus(){
-		CheckSoulStatus (player, TargetType.Player);
-		CheckSoulStatus (enemys, TargetType.Enemy);
+		CheckSoulStatus (player, "P");
+		CheckSoulStatus (enemys, "E");
 	}
 
-	private void CheckSoulStatus(ChessData[] chessData, TargetType tType){
+	private void CheckSoulStatus(ChessData[] chessData,string targetString){
 		for (int i = 0; i < chessData.Length; i++) {
 			Dictionary<StatusLargeData, int> orgData = new Dictionary<StatusLargeData, int> (chessData [i].status);
 			foreach (KeyValuePair<StatusLargeData, int> kv in orgData) {
 				if (chessData [i].recStatus.ContainsKey (kv.Key)) {
 					if (chessData [i].recStatus [kv.Key] != kv.Value) {
 						chessData [i].statusTime [kv.Key] = MasterDataManager.GetStatusData (kv.Key.id).rmParam;
-						fightUIController.OnStatus (i, MasterDataManager.GetStatusData (kv.Key.id), kv.Value, tType);
+						fightUIController.OnStatus (i, MasterDataManager.GetStatusData (kv.Key.id), kv.Value, targetString);
 					} 
 					else {
 						chessData [i].statusTime [kv.Key]--;
-						fightUIController.OnStatusDown (i, kv.Key, chessData [i].statusTime [kv.Key], tType);
+						fightUIController.OnStatusDown (i, kv.Key, chessData [i].statusTime [kv.Key], targetString);
 						if (chessData [i].statusTime [kv.Key] == 0) {
 							chessData [i].statusTime.Remove (kv.Key);
 							chessData [i].status.Remove (kv.Key);
@@ -541,7 +530,7 @@ public class FightController : MonoBehaviour {
 				} 
 				else {
 					chessData [i].statusTime.Add (kv.Key, MasterDataManager.GetStatusData (kv.Key.id).rmParam);
-					fightUIController.OnStatus (i, MasterDataManager.GetStatusData (kv.Key.id), kv.Value, tType);
+					fightUIController.OnStatus (i, MasterDataManager.GetStatusData (kv.Key.id), kv.Value, targetString);
 				}
 			}
 
@@ -560,9 +549,9 @@ public class FightController : MonoBehaviour {
 		return null;
 	}
 
-	private bool CheckStatus(int statusType, ChessData chessData, TargetType tType){
+	private bool CheckStatus(int statusType, ChessData chessData, string targetString){
 		foreach (KeyValuePair<StatusLargeData, int> kv in chessData.recStatus) {
-			if (tType == TargetType.Player) {
+			if (targetString == "P") {
 				if (kv.Key.charaStatus == statusType) {
 					return true;
 				}
@@ -578,9 +567,9 @@ public class FightController : MonoBehaviour {
 
 	/// <summary>
 	/// 有參數之狀態確認
-	private void ParameterStatus(int param, int statusType, ChessData chessData, TargetType tType, int? idx){
+	private void ParameterStatus(int param, int statusType, ChessData chessData, string targetString, int? idx){
 		foreach (KeyValuePair<StatusLargeData, int> kv in chessData.recStatus) {
-			if (tType == TargetType.Player) {
+			if (targetString == "P") {
 				if (kv.Key.charaStatus == statusType) {
 					OnStatusParam (kv.Key, kv.Value, param, chessData, idx);
 				}
@@ -619,8 +608,8 @@ public class FightController : MonoBehaviour {
 			case "Hp":
 				chessData.soulData.abilitys ["Hp"] += chessData.fullHp * kv.Value [level] * param / 100;
 
-				ChangeAccordingData ((int)idx, targetChess.soulData.abilitys ["Hp"], TargetType.Player, AccChangeType.Hp);
-				fightUIController.ChangeHpBar ((int)idx, TargetType.Player, (float)targetChess.soulData.abilitys ["Hp"] / (float)targetChess.fullHp, false);
+				ChangeAccordingData ((int)idx, targetChess.soulData.abilitys ["Hp"], "P", AccChangeType.Hp);
+				fightUIController.ChangeHpBar ((int)idx, "P", (float)targetChess.soulData.abilitys ["Hp"] / (float)targetChess.fullHp, false);
 				break;
 			}
 		}
@@ -631,11 +620,11 @@ public class FightController : MonoBehaviour {
 	/// <returns>The fight.</returns>
 	/// <param name="tType">被攻擊者陣營</param>
 	/// <param name="Callback">是否戰鬥結束的Callback</param>
-	IEnumerator ShowFight(TargetType tType, bool Callback){
+	IEnumerator ShowFight(bool Callback){
 		int count = 0;
 		while (count < damageShowSort.Count) {
 			foreach (KeyValuePair<int, Dictionary<int, List<DamageData>>> data in damageShowSort) {
-				ShowFight (data.Key, data.Value, tType);
+				ShowFight (data.Key, data.Value);
 				count++;
 				yield return new WaitForSeconds(0.5f);
 			}
@@ -656,7 +645,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="orgIdx">Org index.</param>
 	/// <param name="damageData">Damage data.</param>
 	/// <param name="tType">T type.</param>
-	void ShowFight(int orgIdx, Dictionary<int, List<DamageData>> damageData, TargetType tType){
+	void ShowFight(int orgIdx, Dictionary<int, List<DamageData>> damageData){
 		foreach (KeyValuePair<int, List<DamageData>> data in damageData) {
 			fightUIController.OnShowFight(data.Value);
 		}
@@ -682,18 +671,20 @@ public class FightController : MonoBehaviour {
 		actIdx = new List<int> ();
 
 		if (canAttack.Count > 0) {
-			FightPairs (canAttack.ToArray (), TargetType.Enemy);
-			OnFight (TargetType.Enemy);
-			StartCoroutine (ShowFight (TargetType.Enemy, !enemyFight));
+            target = TargetType.P_E.ToString().Split('_');
+			FightPairs (canAttack.ToArray ());
+			OnFight ();
+			StartCoroutine (ShowFight (!enemyFight));
 		} 
 	}
 
 	/// <summary>
 	/// 敵人攻擊
 	public void EnemyFight(){
-		FightPairs (cdTime, TargetType.Player);
-		OnFight (TargetType.Player);
-		StartCoroutine (ShowFight (TargetType.Player, true));
+        target = TargetType.E_P.ToString().Split('_');
+        FightPairs(cdTime);
+		OnFight ();
+		StartCoroutine (ShowFight (true));
 	}
 
 	/// <summary>
@@ -701,17 +692,17 @@ public class FightController : MonoBehaviour {
 	/// <param name="attackIdx">可攻擊清單</param>
 	/// <param name="tType">目標陣營.</param>
 	/// <param name="actLevel">攻擊者攻擊階級<param>
-	private void FightPairs(int[] attackIdx, TargetType tType){
+	private void FightPairs(int[] attackIdx){
 		fightPairs = new Dictionary<int, AccordingData[]> ();
-		if (tType == TargetType.Enemy) {
+		if (target[0] == "E") {
 			foreach (int idx in attackIdx) {
-				fightPairs.Add (idx, matchTarget (idx, tType));
+				fightPairs.Add (idx, matchTarget (idx));
 			}
 		} 
 		else {
 			for (int i = 0;i< attackIdx.Length;i++) {
 				if (attackIdx [i] == 0) {
-					fightPairs.Add (i, matchTarget (i, tType));					
+					fightPairs.Add (i, matchTarget (i));					
 				}
 			}
 		}
@@ -722,18 +713,18 @@ public class FightController : MonoBehaviour {
 	/// <returns>The target.</returns>
 	/// <param name="idx">攻擊者索引值</param>
 	/// <param name="tType">被攻擊者陣營</param>
-	private AccordingData[] matchTarget(int idx, TargetType tType){
+	private AccordingData[] matchTarget(int idx){
 
-		AccordingData[] compareOrder = CompareData (idx, tType);
+		AccordingData[] compareOrder = CompareData (idx, target[1]);
 
-		int orderCount = tType == TargetType.Player ? player.Length : enemys.Length;
+		int orderCount = target[1] == "P" ? player.Length : enemys.Length;
 
 		AccordingData[] atkOrder = new AccordingData[orderCount];
 		AccordingData[] lockOrder = new AccordingData[lockOrderIdx.Count];
 
 
 
-		if (tType == TargetType.Player) {
+		if (target[1] == "P") {
 			return compareOrder;
 		} 
 		else {
@@ -742,7 +733,7 @@ public class FightController : MonoBehaviour {
 			} 
 			else {
 				for (int i = 0; i < lockOrderIdx.Count; i++) {
-					atkOrder [i] = GetAccordingData (idx, lockOrderIdx.ElementAt (i), tType);
+					atkOrder [i] = GetAccordingData (idx, lockOrderIdx.ElementAt (i));
 				}
 
 				int orderIdx = lockOrderIdx.Count;
@@ -774,9 +765,9 @@ public class FightController : MonoBehaviour {
 	/// <returns>The data.</returns>
 	/// <param name="orgIdx">攻擊者索引值</param>
 	/// <param name="tType">被攻擊者陣營</param>
-	private AccordingData[] CompareData(int orgIdx, TargetType tType){
+	private AccordingData[] CompareData(int orgIdx, string targetString){
 		//因應玩家角色攻擊屬性會變換更改According資料
-		if (tType == TargetType.Enemy) {
+		if (targetString == "E") {
 			for (int i = 0; i < player [orgIdx].according.Length; i++) {
 				ChangeAccordingData (
 					player [orgIdx].according[i], 
@@ -786,9 +777,9 @@ public class FightController : MonoBehaviour {
 			}
 		}
 
-		AccordingData[] according = tType == TargetType.Player ? (AccordingData[])enemys[orgIdx].according.Clone() : (AccordingData[])player[orgIdx].according.Clone();
+		AccordingData[] according = targetString == "P" ? (AccordingData[])enemys[orgIdx].according.Clone() : (AccordingData[])player[orgIdx].according.Clone();
 
-		return AccordingCompare (according, tType);
+		return AccordingCompare (according);
 	}
 
 	/// <summary>
@@ -796,8 +787,8 @@ public class FightController : MonoBehaviour {
 	/// <returns>The compare.</returns>
 	/// <param name="according">根據值</param>
 	/// <param name="isPlayer">被攻擊者陣營</param>
-	private AccordingData[] AccordingCompare(AccordingData[] according, TargetType tType){
-		if (tType == TargetType.Enemy) {
+	private AccordingData[] AccordingCompare(AccordingData[] according){
+		if (target[1] == "E") {
 			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
 				return((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio)) * -1;
 			});
@@ -871,10 +862,10 @@ public class FightController : MonoBehaviour {
 			for (int i = 0; i < player.Length; i++) {
 				for (int j = 0; j < player[i].according.Length; j++) {
 					if (cdTime [j] == 0) {
-						ChangeAccordingData (j, 100 - (0 + enemyProtect * 10), TargetType.Enemy, AccChangeType.Minus);
+						ChangeAccordingData (j, 100 - (0 + enemyProtect * 10), "E", AccChangeType.Minus);
 					} 
 					else {
-						ChangeAccordingData (j, 100 - (50 * (10 + enemyProtect) / 10), TargetType.Enemy, AccChangeType.Minus);
+						ChangeAccordingData (j, 100 - (50 * (10 + enemyProtect) / 10), "E", AccChangeType.Minus);
 					}
 				}
 			}
@@ -902,8 +893,8 @@ public class FightController : MonoBehaviour {
 	/// <param name="idx">Index.</param>
 	/// <param name="hp">Hp.</param>
 	/// <param name="tType">T type.</param>
-	private void ChangeAccordingData(int idx, int parameter, TargetType tType, AccChangeType acType){
-		targetsChess = tType == TargetType.Player ? enemys : player;
+	private void ChangeAccordingData(int idx, int parameter, string targetString, AccChangeType acType){
+		targetsChess = targetString == "P" ? enemys : player;
 		for (int i = 0; i < targetsChess.Length; i++) {
 			for (int j = 0; j < targetsChess [i].according.Length; j++) {
 				if (idx == j) {
@@ -947,7 +938,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0; i < charaData.Length; i++) {
 			AccordingData[] data = new AccordingData[enemys.Length];
 			for(int j = 0;j<enemyData.Length; j++){
-				data[j] = GetAccording(charaData[i].soulData, enemyData[j].soulData, j, TargetType.Player);
+				data[j] = GetAccording(charaData[i].soulData, enemyData[j].soulData, j, "P");
 			}
 			player [i].according = data;
 		}
@@ -955,7 +946,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0; i < enemyData.Length; i++) {
 			AccordingData[] data = new AccordingData[5];
 			for(int j = 0;j<charaData.Length; j++){
-				data[j] = GetAccording(enemyData[i].soulData, charaData[j].soulData, j, TargetType.Enemy);
+				data[j] = GetAccording(enemyData[i].soulData, charaData[j].soulData, j, "E");
 			}
 			enemys [i].according = data;
 		}
@@ -968,7 +959,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="targetData">被攻擊者資料</param>
 	/// <param name="targetIdx">被攻擊者索引值</param>
 	/// <param name="tType">目標陣營，減傷值會因陣營有所不同</param>
-	private AccordingData GetAccording(SoulLargeData orgData, SoulLargeData targetData, int targetIdx,TargetType tType){
+	private AccordingData GetAccording(SoulLargeData orgData, SoulLargeData targetData, int targetIdx,string targetString){
         
 		AccordingData data = new AccordingData ();
 		data.index = targetIdx;
@@ -976,7 +967,7 @@ public class FightController : MonoBehaviour {
 		data.hp = targetData.abilitys["Hp"];
 		data.crt = targetData.abilitys["Cri"];
 		data.jobRatio = ParameterConvert.JobRatioCal (orgData.job, targetData.job);
-		if (tType == TargetType.Player) {
+		if (targetString == "P") {
 			data.attriRatio = 1;
 			data.minus = cdTime [targetIdx] == 0 ? 100 - enemyProtect * 10 : 100-(50 * (10 + enemyProtect) / 10);
 		} 
@@ -994,8 +985,8 @@ public class FightController : MonoBehaviour {
 	/// <param name="orgIdx">攻擊者索引</param>
 	/// <param name="idx">被攻擊者索引</param>
 	/// <param name="tType">被攻擊者索引值</param>
-	private AccordingData GetAccordingData(int orgIdx, int targetIdx, TargetType tType){
-		if (tType == TargetType.Enemy) {
+	private AccordingData GetAccordingData(int orgIdx, int targetIdx){
+		if (target[1] == "E") {
 			return player[orgIdx].according[targetIdx];
 		}
 		else {
@@ -1030,20 +1021,20 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	public void SelectSkillTarget(TargetType tType, int idx){
-		skillController.SelectSkillTarget (tType, idx);
+	public void SelectSkillTarget(string targetString, int idx){
+		skillController.SelectSkillTarget (targetString, idx);
 	}
 
-	public void OnSelectSkillTarget(List<int> idxList, TargetType tType){
-		fightUIController.OnSelectionDir (ExcludeTarget (idxList, tType), tType);
+	public void OnSelectSkillTarget(List<int> idxList, string targetString){
+		fightUIController.OnSelectionDir (ExcludeTarget (idxList, targetString), targetString);
 	}
 
-	public List<int> ExcludeTarget(List<int> idxList, TargetType tType){
-		int count = tType == TargetType.Player ? player.Length : enemys.Length;
+	public List<int> ExcludeTarget(List<int> idxList, string targetString){
+		int count = targetString == "P" ? player.Length : enemys.Length;
 
 
 		for(int i = 0;i<count;i++){
-			if (tType == TargetType.Player) {
+			if (targetString == "P") {
 				if (player [i].hasStatus[(int)Status.UnDirect] == true) {
 					idxList.Remove (i);
 				}
@@ -1064,8 +1055,8 @@ public class FightController : MonoBehaviour {
 	/// <param name="ruleId">Rule identifier.</param>
 	/// <param name="param">Parameter.</param>
 	/// <param name="tType">T type.</param>
-	public bool OnRuleMeets(int idx ,int[] ruleId, TargetType tType){
-		if (tType == TargetType.Player) {
+	public bool OnRuleMeets(int idx ,int[] ruleId, string targetString){
+		if (targetString == "P") {
 			return OnCharacterRule (idx, ruleId);
 		} 
 		else {
@@ -1134,20 +1125,14 @@ public class FightController : MonoBehaviour {
 
 	public void OnTriggerSkill(List<DamageData> allDamage){
 		int minusCount = allDamage [0].targetIdx >= 10 ? 10 : 0; 
-		if (allDamage [0].tType == TargetType.Enemy) {
-			orgChess = allDamage [0].isSelf == true ? enemys [allDamage [0].targetIdx] : player [allDamage [0].orgIdx];
-			targetChess = enemys [allDamage [0].targetIdx - minusCount];
+		orgChess = allDamage [0].tType[0] == "E" ? enemys [allDamage [0].targetIdx] : player [allDamage [0].orgIdx];
+		targetChess = allDamage[0].tType[1] == "E" ? enemys[allDamage[0].targetIdx] : player[allDamage[0].orgIdx];
 
-		} 
-		else {
-			orgChess = allDamage [0].isSelf == true ?player [allDamage [0].targetIdx]:enemys [allDamage [0].orgIdx];
-			targetChess = player [allDamage [0].targetIdx - minusCount];
-		}
 		skillController.OnTriggerSkill (orgChess, targetChess, allDamage);
 	}
 
-	public ChessData GetChessData(TargetType tType,int index){
-		if (tType == TargetType.Player) {
+	public ChessData GetChessData(string targetString,int index){
+		if (targetString == "P") {
 			return player [index];
 		} 
 		else {
@@ -1155,18 +1140,18 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	public int GetRadio(TargetType tType,int index){
-		if (tType == TargetType.Player) {
-			return fightUIController.GetCharaRatio (player [index].soulData.job);
+	public int GetRadio(string targetString, int index){
+        if (targetString == "P"){
+            return fightUIController.GetCharaRatio (player [index].soulData.job);
 		} 
 		else {
 			return 10000;
 		}
 	}
 
-	public int GetJob(TargetType tType,int index){
-		if (tType == TargetType.Player) {
-			return player [index].soulData.job;
+	public int GetJob(string targetString, int index){
+        if (targetString == "P"){
+            return player [index].soulData.job;
 		} 
 		else {
 			return enemys [index].soulData.job;
@@ -1182,15 +1167,15 @@ public class FightController : MonoBehaviour {
 	/// <param name="data">技能效果資料</param>
 	/// <param name="targetType">目標類型 玩家：敵人</param>
 	/// <param name="paramater">效果參數</param>
-	public void OnSkillEffect(int orgIdx, List<int> idxList, RuleLargeData data, TargetType targetType ,int skillId){
+	public void OnSkillEffect(int orgIdx, List<int> idxList, RuleLargeData data, string[] skillTarget ,int skillId){
 		if (data.effectType == 1) {
 			foreach (int idx in idxList) {
-				OnStatus (orgIdx, idx, data, targetType, skillId);
+				OnStatus (orgIdx, idx, data, skillTarget, skillId);
 			}
 		} 
 		else {
 			foreach (int idx in idxList) {
-				OnNormal (orgIdx, idx, data, targetType);
+				OnNormal (orgIdx, idx, data, skillTarget);
 			}
 		}
 	}
@@ -1201,12 +1186,12 @@ public class FightController : MonoBehaviour {
 	/// <param name="idxList">目標情單.</param>
 	/// <param name="data">技能效果資料.Recovery = 1,Act = 2,Cover = 3,RmAlarm = 4,RmNerf = 5,Dmg = 6,Exchange = 7,Call = 8</param>
 	/// <param name="paramater">效果參數.</param>
-	private void OnNormal(int orgIdx, int idx, RuleLargeData data, TargetType tType){
-		targetChess = tType == TargetType.Player ? player [idx] : enemys [idx];
+	private void OnNormal(int orgIdx, int idx, RuleLargeData data, string[] skillTarget){
+		targetChess = skillTarget[1] == "P" ? player [idx] : enemys [idx];
 
 		switch (data.effect[0]) {
 		case (int)Normal.Recovery:
-			OnRecovery (orgIdx, idx, data, tType);
+			OnRecovery (orgIdx, idx, data, skillTarget[1]);
 			break;
 		case (int)Normal.Act:
 			actIdx.Add (idx);
@@ -1218,10 +1203,10 @@ public class FightController : MonoBehaviour {
 			OnRmAlarm (orgIdx);
 			break;
 		case (int)Normal.RmNerf:
-			OnRmNerf (idx, tType);
+			OnRmNerf (idx, skillTarget[1]);
 			break;
 		case (int)Normal.Revive:
-			OnRevive (orgIdx, idx, data, tType);
+			OnRevive (orgIdx, idx, data, skillTarget[1]);
 			break;
 		case (int)Normal.Energe:
 			break;
@@ -1235,7 +1220,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="idxList">目標情單.</param>
 	/// <param name="data">技能效果資料.UnDef = 1,UnNerf = 2,AddNerf = 3,Suffer = 4,Maximum = 5,Ability = 6,UnDirect = 7</param>
 	/// <param name="paramater">效果參數.</param>
-	private void OnStatus(int orgIdx, int idx, RuleLargeData data, TargetType tType, int skillId){
+	private void OnStatus(int orgIdx, int idx, RuleLargeData data, string[] tType, int skillId){
 		orgChess = tType == TargetType.Player ? player [idx] : enemys [idx];
 		orgChess.hasStatus [data.effect [0]] = true;
 
@@ -1248,7 +1233,7 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	private void OnRecovery(int orgIdx, int idx, RuleLargeData data, TargetType tType){
+	private void OnRecovery(int orgIdx, int idx, RuleLargeData data, string targetString ){
 		int over = 0;
 
 		if (targetChess.soulData.abilitys ["Hp"] > 0) {
@@ -1262,12 +1247,12 @@ public class FightController : MonoBehaviour {
 				over = targetChess.soulData.abilitys ["Hp"] - targetChess.fullHp;
 				targetChess.soulData.abilitys ["Hp"] = orgChess.fullHp;
 			}
-			fightUIController.OnRecovery (idx, tType, (float)targetChess.soulData.abilitys ["Hp"] / (float)targetChess.fullHp);
+			fightUIController.OnRecovery (idx, targetString, (float)targetChess.soulData.abilitys ["Hp"] / (float)targetChess.fullHp);
 
 			if (over > 0) {
-				skillController.OverRecovery (idx, orgIdx, over, tType);
+				skillController.OverRecovery (idx, orgIdx, over, targetString);
 			}
-			ChangeAccordingData (idx, targetChess.soulData.abilitys ["Hp"], tType, AccChangeType.Hp);
+			ChangeAccordingData (idx, targetChess.soulData.abilitys ["Hp"], targetString, AccChangeType.Hp);
 		}
 	}
 
@@ -1305,8 +1290,8 @@ public class FightController : MonoBehaviour {
 
 	#endregion
 
-	private void OnAbilityChanged(int idx, RuleLargeData data, TargetType tType, int skillId){
-		targetsChess = tType == TargetType.Player ? enemys : player;
+	private void OnAbilityChanged(int idx, RuleLargeData data, string targetString, int skillId){
+		targetsChess = targetString == "P" ? enemys : player;
 
 		if (!orgChess.abiChange.ContainsKey (skillId)) {
 			orgChess.abiChange.Add (skillId, data.abilitys);
@@ -1315,15 +1300,15 @@ public class FightController : MonoBehaviour {
 		for(int i=0;i<targetsChess.Length;i++){
 			int atk = player [idx].soulData.abilitys ["Atk"] * GetAbiChange (idx, tType, "Atk") / 100;
 			int mAtk = player [idx].soulData.abilitys ["mAtk"] * GetAbiChange (idx, tType, "mAtk") / 100;
-			ChangeAccordingData (idx, atk + mAtk, TargetType.Player, AccChangeType.MAtkAtk);
+			ChangeAccordingData (idx, atk + mAtk, "P", AccChangeType.MAtkAtk);
 		}
 	}
 
-	private int GetAbiChange (int idx,TargetType tType, string abiKey){
+	private int GetAbiChange (int idx,int targetIdx, string abiKey){
 		int changeParam = 100;
-		orgChess = tType == TargetType.Player ? enemys [idx] : player [idx];
+		ChessData chess = targetIdx == 0 ? orgChess : targetChess;
 
-		foreach (var value in orgChess.abiChange.Values) {
+		foreach (var value in chess.abiChange.Values) {
 			if (value.ContainsKey (abiKey)) {
 				changeParam += value [abiKey];
 			}
@@ -1368,9 +1353,11 @@ public class FightController : MonoBehaviour {
 
 
 public enum TargetType{
-	Player,
-	Enemy,
-	Both
+	P_E,
+	E_P,
+	P_P,
+    E_E,
+    All
 }
 
 public struct DamageData{
@@ -1381,8 +1368,7 @@ public struct DamageData{
 	public DamageType damageType;
 	public int attributes;
 	public bool isCrt;
-	public TargetType tType;
-	public bool isSelf;
+	public string[] tType;
 }
 
 public enum FightStatus{
