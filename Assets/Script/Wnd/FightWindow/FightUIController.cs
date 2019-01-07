@@ -189,7 +189,7 @@ public class FightUIController : MonoBehaviour {
 
 		SetData ();
 
-		energe = 2;
+		energe = 3;
 		energeNum.SetNumber (energe);
 
 		ResetGround(true);
@@ -250,8 +250,8 @@ public class FightUIController : MonoBehaviour {
 			List<GroundController> org = new List<GroundController> ();
 			org.Add (data.gc);
 			recJobRatios [data.extraJob] += 25;
-			for (int i = 0; i < fightController.player.Length; i++) {
-				if (fightController.GetJob (TargetType.Player, i) == data.extraJob) {
+			for (int i = 0; i < fightController.players.Length; i++) {
+				if (fightController.GetJob ("P", i) == data.extraJob) {
 					GroundSEController gse = SEPool.Dequeue ();
 					gse.SetExtraSE (org, playerButton [i].transform.localPosition, i, data.upRatio);
 					gse.onRecycle = RecycleExtraItem;
@@ -287,6 +287,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private IEnumerator OnShowAllFight(List<DamageData> allDamage){
+		Debug.Log (allDamage [0].tType [0] + " : " + allDamage [0].tType [1]);
 		for (int i = 0; i < allDamage.Count; i++) {
 			FightItemButton org = null;
 			FightItemButton target = null;
@@ -295,7 +296,7 @@ public class FightUIController : MonoBehaviour {
 			//當TargetIdx重複時會加10，此時需要減去10
 			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
 
-			target = allDamage[1].tType[0] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
+			target = allDamage[i].tType[1] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
 
 			GroundSEController gse = SEPool.Dequeue ();
 			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
@@ -518,14 +519,14 @@ public class FightUIController : MonoBehaviour {
 
 		ChangeStatus (FightStatus.FightStart);
 
-		OnCloseButton (TargetType.Both);
+		OnCloseButton (TargetType.All.ToString());
 
 		ResetDamage (false);
 
 		for (int i = 0; i < jobRatios.Length; i++) {
 			if (jobRatios [i] != recJobRatios [i]) {
-				for (int j = 0; j < fightController.player.Length; j++) {
-					if (fightController.GetJob(TargetType.Player, j) == i) {
+				for (int j = 0; j < fightController.players.Length; j++) {
+					if (fightController.GetJob("P", j) == i) {
 						AddCanAttack (j);
 						playerButton [j].SetRatioTxt (jobRatios [i], true);
 						playerButton[j].onComplete = RecycleShowUp;
@@ -538,6 +539,7 @@ public class FightUIController : MonoBehaviour {
 		recJobRatios = jobRatios;
 
         MonsterCdDown();
+
 
 		if (hasDamage) {
 			StartCoroutine (CheckRatio ());
@@ -589,7 +591,7 @@ public class FightUIController : MonoBehaviour {
 	private void TouchDown(GroundController gc, bool isCover){
 		startGc = gc.matchController;
 		if (charaIdx != null) {
-			if (fightController.GetJob(TargetType.Player, (int)charaIdx) == 2) {
+			if (fightController.GetJob("P", (int)charaIdx) == 2) {
 				startGc.onProtection = OnProtection;
 			}
 
@@ -598,7 +600,7 @@ public class FightUIController : MonoBehaviour {
 				startCover = true;
 				startGc.OnCover ();
 			}
-			startGc.ChangeChara (fightController.GetJob(TargetType.Player, (int)charaIdx));
+			startGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
 
 			startCharaImage = PopImage (_imagePool, startGc, gc.transform.localPosition);
 			endCharaImage = PopImage (_imagePool, null, gc.transform.localPosition);
@@ -665,9 +667,9 @@ public class FightUIController : MonoBehaviour {
 				endCover = true;
 				endGc.OnCover ();
 			}
-			endGc.ChangeChara (fightController.GetJob(TargetType.Player, (int)charaIdx));
+			endGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
 
-			if (fightController.GetJob(TargetType.Player, (int)charaIdx) == 2) {
+			if (fightController.GetJob("P", (int)charaIdx) == 2) {
 				endGc.onProtection = OnProtection;
 			}
 
@@ -762,7 +764,7 @@ public class FightUIController : MonoBehaviour {
 			}
 
 			if (endGc != null) {
-				endGc.ChangeChara (fightController.GetJob(TargetType.Player, (int)charaIdx));
+				endGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
 			}
 		}
 
@@ -827,10 +829,10 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		for (int i = 0; i < jobRatios.Length; i++) {
-			for (int j = 0; j < fightController.player.Length; j++) {
-				if (fightController.GetJob(TargetType.Player, j) == i) {
+			for (int j = 0; j < fightController.players.Length; j++) {
+				if (fightController.GetJob("P", j) == i) {
 					playerButton [j].SetRatioTxt (jobRatios [i]);
-					if (recJobRatios [fightController.GetJob(TargetType.Player, i)] != jobRatios [fightController.GetJob(TargetType.Player, i)]) {
+					if (recJobRatios [fightController.GetJob("P", i)] != jobRatios [fightController.GetJob("P", i)]) {
 						playerButton [i].SetTextColor (Color.red);
 					} else {
 						playerButton [i].SetTextColor (Color.black);
@@ -915,8 +917,8 @@ public class FightUIController : MonoBehaviour {
 				{
 					//Debug.LogWarning (data.ratio);
 					List<Vector3> postions = new List<Vector3> ();
-					for (int i = 0; i < fightController.player.Length; i++) {
-						if (fightController.GetJob(TargetType.Player, i) == data.CharaJob) {
+					for (int i = 0; i < fightController.players.Length; i++) {
+						if (fightController.GetJob("P", i) == data.CharaJob) {
 							postions.Add (playerButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
 							ratioCount [i]++;
 						}
@@ -943,11 +945,11 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void ResetDamage(bool isPrev) {
-		for (int i = 0; i < fightController.player.Length; i++) {
+		for (int i = 0; i < fightController.players.Length; i++) {
 			if (!isPrev) {
-				playerButton [i].SetRatioTxt (recJobRatios [fightController.GetJob(TargetType.Player, i)]);
+				playerButton [i].SetRatioTxt (recJobRatios [fightController.GetJob("P", i)]);
 			} else {
-				playerButton [i].SetRatioTxt (preJobRatios [fightController.GetJob(TargetType.Player, i)]);
+				playerButton [i].SetRatioTxt (preJobRatios [fightController.GetJob("P", i)]);
 			}
 			playerButton [i].SetTextColor (Color.black);
 		}

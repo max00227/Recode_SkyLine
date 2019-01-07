@@ -74,14 +74,4 @@ public class DataUtil{
 	public static bool CheckArray<T> (T[] array, T param){
 		return array.Any (f => f.Equals(param));
 	}
-
-
-	public static TargetType ReverseTarget(TargetType tType){
-		if (tType == TargetType.Player) {
-			return TargetType.Enemy;
-		} 
-		else {
-			return TargetType.Player;
-		}
-	}
 }

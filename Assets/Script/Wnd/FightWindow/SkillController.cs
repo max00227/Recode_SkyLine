@@ -27,17 +27,17 @@ public class SkillController : MonoBehaviour {
 
 	private RuleLargeData selLockRuleData;
 
-	private int dirOrgIdx;
-	private int dirTargetIdx;
-	private int dirOrgRadio;
-	private int dirSkillId;
-	private string[] dirTarget;
+	private int mainOrgIdx;
+	private int mainTargetIdx;
+	private int mainOrgRadio;
+	private int mainSkillId;
+	private string[] mainTarget;
     private Dictionary<int, SkillLargeData> orgSkills;
     private Dictionary<int, SkillLargeData> targetSkills;
 
 
-    private ChessData dirOrgData;
-	private ChessData dirTargetData;
+    private ChessData mainOrgData;
+	private ChessData mainTargetData;
 
 	public void SetData(SoulLargeData[] playerData, SoulLargeData[] enemyData){
 		playerCount = playerData.Length;
@@ -90,13 +90,13 @@ public class SkillController : MonoBehaviour {
 
 	public void OnPermanentSkill(){
 		foreach (KeyValuePair<int, SkillLargeData> kv in playerPermanentSkill) {
-            dirTarget = new string[2] { "", "P" };
+            mainTarget = new string[2] { "", "P" };
 			foreach(RuleLargeData ruleData in kv.Value.ruleData){
 				OnEffectTarget (ruleData, false);
 			}
 		}
 		foreach (KeyValuePair<int, SkillLargeData> kv in enemyPermanentSkill) {
-            dirTarget = new string[2] { "", "E" };
+            mainTarget = new string[2] { "", "E" };
             foreach (RuleLargeData ruleData in kv.Value.ruleData){
 				OnEffectTarget (ruleData, false);
 			}
@@ -109,30 +109,30 @@ public class SkillController : MonoBehaviour {
 	/// <param name="targetData">被攻擊者資料</param>
 	/// <param name="allDamage">傷害資料</param>
 	public void OnTriggerSkill(ChessData orgData, ChessData targetData, List<DamageData> allDamage){
-		dirOrgIdx = allDamage [0].orgIdx;
-		dirTargetIdx = allDamage [0].targetIdx;
-		dirTarget = allDamage [0].tType;
-		dirOrgData = orgData;
-		dirTargetData = targetData;
+		mainOrgIdx = allDamage [0].orgIdx;
+		mainTargetIdx = allDamage [0].targetIdx;
+		mainTarget = allDamage [0].tType;
+		mainOrgData = orgData;
+		mainTargetData = targetData;
 
-        orgSkills = dirTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
-        targetSkills = dirTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
+        orgSkills = mainTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
+        targetSkills = mainTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
 
 
-		if (orgSkills.ContainsKey(dirOrgIdx)) {
-			OnSkillSelfRule (orgSkills[dirOrgIdx], allDamage);
+		if (orgSkills.ContainsKey(mainOrgIdx)) {
+			OnSkillSelfRule (orgSkills[mainOrgIdx], allDamage);
 		}
-		if (targetSkills.ContainsKey(dirTargetIdx)) {
-			OnSkillUnSelfRule (targetSkills[dirTargetIdx], allDamage);
+		if (targetSkills.ContainsKey(mainTargetIdx)) {
+			OnSkillUnSelfRule (targetSkills[mainTargetIdx], allDamage);
 		}
 	}
 
 	public void OnRoundSkill(){
 		foreach (KeyValuePair<int, SkillLargeData> kv in playerRoundSkill) {
-			dirOrgIdx = kv.Key;
-			dirOrgData = fightController.GetChessData ("P", dirOrgIdx);
-			dirOrgRadio = fightController.GetRadio ("P", dirOrgIdx);
-			dirTarget = new string[2]{"","P"};
+			mainOrgIdx = kv.Key;
+			mainOrgData = fightController.GetChessData ("P", mainOrgIdx);
+			mainOrgRadio = fightController.GetRadio ("P", mainOrgIdx);
+			mainTarget = new string[2]{"","P"};
 			OnSkillSelfRule (kv.Value);
 		}
 	}
@@ -144,7 +144,7 @@ public class SkillController : MonoBehaviour {
 	/// <param name="data">技能資料</param>
 	/// <param name="allDamage">傷害資料</param>
 	private void OnSkillSelfRule (SkillLargeData data, List<DamageData> allDamage = null){
-		dirSkillId = data.id;
+		mainSkillId = data.id;
 
 		int parameter = 0;
 		bool[] meets = new bool[data.ruleData.Count];
@@ -153,7 +153,7 @@ public class SkillController : MonoBehaviour {
 			case (int)Rule.None:
 			case (int)Rule.HpLess:
 			case (int)Rule.HpBest:
-				meets [i] = fightController.OnRuleMeets (dirOrgIdx, data.ruleData [i].rule, dirTarget[0]);
+				meets [i] = fightController.OnRuleMeets (mainOrgIdx, data.ruleData [i].rule, mainTarget[0]);
 				break;
 			case (int)Rule.OnDmg:
 				meets [i] = allDamage !=null && allDamage.Count > 0;
@@ -164,8 +164,8 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					if (dirTarget[0] == "E"
-						|| (dirTarget[0] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
+					if (mainTarget[0] == "E"
+						|| (mainTarget[0] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
 						OnEffectTarget (AddParameter (false, data.ruleData [i], parameter));
 					}
 				}
@@ -245,8 +245,8 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					if (dirTarget[1] == "E"
-                        || (dirTarget[1] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
+					if (mainTarget[1] == "E"
+                        || (mainTarget[1] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
 						OnEffectTarget (AddParameter (true, data.ruleData [i], parameter), false);
 					}
 				}
@@ -267,16 +267,16 @@ public class SkillController : MonoBehaviour {
 			needEnerge += rule.energe;
 		}
 		if (!isSelf) {
-            if (dirTarget[0] == "E"
-                || (dirTarget[0] == "P" && fightUIController.GetEnerge (needEnerge))) {
+            if (mainTarget[0] == "E"
+                || (mainTarget[0] == "P" && fightUIController.GetEnerge (needEnerge))) {
 				for (int i = 0; i < rules.Count; i++) {
 					OnEffectTarget (AddParameter (true, rules [i], parameter), isSelf);
 				}
 			}
 		} 
 		else {
-			if (dirTarget[1] == "E"
-                || (dirTarget[0] == "P" && fightUIController.GetEnerge (needEnerge))) {
+			if (mainTarget[1] == "E"
+                || (mainTarget[0] == "P" && fightUIController.GetEnerge (needEnerge))) {
 				for (int i = 0; i < rules.Count; i++) {
 					OnEffectTarget (AddParameter (true, rules [i], parameter), isSelf);
 				}
@@ -298,7 +298,7 @@ public class SkillController : MonoBehaviour {
 				}
 			}
 		} else if (data.target > 4 && data.target <= 7) {
-            dirTarget[1] = dirTarget[1] == "P" ? "E" : "P";
+            mainTarget[1] = mainTarget[1] == "P" ? "E" : "P";
             if (data.target < 7) {
 				for (int i = 0; i < monsterCount; i++) {
 					idxList.Add (i);
@@ -311,9 +311,9 @@ public class SkillController : MonoBehaviour {
 			break;
 		case (int)Target.Self:
 			if (isSelf) {
-				idxList.Add (dirOrgIdx);
+				idxList.Add (mainOrgIdx);
 			} else {
-				idxList.Add (dirTargetIdx);
+				idxList.Add (mainTargetIdx);
 			}
 			break;
 		case (int)Target.DirTeam:
@@ -321,7 +321,7 @@ public class SkillController : MonoBehaviour {
 			fightController.OnSelectSkillTarget (idxList, "P");
 			return;
 		case (int)Target.OnlyMate://移除發動者
-			idxList.Remove (dirOrgIdx);
+			idxList.Remove (mainOrgIdx);
 			break;
 		case (int)Target.DirEnemy:
 			selLockRuleData = data;
@@ -329,20 +329,20 @@ public class SkillController : MonoBehaviour {
 			return;
 		case (int)Target.Trigger:
 			if (isSelf) {
-				idxList.Add (dirTargetIdx);
+				idxList.Add (mainTargetIdx);
 			} else {
-				idxList.Add (dirOrgIdx);
+				idxList.Add (mainOrgIdx);
 			}
 			break;
 		}
 
-		fightController.OnSkillEffect (dirOrgIdx, idxList, data, dirTarget, dirSkillId);
+		fightController.OnSkillEffect (mainOrgIdx, idxList, data, mainTarget, mainSkillId);
 	}
 
 
 
 	public void SelectSkillTarget(string targetString, int idx){
-		fightController.OnSkillEffect (dirOrgIdx, new List<int> (new int[1]{ idx }), selLockRuleData, dirTarget, dirSkillId);
+		fightController.OnSkillEffect (mainOrgIdx, new List<int> (new int[1]{ idx }), selLockRuleData, mainTarget, mainSkillId);
 	}
 
 	/// <summary>
@@ -351,16 +351,16 @@ public class SkillController : MonoBehaviour {
 	/// <param name="target">被補血者</param>
 	/// <param name="over">超過數值</param>
 	/// <param name="tType">被補血者陣營</param>
-	public void OverRecovery(int org , int target, int over, TargetType tType){
-		dirOrgIdx = org;
-		dirTargetIdx = target;
-		dirTarget = tType.ToString().Split('_');
-        targetSkills = dirTarget[1] == "P" ? playerTriggerSkill : enemyTriggerSkill; 
+	public void OverRecovery(int org , int target, int over, string[] tType){
+		mainOrgIdx = org;
+		mainTargetIdx = target;
+		mainTarget = tType.ToString().Split('_');
+        targetSkills = mainTarget[1] == "P" ? playerTriggerSkill : enemyTriggerSkill; 
 
-		if (targetSkills.ContainsKey(dirOrgIdx)) {
-			foreach (RuleLargeData data in playerTriggerSkill[dirOrgIdx].ruleData) {
+		if (targetSkills.ContainsKey(mainOrgIdx)) {
+			foreach (RuleLargeData data in playerTriggerSkill[mainOrgIdx].ruleData) {
 				if (data.rule [0] == (int)Rule.Over) {
-					dirOrgData = fightController.GetChessData (dirTarget[0], dirOrgIdx);
+					mainOrgData = fightController.GetChessData (mainTarget[0], mainOrgIdx);
 					OnEffectTarget (AddParameter (false, data, over));
 				}
 			}
@@ -399,19 +399,19 @@ public class SkillController : MonoBehaviour {
 				} 
 				else {
 					if (isRev) {
-						if (dirTargetData.soulData != null) {
-							foreach(var value in dirTargetData.abiChange.Values){
+						if (mainTargetData.soulData != null) {
+							foreach(var value in mainTargetData.abiChange.Values){
 								abiChange += value.ContainsKey (kv.Key) ? value [kv.Key] : 0;
 							}
-							param += dirTargetData.soulData.abilitys [kv.Key] * kv.Value / 100 * abiChange / 100;
+							param += mainTargetData.soulData.abilitys [kv.Key] * kv.Value / 100 * abiChange / 100;
 						}
 					} 
 					else {
-						foreach (var value in dirOrgData.abiChange.Values) {
+						foreach (var value in mainOrgData.abiChange.Values) {
 							abiChange += value.ContainsKey (kv.Key) ? value [kv.Key] : 0;
 						}
 
-						param += dirOrgData.soulData.abilitys [kv.Key] * kv.Value / 100 * dirOrgRadio / 100 * abiChange / 100;
+						param += mainOrgData.soulData.abilitys [kv.Key] * kv.Value / 100 * mainOrgRadio / 100 * abiChange / 100;
 					}
 				}
 			}
