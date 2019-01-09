@@ -111,7 +111,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
 			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
 			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.TeamData[0].Team[i].lv));
-			//enemys[i].soulData.Merge (enemys[i].soulData.skill);
+			enemys[i].soulData.Merge (enemys[i].soulData.skill);
 			enemys[i].fullHp = enemys[i].soulData.abilitys["Hp"];
 			enemys [i].status = new Dictionary<StatusLargeData, int> ();
 			enemys [i].recStatus = new Dictionary<StatusLargeData, int> ();
@@ -140,7 +140,7 @@ public class FightController : MonoBehaviour {
 		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
 			players [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			players [i].soulData.Merge (ParameterConvert.GetCharaAbility (players [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
-			//player [i].soulData.Merge (player [i].soulData.skill);
+			players [i].soulData.Merge (players [i].soulData.skill);
 			players [i].fullHp = players [i].soulData.abilitys["Hp"];
 			//player[i].initCD = (int)player [i].soulData._skill.cdTime;
 			players [i].status = new Dictionary<StatusLargeData, int> ();
@@ -1009,7 +1009,6 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void FightEnd(){
-		skillController.OnRoundSkill ();
 		for (int i = 0; i < skillCdTime.Length; i++) {
 			if (skillCdTime [i] > 0) {
 				skillCdTime [i]--;
@@ -1181,12 +1180,15 @@ public class FightController : MonoBehaviour {
 	/// <param name="data">技能效果資料</param>
 	/// <param name="targetType">目標類型 玩家：敵人</param>
 	/// <param name="paramater">效果參數</param>
-	public void OnSkillEffect(int orgIdx, List<int> idxList, RuleLargeData data, string[] skillTarget ,int skillId){
+	public void OnSkillEffect(int orgIdx, List<int> idxList, RuleLargeData data, string[] skillTarget ,int skillId, bool isExpend = false){
+		if (isExpend) {
+			fightUIController.AddEnerge (data.energe * -1);
+		}
 		deputyTarget = skillTarget;
 		deputyOrgChess = skillTarget [0] == "P" ? players [orgIdx] : enemys [orgIdx];
 
 		foreach (int idx in idxList) {
-			deputyTargetChess = skillTarget [1] == "E" ? players [orgIdx] : enemys [orgIdx];
+			deputyTargetChess = skillTarget [1] == "E" ? players [idx] : enemys [idx];
 
 			if (data.effectType == 1) {
 				OnStatus (orgIdx, idx, data, skillTarget[0], skillId);
@@ -1225,8 +1227,12 @@ public class FightController : MonoBehaviour {
 			OnRevive (orgIdx, idx, data, targetString);
 			break;
 		case (int)Normal.Energe:
+			fightUIController.AddEnerge (data.effect [1]);
 			break;
 		case (int)Normal.DelJob:
+			break;
+		case (int)Normal.LockEng:
+			fightUIController.LockEnemy (data.effect [1]);
 			break;
 		}
 	}
@@ -1309,8 +1315,8 @@ public class FightController : MonoBehaviour {
 		deputyOrgsChess = targetString == "P" ? enemys : players;
 		deputyTargetsChess = targetString == "P" ? players : enemys;
 
-		if (!deputyOrgChess.abiChange.ContainsKey (skillId)) {
-			deputyOrgChess.abiChange.Add (skillId, data.abilitys);
+		if (!deputyTargetChess.abiChange.ContainsKey (skillId)) {
+			deputyTargetChess.abiChange.Add (skillId, data.abilitys);
 		}
 			
 		for(int i=0;i<deputyOrgsChess.Length;i++){
@@ -1340,11 +1346,11 @@ public class FightController : MonoBehaviour {
 
 
 	public void ShowData(){
-		StatusLargeData data = MasterDataManager.GetStatusData (9);
-
-		foreach (KeyValuePair<string, int[]> kv in data.statusParam) {
-			foreach (int p in kv.Value) {
-				Debug.LogWarning (kv.Key + " : " + p);
+		foreach (ChessData data in players) {
+			foreach (Dictionary<string, int> v in data.abiChange.Values) {
+				foreach (KeyValuePair<string, int> kv in v) {
+					Debug.Log (data.soulData.name+" : "+kv.Key + " : " + kv.Value);
+				}
 			}
 		}
 	}

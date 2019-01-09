@@ -17,8 +17,10 @@ public class SkillController : MonoBehaviour {
 	private Dictionary<int, SkillLargeData> playerTriggerSkill;
 	private Dictionary<int, SkillLargeData> playerPermanentSkill;
 	private Dictionary<int, SkillLargeData> playerRoundSkill;
+	private Dictionary<int, SkillLargeData> playerNormalSkill;
 
-	private Dictionary<int, SkillLargeData> enemyNorSkill;
+
+	private Dictionary<int, SkillLargeData> enemyRoundSkill;
 	private Dictionary<int, SkillLargeData> enemyPermanentSkill;
 	private Dictionary<int, SkillLargeData> enemyTriggerSkill;
 
@@ -44,27 +46,29 @@ public class SkillController : MonoBehaviour {
 		monsterCount = enemyData.Length;
 		playerTriggerSkill = new Dictionary<int, SkillLargeData> ();
 		playerRoundSkill = new Dictionary<int, SkillLargeData> ();
-		enemyNorSkill = new Dictionary<int, SkillLargeData> ();
+		playerPermanentSkill = new Dictionary<int, SkillLargeData> ();
+		playerNormalSkill = new Dictionary<int, SkillLargeData> ();
+		enemyRoundSkill = new Dictionary<int, SkillLargeData> ();
 		enemyTriggerSkill = new Dictionary<int, SkillLargeData> ();
+		enemyPermanentSkill = new Dictionary<int, SkillLargeData> ();
+
 
 		for (int i = 0; i < playerCount; i++) {
-            if (playerData[i]._skill != null)
-            {
-                if (playerData[i]._skill.type == 1)
-                {
-                    if (playerData[i]._skill.launchType == 0)
-                    {
-                        playerTriggerSkill.Add(i, playerData[i]._skill);
-                    }
-                    else
-                    {
-                        playerRoundSkill.Add(i, playerData[i]._skill);
-                    }
-                }
-				if (playerData [i]._skill.type == 0) {					
+			if (playerData [i]._skill != null) {
+				if (playerData [i]._skill.type == 1) {
+					if (playerData [i]._skill.launchType == 0) {
+						playerTriggerSkill.Add (i, playerData [i]._skill);
+					} else {
+						playerRoundSkill.Add (i, playerData [i]._skill);
+					}
+				} 
+				else if (playerData [i]._skill.type == 0) {					
 					playerPermanentSkill.Add (i, playerData [i]._skill);
+				} 
+				else {
+					playerNormalSkill.Add (i, playerData [i]._skill);
 				}
-            }
+			} 
 		}
 
 		for (int i = 0; i < monsterCount; i++) {
@@ -73,8 +77,9 @@ public class SkillController : MonoBehaviour {
 				if (enemyData [i]._skill.type == 1) {
 					if (enemyData [i]._skill.launchType == 0) {
 						enemyTriggerSkill.Add (i, enemyData [i]._skill);
-					} else {
-						enemyNorSkill.Add (i, enemyData [i]._skill);
+					} 
+					else {
+						enemyRoundSkill.Add (i, enemyData [i]._skill);
 					}
 				} 
 				if (enemyData [i]._skill.type == 0) {					
@@ -84,22 +89,14 @@ public class SkillController : MonoBehaviour {
 		}
 	}
 
-	private void SetTriggerSkill(){
-		
-	}
-
 	public void OnPermanentSkill(){
-		foreach (KeyValuePair<int, SkillLargeData> kv in playerPermanentSkill) {
-            mainTarget = new string[2] { "", "P" };
-			foreach(RuleLargeData ruleData in kv.Value.ruleData){
-				OnEffectTarget (ruleData, false);
-			}
+		foreach (var value in playerPermanentSkill.Values) {
+            mainTarget = new string[2] { "P", "" };
+			OnUseSkill (value);
 		}
-		foreach (KeyValuePair<int, SkillLargeData> kv in enemyPermanentSkill) {
-            mainTarget = new string[2] { "", "E" };
-            foreach (RuleLargeData ruleData in kv.Value.ruleData){
-				OnEffectTarget (ruleData, false);
-			}
+		foreach (var value in enemyPermanentSkill.Values) {
+			mainTarget = new string[2] { "E", "" };
+			OnUseSkill (value);
 		}
 	}
 
@@ -115,15 +112,15 @@ public class SkillController : MonoBehaviour {
 		mainOrgData = orgData;
 		mainTargetData = targetData;
 
-        orgSkills = mainTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
-        targetSkills = mainTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
 
+        orgSkills = mainTarget[0] == "P" ? playerTriggerSkill : enemyTriggerSkill;
+        targetSkills = mainTarget[1] == "P" ? playerTriggerSkill : enemyTriggerSkill;
 
 		if (orgSkills.ContainsKey(mainOrgIdx)) {
 			OnSkillSelfRule (orgSkills[mainOrgIdx], allDamage);
 		}
 		if (targetSkills.ContainsKey(mainTargetIdx)) {
-			OnSkillUnSelfRule (targetSkills[mainTargetIdx], allDamage);
+			OnSkillExternalRule (targetSkills[mainTargetIdx], allDamage);
 		}
 	}
 
@@ -132,13 +129,21 @@ public class SkillController : MonoBehaviour {
 			mainOrgIdx = kv.Key;
 			mainOrgData = fightController.GetChessData ("P", mainOrgIdx);
 			mainOrgRadio = fightController.GetRadio ("P", mainOrgIdx);
-			mainTarget = new string[2]{"","P"};
+			mainTarget = new string[2]{"P",""};
+			OnSkillSelfRule (kv.Value);
+		}
+
+		foreach (KeyValuePair<int, SkillLargeData> kv in enemyRoundSkill) {
+			mainOrgIdx = kv.Key;
+			mainOrgData = fightController.GetChessData ("E", mainOrgIdx);
+			mainOrgRadio = fightController.GetRadio ("E", mainOrgIdx);
+			mainTarget = new string[2]{"E",""};
 			OnSkillSelfRule (kv.Value);
 		}
 	}
 
 	/// <summary>
-	/// 觸發條件為攻擊者
+	/// 觸發條件為自身因素者
 	/// <param name="orgData">攻擊者資料</param>
 	/// <param name="targetData">被攻擊者資料</param>
 	/// <param name="data">技能資料</param>
@@ -151,6 +156,8 @@ public class SkillController : MonoBehaviour {
 		for (int i = 0; i < data.ruleData.Count; i++) {
 			switch (data.ruleData [i].rule [0]) {
 			case (int)Rule.None:
+				meets [i] = true;
+				break;
 			case (int)Rule.HpLess:
 			case (int)Rule.HpBest:
 				meets [i] = fightController.OnRuleMeets (mainOrgIdx, data.ruleData [i].rule, mainTarget[0]);
@@ -164,9 +171,15 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					if (mainTarget[0] == "E"
-						|| (mainTarget[0] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
+					if (mainTarget [0] == "E"
+						|| (mainTarget [0] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe) == true)) {
+						Debug.Log ("Launch Success");
 						OnEffectTarget (AddParameter (false, data.ruleData [i], parameter));
+					} 
+					else {
+						if (fightUIController.GetEnerge (data.ruleData [i].energe) == false) {
+							Debug.Log("Energe Not Worth");
+						}
 					}
 				}
 			}
@@ -179,10 +192,10 @@ public class SkillController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 觸發條件為被攻擊者
+	/// 觸發條件為外在因素者
 	/// <param name="data">技能資料</param>
 	/// <param name="allDamage">傷害資料</param>
-	private void OnSkillUnSelfRule (SkillLargeData data, List<DamageData> allDamage = null){
+	private void OnSkillExternalRule (SkillLargeData data, List<DamageData> allDamage = null){
 		bool[] meets = new bool[data.ruleData.Count];
 		int parameter = 0;
 		foreach(DamageData damageData in allDamage){
@@ -245,9 +258,15 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					if (mainTarget[1] == "E"
-                        || (mainTarget[1] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
+					if (mainTarget [1] == "E"
+					    || (mainTarget [1] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe))) {
+						Debug.Log ("Launch Success");
 						OnEffectTarget (AddParameter (true, data.ruleData [i], parameter), false);
+					} 
+					else {
+						if (fightUIController.GetEnerge (data.ruleData [i].energe) == false) {
+							Debug.Log("Energe Not Worth");
+						}
 					}
 				}
 			}
@@ -288,19 +307,24 @@ public class SkillController : MonoBehaviour {
 	/// 決定技能效果目標
 	/// <param name="data">技能效果資料</param>
 	/// <param name="paramater">效果參數</param>
-	private void OnEffectTarget(RuleLargeData data, bool isSelf = true){
+	private void OnEffectTarget(RuleLargeData data, bool isSelf = true, bool isExpend = false){
 		List<int> idxList = new List<int>();
 
-		if (data.target >= 1 && data.target <= 4) {
-            if (data.target > 1) {
-				for (int i = 0; i < playerCount; i++) {
+		if (data.target > 20) {
+			mainTarget [1] = isSelf == true ? mainTarget [1] : mainTarget [0];
+		}
+		else if (data.target > 10) {
+			mainTarget [1] = mainTarget [0] == "P" ? "E" : "P";
+			if (data.target < 7) {
+				for (int i = 0; i < monsterCount; i++) {
 					idxList.Add (i);
 				}
 			}
-		} else if (data.target > 4 && data.target <= 7) {
-            mainTarget[1] = mainTarget[1] == "P" ? "E" : "P";
-            if (data.target < 7) {
-				for (int i = 0; i < monsterCount; i++) {
+		} 
+		else {
+			mainTarget [1] = mainTarget [0] == "P" ? "P" : "E";
+			if (data.target > 1) {
+				for (int i = 0; i < playerCount; i++) {
 					idxList.Add (i);
 				}
 			}
@@ -310,6 +334,7 @@ public class SkillController : MonoBehaviour {
 		case (int)Target.None:
 			break;
 		case (int)Target.Self:
+			idxList = new List<int> ();
 			if (isSelf) {
 				idxList.Add (mainOrgIdx);
 			} else {
@@ -336,13 +361,34 @@ public class SkillController : MonoBehaviour {
 			break;
 		}
 
-		fightController.OnSkillEffect (mainOrgIdx, idxList, data, mainTarget, mainSkillId);
+		fightController.OnSkillEffect (mainOrgIdx, idxList, data, mainTarget, mainSkillId, isExpend);
 	}
 
 
 
 	public void SelectSkillTarget(string targetString, int idx){
 		fightController.OnSkillEffect (mainOrgIdx, new List<int> (new int[1]{ idx }), selLockRuleData, mainTarget, mainSkillId);
+	}
+
+	public void UseSkill(int idx){
+		if (playerNormalSkill.ContainsKey (idx)) {
+			mainOrgIdx = idx;
+			mainTarget = new string[2]{ "P", "" };
+			OnUseSkill (playerNormalSkill [idx], true);
+		}
+	}
+
+	public void OnUseSkill(SkillLargeData skillData, bool isExpend = false){
+		if (skillData.isOr) {
+			foreach (RuleLargeData ruleData in skillData.ruleData) {
+				if (mainTarget [0] == "E" || (mainTarget [0] == "P" && fightUIController.GetEnerge (ruleData.energe, isExpend))) {
+					OnEffectTarget (ruleData, false);
+				}
+			}
+		} 
+		else {
+			OnMultiEffectTarget (skillData.ruleData, 0);
+		}
 	}
 
 	/// <summary>
@@ -458,9 +504,12 @@ public enum Target {
 	DirTeam = 2,
 	OnlyMate = 3,
 	Team = 4,
-	Enemy = 5,
-	DirEnemy = 6,
-	Trigger = 7
+	TeamJob = 5,
+	Enemy = 11,
+	DirEnemy = 12,
+	EnemyJob = 13,
+	Trigger = 21,
+
 }
 
 
@@ -469,7 +518,7 @@ public enum Target {
 /// Normal Effect type.
 /// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
 /// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
-/// ,Revive(復活),Energe(恢復能量),DelJob(移除指定職業格子)
+/// ,Revive(復活),Energe(能量變化),DelJob(移除指定職業格子)
 public enum Normal {
 	None = 0,
 	Recovery = 1,
@@ -482,7 +531,8 @@ public enum Normal {
 	Call = 8,
 	Revive = 9,
 	Energe = 10,
-	DelJob = 11
+	DelJob = 11,
+	LockEng = 12
 }
 
 /// <summary>
@@ -496,8 +546,7 @@ public enum Status {
 	AddNerf = 3,
 	Suffer = 4,
 	Maximum = 5,
-	Ability = 6,
-	UnDirect = 7
+	UnDirect = 6
 }
 
 /// <summary>

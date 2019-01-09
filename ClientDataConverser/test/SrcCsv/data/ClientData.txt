@@ -15,16 +15,16 @@
 		{"id":1,"GradationMonster_id":[1,2,3,4,5]}
 	],
 	"NerfStatus":[
-		{"id":0,"name":"失血","detail":0,"CharaDetail":"當回合每連線格數","EnemyDetail":0,"EffectType":0,"CharaStatus":[1,0],"EnemysStatus":[0,0],"StatusParam":{"Hp":[-2,-4,-6,-8,-10]},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":1,"name":"灼傷","detail":"自帶屬性轉為火","CharaDetail":"當回合每連線格數","EnemyDetail":0,"EffectType":1,"CharaStatus":[1,1],"EnemysStatus":[0,1],"StatusParam":{"Hp":[-2,-4,-6,-8,-10]},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":2,"name":"束縛","detail":"自帶屬性轉為地","CharaDetail":"無法擺放，","EnemyDetail":0,"EffectType":2,"CharaStatus":[2,2],"EnemysStatus":[0,2],"StatusParam":{"Def":[-100,-100,-100,-100,-100]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":3,"name":"痲痹","detail":"自帶屬性轉為風","CharaDetail":"無法擺放，","EnemyDetail":0,"EffectType":3,"CharaStatus":[2,3],"EnemysStatus":[0,3],"StatusParam":{"Def":[-100,-100,-100,-100,-100]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":4,"name":"凍傷","detail":"自帶屬性轉為水","CharaDetail":"無","EnemyDetail":0,"EffectType":4,"CharaStatus":[0,4],"EnemysStatus":[0,4],"StatusParam":{"Dmg":[20,40,60,80,100]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":5,"name":"閃光","detail":"自帶屬性轉為光","CharaDetail":"攻擊傷害減少{0}％，","EnemyDetail":0,"EffectType":5,"CharaStatus":[6,5],"EnemysStatus":[0,5],"StatusParam":{},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":6,"name":"詛咒","detail":"自帶屬性轉為暗","CharaDetail":"治療效果減少{0}％，","EnemyDetail":0,"EffectType":6,"CharaStatus":[4,6],"EnemysStatus":[0,6],"StatusParam":{},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
-		{"id":7,"name":"死亡","detail":0,"CharaDetail":"{0}回合後立即死亡，","EnemyDetail":0,"EffectType":7,"CharaStatus":[3,0],"EnemysStatus":[0,0],"StatusParam":{},"RmType":2,"RmParam":0,"ConvertType":2,"CanRemove":0,"ImmunityType":0},
-		{"id":8,"name":"睡眠","detail":0,"CharaDetail":"無法攻擊及擺放","EnemyDetail":"無法攻擊及擺放","EffectType":8,"CharaStatus":[8,0],"EnemysStatus":[8,0],"StatusParam":{"Def":[-100,-100,-100,-100,-100]},"RmType":1,"RmParam":0,"ConvertType":2,"CanRemove":0,"ImmunityType":1},
-		{"id":9,"name":"狂暴化","detail":0,"CharaDetail":"攻擊傷害上升{0}％，且不分敵我隨機攻擊，","EnemyDetail":0,"EffectType":9,"CharaStatus":[7,0],"EnemysStatus":[0,0],"StatusParam":{"Atk":[20,40,60,80,100],"Def":[-20,-20,-20,-20,-20]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":1}
+		{"id":0,"name":"失血","detail":0,"CharaDetail":"當回合每連線格數","EnemyDetail":0,"EffectType":0,"CharaStatus":1,"EnemyStatus":0,"ChgAttri":0,"StatusParam":{"Hp":[-2,-4,-6,-8,-10]},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":1,"name":"灼傷","detail":"自身屬性轉為火","CharaDetail":"當回合每連線格數","EnemyDetail":0,"EffectType":1,"CharaStatus":1,"EnemyStatus":0,"ChgAttri":1,"StatusParam":{"Hp":[-2,-4,-6,-8,-10]},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":2,"name":"束縛","detail":"自身屬性轉為地","CharaDetail":"無法擺放，","EnemyDetail":0,"EffectType":2,"CharaStatus":2,"EnemyStatus":0,"ChgAttri":2,"StatusParam":{"Def":[-100,-100,-100,-100,-100]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":3,"name":"痲痹","detail":"自身屬性轉為風","CharaDetail":"無法擺放，","EnemyDetail":0,"EffectType":3,"CharaStatus":2,"EnemyStatus":0,"ChgAttri":3,"StatusParam":{"Def":[-100,-100,-100,-100,-100]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":4,"name":"凍傷","detail":"自身屬性轉為水","CharaDetail":"無","EnemyDetail":0,"EffectType":4,"CharaStatus":0,"EnemyStatus":0,"ChgAttri":4,"StatusParam":{"Dmg":[20,40,60,80,100]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":5,"name":"閃光","detail":"自身屬性轉為光","CharaDetail":"無","EnemyDetail":0,"EffectType":5,"CharaStatus":0,"EnemyStatus":0,"ChgAttri":5,"StatusParam":{},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":6,"name":"詛咒","detail":"自身屬性轉為暗","CharaDetail":"無","EnemyDetail":0,"EffectType":6,"CharaStatus":0,"EnemyStatus":0,"ChgAttri":6,"StatusParam":{},"RmType":0,"RmParam":3,"ConvertType":2,"CanRemove":1,"ImmunityType":2},
+		{"id":7,"name":"死亡","detail":0,"CharaDetail":"{0}回合後立即死亡，","EnemyDetail":0,"EffectType":7,"CharaStatus":3,"EnemyStatus":0,"ChgAttri":0,"StatusParam":{},"RmType":2,"RmParam":0,"ConvertType":2,"CanRemove":0,"ImmunityType":0},
+		{"id":8,"name":"睡眠","detail":0,"CharaDetail":"無法攻擊及擺放","EnemyDetail":0,"EffectType":8,"CharaStatus":5,"EnemyStatus":8,"ChgAttri":0,"StatusParam":{"Def":[-100,-100,-100,-100,-100]},"RmType":1,"RmParam":0,"ConvertType":2,"CanRemove":0,"ImmunityType":1},
+		{"id":9,"name":"狂暴化","detail":0,"CharaDetail":"不分敵我隨機攻擊，","EnemyDetail":0,"EffectType":9,"CharaStatus":4,"EnemyStatus":0,"ChgAttri":0,"StatusParam":{"Atk":[20,40,60,80,100],"Def":[-20,-20,-20,-20,-20]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":1}
 	],
 	"Rule":[
 		{"id":100001,"Target":0,"Rule":[11,30,0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
@@ -34,8 +34,8 @@
 		{"id":100005,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
 		{"id":100006,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
 		{"id":100007,"Target":7,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
-		{"id":100008,"Target":4,"Rule":[0],"EffectType":1,"Effect":[6],"Energe":0,"ConvType":0,"Ability":{"Atk":10,"Def":25}},
-		{"id":100009,"Target":1,"Rule":[0],"EffectType":1,"Effect":[6],"Energe":0,"ConvType":0,"Ability":{"Def":10,"mDef":15}},
+		{"id":100008,"Target":4,"Rule":[0],"EffectType":1,"Effect":[6,10,0],"Energe":0,"ConvType":0,"Ability":{"Atk":10,"Def":25}},
+		{"id":100009,"Target":1,"Rule":[0],"EffectType":1,"Effect":[6,10,0],"Energe":0,"ConvType":0,"Ability":{"Def":10,"mDef":15}},
 		{"id":100010,"Target":1,"Rule":[0],"EffectType":0,"Effect":[1,0],"Energe":0,"ConvType":2,"Ability":{"mAtk":10}},
 		{"id":100011,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
 		{"id":100012,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},

@@ -10,6 +10,9 @@ using UnityEngine.Profiling;
 
 public class FightUIController : MonoBehaviour {
 	[SerializeField]
+	bool isPortrait = false;
+
+	[SerializeField]
 	GroundRaycastController groundPool;
 
 	[SerializeField]
@@ -23,6 +26,9 @@ public class FightUIController : MonoBehaviour {
 
 	[SerializeField]
 	FightController fightController;
+
+	[SerializeField]
+	SkillController skillController;
 
 	GroundController[] allGcs;
 
@@ -78,10 +84,13 @@ public class FightUIController : MonoBehaviour {
 	int[] recActLevel = new int[5];
 
 	public FightItemButton[] playerButton;
-
+	public Vector3[] playerButtonPos;
 	public FightItemButton[] enemyButton;
+	public Vector3[] enemyButtonPos;
 
 	private int energe;
+
+	private int lockEnerge;
 
 	[SerializeField]
 	private NumberSetting energeNum;
@@ -145,6 +154,16 @@ public class FightUIController : MonoBehaviour {
 
 		foreach (FightItemButton btn in enemyButton) {
 			btn.SetHpBar (1, false);
+		}
+
+		playerButtonPos = new Vector3[playerButton.Length];
+		for (int i = 0; i<playerButton.Length;i++) {
+			playerButtonPos [i] = playerButton [i].transform.localPosition + playerButton [i].transform.parent.localPosition;
+		}
+
+		enemyButtonPos = new Vector3[enemyButton.Length];
+		for (int i = 0; i<enemyButton.Length;i++) {
+			enemyButtonPos [i] = enemyButton [i].transform.localPosition + enemyButton [i].transform.parent.localPosition;
 		}
 
 		lockOrder = new LinkedList<int> ();
@@ -227,6 +246,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void RecycleExtraItem(GroundSEController gse) {
+		Debug.Log ("RecycleExtraItem");
 
 		unShowed--;
 		gse.gameObject.SetActive (false);
@@ -235,7 +255,7 @@ public class FightUIController : MonoBehaviour {
 
 		if (unShowed == 0) {
 			gse.onExtraUp = null;
-
+			Debug.Log ("OnFight");
 			OnFight ();
 		}
 	}
@@ -249,11 +269,19 @@ public class FightUIController : MonoBehaviour {
 		foreach (var data in ExtraRatios) {
 			List<GroundController> org = new List<GroundController> ();
 			org.Add (data.gc);
-			recJobRatios [data.extraJob] += 25;
+			recJobRatios [data.extraJob] += data.upRatio;
+			for (int i = 0; i < recAllRatioData.Count; i++) {
+				if (recAllRatioData [i].start.name == data.linkData.ElementAt (0).Key.name && recAllRatioData [i].end.name == data.linkData.ElementAt (0).Value.name) {
+					RaycastData raycastdata = new RaycastData();
+					raycastdata = recAllRatioData [i];
+					raycastdata.ratio += data.upRatio;
+					recAllRatioData [i] = raycastdata;
+				}
+			}
 			for (int i = 0; i < fightController.players.Length; i++) {
 				if (fightController.GetJob ("P", i) == data.extraJob) {
 					GroundSEController gse = SEPool.Dequeue ();
-					gse.SetExtraSE (org, playerButton [i].transform.localPosition, i, data.upRatio);
+					gse.SetExtraSE (org, playerButtonPos [i], i, data.upRatio);
 					gse.onRecycle = RecycleExtraItem;
 					gse.onExtraUp = ExtraRatioUp;
 					SEingPool.Enqueue (gse);
@@ -263,6 +291,7 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		unShowed = SEingPool.Count;
+		Debug.Log (unShowed);
 		while (SEingPool.Count > 0) {
 			GroundSEController gse = SEingPool.Dequeue ();
 			gse.gameObject.SetActive (true);
@@ -287,19 +316,18 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private IEnumerator OnShowAllFight(List<DamageData> allDamage){
-		Debug.Log (allDamage [0].tType [0] + " : " + allDamage [0].tType [1]);
 		for (int i = 0; i < allDamage.Count; i++) {
-			FightItemButton org = null;
 			FightItemButton target = null;
-            org = allDamage[i].tType[0] == "P" ? playerButton [allDamage [i].orgIdx] : enemyButton [allDamage [i].orgIdx];
+			Vector3 orgPos = allDamage[i].tType[0] == "P" ? playerButtonPos [allDamage [i].orgIdx] : enemyButtonPos [allDamage [i].orgIdx];
 
 			//當TargetIdx重複時會加10，此時需要減去10
 			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
 
 			target = allDamage[i].tType[1] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
+			Vector3 targetPos = allDamage[i].tType[1] == "P" ? playerButtonPos [allDamage [i].targetIdx - minusCount] : enemyButtonPos [allDamage [i].targetIdx - minusCount];
 
 			GroundSEController gse = SEPool.Dequeue ();
-			gse.SetAttackShow (org.transform.localPosition, target, allDamage [i]);
+			gse.SetAttackShow (orgPos, targetPos, target, allDamage [i]);
 			gse.onRecycleDamage = ShowFightEnd;
 			gse.gameObject.SetActive (true);
 			gse.Run ();
@@ -319,12 +347,12 @@ public class FightUIController : MonoBehaviour {
 	}
 
 
-	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target){
+	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target, Vector3 tPos){
 		gse.gameObject.SetActive (false);
 		target.SetHpBar (damageData.hpRatio);
 		SEPool.Enqueue (gse);
 		gse.onRecycle = null;
-		gse.SetDamageShow (damageData, target.transform.localPosition);
+		gse.SetDamageShow (damageData, tPos);
 		gse.onRecycle = ShowDamageEnd;
 		gse.gameObject.SetActive (true);
 		gse.Run ();
@@ -362,8 +390,15 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.H)) {
-			foreach (var v in charaGc) {
-				Debug.Log (v.name);
+			bool isHas = false;
+			foreach (var v in allGcs) {
+				if (v.linkData.Count != 0) {
+					Debug.Log (v.name);
+					isHas = true;
+				}
+			}
+			if (!isHas) {
+				Debug.Log ("Clear");
 			}
 		}
 
@@ -458,6 +493,12 @@ public class FightUIController : MonoBehaviour {
 
 	public void FightEnd(){
 		UpEnerge ();
+		foreach (GroundController gc in allGcs) {
+			if ((int)gc._groundType != 99) {
+				gc.FightEnd ();
+			}
+		}
+
 		fightController.FightEnd ();
 		ChangeStatus (FightStatus.FightEnd);
 		if (isResetGround) {
@@ -845,10 +886,10 @@ public class FightUIController : MonoBehaviour {
 	private void CheckActLevel()
 	{
 		foreach (var data in recAllRatioData) {
-			if (data.hits.Count >= 5 && data.ratio > 250) {
+			if (data.hits.Count >= 4 && data.ratio > 250) {
 				ChangeActLevel (data.CharaJob, 3);
 			}
-			else if (data.hits.Count >= 3 && data.ratio > 150) {
+			else if (data.hits.Count >= 2 && data.ratio >= 150) {
 				ChangeActLevel (data.CharaJob, 2);
 			} else {
 				ChangeActLevel (data.CharaJob, 1);
@@ -919,7 +960,8 @@ public class FightUIController : MonoBehaviour {
 					List<Vector3> postions = new List<Vector3> ();
 					for (int i = 0; i < fightController.players.Length; i++) {
 						if (fightController.GetJob("P", i) == data.CharaJob) {
-							postions.Add (playerButton [i].transform.localPosition + (Vector3.up * 30) * (ratioCount [i] - 1));
+							postions.Add (playerButtonPos [i] + (Vector3.up * 30) * (ratioCount [i] - 1));
+
 							ratioCount [i]++;
 						}
 					}
@@ -956,12 +998,18 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	public bool IsCorrectDir(Vector2 dirNormalized) {
-		if (Mathf.Round(Mathf.Abs(dirNormalized.x * 10)) == 5 && Mathf.Round(Mathf.Abs(dirNormalized.y * 10)) == 9){
-			return true;
-		}
-		else if (Mathf.Round(Mathf.Abs(dirNormalized.x * 10)) == 10 && Mathf.Round(Mathf.Abs(dirNormalized.y * 10)) == 0)
-		{
-			return true;
+		if (isPortrait) {
+			if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 9 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 5) {
+				return true;
+			} else if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 0 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 10) {
+				return true;
+			}
+		} else {
+			if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 5 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 9) {
+				return true;
+			} else if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 10 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 0) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -1115,6 +1163,10 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
+	private void UseSkill(int idx){
+		skillController.UseSkill (idx);
+	}
+
 	public void OnSkillCDEnd(int charaIdx){
 		Debug.LogWarning ("Chara " + charaIdx + " Can Use Skill");
 	}
@@ -1265,13 +1317,19 @@ public class FightUIController : MonoBehaviour {
 		return recActLevel [job];
 	}
 
-	public bool GetEnerge(int need) {
-		return energe >= need;
+	public bool GetEnerge(int need, bool isExpend = false) {
+		return isExpend == true ? (energe - lockEnerge) > need : energe >= need;
     }
 
 	public void AddEnerge(int erg){
 		energe += erg;
 		energeNum.SetNumber (energe);
+	}
+
+	public void LockEnerge(int erg){
+		if (lockEnerge < erg) {
+			lockEnerge = erg;
+		}
 	}
 
 	public int GetJobGround(int job){
@@ -1317,6 +1375,7 @@ public struct ExtraRatioData {
 	public int extraJob;
 	public GroundController gc;
 	public int upRatio;
+	public Dictionary<GroundController,GroundController> linkData;
 }
 
 public struct CharaImageData{

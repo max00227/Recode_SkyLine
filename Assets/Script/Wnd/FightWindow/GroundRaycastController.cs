@@ -7,9 +7,14 @@ public class GroundRaycastController : MonoBehaviour {
 	GroundController[] allGcs;
 
 	[SerializeField]
+	bool isPortrait = false;
+
+	[SerializeField]
 	DirectGroundController center;
 
 	int CreateGround;
+
+	int constAngle;
 
 	// Use this for initialization
 	public void SetController () {
@@ -28,6 +33,8 @@ public class GroundRaycastController : MonoBehaviour {
 	public void RoundStart(bool isCenter = true){
 		RaycastHit2D[] hits;
 
+		constAngle = isPortrait == true ? 0 : 30;
+
 		List<int> randomList = new List<int>();
 
 
@@ -42,10 +49,9 @@ public class GroundRaycastController : MonoBehaviour {
 
 		center.gc.ChangeType (false, true);
 
-
 		if (randomList.Count>0){
 			foreach (int randomI in randomList) {
-				hits = GetRaycastHits(center.gc.transform.localPosition, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + center.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + center.randomList[randomI] * 60))), 0.97f);
+				hits = GetRaycastHits(center.gc.transform.position, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (constAngle + center.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (constAngle + center.randomList[randomI] * 60))), 0.97f);
                 if (hits.Length > 0) {
 					foreach (var hit in hits) {
 						hit.collider.GetComponent<GroundController> ().ChangeType (false, true);
@@ -67,7 +73,7 @@ public class GroundRaycastController : MonoBehaviour {
 	public void ChangeLayer(){
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType != 0 && (int)gc._groundType != 99) {
-				ChangeLayer (gc.transform.localPosition);
+				ChangeLayer (gc.transform.position);
 			}
 		}
 	}
@@ -75,7 +81,7 @@ public class GroundRaycastController : MonoBehaviour {
 	private void ChangeLayer(Vector2 center){
 		RaycastHit2D[] hits;
 		for (int i = 0; i < 6; i++) {
-			hits = GetRaycastHits(center, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (30 + i * 60))), 0.97f);
+			hits = GetRaycastHits(center, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (constAngle + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (constAngle + i * 60))), 0.97f);
 			foreach (var hit in hits) {
 				hit.collider.GetComponent<GroundController>().UpLayer();
 			}

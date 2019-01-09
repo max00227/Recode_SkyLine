@@ -34,8 +34,8 @@
 		{"id":100005,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
 		{"id":100006,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
 		{"id":100007,"Target":7,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
-		{"id":100008,"Target":4,"Rule":[0],"EffectType":1,"Effect":[6,10,0],"Energe":0,"ConvType":0,"Ability":{"Atk":10,"Def":25}},
-		{"id":100009,"Target":1,"Rule":[0],"EffectType":1,"Effect":[6,10,0],"Energe":0,"ConvType":0,"Ability":{"Def":10,"mDef":15}},
+		{"id":100008,"Target":4,"Rule":[0],"EffectType":1,"Effect":[0],"Energe":2,"ConvType":0,"Ability":{"Atk":10,"Def":25}},
+		{"id":100009,"Target":1,"Rule":[0],"EffectType":1,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{"Def":10,"mDef":15}},
 		{"id":100010,"Target":1,"Rule":[0],"EffectType":0,"Effect":[1,0],"Energe":0,"ConvType":2,"Ability":{"mAtk":10}},
 		{"id":100011,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
 		{"id":100012,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}},
@@ -51,9 +51,9 @@
 		{"id":300005,"name":"無","detail":"，無","Type":2,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100005],"isOr":1,"hasAnim":0},
 		{"id":100001,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100006],"isOr":1,"hasAnim":0},
 		{"id":100002,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100007],"isOr":1,"hasAnim":0},
-		{"id":100003,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100008],"isOr":1,"hasAnim":0},
-		{"id":100004,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100009],"isOr":1,"hasAnim":0},
-		{"id":100005,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010],"isOr":1,"hasAnim":0}
+		{"id":100003,"name":"無","detail":"，無","Type":1,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100008],"isOr":1,"hasAnim":0},
+		{"id":100004,"name":"無","detail":"，無","Type":1,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100009],"isOr":1,"hasAnim":0},
+		{"id":100005,"name":"無","detail":"，無","Type":1,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010],"isOr":1,"hasAnim":0}
 	],
 	"Soul":[
 		{"id":114001,"name":"惡鬼","detail":"劍＋暗","soulType":0,"rank":4,"Job":0,"Ethnicity":7,"Attributes":6,"Ability":{"Atk":242,"Def":35,"mAtk":76,"mDef":47,"Hp":704,"Cri":14},"Act":[0,0,0],"Skill":100001},

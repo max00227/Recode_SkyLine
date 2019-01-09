@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 public class GroundController : MonoBehaviour
 {
+	[SerializeField]
+	bool isPortrait = false;
+
+	int constAngle;
+
     int _groundRate;
 
     public GroundType _groundType;
@@ -29,8 +34,7 @@ public class GroundController : MonoBehaviour
 
     GroundType defaultType;
 
-    [SerializeField]
-    Sprite[] GetSprites;
+	public Sprite[] GetSprites;
 
 	private GroundType _prevType = GroundType.None;
 
@@ -69,6 +73,8 @@ public class GroundController : MonoBehaviour
 
 	public OnProtection onProtection;
 
+	public Dictionary<ExtraType,Dictionary<GroundController, GroundController>> linkData;
+
 	[HideInInspector]
 	public int charaJob;
 
@@ -85,6 +91,7 @@ public class GroundController : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
+		constAngle = isPortrait == true ? 0 : 30;
         defaultType = _groundType;
         image = GetComponent<UIPolygon>();
         _layer = 1;
@@ -92,6 +99,7 @@ public class GroundController : MonoBehaviour
 		testRaycasted = false;
 		extraGoldJob = null;
 		extraSilverJob = null;
+		linkData = new Dictionary<ExtraType, Dictionary<GroundController, GroundController>> ();
     }
 
     public void ResetType()
@@ -226,23 +234,7 @@ public class GroundController : MonoBehaviour
 	/// <param name="hasPre">是否止執行AddJob<c>true</c> has pre.</param>
 	public void SetType()
     {
-		if (isActived) {
-			activeLock = true;
-			roundActLock = activeLock;
-		}
-
-		raycasted = false;
-		isChanged = false;
-		extraGoldJob = null;
-		extraSilverJob = null;
-
-
-		if ((int)_groundType == 0) {
-			_layer = 1;
-		} 
-		else {
-			_layer = 0;
-		}
+		
     }
 
 	public void SetJob(int jobIdx, ExtraType extraType){
@@ -291,7 +283,7 @@ public class GroundController : MonoBehaviour
 		bool hasActived = false;
         for (int i = 0; i < 6; i++)
         {
-            hits = GetRaycastHits(transform.localPosition, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (30 + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (30 + i * 60))), 0.97f * 8);
+			hits = GetRaycastHits(transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + i * 60))), 0.97f * 8);
 
             if (hits.Length == 0) {
                 continue;
@@ -376,66 +368,96 @@ public class GroundController : MonoBehaviour
 
         bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
 
-
         foreach (var hit in hits)
         {
-            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
-            {
+			if ((int)hit.collider.GetComponent<GroundController> ()._groundType != 10) {
 				hit.collider.GetComponent<GroundController> ().raycasted = true;
 				if (!hits [hits.Length - 1].collider.GetComponent<GroundController> ().raycasted || isTest) {
-					if (hasChange || isTouchUp) {
-						hit.collider.GetComponent<GroundController> ().ChangeType (isTouchUp, isEnd);
-					}
-
+					bool isChange = hasChange || isTouchUp;
 					switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
 					case 1:
+						if (isChange && isEnd) {
+							hit.collider.GetComponent<GroundController> ().SetExtraData (
+								this.GetComponent<GroundController> (),
+								hits [hits.Length - 1].collider.GetComponent<GroundController> (),
+								ExtraType.Silver
+							);
+						}
 						//記錄回傳用資料
-						if ((isTouchUp || isEnd)&& !hasChange) {
-							hit.collider.GetComponent<GroundController> ().SetJob (charaJob, ExtraType.Silver);
+						if ((isTouchUp || isEnd) && !hasChange) {
+							
+							hit.collider.GetComponent<GroundController> ().SetJob (
+								charaJob, 
+								ExtraType.Silver
+							);
 						}
 						break;
 					case 2:
-						extraRatio = extraRatio + 50;
-
+						if (isChange && isEnd) {
+							hit.collider.GetComponent<GroundController> ().SetExtraData (
+								this.GetComponent<GroundController> (),
+								hits [hits.Length - 1].collider.GetComponent<GroundController> (),
+								ExtraType.Gold
+							);
+						}
 						//記錄回傳用資料
 						if (isTouchUp || isEnd) {
-							hit.collider.GetComponent<GroundController> ().SetJob (charaJob, ExtraType.Gold);
+							hit.collider.GetComponent<GroundController> ().SetJob (
+								charaJob,
+								ExtraType.Gold
+							);
 						}
 						break;
-					case 3:
-						extraRatio = extraRatio + goldRatio;
-						break;
+					}
+
+
+					if (hasChange || isTouchUp) {
+						extraRatio += hit.collider.GetComponent<GroundController> ().ChangeType (isTouchUp, isEnd);
+						Debug.Log ("Change");
+					} else {
+						switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
+						case 2:
+							extraRatio += 50;
+							break;
+						case 3:
+							extraRatio += goldRatio;
+							break;
+						}
+
 					}
 				}
-            }
+			}
         }
-
+		if (extraRatio != 0) {
+			Debug.Log (extraRatio);
+		}
 		return extraRatio;
     }
 
 	//改變狀態，並記錄回朔狀態
-	public void ChangeType(bool isTouchUp, bool isEnd)
+	public int ChangeType(bool isTouchUp, bool isEnd)
     {
+		int ratio = 0;
 		if (isTouchUp && !isEnd) {
 			_roundPrevType = _groundType;
-			return;
+			return ratio;
 		}
 
 		if ((int)_groundType == 0) {
 			_groundType = GroundType.Copper;
 			matchController.ChangeSprite (_groundType);
-		} else {
-
+		} 
+		else {
 			if ((int)_groundType == 1) {
 				_groundType = GroundType.Silver;
-
+				ratio = 50;
 				if (isEnd) {
 					OnPlusRatio (ExtraType.Silver);
 				}
 			} 
 			else if ((int)_groundType == 2) {
 				_groundType = GroundType.gold;
-
+				ratio = goldRatio;
 				if (isEnd) {
 					OnPlusRatio (ExtraType.Gold);
 				}
@@ -450,6 +472,8 @@ public class GroundController : MonoBehaviour
 			matchController.ChangeSprite (_groundType);
 		}
 		_layer = 0;
+
+		return ratio;
     }
 
 	public void OnRaycasted(bool hasAcitve, bool isTouchUp)
@@ -539,6 +563,7 @@ public class GroundController : MonoBehaviour
 				data.gc = matchController;
 				data.extraJob = (int)extraSilverJob;
 				data.upRatio = 50;
+				data.linkData = linkData [ExtraType.Silver];
 
 				plusRatio.Invoke(data);
 			}
@@ -548,6 +573,7 @@ public class GroundController : MonoBehaviour
 				ExtraRatioData data = new ExtraRatioData ();
 				data.gc = matchController;
 				data.extraJob = (int)extraGoldJob;
+				data.linkData = linkData [ExtraType.Gold];
 				data.upRatio = 25;
 
 				plusRatio.Invoke (data);
@@ -555,14 +581,42 @@ public class GroundController : MonoBehaviour
 				if (extraSilverJob != null) {
 					data = new ExtraRatioData ();
 					data.gc = matchController;
+					data.linkData = linkData [ExtraType.Silver];
 					data.extraJob = (int)extraSilverJob;
-					data.upRatio = 25;
+					data.upRatio = 50;
 
 					plusRatio.Invoke (data);
 				}
 			}
-			extraGoldJob = null;
-			extraSilverJob = null;
         }
+
     }
+
+	public void SetExtraData(GroundController start, GroundController end, ExtraType extraType){
+		Dictionary<GroundController,GroundController> link = new Dictionary<GroundController, GroundController> ();
+		link.Add (start, end);
+		//Debug.Log (this.name + " : " + extraType);
+		linkData.Add (extraType, link);
+	}
+
+	public void FightEnd(){
+		if (isActived) {
+			activeLock = true;
+			roundActLock = activeLock;
+		}
+
+		raycasted = false;
+		isChanged = false;
+
+
+		if ((int)_groundType == 0) {
+			_layer = 1;
+		} 
+		else {
+			_layer = 0;
+		}
+		extraGoldJob = null;
+		extraSilverJob = null;
+		linkData = new Dictionary<ExtraType, Dictionary<GroundController, GroundController>> ();
+	}
 }

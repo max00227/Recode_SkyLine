@@ -36,7 +36,7 @@ public class GroundSEController : MonoBehaviour {
 
 	public OnExtraUp onExtraUp;
 
-	public delegate void OnRecycleDamage(GroundSEController gse, DamageData damageData, FightItemButton target);
+	public delegate void OnRecycleDamage(GroundSEController gse, DamageData damageData, FightItemButton target, Vector3 pos);
 
 	public OnRecycleDamage onRecycleDamage;
 
@@ -69,6 +69,8 @@ public class GroundSEController : MonoBehaviour {
 	bool isShowDamage = false;
 
 	Color[] attriColor;
+
+	Vector3 tPos;
 
 
 	// Use this for initialization
@@ -202,14 +204,15 @@ public class GroundSEController : MonoBehaviour {
 		isRun = false;
 	}
 
-	public void SetAttackShow(Vector3 org, FightItemButton target, DamageData data){
-		SetLightParent(org, target.transform.localPosition);
+	public void SetAttackShow(Vector3 orgPos, Vector3 targetPos, FightItemButton target, DamageData data){
+		SetLightParent(orgPos, targetPos);
 
 		damageData = data;
 		callbackTarget = target;
+		tPos = targetPos;
 
         seType = SpecailEffectType.Attack;
-		damageLight.SetParabola (org, target.transform.localPosition);
+		damageLight.SetParabola (orgPos, targetPos);
 		setComplete = true;
 		isRun = false;
 	}
@@ -263,7 +266,7 @@ public class GroundSEController : MonoBehaviour {
 		}
 
 		if (onRecycleDamage != null) {
-			onRecycleDamage.Invoke (this, damageData, callbackTarget);
+			onRecycleDamage.Invoke (this, damageData, callbackTarget, tPos);
 			onRecycleDamage = null;
 		}
 	}
