@@ -9,6 +9,10 @@ public class GroundController : MonoBehaviour
 	[SerializeField]
 	bool isPortrait = false;
 
+	public Image background;
+
+	public ParticleSystem particle;
+
 	int constAngle;
 
     int _groundRate;
@@ -28,9 +32,6 @@ public class GroundController : MonoBehaviour
     public bool raycasted;
 
 	private bool isChanged;
-
-    [HideInInspector]
-    public UIPolygon image;
 
     GroundType defaultType;
 
@@ -93,7 +94,6 @@ public class GroundController : MonoBehaviour
     {
 		constAngle = isPortrait == true ? 0 : 30;
         defaultType = _groundType;
-        image = GetComponent<UIPolygon>();
         _layer = 1;
 		isActived = isChanged = activeLock = raycasted = false;
 		testRaycasted = false;
@@ -116,32 +116,32 @@ public class GroundController : MonoBehaviour
 
 	public void ChangeSprite(GroundType type)
     {
-        if (image != null)
+		if (background != null)
         {
 			if ((int)type == 99)
             {
-                image.sprite = GetSprites[4];
+                background.sprite = GetSprites[4];
             }
 			else if ((int)type < 4)
             {
-				image.sprite = GetSprites[(int)type];
+				background.sprite = GetSprites[(int)type];
             }
         }
     }
 
 	public IEnumerator ChangeSpriteWait(int number)
 	{
-		if (image != null)
+		if (background != null)
 		{
-			if (image.sprite == GetSprites[1])
+			if (background.sprite == GetSprites[1])
 			{
 				Reversing (50, number);
-				image.sprite = GetSprites[2];
+				background.sprite = GetSprites[2];
 			}
-			else if (image.sprite == GetSprites[2])
+			else if (background.sprite == GetSprites[2])
 			{
 				Reversing (75, number);
-				image.sprite = GetSprites[3];
+				background.sprite = GetSprites[3];
 			}
 		}
 
@@ -169,17 +169,17 @@ public class GroundController : MonoBehaviour
 
 	public void ChangeSprite(int number)
 	{
-		if (image != null)
+		if (background != null)
 		{
-			if (image.sprite == GetSprites[1])
+			if (background.sprite == GetSprites[1])
 			{
 				Reversing (50, number);
-				image.sprite = GetSprites[2];
+				background.sprite = GetSprites[2];
 			}
-			else if (image.sprite == GetSprites[2])
+			else if (background.sprite == GetSprites[2])
 			{
 				Reversing (75, number);
-				image.sprite = GetSprites[3];
+				background.sprite = GetSprites[3];
 			}
 		}
 
@@ -413,7 +413,6 @@ public class GroundController : MonoBehaviour
 
 					if (hasChange || isTouchUp) {
 						extraRatio += hit.collider.GetComponent<GroundController> ().ChangeType (isTouchUp, isEnd);
-						Debug.Log ("Change");
 					} else {
 						switch ((int)hit.collider.GetComponent<GroundController> ()._groundType) {
 						case 2:
@@ -423,14 +422,10 @@ public class GroundController : MonoBehaviour
 							extraRatio += goldRatio;
 							break;
 						}
-
 					}
 				}
 			}
         }
-		if (extraRatio != 0) {
-			Debug.Log (extraRatio);
-		}
 		return extraRatio;
     }
 

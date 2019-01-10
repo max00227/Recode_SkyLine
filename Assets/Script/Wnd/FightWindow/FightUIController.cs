@@ -34,6 +34,9 @@ public class FightUIController : MonoBehaviour {
 
 	GroundController startGc, endGc;
 
+	[SerializeField]
+	Button checkButton;
+
 	bool isResetGround = false;
 
 	private int[] monsterCdTimes = new int[5];
@@ -84,9 +87,9 @@ public class FightUIController : MonoBehaviour {
 	int[] recActLevel = new int[5];
 
 	public FightItemButton[] playerButton;
-	public Vector3[] playerButtonPos;
+	Vector3[] playerButtonPos;
 	public FightItemButton[] enemyButton;
-	public Vector3[] enemyButtonPos;
+	Vector3[] enemyButtonPos;
 
 	private int energe;
 
@@ -246,8 +249,6 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void RecycleExtraItem(GroundSEController gse) {
-		Debug.Log ("RecycleExtraItem");
-
 		unShowed--;
 		gse.gameObject.SetActive (false);
 		SEPool.Enqueue (gse);
@@ -255,7 +256,6 @@ public class FightUIController : MonoBehaviour {
 
 		if (unShowed == 0) {
 			gse.onExtraUp = null;
-			Debug.Log ("OnFight");
 			OnFight ();
 		}
 	}
@@ -516,6 +516,9 @@ public class FightUIController : MonoBehaviour {
 		CheckLockStatus ();
 
 		ChangeStatus (FightStatus.RoundStart);
+
+		checkButton.interactable = false;
+
 	}
 
 	private void CheckLockStatus (){
@@ -631,6 +634,7 @@ public class FightUIController : MonoBehaviour {
 
 	private void TouchDown(GroundController gc, bool isCover){
 		startGc = gc.matchController;
+		Debug.Log (startGc.name);
 		if (charaIdx != null) {
 			if (fightController.GetJob("P", (int)charaIdx) == 2) {
 				startGc.onProtection = OnProtection;
@@ -736,50 +740,52 @@ public class FightUIController : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 			if (result.Count > 0) {
 				foreach (var r in result) {
-					if (spaceCorrect == true && r.gameObject.CompareTag("fightG"))
-					{
-						bool onlyAdd = false;
+					if (r.gameObject.CompareTag ("fightG")) {
+						if (spaceCorrect == true) {
+							bool onlyAdd = false;
 
-						if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99) {
-							isResetGround = true;
-						}
+							if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {
+								isResetGround = true;
+							}
 
 
-                        energe = energe - (spaceCount + 1);
-					    energeNum.SetNumber (energe);
+							energe = energe - (spaceCount + 1);
+							energeNum.SetNumber (energe);
 
-						if (energe > (spaceCount + 1) && !isResetGround) {
-							ResetStatus ();
-							onlyAdd = true;
-						}
+							if (energe > (spaceCount + 1) && !isResetGround) {
+								ResetStatus ();
+								onlyAdd = true;
+							}
 
-						spaceCount++;
+							spaceCount++;
 
-						canCover = false;
+							checkButton.interactable = true;
 
-						if (onlyAdd && !isResetGround) {
-							preJobRatios = jobRatios;
-							CheckGround (true);
+							canCover = false;
 
-							charaIdx = null;
-							return;
-						}
+							if (onlyAdd && !isResetGround) {
+								preJobRatios = jobRatios;
+								CheckGround (true);
 
-						RoundEnd(CheckGround (false, true));
-					}
-					else {
-						PopImage ();
-						PopImage ();
-						if (startCover) {
-							startGc.OnPrevCover ();
-							startCover = false;
+								charaIdx = null;
+								return;
+							}
+
+							RoundEnd (CheckGround (false, true));
 						} else {
-							startGc.ResetType ();
+							PopImage ();
+							PopImage ();
+							if (startCover) {
+								startGc.OnPrevCover ();
+								startCover = false;
+							} else {
+								startGc.ResetType ();
+							}
+							charaGc.RemoveLast ();
+							isResetGround = false;
+							ResetStatus ();
+							ResetDamage (spaceCount > 0);
 						}
-						charaGc.RemoveLast ();
-						isResetGround = false;
-						ResetStatus ();
-						ResetDamage (spaceCount > 0);
 					}
 				}
 			}
@@ -1102,13 +1108,15 @@ public class FightUIController : MonoBehaviour {
 			_charaGroup.Add (imageData);
 			return image;
 		} else {
-			image = _charaGroup [_charaGroup.Count - 1].image;
-			_charaGroup.RemoveRange (_charaGroup.Count - 1, 1);
-			image.GetComponent<RectTransform> ().SetParent (imagePool);
-			image.transform.localPosition = Vector3.zero;
-			image.gameObject.SetActive (false);
-			image.sprite = null;
-			_imagePool.Push (image);
+			if (_charaGroup.Count > 0) {
+				image = _charaGroup [_charaGroup.Count - 1].image;
+				_charaGroup.RemoveRange (_charaGroup.Count - 1, 1);
+				image.GetComponent<RectTransform> ().SetParent (imagePool);
+				image.transform.localPosition = Vector3.zero;
+				image.gameObject.SetActive (false);
+				image.sprite = null;
+				_imagePool.Push (image);
+			}
 			return null;
 		}
 	}
