@@ -356,19 +356,22 @@ public class fightBGMaker : MonoBehaviour {
 					if (i == 0 || i == myMaxHC - 1)
 					{
 						backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-						backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+						//backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 					}
 					else
 					{
 						if (j == 0 || j == myRadio + i - 1)
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-							backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+							//backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 						}
 						else
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.None;
-							backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
+							//backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
+							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
 						}
 					}
 				}
@@ -388,19 +391,19 @@ public class fightBGMaker : MonoBehaviour {
 					if (i == 0 || i == myMaxHC - 1)
 					{
 						backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-						backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 					}
 					else
 					{
 						if (j == 0 || j == myRadio + ((myMaxHC - 1) - i) - 1)
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-							backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 						}
 						else
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.None;
-							backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
+							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
 						}
 					}
 				}

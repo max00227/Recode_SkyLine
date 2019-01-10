@@ -51,6 +51,11 @@ public class FightItemButton : MonoBehaviour {
 		}
 	}
 
+	public void UnLockButton(){
+		isLock = true;
+		btn.interactable = true;
+	}
+
 	public void SetTextColor(Color color){
 		ratioTxt.SetColor (color);
 	}

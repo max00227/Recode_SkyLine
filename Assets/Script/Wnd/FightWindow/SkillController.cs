@@ -164,6 +164,23 @@ public class SkillController : MonoBehaviour {
 				break;
 			case (int)Rule.OnDmg:
 				meets [i] = allDamage !=null && allDamage.Count > 0;
+				parameter = GetDamage (allDamage);
+				break;
+			case (int)Rule.JobCntUp:
+				meets [i] = fightUIController.GetJobGround (data.ruleData [i].rule [1]) >= data.ruleData [i].rule [2];
+				parameter = fightUIController.GetJobGround (data.ruleData [i].rule [1]);
+				break;
+			case (int)Rule.LayerCntUp:
+				meets [i] = fightUIController.GetLayerGround (data.ruleData [i].rule [1]) >= data.ruleData [i].rule [2];
+				parameter = fightUIController.GetLayerGround (data.ruleData [i].rule [1]);
+				break;
+			case (int)Rule.JobCntDown:
+				meets [i] = fightUIController.GetJobGround (data.ruleData [i].rule [1]) < data.ruleData [i].rule [2];
+				parameter = fightUIController.GetJobGround (data.ruleData [i].rule [1]);
+				break;
+			case (int)Rule.LayerCntDown:
+				meets [i] = fightUIController.GetLayerGround (data.ruleData [i].rule [1]) < data.ruleData [i].rule [2];
+				parameter = fightUIController.GetLayerGround (data.ruleData [i].rule [1]);
 				break;
 			}
 		}
@@ -219,9 +236,7 @@ public class SkillController : MonoBehaviour {
 				break;
 			case (int)Rule.norDmg:
 				meets [i] = allDamage.Count > 0;
-				foreach (DamageData damageData in allDamage) {
-					parameter += damageData.damage;
-				}
+				parameter = GetDamage (allDamage);
 				break;
 			case (int)Rule.norDmgP:
 				if (allDamage.Count > 0 && allDamage [0].damageType == DamageType.Physical) {
@@ -463,6 +478,15 @@ public class SkillController : MonoBehaviour {
 			}
 		}
 		return param;
+	}
+
+	private int GetDamage(List<DamageData> damageData){
+		int damage = 0;
+		foreach (DamageData data in damageData) {
+			damage += data.damage;
+		}
+
+		return damage;
 	}
 
 	public void ShowRuleData(){
