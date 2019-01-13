@@ -74,4 +74,27 @@ public class DataUtil{
 	public static bool CheckArray<T> (T[] array, T param){
 		return array.Any (f => f.Equals(param));
 	}
+
+    public static Color ColorConvert(string hexadecimal)
+    {
+        float[] colorRate = new float[4];
+
+        int colorIdx = 0;
+
+        for (int i = 0; i < hexadecimal.Length; i += 2) {
+            try{
+                colorRate[colorIdx] = (float)int.Parse(hexadecimal.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+            }
+            catch {
+                colorRate[colorIdx] = 0;
+            }
+
+
+            if (colorRate[3] == 0) {
+                colorRate[3] = 1;
+            }
+            colorIdx++;
+        }
+        return new Color(colorRate[0], colorRate[1], colorRate[2], colorRate[3]);
+    }
 }

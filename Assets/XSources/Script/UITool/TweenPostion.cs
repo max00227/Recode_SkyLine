@@ -9,9 +9,8 @@ public class TweenPostion : MonoBehaviour {
 
 	public Vector3 to;
 
-	[SerializeField]
-	AnimationCurve animationCurve = new AnimationCurve(new Keyframe(0f, 0f, 0f, 1f), new Keyframe(1f, 1f, 1f, 0f));
-
+    [SerializeField]
+    AnimationCurve[] animationCurve = new AnimationCurve[0];
 	[SerializeField]
 	float TweenTime = 1;
 
@@ -22,7 +21,10 @@ public class TweenPostion : MonoBehaviour {
 	bool isPopupWnd = false;
 
 
-	public enum TweenType{
+    AnimationCurve mainAniCurve;
+
+
+    public enum TweenType{
 		Normal,
 		Parabola,
 		Jump
@@ -101,13 +103,13 @@ public class TweenPostion : MonoBehaviour {
             Vector3 deltaV3;
 			if (tweenType == TweenType.Normal)
             {
-                deltaV3 = from + (to - from) * animationCurve.Evaluate(oriTime / TweenTime);
+                deltaV3 = from + (to - from) * mainAniCurve.Evaluate(oriTime / TweenTime);
             }
 			else if (tweenType == TweenType.Jump) {
-				deltaV3 = new Vector3 (from.x + (to.x - from.x) * oriTime / TweenTime, from.y + parabolaPower * animationCurve.Evaluate (oriTime / TweenTime), from.z);
+				deltaV3 = new Vector3 (from.x + (to.x - from.x) * oriTime / TweenTime, from.y + parabolaPower * mainAniCurve.Evaluate (oriTime / TweenTime), from.z);
 			}
             else {
-                deltaV3 = new Vector3(from.x + (distance * (oriTime / TweenTime)), parabolaPower * animationCurve.Evaluate(oriTime / TweenTime), from.z);
+                deltaV3 = new Vector3(from.x + (distance * (oriTime / TweenTime)), parabolaPower * mainAniCurve.Evaluate(oriTime / TweenTime), from.z);
             }
 
 
@@ -137,13 +139,18 @@ public class TweenPostion : MonoBehaviour {
 		}
 	}
 
-	public void SetFromAndTo(Vector3 f, Vector3 t){
-		from = f;
+	public void SetFromAndTo(Vector3 f, Vector3 t, int acIdx = 0)
+    {
+        mainAniCurve = animationCurve[acIdx];
+
+        from = f;
 		to = t;
 		transform.localPosition = f;
 	}
 
-	public void SetParabola(Vector3 f, Vector3 t) {
+	public void SetParabola(Vector3 f, Vector3 t, int acIdx = 0) {
+        mainAniCurve = animationCurve[acIdx];
+
         from = Vector3.zero;
         transform.localPosition = f;
 
@@ -156,8 +163,9 @@ public class TweenPostion : MonoBehaviour {
 		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max) * isUp;
     }
 
-	public void SetJump(Vector3 f, Vector3 t, float speed){
-		SetFromAndTo (f, t);
+	public void SetJump(Vector3 f, Vector3 t, float speed, int acIdx = 0)
+    {
+		SetFromAndTo (f, t, acIdx);
 		TweenTime = speed;
 		distance = Vector3.Distance(f, t);
 		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max);

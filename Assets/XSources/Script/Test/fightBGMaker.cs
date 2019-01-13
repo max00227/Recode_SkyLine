@@ -330,7 +330,7 @@ public class fightBGMaker : MonoBehaviour {
 	[MenuItem("MyProject/CreateBGUIPortrait")]
 	public static void CreateBgForUIPortrait()
 	{
-		Object srcObj = (UnityEngine.Object)AssetDatabase.LoadAssetAtPath("Assets/Sources/Prefab/fightBgUIProtrait.prefab", typeof(UnityEngine.Object));
+		Object srcObj = (UnityEngine.Object)AssetDatabase.LoadAssetAtPath("Assets/XSources/Prefab/fightBgUIProtrait.prefab", typeof(UnityEngine.Object));
 
 		//GameObject go = PrefabUtility.InstantiatePrefab(srcObj) as GameObject;
 		//go.transform.parent = Selection.activeGameObject.transform;
@@ -419,4 +419,12 @@ public class fightBGMaker : MonoBehaviour {
 			Selection.activeGameObject.transform.GetChild (i).localPosition = Selection.activeGameObject.transform.GetChild (i).localPosition - centerPos;
 		}
 	}
+
+    [MenuItem("MyProject/test16bit")]
+    public static void Test16Bit()
+    {
+        Color color = DataUtil.ColorConvert("1g");
+
+        Debug.Log(color.r + " , " + color.g + " , " + color.b + " , " + color.a);
+    }
 }
