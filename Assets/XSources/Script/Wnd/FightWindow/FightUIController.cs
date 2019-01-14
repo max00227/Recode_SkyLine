@@ -291,7 +291,6 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		unShowed = SEingPool.Count;
-		Debug.Log (unShowed);
 		while (SEingPool.Count > 0) {
 			GroundSEController gse = SEingPool.Dequeue ();
 			gse.gameObject.SetActive (true);
@@ -517,7 +516,11 @@ public class FightUIController : MonoBehaviour {
 
 		ChangeStatus (FightStatus.RoundStart);
 
-		checkButton.interactable = false;
+        foreach(GroundController gc in allGcs) {
+            gc.RoundStart();
+        }
+
+        checkButton.interactable = false;
 
 	}
 
@@ -551,7 +554,12 @@ public class FightUIController : MonoBehaviour {
 		newRaycastData = new List<RaycastData> ();
 		CheckLockStatus ();
 
-		ChangeStatus (FightStatus.RoundStart);
+        foreach (GroundController gc in allGcs)
+        {
+            gc.RoundStart();
+        }
+
+        ChangeStatus (FightStatus.RoundStart);
 	}
 
 	private void RoundEnd(bool hasDamage)
@@ -634,7 +642,6 @@ public class FightUIController : MonoBehaviour {
 
 	private void TouchDown(GroundController gc, bool isCover){
 		startGc = gc.matchController;
-		Debug.Log (startGc.name);
 		if (charaIdx != null) {
 			if (fightController.GetJob("P", (int)charaIdx) == 2) {
 				startGc.onProtection = OnProtection;

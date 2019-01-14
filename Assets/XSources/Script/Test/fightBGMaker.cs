@@ -423,8 +423,7 @@ public class fightBGMaker : MonoBehaviour {
     [MenuItem("MyProject/test16bit")]
     public static void Test16Bit()
     {
-        Color color = DataUtil.ColorConvert("1g");
-
-        Debug.Log(color.r + " , " + color.g + " , " + color.b + " , " + color.a);
+        bool a = true;
+        Debug.Log(System.Convert.ToInt32(!a));
     }
 }

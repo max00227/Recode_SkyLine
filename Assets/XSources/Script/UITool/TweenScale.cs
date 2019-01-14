@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TweenScale : MonoBehaviour {
+public class TweenScale : TweenUI {
 
 	public Vector3 from;
 
 	public Vector3 to;
-
-	[SerializeField]
-	AnimationCurve animationCurve = new AnimationCurve(new Keyframe(0f, 0f, 0f, 1f), new Keyframe(1f, 1f, 1f, 0f));
-
-	[SerializeField]
-	float TweenTime = 1;
 
 	[SerializeField]
 	bool isRoop;
@@ -20,40 +14,13 @@ public class TweenScale : MonoBehaviour {
 	[SerializeField]
 	bool isPopupWnd = false;
 
-	[HideInInspector]
-	public GameObject showGameObject;
-
-	bool isRun = false;
-
-	bool runForward = true;
-
 	Vector3 orginV3;
-
-	float oriTime = 0;
-	float recTime;
 
 	public delegate void RunFinish(TweenScale tt);
 
 	public RunFinish runFinish;
 
-	// Use this for initialization
-	public void PlayForward(){
-		Play (true);
-	}
-
-	public void PlayReverse(){
-		Play (false);
-	}
-
-
-
-	void Play (bool isForward) {
-		runForward = isForward;
-		recTime = Time.realtimeSinceStartup;
-		isRun = true;
-	}
-
-	void Stop(){
+    void Stop(){
 		isRun = false;
 		transform.localScale = orginV3;
 	}
@@ -75,7 +42,7 @@ public class TweenScale : MonoBehaviour {
 				oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
 			}
 
-			Vector3 deltaV3 = from + (to - from) * animationCurve.Evaluate (oriTime / TweenTime);
+			Vector3 deltaV3 = from + (to - from) * mainAniCurve.Evaluate (oriTime / TweenTime);
 
 			transform.localScale = deltaV3;
 
@@ -102,9 +69,11 @@ public class TweenScale : MonoBehaviour {
 		}
 	}
 
-	public void SetFromAndTo(Vector3 f, Vector3 t){
+	public void SetFromAndTo(Vector3 f, Vector3 t, int idx = 0){
 		from = f;
 		to = t;
+
+        mainAniCurve = animationCurves[idx];
 	}
 
 

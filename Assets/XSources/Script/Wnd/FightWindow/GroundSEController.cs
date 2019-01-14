@@ -238,7 +238,7 @@ public class GroundSEController : MonoBehaviour {
 		showTime = 0.5f;
 
 		damageTxtIdx = System.Convert.ToInt32 (damageData.isCrt);
-		damageTxt [damageTxtIdx].GetComponent<TweenPostion> ().SetJump (orgPos, orgPos + Vector3.right * Random.Range (-50, 50), speedRatio);
+        damageTxt[damageTxtIdx].GetComponent<TweenPostion>().SetJump(orgPos, orgPos + Vector3.right * Random.Range(-50, 50), speedRatio, Random.Range(0, 2));
 		damageTxt [damageTxtIdx].color = Const.attriColor [damageData.attributes];
 		setComplete = true;
 		isRun = false;

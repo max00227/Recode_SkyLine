@@ -21,6 +21,13 @@ public class GroundController : MonoBehaviour
 
     public GroundController matchController;
 
+    public TweenColor light;
+    public TweenColor colorLight;
+
+    [SerializeField]
+    private Color[] lightColor;
+
+
     [HideInInspector]
     public int _layer;
 
@@ -83,7 +90,10 @@ public class GroundController : MonoBehaviour
 
 	private int? extraSilverJob;
 
-	[HideInInspector]
+    private Color colorTransparent = new Color(1, 1, 1, 0);
+
+
+    [HideInInspector]
 	public enum ExtraType {
 		Silver,
 		Gold
@@ -114,7 +124,7 @@ public class GroundController : MonoBehaviour
 		extraSilverJob = null;
     }
 
-	public void ChangeSprite(GroundType type)
+	public void ChangeSprite(GroundType type, bool isSpeed = false)
     {
 		if (background != null)
         {
@@ -122,9 +132,20 @@ public class GroundController : MonoBehaviour
             {
                 background.sprite = GetSprites[4];
             }
-			else if ((int)type < 4)
+            else if((int)type == 0) {
+                light.Stop(Color.white);
+                background.sprite = GetSprites[0];
+                light.gameObject.SetActive(false);
+            }
+            else
             {
-				background.sprite = GetSprites[(int)type];
+                background.sprite = GetSprites[0];
+                light.gameObject.SetActive(true);
+
+                light.SetFromAndTo(Color.white, colorTransparent, System.Convert.ToInt32(!isSpeed));
+                light.PlayForward();
+                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent), System.Convert.ToInt32(!isSpeed));
+                colorLight.PlayForward();
             }
         }
     }
@@ -133,17 +154,19 @@ public class GroundController : MonoBehaviour
 	{
 		if (background != null)
 		{
-			if (background.sprite == GetSprites[1])
-			{
+            if (matchController._groundType == GroundType.Silver)
+            {
 				Reversing (50, number);
-				background.sprite = GetSprites[2];
-			}
-			else if (background.sprite == GetSprites[2])
-			{
-				Reversing (75, number);
-				background.sprite = GetSprites[3];
-			}
-		}
+                colorLight.Stop(lightColor[1]);
+                light.Stop(Color.white);
+            }
+            else if (matchController._groundType == GroundType.gold)
+            {
+                Reversing(75, number);
+                colorLight.Stop(lightColor[2]);
+                light.Stop(Color.white);
+            }
+        }
 
 		//避免同物件進行回調時回調被清掉或回調錯誤
 		yield return new WaitForSeconds (0.75f);
@@ -440,7 +463,7 @@ public class GroundController : MonoBehaviour
 
 		if ((int)_groundType == 0) {
 			_groundType = GroundType.Copper;
-			matchController.ChangeSprite (_groundType);
+			matchController.ChangeSprite (_groundType, true);
 		} 
 		else {
 			if ((int)_groundType == 1) {
@@ -504,7 +527,7 @@ public class GroundController : MonoBehaviour
 				} else {
 					_groundType = _roundPrevType;
 				}
-				matchController.ChangeSprite (_groundType);
+				matchController.ChangeSprite (_groundType, true);
 			}
 		} 
 		else {
@@ -614,4 +637,21 @@ public class GroundController : MonoBehaviour
 		extraSilverJob = null;
 		linkData = new Dictionary<ExtraType, Dictionary<GroundController, GroundController>> ();
 	}
+
+    public void OpenLight(GroundType gType) {
+        light.Stop(Color.white);
+        Debug.Log(gType);
+        colorLight.Stop(lightColor[(int)gType - 1]);
+        colorLight.SetFromAndTo(lightColor[(int)gType - 1], lightColor[(int)gType - 1] * colorTransparent, 0);
+        light.SetFromAndTo(Color.white, colorTransparent, 0);
+        light.PlayForward();
+        colorLight.PlayForward();
+    }
+
+    public void RoundStart() {
+        if (_groundType != GroundType.Caution && _groundType != GroundType.None && _groundType != GroundType.Chara)
+        {
+            matchController.OpenLight(_groundType);
+        }
+    }
 }

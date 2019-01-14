@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TweenColor : MonoBehaviour
+public class TweenColor : TweenUI
 {
     [SerializeField]
     Image image;
@@ -12,60 +12,18 @@ public class TweenColor : MonoBehaviour
 
     public Color to;
 
-    [SerializeField]
-    AnimationCurve[] animationCurves;
-
-    [SerializeField]
-    float TweenTime = 1;
-
-    [SerializeField]
-    bool isRoop;
-
-    [SerializeField]
-    bool isPopupWnd = false;
-
-    [HideInInspector]
-    public GameObject showGameObject;
-
-    bool isRun = false;
-
-    bool runForward = true;
-
-    AnimationCurve mainAniCurve;
-
+    
     Color orginClr;
-
-    float oriTime = 0;
-    float recTime;   
 
     public delegate void RunFinish(TweenColor tc);
 
     public RunFinish runFinish;
 
-    // Use this for initialization
-    public void PlayForward()
-    {
-        Play(true);
-    }
 
-    public void PlayReverse()
-    {
-        Play(false);
-    }
-
-
-
-    void Play(bool isForward)
-    {
-        runForward = isForward;
-        recTime = Time.realtimeSinceStartup;
-        isRun = true;
-    }
-
-    void Stop()
+    public void Stop(Color? stopColor = null)
     {
         isRun = false;
-        image.color = orginClr;
+        image.color = stopColor == null ? orginClr : (Color)stopColor;
     }
 
 
@@ -79,10 +37,6 @@ public class TweenColor : MonoBehaviour
     {
         if (isRun == true)
         {
-            if (isPopupWnd)
-            {
-                showGameObject.SetActive(true);
-            }
             if (runForward)
             {
                 oriTime = Time.realtimeSinceStartup - recTime;
@@ -100,11 +54,18 @@ public class TweenColor : MonoBehaviour
             {
                 if (oriTime >= TweenTime)
                 {
-                    isRun = false;
-
-                    if (runFinish != null)
+                    if (!isLoop)
                     {
-                        runFinish.Invoke(this);
+                        isRun = false;
+
+                        if (runFinish != null)
+                        {
+                            runFinish.Invoke(this);
+                        }
+                    }
+                    else
+                    {
+                        recTime = Time.realtimeSinceStartup;
                     }
                 }
             }
@@ -112,14 +73,16 @@ public class TweenColor : MonoBehaviour
             {
                 if (oriTime <= 0)
                 {
-                    if (isPopupWnd)
+                    if (!isLoop)
                     {
-                        showGameObject.SetActive(false);
+                        isRun = false;
+                        if (runFinish != null)
+                        {
+                            runFinish.Invoke(this);
+                        }
                     }
-                    isRun = false;
-                    if (runFinish != null)
-                    {
-                        runFinish.Invoke(this);
+                    else {
+                        recTime = Time.realtimeSinceStartup;
                     }
                 }
             }

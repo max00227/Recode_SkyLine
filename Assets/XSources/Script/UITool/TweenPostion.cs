@@ -3,26 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class TweenPostion : MonoBehaviour {
+public class TweenPostion : TweenUI {
 
 	public Vector3 from;
 
 	public Vector3 to;
-
-    [SerializeField]
-    AnimationCurve[] animationCurve = new AnimationCurve[0];
-	[SerializeField]
-	float TweenTime = 1;
 
 	[SerializeField]
 	bool isRoop;
 
 	[SerializeField]
 	bool isPopupWnd = false;
-
-
-    AnimationCurve mainAniCurve;
-
 
     public enum TweenType{
 		Normal,
@@ -32,19 +23,9 @@ public class TweenPostion : MonoBehaviour {
     [SerializeField]
 	TweenType tweenType;
 
-
-
-    [HideInInspector]
-	public GameObject showGameObject;
-
-	bool isRun = false;
-
-	bool runForward = true;
-
 	Vector3 orginV3;
 
-	float oriTime = 0;
-	float recTime;
+
 
     //float parabolaPower;
 
@@ -58,23 +39,6 @@ public class TweenPostion : MonoBehaviour {
     public delegate void RunFinish(TweenPostion tt);
 
 	public RunFinish runFinish;
-
-	// Use this for initialization
-	public void PlayForward(){
-		Play (true);
-	}
-
-	public void PlayReverse(){
-		Play (false);
-	}
-
-
-
-	void Play (bool isForward) {
-		runForward = isForward;
-		recTime = Time.realtimeSinceStartup;
-		isRun = true;
-	}
 
 	void Stop(){
 		isRun = false;
@@ -141,7 +105,7 @@ public class TweenPostion : MonoBehaviour {
 
 	public void SetFromAndTo(Vector3 f, Vector3 t, int acIdx = 0)
     {
-        mainAniCurve = animationCurve[acIdx];
+        mainAniCurve = animationCurves[acIdx];
 
         from = f;
 		to = t;
@@ -149,7 +113,7 @@ public class TweenPostion : MonoBehaviour {
 	}
 
 	public void SetParabola(Vector3 f, Vector3 t, int acIdx = 0) {
-        mainAniCurve = animationCurve[acIdx];
+        mainAniCurve = animationCurves[acIdx];
 
         from = Vector3.zero;
         transform.localPosition = f;
