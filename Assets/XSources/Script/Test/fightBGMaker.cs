@@ -420,6 +420,85 @@ public class fightBGMaker : MonoBehaviour {
 		}
 	}
 
+    [MenuItem("MyProject/CreateSEUIPortrait")]
+    public static void CreateSEForUIPortrait()
+    {
+        Object srcObj = (UnityEngine.Object)AssetDatabase.LoadAssetAtPath("Assets/XSources/Prefab/fightSEUIProtrait.prefab", typeof(UnityEngine.Object));
+
+        //GameObject go = PrefabUtility.InstantiatePrefab(srcObj) as GameObject;
+        //go.transform.parent = Selection.activeGameObject.transform;
+        float myDis = 116f;
+        int myRadio = 5;
+        int myMaxHC = 9;
+
+        int num = 0;
+        for (int i = 0; i < myMaxHC; i++)
+        {
+            if (i < myRadio)
+            {
+                for (int j = 0; j < myRadio + i; j++)
+                {
+                    GameObject backGround = PrefabUtility.InstantiatePrefab(srcObj) as GameObject;
+                    backGround.name = num.ToString();
+                    num++;
+                    backGround.transform.parent = Selection.activeGameObject.transform;
+                    backGround.transform.localPosition = new Vector3(
+                        -i * (myDis * Mathf.Sin(60 * Mathf.Deg2Rad)),
+                        (i * myDis) * Mathf.Sin(210 * Mathf.Deg2Rad) + (myDis * j)
+                        , 0);
+                }
+            }
+            else
+            {
+                for (int j = 0; j < myRadio + ((myMaxHC - 1) - i); j++)
+                {
+                    GameObject backGround = PrefabUtility.InstantiatePrefab(srcObj) as GameObject;
+                    backGround.name = num.ToString();
+                    num++;
+                    backGround.transform.parent = Selection.activeGameObject.transform;
+                    backGround.transform.localPosition = new Vector3(
+                        -i * (myDis * Mathf.Sin(60 * Mathf.Deg2Rad)),
+                        (((myMaxHC - 1) - i) * myDis) * Mathf.Sin(210 * Mathf.Deg2Rad) + (myDis * j)
+                        , 0);
+                }
+            }
+        }
+
+
+        Vector3 centerPos = new Vector3();
+        int bgCount = Selection.activeGameObject.transform.childCount;
+        centerPos = Selection.activeGameObject.transform.GetChild((bgCount - 1) / 2).transform.localPosition;
+
+        for (int i = 0; i < bgCount; i++)
+        {
+            Selection.activeGameObject.transform.GetChild(i).localPosition = Selection.activeGameObject.transform.GetChild(i).localPosition - centerPos;
+        }
+    }
+
+
+    [MenuItem("MyProject/Match2")]
+    public static void MatchGCNew()
+    {
+        GameObject selGO = Selection.activeGameObject;
+        GroundController[] uiGC = selGO.transform.GetChild(0).GetComponentsInChildren<GroundController>();
+        GroundController[] gc = selGO.transform.GetChild(2).GetComponentsInChildren<GroundController>();
+        Transform[] se = selGO.transform.GetChild(1).GetComponentsInChildren<Transform>();
+
+
+
+        if (uiGC.Length == gc.Length)
+        {
+            for (int i = 0; i < gc.Length; i++)
+            {
+                
+                uiGC[i].light = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetComponent<TweenColor>();
+                uiGC[i].colorLight = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetChild(0).GetComponent<TweenColor>();
+                gc[i].matchController = uiGC[i];
+                uiGC[i].matchController = gc[i];
+            }
+        }
+    }
+
     [MenuItem("MyProject/test16bit")]
     public static void Test16Bit()
     {
