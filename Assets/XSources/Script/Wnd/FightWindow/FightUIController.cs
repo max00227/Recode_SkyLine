@@ -30,6 +30,9 @@ public class FightUIController : MonoBehaviour {
 	[SerializeField]
 	SkillController skillController;
 
+    [SerializeField]
+    StartShowController startShowController;
+
 	GroundController[] allGcs;
 
 	GroundController startGc, endGc;
@@ -176,50 +179,58 @@ public class FightUIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		lockOrder = new LinkedList<int> ();
+        WndStart();
+        //startShowController.SetCenter();
+    }
 
-		for (int i = 0; i < imageItem; i++) {
-			Image _image = Instantiate (spriteImage) as Image;
-			_image.GetComponent<RectTransform> ().SetParent (imagePool);
-			_image.transform.localPosition = Vector3.zero;
-			_image.gameObject.SetActive (false);
-			_imagePool.Push (_image);
-		}
+    private void WndStart() {
+        lockOrder = new LinkedList<int>();
 
-		for (int i = 0; i < showItemCount; i++)
-		{
-			GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
-			showItem.GetComponent<RectTransform>().SetParent(showGroup);
-			showItem.transform.localPosition = Vector3.zero;
-			showItem.gameObject.SetActive (false);
-			SEPool.Enqueue(showItem);
-		}
+        for (int i = 0; i < imageItem; i++)
+        {
+            Image _image = Instantiate(spriteImage) as Image;
+            _image.GetComponent<RectTransform>().SetParent(imagePool);
+            _image.transform.localPosition = Vector3.zero;
+            _image.gameObject.SetActive(false);
+            _imagePool.Push(_image);
+        }
 
-		allGcs = groundPool.GetComponentsInChildren<GroundController> ();
+        for (int i = 0; i < showItemCount; i++)
+        {
+            GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
+            showItem.GetComponent<RectTransform>().SetParent(showGroup);
+            showItem.transform.localPosition = Vector3.zero;
+            showItem.gameObject.SetActive(false);
+            SEPool.Enqueue(showItem);
+        }
 
-		resetGroundCount = 0;
+        allGcs = groundPool.GetComponentsInChildren<GroundController>();
 
-		foreach (GroundController gc in allGcs) {
-			if ((int)gc._groundType != 99) {
-				gc.plusRatio = OnPlusRatio;
-			}
-		}
+        resetGroundCount = 0;
 
-		CreateGround = 3;
+        foreach (GroundController gc in allGcs)
+        {
+            if ((int)gc._groundType != 99)
+            {
+                gc.plusRatio = OnPlusRatio;
+            }
+        }
 
-		lockCount = 0;
+        CreateGround = 3;
 
-		SetData ();
+        lockCount = 0;
 
-		energe = 3;
-		energeNum.SetNumber (energe);
+        SetData();
 
-		ResetGround(true);
-	}
+        energe = 3;
+        energeNum.SetNumber(energe);
+
+        ResetGround(true);
+    }
 
 
-	#region ShowRecycle
-	private void RecycleReverseItem(GroundSEController gse) {
+    #region ShowRecycle
+    private void RecycleReverseItem(GroundSEController gse) {
 		unShowed--;
 		SEPool.Enqueue (gse);
 		completeSe.Add (gse);
@@ -401,7 +412,13 @@ public class FightUIController : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.Y)) {
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            startShowController.gameObject.SetActive(true);
+            startShowController.ShowStart();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y)) {
 			fightController.ShowData ();
 		}
 		if (Input.GetKey(KeyCode.K)) {
