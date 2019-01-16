@@ -577,7 +577,6 @@ public class GroundController : MonoBehaviour
     //回朔狀態，以是否為回合結束為基準;
     public void PrevType(bool isEnd)
     {
-
         if ((int)_groundType != 10)
         {
             if (isChanged)
@@ -591,8 +590,8 @@ public class GroundController : MonoBehaviour
                 else
                 {
                     _groundType = _roundPrevType;
+                    matchController.ChangeSprite(_groundType, true);
                 }
-                matchController.ChangeSprite(_groundType, true);
             }
         }
         else
@@ -726,7 +725,6 @@ public class GroundController : MonoBehaviour
     public void OpenLight(GroundType gType)
     {
         light.Stop(Color.white);
-        Debug.Log(gType);
         colorLight.Stop(lightColor[(int)gType - 1]);
         colorLight.SetFromAndTo(lightColor[(int)gType - 1], lightColor[(int)gType - 1] * colorTransparent, 0);
         light.SetFromAndTo(Color.white, colorTransparent, 0);
