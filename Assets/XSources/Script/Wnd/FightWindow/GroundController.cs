@@ -91,6 +91,8 @@ public class GroundController : MonoBehaviour
     private int? extraSilverJob;
 
     private Color colorTransparent = new Color(1, 1, 1, 0);
+    
+    public int groundRow;
 
 
     [HideInInspector]
@@ -144,10 +146,10 @@ public class GroundController : MonoBehaviour
                 background.sprite = GetSprites[0];
                 light.gameObject.SetActive(true);
 
-                light.SetFromAndTo(Color.white, colorTransparent, System.Convert.ToInt32(!isSpeed));
-                light.PlayForward();
-                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent), System.Convert.ToInt32(!isSpeed));
-                colorLight.PlayForward();
+                light.SetFromAndTo(Color.white, colorTransparent);
+                light.PlayForward(System.Convert.ToInt32(!isSpeed));
+                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent));
+                colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
             }
         }
     }
@@ -159,15 +161,12 @@ public class GroundController : MonoBehaviour
             if (matchController._groundType == GroundType.Silver)
             {
                 Reversing(50, number);
-                colorLight.Stop(lightColor[1]);
-                light.Stop(Color.white);
             }
             else if (matchController._groundType == GroundType.gold)
             {
                 Reversing(75, number);
-                colorLight.Stop(lightColor[2]);
-                light.Stop(Color.white);
             }
+            OpenLight(matchController._groundType,false);
         }
 
         //避免同物件進行回調時回調被清掉或回調錯誤
@@ -722,32 +721,40 @@ public class GroundController : MonoBehaviour
         linkData = new Dictionary<ExtraType, Dictionary<GroundController, GroundController>>();
     }
 
-    public void OpenLight(GroundType gType)
+    public void OpenLight(GroundType gType = GroundType.None, bool isShow = true)
     {
-        light.Stop(Color.white);
-        colorLight.Stop(lightColor[(int)gType - 1]);
-        colorLight.SetFromAndTo(lightColor[(int)gType - 1], lightColor[(int)gType - 1] * colorTransparent, 0);
-        light.SetFromAndTo(Color.white, colorTransparent, 0);
-        light.PlayForward();
-        colorLight.PlayForward();
-    }
-
-    public void RoundStart()
-    {
-        if (_groundType != GroundType.Caution && _groundType != GroundType.None && _groundType != GroundType.Chara)
+        if (isShow)
         {
-            matchController.OpenLight(_groundType);
+            light.Stop(Color.white);
+            colorLight.Stop(lightColor[(int)gType - 1]);
+            colorLight.SetFromAndTo(lightColor[(int)gType - 1], lightColor[(int)gType - 1] * colorTransparent);
+            light.SetFromAndTo(Color.white, colorTransparent);
+            light.PlayForward(0);
+            colorLight.PlayForward(0);
+        }
+        else
+        {
+            if (gType != GroundType.None)
+            {
+                colorLight.Stop(lightColor[(int)gType - 1]);
+            }
+            else {
+                colorLight.Stop(lightColor[(int)_groundType - 1]);
+            }
+            light.Stop(Color.white);
+            light.gameObject.SetActive(true);
         }
     }
 
-    public void OpenColor(int idx)
-    {
-        colorLight.Stop(lightColor[idx]);
-        light.Stop(Color.white);
-        light.gameObject.SetActive(true);
+    public void ResetTemple(int idx = 0) {
+        if (_groundType != GroundType.Caution && _groundType != GroundType.None && _groundType != GroundType.Chara)
+        {
+            matchController.light.PlayForward(idx);
+            matchController.colorLight.PlayForward(idx);
+        }
     }
 
-    public void CloseColor()
+    public void CloseLight()
     {
         light.gameObject.SetActive(false);
     }

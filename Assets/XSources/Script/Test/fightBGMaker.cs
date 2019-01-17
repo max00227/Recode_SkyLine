@@ -356,7 +356,6 @@ public class fightBGMaker : MonoBehaviour {
 					if (i == 0 || i == myMaxHC - 1)
 					{
 						backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-						//backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 					}
 					else
@@ -364,13 +363,11 @@ public class fightBGMaker : MonoBehaviour {
 						if (j == 0 || j == myRadio + i - 1)
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-							//backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
 						}
 						else
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.None;
-							//backGround.GetComponent<UIPolygon> ().sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
 							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
 						}
 					}
@@ -399,12 +396,12 @@ public class fightBGMaker : MonoBehaviour {
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
 							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
-						}
+                        }
 						else
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.None;
 							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [0];
-						}
+                        }
 					}
 				}
 			}
@@ -417,8 +414,9 @@ public class fightBGMaker : MonoBehaviour {
 
 		for (int i = 0; i < bgCount; i++) {
 			Selection.activeGameObject.transform.GetChild (i).localPosition = Selection.activeGameObject.transform.GetChild (i).localPosition - centerPos;
-		}
-	}
+            Selection.activeGameObject.transform.GetChild(i).tag = "fightG";
+        }
+    }
 
     [MenuItem("MyProject/CreateSEUIPortrait")]
     public static void CreateSEForUIPortrait()
@@ -495,6 +493,26 @@ public class fightBGMaker : MonoBehaviour {
                 uiGC[i].colorLight = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetChild(0).GetComponent<TweenColor>();
                 gc[i].matchController = uiGC[i];
                 uiGC[i].matchController = gc[i];
+            }
+        }
+    }
+
+    [MenuItem("MyProject/SetRow")]
+    public static void SetRow()
+    {
+        float myDis = 58f;
+        GameObject selGO = Selection.activeGameObject;
+        GroundController[] gc = selGO.transform.GetChild(0).GetComponentsInChildren<GroundController>();
+
+        for (int i = 0; i < gc.Length; i++)
+        {
+            for (int j = 0; j < 17; j++)
+            {
+                if (gc[i].transform.localPosition.y > (myDis * (8 - j) - (myDis * 0.05f)) &&
+                gc[i].transform.localPosition.y < (myDis * (8 - j) + (myDis * 0.05f)))
+                {
+                    gc[i].groundRow = j;
+                }
             }
         }
     }

@@ -128,6 +128,8 @@ public class FightUIController : MonoBehaviour {
 	[SerializeField]
 	Transform showGroup;
 
+    int centerIdx;
+
 	Queue<GroundSEController> SEPool = new Queue<GroundSEController>();
 	Queue<GroundSEController> SEingPool = new Queue<GroundSEController>();
 	#endregion
@@ -147,6 +149,8 @@ public class FightUIController : MonoBehaviour {
 	int[] protectJob = new int[5];
 	bool hasProtect;
 
+    bool fightInit = false;
+
 	void SetData() {
 		monsterCdTimes = new int[5]{7,5,1,10,6};
 		fightController.SetCDTime (monsterCdTimes, false);
@@ -154,7 +158,12 @@ public class FightUIController : MonoBehaviour {
 		playerStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
 		enemyStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
 
-		foreach (FightItemButton btn in playerButton) {
+        startShowController.callback = StartShowEnd;
+        fightInit = true;
+
+        centerIdx = 30;
+
+        foreach (FightItemButton btn in playerButton) {
 			btn.SetHpBar (1, false);
 		}
 
@@ -180,7 +189,6 @@ public class FightUIController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         WndStart();
-        //startShowController.SetCenter();
     }
 
     private void WndStart() {
@@ -200,6 +208,7 @@ public class FightUIController : MonoBehaviour {
             GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
             showItem.GetComponent<RectTransform>().SetParent(showGroup);
             showItem.transform.localPosition = Vector3.zero;
+            showItem.transform.localScale = Vector3.one;
             showItem.gameObject.SetActive(false);
             SEPool.Enqueue(showItem);
         }
@@ -220,14 +229,31 @@ public class FightUIController : MonoBehaviour {
 
         lockCount = 0;
 
+
         SetData();
 
         energe = 3;
         energeNum.SetNumber(energe);
 
-        ResetGround(true);
+        SetCenter();
+        startShowController.ShowStart(groundPool.transform.GetChild(centerIdx).position);
     }
 
+    private void StartShowEnd() {
+        foreach(GroundController gc in allGcs) {
+            gc.matchController.CloseLight();
+        }
+        ResetGround();
+    }
+
+    private void SetCenter() {
+        foreach (GroundController gc in allGcs)
+        {
+            gc.transform.tag = "raycastG";
+        }
+        groundPool.transform.GetChild(centerIdx).tag = "Center";
+        groundPool.transform.GetChild(centerIdx).GetComponent<GroundController>().SetTag();
+    }
 
     #region ShowRecycle
     private void RecycleReverseItem(GroundSEController gse) {
@@ -392,7 +418,8 @@ public class FightUIController : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		if (Input.GetKeyDown(KeyCode.R)) {
-			ResetGround (true);
+            fightInit = true;
+            startShowController.ShowStart(groundPool.transform.GetChild(centerIdx).position);
 		}
 
 		if (Input.GetKeyDown(KeyCode.C)) {
@@ -414,8 +441,7 @@ public class FightUIController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.J))
         {
-            startShowController.gameObject.SetActive(true);
-            startShowController.ShowStart();
+            startShowController.ShowCount();
         }
 
         if (Input.GetKeyDown(KeyCode.Y)) {
@@ -533,9 +559,7 @@ public class FightUIController : MonoBehaviour {
 
 		ChangeStatus (FightStatus.RoundStart);
 
-        foreach(GroundController gc in allGcs) {
-            gc.RoundStart();
-        }
+        ResetTemple();
 
         checkButton.interactable = false;
 
@@ -571,10 +595,7 @@ public class FightUIController : MonoBehaviour {
 		newRaycastData = new List<RaycastData> ();
 		CheckLockStatus ();
 
-        foreach (GroundController gc in allGcs)
-        {
-            gc.RoundStart();
-        }
+        ResetTemple();
 
         ChangeStatus (FightStatus.RoundStart);
 	}
@@ -671,8 +692,8 @@ public class FightUIController : MonoBehaviour {
 			}
 			startGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
 
-			startCharaImage = PopImage (_imagePool, startGc, gc.transform.localPosition);
-			endCharaImage = PopImage (_imagePool, null, gc.transform.localPosition);
+			startCharaImage = SetChess(startGc.matchController);
+			endCharaImage = SetChess(startGc.matchController);
 
 			if ((int)gc.GetComponent<GroundController> ()._groundType == 99) {
 				isResetGround = true;
@@ -687,7 +708,7 @@ public class FightUIController : MonoBehaviour {
 				foreach (var r in result) {
 					if (r.gameObject.CompareTag("fightG"))
 					{
-						endCharaImage.transform.localPosition = r.gameObject.transform.localPosition;
+                        endCharaImage = SetChess(r.gameObject.GetComponent<GroundController>(), endCharaImage);
 
 						if (endGc != r.gameObject.GetComponent<GroundController> ().matchController) {
 							foreach (GroundController gc in charaGc) {
@@ -792,13 +813,16 @@ public class FightUIController : MonoBehaviour {
 								CheckGround (true);
 
 								charaIdx = null;
+
+                                ResetTemple();
+
 								return;
 							}
-
-							RoundEnd (CheckGround (false, true));
+                            ResetTemple();
+                            RoundEnd (CheckGround (false, true));
 						} else {
-							PopImage ();
-							PopImage ();
+							SetChess ();
+                            SetChess();
 							if (startCover) {
 								startGc.OnPrevCover ();
 								startCover = false;
@@ -1050,7 +1074,7 @@ public class FightUIController : MonoBehaviour {
 		return (dir - org).normalized;
 	}
 
-	private void ResetGround(bool isInit = false){
+	private void ResetGround(){
 		foreach (GroundController gc in allGcs) {
 			gc.ResetType ();
 		}
@@ -1084,15 +1108,18 @@ public class FightUIController : MonoBehaviour {
 
 
 		while (_charaGroup.Count > 0) {
-			PopImage ();
+			SetChess ();
 		}
 
-		if (isInit == false) {
+		if (!fightInit) {
 			resetGroundCount++;
 			fightController.SetResetRatio (Mathf.CeilToInt(resetGroundCount/2));
 		}
+        else {
+            fightInit = false;
+        }
 
-		OnOpenButton ();
+        OnOpenButton ();
 
 		RoundStart ();
 	}
@@ -1111,7 +1138,55 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	private Image PopImage(Stack<Image> pool = null, GroundController linkGc = null, Vector3? position = null){
+    private Image SetChess(GroundController linkGc = null, Image img = null) {
+        Image image = img;
+        if (linkGc != null)
+        {
+            if (image == null)
+            {
+                image = _imagePool.Pop();
+
+                image.GetComponent<RectTransform>().SetParent(CharaGroup.transform.GetChild(linkGc.groundRow));
+                image.sprite = CharaSprite[(int)charaIdx];
+
+                image.transform.localPosition = linkGc.transform.localPosition.x * Vector3.right;
+
+                CharaImageData imageData = new CharaImageData();
+                image.transform.localScale = Vector3.one;
+                image.SetNativeSize();
+
+                image.gameObject.SetActive(true);
+                imageData.image = image;
+                _charaGroup.Add(imageData);
+
+                return image;
+            }
+            else
+            {
+                image.GetComponent<RectTransform>().SetParent(CharaGroup.transform.GetChild(linkGc.groundRow));
+
+                image.transform.localPosition = linkGc.transform.localPosition.x * Vector3.right;
+                return image;
+            }
+        }
+        else
+        {
+            if (_charaGroup.Count > 0)
+            {
+                image = _charaGroup[_charaGroup.Count - 1].image;
+                _charaGroup.RemoveRange(_charaGroup.Count - 1, 1);
+                image.GetComponent<RectTransform>().SetParent(imagePool);
+                image.transform.localPosition = Vector3.zero;
+                image.gameObject.SetActive(false);
+                image.sprite = null;
+                _imagePool.Push(image);
+            }
+            return null;
+        }
+    }
+
+
+    private Image PopImage(Stack<Image> pool = null, GroundController linkGc = null, Vector3? position = null){
 		Image image;
 		if (pool != null) {
 			image = pool.Pop ();
@@ -1128,7 +1203,6 @@ public class FightUIController : MonoBehaviour {
 
 			image.gameObject.SetActive (true);
 			imageData.image = image;
-			imageData.linkGc = linkGc;
 			_charaGroup.Add (imageData);
 			return image;
 		} else {
@@ -1333,7 +1407,13 @@ public class FightUIController : MonoBehaviour {
         }
     }
 
-	public void ChangeStatus(FightStatus status){
+    private void ResetTemple() { 
+        foreach(GroundController gc in allGcs) {
+            gc.ResetTemple(0);
+        }
+    }
+
+    public void ChangeStatus(FightStatus status){
 		fightController.fightStatus = status;
 	}
 
@@ -1412,7 +1492,6 @@ public struct ExtraRatioData {
 
 public struct CharaImageData{
 	public Image image;
-	public GroundController linkGc;
 }
 
 public enum SpecailEffectType{

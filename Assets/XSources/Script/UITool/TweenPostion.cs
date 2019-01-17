@@ -103,18 +103,14 @@ public class TweenPostion : TweenUI {
 		}
 	}
 
-	public void SetFromAndTo(Vector3 f, Vector3 t, int acIdx = 0)
+	public void SetFromAndTo(Vector3 f, Vector3 t)
     {
-        mainAniCurve = animationCurves[acIdx];
-
         from = f;
 		to = t;
 		transform.localPosition = f;
 	}
 
-	public void SetParabola(Vector3 f, Vector3 t, int acIdx = 0) {
-        mainAniCurve = animationCurves[acIdx];
-
+	public void SetParabola(Vector3 f, Vector3 t) {
         from = Vector3.zero;
         transform.localPosition = f;
 
@@ -127,9 +123,9 @@ public class TweenPostion : TweenUI {
 		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max) * isUp;
     }
 
-	public void SetJump(Vector3 f, Vector3 t, float speed, int acIdx = 0)
+	public void SetJump(Vector3 f, Vector3 t, float speed)
     {
-		SetFromAndTo (f, t, acIdx);
+		SetFromAndTo (f, t);
 		TweenTime = speed;
 		distance = Vector3.Distance(f, t);
 		parabolaPower = UnityEngine.Random.Range (powerRange.min, powerRange.max);

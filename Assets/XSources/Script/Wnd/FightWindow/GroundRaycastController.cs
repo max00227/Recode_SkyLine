@@ -53,9 +53,7 @@ public class GroundRaycastController : MonoBehaviour {
 			foreach (int randomI in randomList) {
 				hits = GetRaycastHits(center.gc.transform.position, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (constAngle + center.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (constAngle + center.randomList[randomI] * 60))), 0.97f);
                 if (hits.Length > 0) {
-					foreach (var hit in hits) {
-						hit.collider.GetComponent<GroundController> ().ChangeType (false, true);
-					}
+                    hits[0].collider.GetComponent<GroundController>().ChangeType(false, true);
 				}
 			}
 		}

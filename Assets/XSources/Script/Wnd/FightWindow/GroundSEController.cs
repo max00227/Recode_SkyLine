@@ -80,7 +80,7 @@ public class GroundSEController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (setComplete && isRun) {
-			if ((int)seType == 1) {
+			if (seType == SpecailEffectType.Reverse) {
 				showTime -= Time.deltaTime;
 
 				ratioTxts.SetActive (true);
@@ -106,12 +106,12 @@ public class GroundSEController : MonoBehaviour {
 						setComplete = false;
 					}
 				}
-			} else if ((int)seType == 2) {
+			} else if (seType == SpecailEffectType.ExtraRatio) {
 				extraLight.runFinish = OnRunFinish;
 				extraLight.gameObject.SetActive (true);
 				extraLight.PlayForward ();
 				setComplete = false;
-			} else if ((int)seType == 3) {
+			} else if (seType == SpecailEffectType.Attack) {
 				damageLight.runFinish = OnRunFinish;
 				damageLight.gameObject.SetActive (true);
 				damageLight.PlayForward ();
@@ -120,7 +120,7 @@ public class GroundSEController : MonoBehaviour {
 				damageTxts.SetActive (true);
 				damageTxt[damageTxtIdx].gameObject.SetActive (true);
 				if (!isShowDamage) {
-					damageTxt [damageTxtIdx].GetComponent<TweenPostion> ().PlayForward ();
+                    damageTxt[damageTxtIdx].GetComponent<TweenPostion>().PlayForward(Random.Range(0, 2));
 				}
 				showDamage = (int)DataUtil.LimitFloat (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
 				damageTxt[damageTxtIdx].text = showDamage.ToString ();
@@ -128,7 +128,7 @@ public class GroundSEController : MonoBehaviour {
 				if (showDamage >= plusDamage) {
 					showTime -= Time.deltaTime;
 					if (showTime <= 0) {
-						OnRunFinish ();
+                        OnRunFinish();
 					}
 				}
 			}
@@ -238,7 +238,7 @@ public class GroundSEController : MonoBehaviour {
 		showTime = 0.5f;
 
 		damageTxtIdx = System.Convert.ToInt32 (damageData.isCrt);
-        damageTxt[damageTxtIdx].GetComponent<TweenPostion>().SetJump(orgPos, orgPos + Vector3.right * Random.Range(-50, 50), speedRatio, Random.Range(0, 2));
+        damageTxt[damageTxtIdx].GetComponent<TweenPostion>().SetJump(orgPos, orgPos + Vector3.right * Random.Range(-50, 50), speedRatio);
 		damageTxt [damageTxtIdx].color = Const.attriColor [damageData.attributes];
 		setComplete = true;
 		isRun = false;

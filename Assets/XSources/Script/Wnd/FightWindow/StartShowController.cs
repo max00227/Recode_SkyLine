@@ -19,6 +19,7 @@ public class StartShowController : MonoBehaviour
     [SerializeField]
     ShowStart endCorner;
 
+
     [SerializeField]
     int maxCount;
 
@@ -29,68 +30,72 @@ public class StartShowController : MonoBehaviour
     Vector3 upScale = new Vector3(1, 1, 1);
     [SerializeField]
     float endScale;
+    [SerializeField]
+    float startScale;
 
     [SerializeField]
     float upSpeed;
-    // Start is called before the first frame update
-    void Start()
-    {
-        start.onCollisionObject = CollisionGc;
-        end.onCollisionObject = CollisionGc;
-        startCorner.onCollisionObject = CollisionGc;
-        endCorner.onCollisionObject = CollisionGc;
 
+    public delegate void Callback();
+
+    public Callback callback;
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        start.onCollisionObject = TriggerGc;
+        end.onCollisionObject = TriggerGc;
+        startCorner.onCollisionObject = TriggerGc;
+        endCorner.onCollisionObject = TriggerGc;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isRun && setComplete) {
+        if (isRun)
+        {
             start.transform.localScale += upScale * upSpeed * Time.deltaTime;
             end.transform.localScale += upScale * upSpeed * Time.deltaTime;
             startCorner.transform.localScale += upScale * upSpeed * Time.deltaTime;
             endCorner.transform.localScale += upScale * upSpeed * Time.deltaTime;
 
-            if (collisionCount >= maxCount) {
+            if (collisionCount >= maxCount)
+            {
                 isRun = false;
                 transform.gameObject.SetActive(false);
-                start.transform.localScale = Vector3.one * 0.8f;
-                end.transform.localScale = Vector3.one * endScale;
-                startCorner.transform.localScale = Vector3.one * 1.09f;
-                endCorner.transform.localScale = Vector3.one * (endScale + 0.29f);
-
+                callback.Invoke();
             }
         }
     }
 
-    public void SetCenter(int startPoint = 30) {
-        transform.position = raycastGroup.GetChild(startPoint).position;
-        foreach (GroundController gc in raycastGroup.GetComponentsInChildren<GroundController>()) {
-            gc.transform.tag = "raycastG";
-        }
-        raycastGroup.GetChild(startPoint).tag = "Center";
-        raycastGroup.GetChild(startPoint).GetComponent<GroundController>().SetTag();
-
-        setComplete = true;
+    public void ShowCount()
+    {
+        Debug.Log(collisionCount);
     }
 
-
-    public void ShowStart() {
+    public void ShowStart(Vector3 centerPos)
+    {
+        transform.position = centerPos;
         end.transform.localScale = Vector3.one * endScale;
         endCorner.transform.localScale = Vector3.one * (endScale + 0.29f);
+        start.transform.localScale = Vector3.one * startScale;
+        startCorner.transform.localScale = Vector3.one * (startScale + 0.29f);
+
         collisionCount = 0;
+        transform.gameObject.SetActive(true);
+
         isRun = true;
     }
 
-    public void CollisionGc(GroundController gc, GameObject go)
+    public void TriggerGc(GroundController gc, GameObject go)
     {
         if (go.CompareTag("CollisionStart"))
         {
-            gc.matchController.OpenColor(0);
+            gc.matchController.OpenLight(GroundType.Copper, false);
         }
         else if (go.CompareTag("CollisionEnd"))
         {
-            gc.matchController.CloseColor();
+            gc.matchController.CloseLight();
             collisionCount++;
         }
     }

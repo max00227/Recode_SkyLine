@@ -68,11 +68,9 @@ public class TweenRotation : TweenUI {
 		}
 	}
 
-	public void SetFromAndTo(Vector3 f, Vector3 t, int idx = 0){
+	public void SetFromAndTo(Vector3 f, Vector3 t){
 		from = f;
 		to = t;
-
-        mainAniCurve = animationCurves[idx];
 	}
 
 

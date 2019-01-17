@@ -30,13 +30,15 @@ public class TweenUI : MonoBehaviour
     public float TweenTime = 1;
 
     // Use this for initialization
-    public void PlayForward()
+    public void PlayForward(int idx = 0)
     {
+        mainAniCurve = animationCurves[idx];
         Play(true);
     }
 
-    public void PlayReverse()
+    public void PlayReverse(int idx = 0)
     {
+        mainAniCurve = animationCurves[idx];
         Play(false);
     }
 

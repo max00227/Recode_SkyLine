@@ -12,8 +12,8 @@ public class testLoop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        tc.SetFromAndTo(a, b, 1);
-        tc.PlayForward();
+        tc.SetFromAndTo(a, b);
+        tc.PlayForward(1);
     }
 
     // Update is called once per frame

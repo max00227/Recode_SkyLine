@@ -89,19 +89,16 @@ public class TweenColor : TweenUI
         }
     }
 
-    public void SetFromAndTo(Color f, Color t, int idx = 0)
+    public void SetFromAndTo(Color f, Color t)
     {
         from = f;
         to = t;
-
-        mainAniCurve = animationCurves[idx];
     }
 
-    public void SetFromAndTo(string f, string t, int idx = 0)
+    public void SetFromAndTo(string f, string t)
     {
         from = DataUtil.ColorConvert(f);
         to = DataUtil.ColorConvert(t);
-        mainAniCurve = animationCurves[idx];
     }
 
 
