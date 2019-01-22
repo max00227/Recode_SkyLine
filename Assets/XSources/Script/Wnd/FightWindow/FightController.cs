@@ -171,9 +171,9 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	/// <summary>
-	/// 產生傷害資料，並進行傷害公式
-	/// <param name="type">目標類型</param>
+    /// <summary>
+    /// 產生傷害資料，並進行傷害公式
+    /// </summary>
 	private void OnFight(){
 		damageShowSort = new Dictionary<int, Dictionary<int, List<DamageData>>> ();
 		int count = mainTarget[0] == "E" ? enemys.Length : players.Length;
@@ -196,9 +196,7 @@ public class FightController : MonoBehaviour {
 							isAll = true;
 						}
 					}
-
-					bool atkTeam = false;
-
+                    
 					if (CheckStatus ((int)Nerf.Confusion, mainOrgChess, mainTarget[0])) {
 						RandomFight (i, isAll);
 					}
@@ -329,15 +327,13 @@ public class FightController : MonoBehaviour {
 	/// <summary>
 	/// 建立傷害資料
 	/// <returns>The damage.</returns>
-	/// <param name="orgData">攻擊者資料</param>
-	/// <param name="targetData">被攻擊者資料</param>
 	/// <param name="orgIdx">攻擊者索引值，建立傷害資料用</param>
 	/// <param name="targetIdx">被攻擊者索引值，建立傷害資料用</param>
 	/// <param name="attriJob">攻剋倍率</param>
 	/// <param name="minus">檢傷值</param>
-	/// <param name="tType">目標陣營.</param>
 	/// <param name="dType">傷害類型</param>
 	/// <param name="isAll">是否為全體攻擊，會影響浮動值</param>
+    /// </summary>
 	private DamageData GetDamage (int orgIdx, int targetIdx,float attriJob, int minus, DamageType dType, bool isAll){
 		DamageData damageData;
 		int actLevel = mainTarget[0] == "E" ? 0 : fightUIController.GetActLevel (mainOrgChess.soulData.job) - 1;

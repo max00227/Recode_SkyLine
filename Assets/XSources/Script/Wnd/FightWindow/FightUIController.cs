@@ -40,6 +40,9 @@ public class FightUIController : MonoBehaviour {
 	[SerializeField]
 	Button checkButton;
 
+    [SerializeField]
+    NumberSetting energyNum;
+
 	bool isResetGround = false;
 
 	private int[] monsterCdTimes = new int[5];
@@ -52,6 +55,8 @@ public class FightUIController : MonoBehaviour {
 
 	[SerializeField]
 	Image spriteImage;
+
+    public EnergyStone[] energyStone;
 
 	int? charaIdx;
 
@@ -97,9 +102,6 @@ public class FightUIController : MonoBehaviour {
 	private int energe;
 
 	private int lockEnerge;
-
-	[SerializeField]
-	private NumberSetting energeNum;
 
 	private int spaceCount = 0;
 
@@ -233,7 +235,7 @@ public class FightUIController : MonoBehaviour {
         SetData();
 
         energe = 3;
-        energeNum.SetNumber(energe);
+        SetEnergy(true);
 
         SetCenter();
         startShowController.ShowStart(groundPool.transform.GetChild(centerIdx).position);
@@ -658,7 +660,7 @@ public class FightUIController : MonoBehaviour {
 			if (energe > 6) {
 				energe = 6;
 			}
-			energeNum.SetNumber (energe);
+            SetEnergy();
 		}
 	}
 
@@ -795,7 +797,7 @@ public class FightUIController : MonoBehaviour {
 
 
 							energe = energe - (spaceCount + 1);
-							energeNum.SetNumber (energe);
+                            SetEnergy();
 
 							if (energe > (spaceCount + 1) && !isResetGround) {
 								ResetStatus ();
@@ -845,6 +847,8 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private bool CheckGround(bool isTouchUp, bool isRoundEnd = false) {
+        ResetTemple();
+
 		allRatioData = new List<RaycastData> ();
 		ExtraRatios = new List<ExtraRatioData>();
 		protectJob = new int[5]{ 0, 0, 0, 0, 0 };
@@ -880,8 +884,6 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void CheckHitCount(){
-		int newCount = 0;
-		int job = 0;
 		List<RaycastData> newRData = new List<RaycastData> ();
 		foreach (RaycastData newData in allRatioData) {
 			bool isNew = true;
@@ -1277,7 +1279,25 @@ public class FightUIController : MonoBehaviour {
 		Debug.LogWarning ("Chara " + charaIdx + " Can Use Skill");
 	}
 
-	public void OnSelectionDir(List<int> idxList, string targetString){
+    void SetEnergy(bool init = false)
+    {
+        energyNum.SetNumber(energe);
+        for (int i = 0; i < energyStone.Length; i++)
+        {
+            if (i < energe)
+            {
+                energyStone[i].EnergyCharge(init);
+            }
+            else
+            {
+                energyStone[i].EneryEmpty(init);
+            }
+        }
+    }
+
+
+    #region ButtonControl
+    public void OnSelectionDir(List<int> idxList, string targetString){
 		OnCloseButton (TargetType.All.ToString());
 
 		foreach (int idx in idxList) {
@@ -1339,8 +1359,10 @@ public class FightUIController : MonoBehaviour {
 			btn.Init ();
 		}
 	}
+    #endregion
 
-	public void OnStatus(int idx, StatusLargeData data, int level, string targeString){
+    #region StatusControl
+    public void OnStatus(int idx, StatusLargeData data, int level, string targeString){
 		if (targeString == "P") {
 			if (playerStatus.ContainsKey (idx)) {
 				if (!playerStatus [idx].ContainsKey (data)) {
@@ -1406,6 +1428,7 @@ public class FightUIController : MonoBehaviour {
             enemyStatus[idx].Remove(key);
         }
     }
+    #endregion
 
     private void ResetTemple() { 
         foreach(GroundController gc in allGcs) {
@@ -1435,8 +1458,8 @@ public class FightUIController : MonoBehaviour {
 
 	public void AddEnerge(int erg){
 		energe += erg;
-		energeNum.SetNumber (energe);
-	}
+        SetEnergy();
+   	}
 
 	public void LockEnerge(int erg){
 		if (lockEnerge < erg) {

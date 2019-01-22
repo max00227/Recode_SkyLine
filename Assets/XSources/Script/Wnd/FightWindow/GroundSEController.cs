@@ -45,6 +45,12 @@ public class GroundSEController : MonoBehaviour {
 	[SerializeField]
 	private TweenPostion extraLight;
 
+    [SerializeField]
+    private ParticleSystem extraParticle;
+
+    [SerializeField]
+    private Color[] particleColor;
+
 	[SerializeField]
 	private GameObject ratioTxts;
 
@@ -188,6 +194,16 @@ public class GroundSEController : MonoBehaviour {
 	/// <param name="upInt">上升值</param>
 	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs, int upInt){
 		extraLight.SetParabola (grounds [0].transform.localPosition, dir);
+
+        var eP = extraParticle.main;
+
+        if (upInt == 25)
+        {
+            eP.startColor = particleColor[1];
+        }
+        else {
+            eP.startColor = particleColor[0];
+        }
 
         SetLightParent(grounds[0].transform.localPosition, dir);
 
