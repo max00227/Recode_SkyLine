@@ -73,4 +73,8 @@ public class CanvasManager : Singleton<CanvasManager> {
 	public void SetRaycastCanvas(Canvas canvas){
 		mainCanvas = canvas;
 	}
+
+    public Vector3 GetCanvasScale() {
+        return mainCanvas.GetComponent<RectTransform>().localScale;
+    }
 }

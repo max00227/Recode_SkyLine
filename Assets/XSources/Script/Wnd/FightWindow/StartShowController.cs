@@ -5,9 +5,6 @@ using UnityEngine;
 public class StartShowController : MonoBehaviour
 {
     [SerializeField]
-    Transform raycastGroup;
-
-    [SerializeField]
     ShowStart start;
 
     [SerializeField]
@@ -18,6 +15,8 @@ public class StartShowController : MonoBehaviour
 
     [SerializeField]
     ShowStart endCorner;
+
+
 
 
     [SerializeField]
@@ -35,6 +34,9 @@ public class StartShowController : MonoBehaviour
 
     [SerializeField]
     float upSpeed;
+
+    [SerializeField]
+    float cornerDis;
 
     public delegate void Callback();
 
@@ -77,9 +79,9 @@ public class StartShowController : MonoBehaviour
     {
         transform.position = centerPos;
         end.transform.localScale = Vector3.one * endScale;
-        endCorner.transform.localScale = Vector3.one * (endScale + 0.29f);
+        endCorner.transform.localScale = Vector3.one * (endScale + cornerDis);
         start.transform.localScale = Vector3.one * startScale;
-        startCorner.transform.localScale = Vector3.one * (startScale + 0.29f);
+        startCorner.transform.localScale = Vector3.one * (startScale + cornerDis);
 
         collisionCount = 0;
         transform.gameObject.SetActive(true);
@@ -91,11 +93,11 @@ public class StartShowController : MonoBehaviour
     {
         if (go.CompareTag("CollisionStart"))
         {
-            gc.matchController.OpenLight(GroundType.Copper, false);
+            gc.OpenLight(GroundType.Copper, false);
         }
         else if (go.CompareTag("CollisionEnd"))
         {
-            gc.matchController.CloseLight();
+            gc.CloseLight();
             collisionCount++;
         }
     }

@@ -163,7 +163,8 @@ public class FightUIController : MonoBehaviour {
         startShowController.callback = StartShowEnd;
         fightInit = true;
 
-        centerIdx = 30;
+        centerIdx = 45;
+        groundPool.SetCenter(groundPool.transform.GetChild(centerIdx).GetComponent<GroundController>());
 
         foreach (FightItemButton btn in playerButton) {
 			btn.SetHpBar (1, false);
@@ -243,7 +244,7 @@ public class FightUIController : MonoBehaviour {
 
     private void StartShowEnd() {
         foreach(GroundController gc in allGcs) {
-            gc.matchController.CloseLight();
+            gc.CloseLight();
         }
         ResetGround();
     }
@@ -669,11 +670,12 @@ public class FightUIController : MonoBehaviour {
 
 		if (result.Count > 0) {
 			foreach (var r in result) {
-				if (r.gameObject.CompareTag("fightG")) {
-					if ((int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 0
-						|| (int)r.gameObject.GetComponent<GroundController> ().matchController._groundType == 99
-						|| ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType !=10 && canCover)) {
-						TouchDown (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>().matchController._groundType !=10 && canCover));
+                if (r.gameObject.CompareTag("raycastGCorner") || r.gameObject.CompareTag("Center") || r.gameObject.CompareTag("raycastG"))
+                {
+                    if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 0
+						|| (int)r.gameObject.GetComponent<GroundController> ()._groundType == 99
+						|| ((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover)) {
+						TouchDown (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover));
 					}
 				}
 			}
@@ -681,7 +683,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchDown(GroundController gc, bool isCover){
-		startGc = gc.matchController;
+		startGc = gc;
 		if (charaIdx != null) {
 			if (fightController.GetJob("P", (int)charaIdx) == 2) {
 				startGc.onProtection = OnProtection;
@@ -694,8 +696,8 @@ public class FightUIController : MonoBehaviour {
 			}
 			startGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
 
-			startCharaImage = SetChess(startGc.matchController);
-			endCharaImage = SetChess(startGc.matchController);
+			startCharaImage = SetChess(startGc);
+			endCharaImage = SetChess(startGc);
 
 			if ((int)gc.GetComponent<GroundController> ()._groundType == 99) {
 				isResetGround = true;
@@ -708,11 +710,11 @@ public class FightUIController : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 			if (result.Count > 0) {
 				foreach (var r in result) {
-					if (r.gameObject.CompareTag("fightG"))
+					if (r.gameObject.CompareTag("raycastGCorner") || r.gameObject.CompareTag("Center") || r.gameObject.CompareTag("raycastG"))
 					{
                         endCharaImage = SetChess(r.gameObject.GetComponent<GroundController>(), endCharaImage);
 
-						if (endGc != r.gameObject.GetComponent<GroundController> ().matchController) {
+						if (endGc != r.gameObject.GetComponent<GroundController> ()) {
 							foreach (GroundController gc in charaGc) {
 								gc.OnPrevType (false);
 							}
@@ -729,11 +731,11 @@ public class FightUIController : MonoBehaviour {
 								} 
 							}
 
-							if ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 0 
-								|| (int)r.gameObject.GetComponent<GroundController>().matchController._groundType == 99
-								|| ((int)r.gameObject.GetComponent<GroundController>().matchController._groundType !=10 && canCover))
+							if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 0 
+								|| (int)r.gameObject.GetComponent<GroundController>()._groundType == 99
+								|| ((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover))
 							{
-								TouchDrap (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>().matchController._groundType !=10 && canCover));
+								TouchDrap (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover));
 							}
 							else
 							{
@@ -747,13 +749,13 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchDrap(GroundController gc, bool isCover){
-		GroundController checkGc = gc.matchController;
+		GroundController checkGc = gc;
 
 		Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
 
 		if (IsCorrectDir(dir))
 		{
-			endGc = gc.matchController;
+			endGc = gc;
 
 			if (isCover) {
 				endCover = true;
@@ -787,8 +789,9 @@ public class FightUIController : MonoBehaviour {
 			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 			if (result.Count > 0) {
 				foreach (var r in result) {
-					if (r.gameObject.CompareTag ("fightG")) {
-						if (spaceCorrect == true) {
+                    if (r.gameObject.CompareTag("raycastGCorner") || r.gameObject.CompareTag("Center") || r.gameObject.CompareTag("raycastG"))
+                    {
+                        if (spaceCorrect == true) {
 							bool onlyAdd = false;
 
 							if ((int)r.gameObject.GetComponent<GroundController> ()._groundType == 99) {

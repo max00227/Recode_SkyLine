@@ -11,16 +11,15 @@ public class GroundController : MonoBehaviour
 
     public Image background;
 
-    public ParticleSystem particle;
+    [SerializeField]
+    public GroundRaycastController raycastController;
 
     int constAngle;
 
     int _groundRate;
 
     public GroundType _groundType;
-
-    public GroundController matchController;
-
+    
     public TweenColor light;
     public TweenColor colorLight;
 
@@ -158,15 +157,15 @@ public class GroundController : MonoBehaviour
     {
         if (background != null)
         {
-            if (matchController._groundType == GroundType.Silver)
+            if (_groundType == GroundType.Silver)
             {
                 Reversing(50, number);
             }
-            else if (matchController._groundType == GroundType.gold)
+            else if (_groundType == GroundType.gold)
             {
                 Reversing(75, number);
             }
-            OpenLight(matchController._groundType,false);
+            OpenLight(_groundType,false);
         }
 
         //避免同物件進行回調時回調被清掉或回調錯誤
@@ -262,7 +261,7 @@ public class GroundController : MonoBehaviour
 
     public void ResetSprite(GroundType type)
     {
-        matchController.ChangeSprite(type);
+        ChangeSprite(type);
     }
 
     /// <summary>
@@ -328,7 +327,7 @@ public class GroundController : MonoBehaviour
         bool hasActived = false;
         for (int i = 0; i < 6; i++)
         {
-            hits = GetRaycastHits(transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + i * 60))), 0.97f * 8);
+            hits = raycastController.GetRaycastHits (transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
 
             if (hits.Length == 0)
             {
@@ -338,6 +337,7 @@ public class GroundController : MonoBehaviour
             bool hitNone = false;
             bool hasOcclusion = false;
             List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
+
             for (int j = 0; j < hits.Length; j++)
             {
                 hitGcs.Add(hits[j]);
@@ -375,8 +375,8 @@ public class GroundController : MonoBehaviour
                                 {
                                     RaycastData data = new RaycastData();
 
-                                    data.start = GetComponent<GroundController>().matchController;
-                                    data.end = hits[j].transform.GetComponent<GroundController>().matchController;
+                                    data.start = GetComponent<GroundController>();
+                                    data.end = hits[j].transform.GetComponent<GroundController>();
                                     data.ratio = ratio;
                                     data.hits = new List<GroundController>();
                                     if (charaJob != 0)
@@ -385,7 +385,7 @@ public class GroundController : MonoBehaviour
                                     }
                                     for (int h = 0; h < hitGcs.Count - 1; h++)
                                     {
-                                        data.hits.Add(hitGcs[h].collider.GetComponent<GroundController>().matchController);
+                                        data.hits.Add(hitGcs[h].collider.GetComponent<GroundController>());
                                     }
                                     dataList.Add(data);
 
@@ -512,7 +512,7 @@ public class GroundController : MonoBehaviour
         if ((int)_groundType == 0)
         {
             _groundType = GroundType.Copper;
-            matchController.ChangeSprite(_groundType, true);
+            ChangeSprite(_groundType, true);
         }
         else
         {
@@ -544,7 +544,7 @@ public class GroundController : MonoBehaviour
         }
         else
         {
-            matchController.ChangeSprite(_groundType);
+            ChangeSprite(_groundType);
         }
         _layer = 0;
 
@@ -589,7 +589,7 @@ public class GroundController : MonoBehaviour
                 else
                 {
                     _groundType = _roundPrevType;
-                    matchController.ChangeSprite(_groundType, true);
+                    ChangeSprite(_groundType, true);
                 }
             }
         }
@@ -617,7 +617,7 @@ public class GroundController : MonoBehaviour
     {
         _roundPrevType = _groundType;
         _groundType = defaultType;
-        matchController.ChangeSprite(_groundType);
+        ChangeSprite(_groundType);
 
         _layer = 0;
     }
@@ -632,16 +632,8 @@ public class GroundController : MonoBehaviour
             raycasted = false;
 
             isActived = false;
-            matchController.ChangeSprite(_groundType);
+            ChangeSprite(_groundType);
         }
-    }
-
-    private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis)
-    {
-        LayerMask mask = 1 << 8;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(org, dir, dis, mask);
-
-        return hits;
     }
 
     //回傳額外傷害加成，回傳後移除回傳資料，避免重複回傳
@@ -653,7 +645,7 @@ public class GroundController : MonoBehaviour
             {
                 ExtraRatioData data = new ExtraRatioData();
 
-                data.gc = matchController;
+                data.gc = this;
                 data.extraJob = (int)extraSilverJob;
                 data.upRatio = 50;
                 data.linkData = linkData[ExtraType.Silver];
@@ -666,7 +658,7 @@ public class GroundController : MonoBehaviour
             if (extraGoldJob != null)
             {
                 ExtraRatioData data = new ExtraRatioData();
-                data.gc = matchController;
+                data.gc = this;
                 data.extraJob = (int)extraGoldJob;
                 data.linkData = linkData[ExtraType.Gold];
                 data.upRatio = 25;
@@ -676,7 +668,7 @@ public class GroundController : MonoBehaviour
                 if (extraSilverJob != null)
                 {
                     data = new ExtraRatioData();
-                    data.gc = matchController;
+                    data.gc = this;
                     data.linkData = linkData[ExtraType.Silver];
                     data.extraJob = (int)extraSilverJob;
                     data.upRatio = 50;
@@ -749,8 +741,8 @@ public class GroundController : MonoBehaviour
     public void ResetTemple(int idx = 0) {
         if (_groundType != GroundType.Caution && _groundType != GroundType.None && _groundType != GroundType.Chara)
         {
-            matchController.light.PlayForward(idx);
-            matchController.colorLight.PlayForward(idx);
+            light.PlayForward(idx);
+            colorLight.PlayForward(idx);
         }
     }
 
@@ -764,7 +756,7 @@ public class GroundController : MonoBehaviour
         RaycastHit2D[] hits;
         for (int i = 0; i < 6; i++)
         {
-            hits = GetRaycastHits(transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + i * 60))), 0.97f * 8);
+            hits = raycastController.GetRaycastHits(transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
             for (int j = 1; j < hits.Length; j++)
             {
                 hits[j].transform.tag = "raycastGCorner";

@@ -241,7 +241,7 @@ public class fightBGMaker : MonoBehaviour {
 		GroundController[] uiGC = selGO.transform.GetChild (1).GetComponentsInChildren<GroundController> ();
 
 		foreach (GroundController gc in uiGC) {
-            Debug.Log(gc.matchController.transform.parent);
+            Debug.Log(gc.transform.parent);
             //gc.matchController.GetComponent<UIPolygon>().sprite = ;
 		}
 	}
@@ -255,12 +255,12 @@ public class fightBGMaker : MonoBehaviour {
 		GroundController[] gc = selGO.transform.GetChild (1).GetComponentsInChildren<GroundController> ();
 
 
-		if (uiGC.Length == gc.Length) {
+		/*if (uiGC.Length == gc.Length) {
 			for (int i = 0; i < gc.Length; i++) {
 				gc [i].matchController = uiGC [i];
 				uiGC [i].matchController = gc [i];
 			}
-		}
+		}*/
 	}
 
 	[MenuItem("MyProject/CreateBgPortrait")]
@@ -470,6 +470,7 @@ public class fightBGMaker : MonoBehaviour {
         for (int i = 0; i < bgCount; i++)
         {
             Selection.activeGameObject.transform.GetChild(i).localPosition = Selection.activeGameObject.transform.GetChild(i).localPosition - centerPos;
+            Selection.activeGameObject.transform.GetChild(i).GetComponent<GroundController>().raycastController = Selection.activeGameObject.GetComponent<GroundRaycastController>();
         }
     }
 
@@ -491,8 +492,8 @@ public class fightBGMaker : MonoBehaviour {
                 
                 uiGC[i].light = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetComponent<TweenColor>();
                 uiGC[i].colorLight = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetChild(0).GetComponent<TweenColor>();
-                gc[i].matchController = uiGC[i];
-                uiGC[i].matchController = gc[i];
+                //gc[i].matchController = uiGC[i];
+                //uiGC[i].matchController = gc[i];
             }
         }
     }
@@ -514,6 +515,18 @@ public class fightBGMaker : MonoBehaviour {
                     gc[i].groundRow = j;
                 }
             }
+        }
+    }
+
+    [MenuItem("MyProject/SetRaycastController")]
+    public static void SetRaycastController()
+    {
+        GameObject selGO = Selection.activeGameObject;
+        GroundController[] gc = selGO.transform.GetChild(0).GetComponentsInChildren<GroundController>();
+
+        for (int i = 0; i < gc.Length; i++)
+        {
+            gc[i].raycastController = selGO.transform.GetChild(0).GetComponent<GroundRaycastController>();
         }
     }
 

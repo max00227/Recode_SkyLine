@@ -10,9 +10,11 @@ public class GroundRaycastController : MonoBehaviour {
 	bool isPortrait = false;
 
 	[SerializeField]
-	DirectGroundController center;
+	GroundController center;
 
-	int CreateGround;
+    public int[] randomDir;
+
+    int CreateGround;
 
 	int constAngle;
 
@@ -20,17 +22,24 @@ public class GroundRaycastController : MonoBehaviour {
 	public void SetController () {
 		allGcs = GetComponentsInChildren<GroundController> ();
 	}
+
+    float canvasScale;
 	
 	// Update is called once per frame
-	void Update () {
-		
-	}
+	void Start () {
+        canvasScale = CanvasManager.Instance.GetCanvasScale().x;
+
+    }
 
 	public void SetCreateGround (int count){
 		CreateGround = count;
 	}
 
-	public void RoundStart(bool isCenter = true){
+    public void SetCenter(GroundController gc) {
+        center = gc;
+    }
+
+    public void RoundStart(bool isCenter = true){
 		RaycastHit2D[] hits;
 
 		constAngle = isPortrait == true ? 0 : 30;
@@ -38,26 +47,41 @@ public class GroundRaycastController : MonoBehaviour {
 		List<int> randomList = new List<int>();
 
 
-		if (allGcs.Length >= 61)
-		{
-			randomList = DataUtil.RandomList(CreateGround - 1, center.randomList);
-		}
-		else
-		{
-			randomList = DataUtil.RandomList(CreateGround, center.randomList);
-		}
+		
+		center.ChangeType (false, true);
 
-		center.gc.ChangeType (false, true);
+        List<int> currentHit = new List<int>();
+        int currentCount = 0;
 
-		if (randomList.Count>0){
-			foreach (int randomI in randomList) {
-				hits = GetRaycastHits(center.gc.transform.position, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (constAngle + center.randomList[randomI] * 60)), Mathf.Cos (Mathf.Deg2Rad * (constAngle + center.randomList[randomI] * 60))), 0.97f);
-                if (hits.Length > 0) {
-                    hits[0].collider.GetComponent<GroundController>().ChangeType(false, true);
-				}
-			}
-		}
-	}
+        while (currentCount < CreateGround -1) {
+            if (allGcs.Length >= 61)
+            {
+                randomList = DataUtil.RandomList(CreateGround - 1 -currentCount, randomDir);
+            }
+            else
+            {
+                randomList = DataUtil.RandomList(CreateGround - currentCount, randomDir);
+            }
+
+
+            if (randomList.Count > 0)
+            {
+                foreach (int randomI in randomList)
+                {
+                    if (!currentHit.Contains(randomI))
+                    {
+                        hits = GetRaycastHits(center.transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + randomDir[randomI] * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + randomDir[randomI] * 60))), 116f * 8);
+                        if (hits.Length > 2)
+                        {
+                            hits[0].collider.GetComponent<GroundController>().ChangeType(false, true);
+                            currentCount++;
+                            currentHit.Add(randomI);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 	public void RoundEnd()
 	{
@@ -79,18 +103,19 @@ public class GroundRaycastController : MonoBehaviour {
 	private void ChangeLayer(Vector2 center){
 		RaycastHit2D[] hits;
 		for (int i = 0; i < 6; i++) {
-			hits = GetRaycastHits(center, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (constAngle + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (constAngle + i * 60))), 0.97f);
+			hits = GetRaycastHits(center, new Vector2 (Mathf.Sin (Mathf.Deg2Rad * (constAngle + i * 60)), Mathf.Cos (Mathf.Deg2Rad * (constAngle + i * 60))), 116f);
 			foreach (var hit in hits) {
 				hit.collider.GetComponent<GroundController>().UpLayer();
 			}
 		}
 	}
 
-	private RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
-		LayerMask mask = 1 << 8;
-		RaycastHit2D[] hits = Physics2D.RaycastAll(org, dir, dis, mask);
+	public RaycastHit2D[] GetRaycastHits(Vector2 org, Vector2 dir, float dis) {
+        LayerMask mask = 1 << 9;
 
-		return hits;
+		RaycastHit2D[] hits = Physics2D.RaycastAll(org, dir, dis * canvasScale, mask);
+
+        return hits;
 	}
 
 	public bool NextRound (){
@@ -180,6 +205,6 @@ public class GroundRaycastController : MonoBehaviour {
 	[Serializable]
 	public struct DirectGroundController{
 		public GroundController gc;
-		public int[] randomList;
+		
 	}
 }
