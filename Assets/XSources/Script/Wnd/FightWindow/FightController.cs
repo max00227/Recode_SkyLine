@@ -29,8 +29,19 @@ public class FightController : MonoBehaviour {
 
 	private int charaProtect;
 
+    private int uniteFullHp = 0;
 
-	[HideInInspector]
+    private int uniteHp = 0;
+
+    private int uniteDef;
+    private int uniteMDef;
+
+    private int mainJob;
+
+    private int mainAttri;
+
+
+    [HideInInspector]
 	public ChessData[] players;
 	[HideInInspector]
 	public ChessData[] enemys;
@@ -70,11 +81,6 @@ public class FightController : MonoBehaviour {
 
 
 	void Update(){
-		if (Input.GetKeyDown (KeyCode.P)) {
-			for (int i = 0; i < 5; i++) {
-				Debug.Log (enemys [0].according [i].minus);
-			}
-		}
 	}
 
 
@@ -90,6 +96,8 @@ public class FightController : MonoBehaviour {
 		SetAccordingDataDic ();
 
 		CallbackProtect ();
+
+        fightUIController.ChangeUniteHpBar((float)uniteHp / (float)uniteFullHp, true);
 
 		UnLockOrder ();
 	}
@@ -141,7 +149,7 @@ public class FightController : MonoBehaviour {
 			players [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			players [i].soulData.Merge (ParameterConvert.GetCharaAbility (players [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
 			players [i].soulData.Merge (players [i].soulData.skill);
-			players [i].fullHp = players [i].soulData.abilitys["Hp"];
+			//players [i].fullHp = players [i].soulData.abilitys["Hp"];
 			//player[i].initCD = (int)player [i].soulData._skill.cdTime;
 			players [i].status = new Dictionary<StatusLargeData, int> ();
 			players [i].recStatus = new Dictionary<StatusLargeData, int> ();
@@ -151,9 +159,10 @@ public class FightController : MonoBehaviour {
 			players [i].initAttri = players [i].soulData.attributes;
 			soulData [i] = players [i].soulData;
 
-
-			//skillCdTime [i] = (int)player [i].soulData._norSkill.cdTime;
-		}
+            uniteHp += players[i].soulData.abilitys["Hp"];
+            uniteFullHp += players[i].soulData.abilitys["Hp"];
+            //skillCdTime [i] = (int)player [i].soulData._norSkill.cdTime;
+        }
 		return soulData;
 	}
 
@@ -167,9 +176,26 @@ public class FightController : MonoBehaviour {
 		}
 
 		for (int i = 0; i < protectChara.Length; i++) {
-			ChangeAccordingData (i, protectChara [i], "P", AccChangeType.Minus);
+            players[i].minus = protectChara[i];
 		}
 	}
+
+    public void SetJob(int charaIdx)
+    {
+        mainJob = players[charaIdx].soulData.job;
+        mainAttri = players[charaIdx].soulData.attributes;
+        int abiChanged = 0;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].soulData.job == mainJob)
+            {
+                abiChanged = 100;//GetAbiChange(i, 1, "Def");
+                uniteDef += players[i].soulData.abilitys["Def"] * abiChanged / 100;
+                abiChanged = 100;//GetAbiChange(i, 1, "mDef");
+                uniteDef += players[i].soulData.abilitys["mDef"] * abiChanged / 100;
+            }
+        }
+    }
 
     /// <summary>
     /// 產生傷害資料，並進行傷害公式
@@ -180,29 +206,24 @@ public class FightController : MonoBehaviour {
 		for (int i = 0; i < count; i++) {
 			mainOrgChess = mainTarget[0] == "E" ? enemys[i] : players[i];
 			if (mainOrgChess.soulData.abilitys["Hp"] > 0) {
-				if (fightPairs.ContainsKey (i)) {
-					AccordingData[] order;
-					fightPairs.TryGetValue (i, out order);
-
-					//判斷是否全體攻擊
-					bool isAll = false;
-					if (mainOrgChess.soulData.job >= 3) {
-						if (mainTarget[0] == "P") {
-							if (fightUIController.GetActLevel (mainOrgChess.soulData.job) >= 2) {
-								isAll = true;
-							}
-						}
-						else {
+				//判斷是否全體攻擊
+				bool isAll = false;
+				if (mainOrgChess.soulData.job >= 3) {
+					if (mainTarget[0] == "P") {
+						if (fightUIController.GetActLevel (mainOrgChess.soulData.job) >= 2) {
 							isAll = true;
 						}
 					}
-                    
-					if (CheckStatus ((int)Nerf.Confusion, mainOrgChess, mainTarget[0])) {
-						RandomFight (i, isAll);
-					}
 					else {
-						NormalFight (order, i, isAll);
+						isAll = true;
 					}
+				}
+                
+				if (CheckStatus ((int)Nerf.Confusion, mainOrgChess, mainTarget[0])) {
+					RandomFight (i, isAll);
+				}
+				else {
+					NormalFight (i, isAll);
 				}
 			}
 		}
@@ -210,36 +231,59 @@ public class FightController : MonoBehaviour {
 		CallbackProtect ();
 	}
 
-	private void NormalFight(AccordingData[] order, int selfIdx, bool isAll){
+	private void NormalFight(int selfIdx, bool isAll){
         //自動攻擊之敵人跳過盾職
 		bool ignore = false;
 		if (mainTarget[1] == "P"){
-			for (int i = 0; i < order.Length; i++) {
-				if (players [order [i].index].soulData.abilitys ["Hp"] > 0 && 
-					players [order [i].index].soulData.job != (int)Const.jobType.Shielder){
-					ignore = true;
-				}
-			}
+            if (cdTime[selfIdx] == 0)
+            {
+                List<DamageData> allDamage = new List<DamageData>();
+                float jobRatio = ParameterConvert.JobRatioCal(mainOrgChess.soulData.job, mainJob);
+                float attriRatio = ParameterConvert.JobRatioCal(mainOrgChess.soulData.attributes, mainAttri);
+                
+                if (mainOrgChess.soulData.job <= 3)
+                {
+                    allDamage.Add(GetDamage(selfIdx, 0, attriRatio * jobRatio, DamageType.Physical, isAll));
+                }
+
+                if (mainOrgChess.soulData.job >= 3)
+                {
+                    allDamage.Add(GetDamage(selfIdx, 0, attriRatio * jobRatio, DamageType.Magic, isAll));
+                }
+
+                OnDamage(allDamage);
+            }
 		}
+        else
+        {
+            if (fightPairs.ContainsKey(selfIdx))
+            {
+                AccordingData[] order;
+                fightPairs.TryGetValue(selfIdx, out order);
+                for (int i = 0; i < order.Length; i++)
+                {
+                    mainTargetChess = enemys[order[i].index];
+
+                    if (mainTargetChess.soulData.abilitys["Hp"] > 0)
+                    {
+                        if (ignore && mainTargetChess.soulData.job == (int)Const.jobType.Shielder)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            OnDamage(FightDamageData(selfIdx, order[i], isAll));
+                        }
+                    }
 
 
-		for (int i = 0; i < order.Length; i++) {
-			mainTargetChess = mainTarget[1] == "E" ? enemys[order[i].index] : players[order[i].index];
-
-			if (mainTargetChess.soulData.abilitys ["Hp"] > 0) {
-				if (ignore && mainTargetChess.soulData.job == (int)Const.jobType.Shielder){
-                    continue;
-				}
-				else{
-					OnDamage (FightDamageData (selfIdx, order [i], isAll));	
-				}
-			} 
-
-
-			if (!isAll) {
-				break;
-			}
-		}
+                    if (!isAll)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
 	}
 
 	private void RandomFight(int selfIdx, bool isAll){
@@ -280,11 +324,11 @@ public class FightController : MonoBehaviour {
 	private List<DamageData> FightDamageData(int selfIdx, AccordingData orderData, bool isAll){
 		List<DamageData> allDamage = new List<DamageData> ();
 		if (mainOrgChess.soulData.job <= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, orderData.minus, DamageType.Physical, isAll));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, DamageType.Physical, isAll));
 		}
 
 		if (mainOrgChess.soulData.job >= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, orderData.minus, DamageType.Magic, isAll));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, DamageType.Magic, isAll));
 		}
 
 		return allDamage;
@@ -293,11 +337,11 @@ public class FightController : MonoBehaviour {
 	private List<DamageData> FightDamageData(int selfIdx, float attriRatio, float jobRatio, AccordingData orderData, bool isAll){
 		List<DamageData> allDamage = new List<DamageData> ();
 		if (mainOrgChess.soulData.job <= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, orderData.minus, DamageType.Physical, isAll));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, DamageType.Physical, isAll));
 		}
 
 		if (mainOrgChess.soulData.job >= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, orderData.minus, DamageType.Magic, isAll));
+			allDamage.Add (GetDamage (selfIdx, orderData.index, attriRatio * jobRatio, DamageType.Magic, isAll));
 		}
 
 		return allDamage;
@@ -333,26 +377,40 @@ public class FightController : MonoBehaviour {
 	/// <param name="minus">檢傷值</param>
 	/// <param name="dType">傷害類型</param>
 	/// <param name="isAll">是否為全體攻擊，會影響浮動值</param>
-    /// </summary>
-	private DamageData GetDamage (int orgIdx, int targetIdx,float attriJob, int minus, DamageType dType, bool isAll){
+    /// </
+	private DamageData GetDamage (int orgIdx, int targetIdx,float attriJob, DamageType dType, bool isAll){
 		DamageData damageData;
 		int actLevel = mainTarget[0] == "E" ? 0 : fightUIController.GetActLevel (mainOrgChess.soulData.job) - 1;
 		int ratio = mainTarget[0] == "E" ? 0 : fightUIController.GetCharaRatio (mainOrgChess.soulData.job);
 
 		string titleKey = dType == DamageType.Physical ? "" : "m";
-        int orgChanged = GetAbiChange(orgIdx, 0, titleKey + "Atk");
-        int targetChanged = GetAbiChange(orgIdx, 1, titleKey + "Def");
 
-		//Status Affect
-		int orgStatusRatio = 100 + GetAbilityStatus ("Atk", true);
-		int targetStatusRatio = 100 + GetAbilityStatus ("Def", false);
-			
-		damageData = CalDamage (
-			mainOrgChess.soulData.abilitys [titleKey + "Atk"] * orgChanged / 100 * orgStatusRatio / 100, 
-			mainTargetChess.soulData.abilitys [titleKey + "Def"] * targetChanged / 100 * targetStatusRatio / 100, 
+        int orgChanged = 100;
+
+        int targetChanged = 100;
+
+        //Status Affect
+        int orgStatusRatio = 100;
+        int targetStatusRatio = 100;
+
+        if (mainTarget[0] == "E")
+        {
+            orgChanged = GetAbiChange(orgIdx, 0, titleKey + "Atk");
+            orgStatusRatio = 100 + GetAbilityStatus(titleKey + "Atk", true);
+        }
+        if (mainTarget[1] == "E") {
+            targetChanged = GetAbiChange(orgIdx, 0, titleKey + "Atk");
+            targetStatusRatio = 100 + GetAbilityStatus(titleKey + "Atk", true);
+        }
+
+        int targetDef = mainTarget[1] == "P" ? uniteDef : mainTargetChess.soulData.abilitys[titleKey + "Def"];
+
+        damageData = CalDamage (
+			mainOrgChess.soulData.abilitys [titleKey + "Atk"] * orgChanged / 100 * orgStatusRatio / 100,
+            targetDef * targetChanged / 100 * targetStatusRatio / 100, 
 			ratio, 
-			attriJob, 
-			minus, 
+			attriJob,
+            mainTargetChess.minus, 
 			actLevel, 
 			mainOrgChess.soulData.abilitys ["Cri"], 
 			isAll
@@ -364,6 +422,7 @@ public class FightController : MonoBehaviour {
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
 
+        Debug.Log(mainTarget[0] + " : " + mainTarget[1] + " , " + damageData.damage+" , "+ attriJob);
 		return damageData;
 	}
 
@@ -421,28 +480,38 @@ public class FightController : MonoBehaviour {
 		bool isDead = false;
 
 
-
-		mainTargetChess.soulData.abilitys ["Hp"] -= data.damage;
-		if (mainTargetChess.soulData.abilitys["Hp"] <= 0) {
-			if (mainTargetChess.hasStatus [(int)Status.Suffer] == false) {
-				mainTargetChess.soulData.abilitys ["Hp"] = 0;
-				isDead = true;
-				if (mainTargetChess.soulData.job == 2 && mainTarget[1] == "E"){
-                    enemyProtect--;
+        if (damageData.tType[1] == "E")
+        {
+            mainTargetChess.soulData.abilitys["Hp"] -= data.damage;
+            if (mainTargetChess.soulData.abilitys["Hp"] <= 0)
+            {
+                if (mainTargetChess.hasStatus[(int)Status.Suffer] == false)
+                {
+                    mainTargetChess.soulData.abilitys["Hp"] = 0;
+                    isDead = true;
+                    if (mainTargetChess.soulData.job == 2 && mainTarget[1] == "E")
+                    {
+                        enemyProtect--;
+                    }
                 }
-			} else {
-				mainTargetChess.soulData.abilitys ["Hp"] = 1;
-			}
-		}
+                else
+                {
+                    mainTargetChess.soulData.abilitys["Hp"] = 1;
+                }
+            }
 
-		if (isDead) {
-			OnDeath (damageData.targetIdx);
-		}
+            if (isDead)
+            {
+                OnDeath(damageData.targetIdx);
+            }
+        }
+        else {
+            uniteHp -= data.damage; 
+        }
 
-		ChangeAccordingData (damageData.targetIdx, mainTargetChess.soulData.abilitys["Hp"], mainTarget[1], AccChangeType.Hp);
 
-		if (damageData.tType[1] == "P") {
-			data.hpRatio = (float)mainTargetChess.soulData.abilitys["Hp"] / (float)players [damageData.targetIdx].fullHp;
+        if (damageData.tType[1] == "P") {
+			data.hpRatio = (float)uniteHp / (float)uniteFullHp;
 		} 
 		else {
 			data.hpRatio = (float)mainTargetChess.soulData.abilitys["Hp"] / (float)enemys [damageData.targetIdx].fullHp;
@@ -507,7 +576,7 @@ public class FightController : MonoBehaviour {
 		int finalMinus = mainOrgChess.hasStatus [(int)Status.UnDef] == true ? 0 : minus;
 
 		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (100 + ratio + actRatio) / 100 * ratioAJ * resetRatio * crtRatio - finalDef) * finalMinus / 100);
-		//((Atk * randamRatio * (100 + ratio + actRatio) * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
+        //((Atk * randamRatio * (100 + ratio + actRatio) * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
 
 		damageData.damage = damage <= 0 ? 1 : damage * (100+ GetAbilityStatus ("Dmg")) / 100;//狀態傷害加成
 
@@ -618,7 +687,6 @@ public class FightController : MonoBehaviour {
 			case "Hp":
 				chessData.soulData.abilitys ["Hp"] += chessData.fullHp * kv.Value [level] * param / 100;
 
-				ChangeAccordingData ((int)idx, mainTargetChess.soulData.abilitys ["Hp"], "P", AccChangeType.Hp);
 				fightUIController.ChangeHpBar ((int)idx, "P", (float)mainTargetChess.soulData.abilitys ["Hp"] / (float)mainTargetChess.fullHp, false);
 				break;
 			}
@@ -692,7 +760,7 @@ public class FightController : MonoBehaviour {
 	/// 敵人攻擊
 	public void EnemyFight(){
 		mainTarget = TargetType.E_P.ToString().Split('_');
-        FightPairs(cdTime);
+        //FightPairs(cdTime);
 		OnFight ();
 		StartCoroutine (ShowFight (true));
 	}
@@ -710,11 +778,7 @@ public class FightController : MonoBehaviour {
 			}
 		} 
 		else {
-			for (int i = 0;i< attackIdx.Length;i++) {
-				if (attackIdx [i] == 0) {
-					fightPairs.Add (i, matchTarget (i));					
-				}
-			}
+			
 		}
 	}
 
@@ -798,32 +862,10 @@ public class FightController : MonoBehaviour {
 	/// <param name="according">根據值</param>
 	/// <param name="isPlayer">被攻擊者陣營</param>
 	private AccordingData[] AccordingCompare(AccordingData[] according){
-		if (mainTarget[1] == "E") {
-			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				return((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio)) * -1;
-			});
-		} 
-		else {
-			Array.Sort (according, delegate(AccordingData x, AccordingData y) {
-				if ((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio) == 0) {
-					if (x.mAtkAtk.CompareTo (y.mAtkAtk) == 0) {
-						if (x.hp.CompareTo (y.hp) == 0) {
-							if (x.minus.CompareTo (y.minus) == 0) {
-								return x.crt.CompareTo (y.crt);
-							} else {
-								return x.minus.CompareTo (y.minus);
-							}
-						} else {
-							return x.hp.CompareTo (y.hp);
-						}
-					} else {
-						return(x.mAtkAtk.CompareTo (y.mAtkAtk)) * -1;
-					}
-				} else {
-					return((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio)) * -1;
-				}
-			});
-		}
+		Array.Sort (according, delegate(AccordingData x, AccordingData y) {
+			return((x.attriRatio * x.jobRatio).CompareTo (y.attriRatio * y.jobRatio)) * -1;
+		});
+
 
 		return according;
 	}
@@ -869,15 +911,8 @@ public class FightController : MonoBehaviour {
 	public void SetCDTime(int[] cd, bool isInit = true){
 		cdTime = cd;
 		if (isInit) {
-			for (int i = 0; i < players.Length; i++) {
-				for (int j = 0; j < players[i].according.Length; j++) {
-					if (cdTime [j] == 0) {
-						ChangeAccordingData (j, 100 - (0 + enemyProtect * 10), "E", AccChangeType.Minus);
-					} 
-					else {
-						ChangeAccordingData (j, 100 - (50 * (10 + enemyProtect) / 10), "E", AccChangeType.Minus);
-					}
-				}
+			for (int i = 0; i < enemys.Length; i++) {
+                enemys[i].minus = cdTime[i] == 0? 100 - (0 + enemyProtect * 10):100 - (50 * (10 + enemyProtect) / 10);
 			}
 		}
 	}
@@ -892,10 +927,6 @@ public class FightController : MonoBehaviour {
 	private enum AccChangeType{
 		AttriRatio,
 		JobRatio,
-		MAtkAtk,
-		Hp,
-		Minus,
-		Crt
 	}
 
 	/// <summary>
@@ -922,18 +953,6 @@ public class FightController : MonoBehaviour {
 		case AccChangeType.JobRatio:
 			data.jobRatio = param;
 			break;
-		case AccChangeType.MAtkAtk:
-			data.mAtkAtk = Convert.ToInt32 (param);
-			break;
-		case AccChangeType.Hp:
-			data.hp = Convert.ToInt32 (param);;
-			break;
-		case AccChangeType.Minus:
-			data.minus = Convert.ToInt32 (param);;
-			break;
-		case AccChangeType.Crt:
-			data.crt = Convert.ToInt32 (param);;
-			break;
 		}
 	}
 
@@ -944,21 +963,12 @@ public class FightController : MonoBehaviour {
 		ChessData[] charaData = new ChessData[0];
 		charaData = (ChessData[])players.Clone();
 		ChessData[] enemyData = new ChessData[0];
-		enemyData = (ChessData[])enemys.Clone();
 		for (int i = 0; i < charaData.Length; i++) {
 			AccordingData[] data = new AccordingData[enemys.Length];
 			for(int j = 0;j<enemyData.Length; j++){
 				data[j] = GetAccording(charaData[i].soulData, enemyData[j].soulData, j, "P");
 			}
 			players [i].according = data;
-		}
-
-		for (int i = 0; i < enemyData.Length; i++) {
-			AccordingData[] data = new AccordingData[5];
-			for(int j = 0;j<charaData.Length; j++){
-				data[j] = GetAccording(enemyData[i].soulData, charaData[j].soulData, j, "E");
-			}
-			enemys [i].according = data;
 		}
 	}
 
@@ -970,21 +980,9 @@ public class FightController : MonoBehaviour {
 	/// <param name="targetIdx">被攻擊者索引值</param>
 	/// <param name="tType">目標陣營，減傷值會因陣營有所不同</param>
 	private AccordingData GetAccording(SoulLargeData orgData, SoulLargeData targetData, int targetIdx,string targetString){
-        
 		AccordingData data = new AccordingData ();
 		data.index = targetIdx;
-		data.mAtkAtk = targetData.abilitys["mAtk"] + targetData.abilitys["Atk"];
-		data.hp = targetData.abilitys["Hp"];
-		data.crt = targetData.abilitys["Cri"];
 		data.jobRatio = ParameterConvert.JobRatioCal (orgData.job, targetData.job);
-		if (targetString == "P") {
-			data.attriRatio = 1;
-			data.minus = cdTime [targetIdx] == 0 ? 100 - enemyProtect * 10 : 100-(50 * (10 + enemyProtect) / 10);
-		} 
-		else {
-			data.attriRatio = ParameterConvert.AttriRatioCal (orgData.act [0], targetData.attributes);
-			data.minus = 100 - protectChara [targetIdx];
-		}
 
 		return data;
 	}
@@ -1269,7 +1267,6 @@ public class FightController : MonoBehaviour {
 			if (over > 0) {
 				skillController.OverRecovery (idx, orgIdx, over, deputyTarget);
 			}
-			ChangeAccordingData (idx, deputyTargetChess.soulData.abilitys ["Hp"], targetString, AccChangeType.Hp);
 		}
 	}
 
@@ -1295,7 +1292,6 @@ public class FightController : MonoBehaviour {
 
 			deputyTargetChess.soulData.abilitys ["Hp"] += deputyTargetChess.fullHp * data.effect [1] / 100;
 			fightUIController.OnRecovery (idx, targetString, (float)deputyTargetChess.soulData.abilitys ["Hp"] / (float)deputyTargetChess.fullHp);
-			ChangeAccordingData (idx, deputyTargetChess.soulData.abilitys ["Hp"], targetString, AccChangeType.Hp);
 		}
 	}
 
@@ -1313,12 +1309,6 @@ public class FightController : MonoBehaviour {
 
 		if (!deputyTargetChess.abiChange.ContainsKey (skillId)) {
 			deputyTargetChess.abiChange.Add (skillId, data.abilitys);
-		}
-			
-		for(int i=0;i<deputyOrgsChess.Length;i++){
-			int atk = deputyTargetsChess [idx].soulData.abilitys ["Atk"] * GetAbiChange (idx, 1, "Atk", false) / 100;
-			int mAtk = deputyTargetsChess [idx].soulData.abilitys ["mAtk"] * GetAbiChange (idx, 1, "mAtk", false) / 100;
-			ChangeAccordingData (idx, atk + mAtk, "P", AccChangeType.MAtkAtk);
 		}
 	}
 
@@ -1343,15 +1333,22 @@ public class FightController : MonoBehaviour {
 
 	public void ShowData(){
 		foreach (ChessData data in players) {
-			foreach (Dictionary<string, int> v in data.abiChange.Values) {
-				foreach (KeyValuePair<string, int> kv in v) {
+			foreach (KeyValuePair<string, int> kv in data.soulData.abilitys) {
 					Debug.Log (data.soulData.name+" : "+kv.Key + " : " + kv.Value);
-				}
 			}
 		}
-	}
 
-	public void TestFunction(){
+        foreach (ChessData data in enemys)
+        {
+            foreach (KeyValuePair<string, int> kv in data.soulData.abilitys)
+            {
+                Debug.Log(data.soulData.name + " : " + kv.Key + " : " + kv.Value);
+            }
+        }
+
+    }
+
+    public void TestFunction(){
 		if (GetStatus (9, players [4]) != null) {
 			if (players [4].status [GetStatus (9, players [4])] < 4) {
 				players [4].status [GetStatus (9, players [4])]++;
@@ -1424,14 +1421,11 @@ public struct ChessData{
 	public int initCD;
 	public int initAttri;
 	public bool[] hasStatus;
+    public int minus;
 }
 
 public struct AccordingData{
 	public int index;
 	public float attriRatio;
 	public float jobRatio;
-	public int mAtkAtk;
-	public int hp;
-	public int minus;
-	public int crt;
 }

@@ -60,6 +60,9 @@ public class FightUIController : MonoBehaviour {
 
 	int? charaIdx;
 
+    [SerializeField]
+    FilledBarController uniteHpBar;
+
 	Image startCharaImage, endCharaImage;
 
 	LinkedList<GroundController> charaGc;
@@ -363,7 +366,7 @@ public class FightUIController : MonoBehaviour {
 			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
 
 			target = allDamage[i].tType[1] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
-			Vector3 targetPos = allDamage[i].tType[1] == "P" ? playerButtonPos [allDamage [i].targetIdx - minusCount] : enemyButtonPos [allDamage [i].targetIdx - minusCount];
+			Vector3 targetPos = allDamage[i].tType[1] == "P" ? uniteHpBar.transform.localPosition : enemyButtonPos [allDamage [i].targetIdx - minusCount];
 
 			GroundSEController gse = SEPool.Dequeue ();
 			gse.SetAttackShow (orgPos, targetPos, target, allDamage [i]);
@@ -388,7 +391,14 @@ public class FightUIController : MonoBehaviour {
 
 	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target, Vector3 tPos){
 		gse.gameObject.SetActive (false);
-		target.SetHpBar (damageData.hpRatio);
+        if (damageData.tType[1] == "P")
+        {
+            uniteHpBar.SetBar(damageData.hpRatio, true, false);
+        }
+        else
+        {
+            target.SetHpBar(damageData.hpRatio);
+        }
 		SEPool.Enqueue (gse);
 		gse.onRecycle = null;
 		gse.SetDamageShow (damageData, tPos);
@@ -813,6 +823,8 @@ public class FightUIController : MonoBehaviour {
 
 							canCover = false;
 
+                            fightController.SetJob((int)charaIdx);
+
 							if (onlyAdd && !isResetGround) {
 								preJobRatios = jobRatios;
 								CheckGround (true);
@@ -971,8 +983,13 @@ public class FightUIController : MonoBehaviour {
 		}
 	}
 
-	#region Skill
-	public void OnRecovery(int idx, string targetString, float hpRatio){
+    public void ChangeUniteHpBar(float hpRatio, bool isUp)
+    {
+        uniteHpBar.SetBar(hpRatio, true, isUp);
+    }
+
+    #region Skill
+    public void OnRecovery(int idx, string targetString, float hpRatio){
 		ChangeHpBar (idx, targetString, hpRatio, true);
 	}
 
