@@ -470,7 +470,6 @@ public class fightBGMaker : MonoBehaviour {
         for (int i = 0; i < bgCount; i++)
         {
             Selection.activeGameObject.transform.GetChild(i).localPosition = Selection.activeGameObject.transform.GetChild(i).localPosition - centerPos;
-            Selection.activeGameObject.transform.GetChild(i).GetComponent<GroundController>().raycastController = Selection.activeGameObject.GetComponent<GroundRaycastController>();
         }
     }
 
@@ -515,18 +514,6 @@ public class fightBGMaker : MonoBehaviour {
                     gc[i].groundRow = j;
                 }
             }
-        }
-    }
-
-    [MenuItem("MyProject/SetRaycastController")]
-    public static void SetRaycastController()
-    {
-        GameObject selGO = Selection.activeGameObject;
-        GroundController[] gc = selGO.transform.GetChild(0).GetComponentsInChildren<GroundController>();
-
-        for (int i = 0; i < gc.Length; i++)
-        {
-            gc[i].raycastController = selGO.transform.GetChild(0).GetComponent<GroundRaycastController>();
         }
     }
 

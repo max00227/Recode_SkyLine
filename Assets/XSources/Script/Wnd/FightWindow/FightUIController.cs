@@ -163,7 +163,7 @@ public class FightUIController : MonoBehaviour {
         startShowController.callback = StartShowEnd;
         fightInit = true;
 
-        centerIdx = 45;
+        centerIdx = 30;
         groundPool.SetCenter(groundPool.transform.GetChild(centerIdx).GetComponent<GroundController>());
 
         foreach (FightItemButton btn in playerButton) {

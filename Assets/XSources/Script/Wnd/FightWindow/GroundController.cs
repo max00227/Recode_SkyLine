@@ -11,9 +11,6 @@ public class GroundController : MonoBehaviour
 
     public Image background;
 
-    [SerializeField]
-    public GroundRaycastController raycastController;
-
     int constAngle;
 
     int _groundRate;
@@ -327,7 +324,7 @@ public class GroundController : MonoBehaviour
         bool hasActived = false;
         for (int i = 0; i < 6; i++)
         {
-            hits = raycastController.GetRaycastHits (transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
+            hits = transform.parent.GetComponent<GroundRaycastController>().GetRaycastHits (transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
 
             if (hits.Length == 0)
             {
@@ -756,7 +753,7 @@ public class GroundController : MonoBehaviour
         RaycastHit2D[] hits;
         for (int i = 0; i < 6; i++)
         {
-            hits = raycastController.GetRaycastHits(transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
+            hits = transform.parent.GetComponent<GroundRaycastController>().GetRaycastHits(transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
             for (int j = 1; j < hits.Length; j++)
             {
                 hits[j].transform.tag = "raycastGCorner";
