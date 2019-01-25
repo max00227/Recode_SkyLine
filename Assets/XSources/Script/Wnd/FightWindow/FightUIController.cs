@@ -393,7 +393,7 @@ public class FightUIController : MonoBehaviour {
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
-            uniteHpBar.SetBar(damageData.hpRatio, true, false);
+            ChangeUniteHpBar(damageData.hpRatio, false);
         }
         else
         {
@@ -985,7 +985,9 @@ public class FightUIController : MonoBehaviour {
 
     public void ChangeUniteHpBar(float hpRatio, bool isUp)
     {
+        Debug.Log("123");
         uniteHpBar.SetBar(hpRatio, true, isUp);
+        uniteHpBar.OnRun();
     }
 
     #region Skill

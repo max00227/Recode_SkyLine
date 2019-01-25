@@ -324,7 +324,7 @@ public class FightController : MonoBehaviour {
 	private List<DamageData> FightDamageData(int selfIdx, AccordingData orderData, bool isAll){
 		List<DamageData> allDamage = new List<DamageData> ();
 		if (mainOrgChess.soulData.job <= 3) {
-			allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, DamageType.Physical, isAll));
+            allDamage.Add (GetDamage (selfIdx, orderData.index, orderData.attriRatio * orderData.jobRatio, DamageType.Physical, isAll));
 		}
 
 		if (mainOrgChess.soulData.job >= 3) {
@@ -772,7 +772,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="actLevel">攻擊者攻擊階級<param>
 	private void FightPairs(int[] attackIdx){
 		fightPairs = new Dictionary<int, AccordingData[]> ();
-		if (mainTarget[0] == "P") {
+		if (mainTarget[1] == "E") {
 			foreach (int idx in attackIdx) {
 				fightPairs.Add (idx, matchTarget (idx));
 			}
@@ -796,38 +796,31 @@ public class FightController : MonoBehaviour {
 		AccordingData[] atkOrder = new AccordingData[orderCount];
 		AccordingData[] lockOrder = new AccordingData[lockOrderIdx.Count];
 
-
-
-		if (mainTarget[1] == "P") {
-			return compareOrder;
+		if (!isLock) {
+			atkOrder = compareOrder;
 		} 
 		else {
-			if (!isLock) {
-				atkOrder = compareOrder;
-			} 
-			else {
-				for (int i = 0; i < lockOrderIdx.Count; i++) {
-					atkOrder [i] = GetAccordingData (idx, lockOrderIdx.ElementAt (i));
-				}
-
-				int orderIdx = lockOrderIdx.Count;
-				foreach (AccordingData data in compareOrder) {
-					bool isHad = false;
-					for (int i = 0; i < lockOrderIdx.Count; i++) {
-						if (data.index == atkOrder [i].index) {
-							isHad = true;
-						}
-					}
-
-					if (!isHad) {
-						atkOrder [orderIdx] = data;
-						orderIdx++;
-					}
-				}
+			for (int i = 0; i < lockOrderIdx.Count; i++) {
+				atkOrder [i] = GetAccordingData (idx, lockOrderIdx.ElementAt (i));
 			}
 
-			return atkOrder;
+			int orderIdx = lockOrderIdx.Count;
+			foreach (AccordingData data in compareOrder) {
+				bool isHad = false;
+				for (int i = 0; i < lockOrderIdx.Count; i++) {
+					if (data.index == atkOrder [i].index) {
+						isHad = true;
+					}
+				}
+
+				if (!isHad) {
+					atkOrder [orderIdx] = data;
+					orderIdx++;
+				}
+			}
 		}
+
+		return atkOrder;
 	}
 
 	private void CallbackProtect(){
@@ -843,17 +836,14 @@ public class FightController : MonoBehaviour {
 		//因應玩家角色攻擊屬性會變換更改According資料
 		if (targetString == "E") {
 			for (int i = 0; i < players [orgIdx].according.Length; i++) {
-				ChangeAccordingData (
-					players [orgIdx].according[i], 
-					ParameterConvert.AttriRatioCal (players [orgIdx].soulData.act [fightUIController.GetActLevel(players [orgIdx].soulData.job)-1], enemys [i].soulData.attributes)
-					, AccChangeType.AttriRatio
-				);
+                players[orgIdx].according[i].attriRatio
+                    = ParameterConvert.AttriRatioCal(players[orgIdx].soulData.act[fightUIController.GetActLevel(players[orgIdx].soulData.job) - 1], enemys[i].soulData.attributes);
 			}
 		}
 
-		AccordingData[] according = targetString == "P" ? (AccordingData[])enemys[orgIdx].according.Clone() : (AccordingData[])players[orgIdx].according.Clone();
+        AccordingData[] according = (AccordingData[])players[orgIdx].according.Clone();
 
-		return AccordingCompare (according);
+        return AccordingCompare (according);
 	}
 
 	/// <summary>
@@ -963,7 +953,8 @@ public class FightController : MonoBehaviour {
 		ChessData[] charaData = new ChessData[0];
 		charaData = (ChessData[])players.Clone();
 		ChessData[] enemyData = new ChessData[0];
-		for (int i = 0; i < charaData.Length; i++) {
+        enemyData = (ChessData[])enemys.Clone();
+        for (int i = 0; i < charaData.Length; i++) {
 			AccordingData[] data = new AccordingData[enemys.Length];
 			for(int j = 0;j<enemyData.Length; j++){
 				data[j] = GetAccording(charaData[i].soulData, enemyData[j].soulData, j, "P");
