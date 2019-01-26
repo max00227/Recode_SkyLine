@@ -13,8 +13,6 @@ public class GroundController : MonoBehaviour
 
     int constAngle;
 
-    int _groundRate;
-
     public GroundType _groundType;
     
     public TweenColor light;
@@ -23,68 +21,26 @@ public class GroundController : MonoBehaviour
     [SerializeField]
     private Color[] lightColor;
 
-
-    [HideInInspector]
-    public int _layer;
-
-    [HideInInspector]
-    public bool isActived;
-
-
     [HideInInspector]
     public bool raycasted;
 
-    private bool isChanged;
-
     GroundType defaultType;
+
+    bool isChanged;
 
     public Sprite[] GetSprites;
 
     private GroundType _prevType = GroundType.None;
 
     private GroundType _roundPrevType;
-
-    private bool activeLock;
-
-    private bool roundActLock;
-
-    public bool testRaycasted;
-
     int goldRatio = 75;
 
-    public delegate void PlusRatio(ExtraRatioData plusRatioData);
+    public delegate void PlusGroundType(GroundType groundType, bool useEnergy);
 
-    public PlusRatio plusRatio;
+    public PlusGroundType plusGroundType;
 
-    public delegate void OnShowed(GroundController groundController, int number);
-
-    //避免回傳時清除了別的GroundSEController的委派，分成三個
-    public OnShowed onShowedFst;
-
-    public OnShowed onShowedSec;
-
-    public OnShowed onShowedThr;
-
-    public delegate void OnShowing(int ratio, GroundController groundController, int number);
-
-    public OnShowing onShowingFst;
-
-    public OnShowing onShowingSec;
-
-    public OnShowing onShowingThr;
-
-    public delegate void OnProtection(int targetJob);
-
-    public OnProtection onProtection;
-
-    public Dictionary<ExtraType, Dictionary<GroundController, GroundController>> linkData;
-
-    [HideInInspector]
+    //[HideInInspector]
     public int charaJob;
-
-    private int? extraGoldJob;
-
-    private int? extraSilverJob;
 
     private Color colorTransparent = new Color(1, 1, 1, 0);
     
@@ -103,24 +59,18 @@ public class GroundController : MonoBehaviour
     {
         constAngle = isPortrait == true ? 0 : 30;
         defaultType = _groundType;
-        _layer = 1;
-        isActived = isChanged = activeLock = raycasted = false;
-        testRaycasted = false;
-        extraGoldJob = null;
-        extraSilverJob = null;
-        linkData = new Dictionary<ExtraType, Dictionary<GroundController, GroundController>>();
+        raycasted = false;
     }
 
-    public void ResetType()
+    public void ResetType(bool init= false)
     {
-        _groundType = defaultType;
-        isActived = isChanged = activeLock = raycasted = false;
-        charaJob = 0;
-        onProtection = null;
-        _layer = (int)_groundType == 0 ? 1 : 0;
+        if (init)
+        {
+            _groundType = defaultType;
+        }
+        raycasted = false;
+        charaJob = 10;
         ResetSprite(_groundType);
-        extraGoldJob = null;
-        extraSilverJob = null;
     }
 
     public void ChangeSprite(GroundType type, bool isSpeed = false)
@@ -150,46 +100,6 @@ public class GroundController : MonoBehaviour
         }
     }
 
-    public IEnumerator ChangeSpriteWait(int number)
-    {
-        if (background != null)
-        {
-            if (_groundType == GroundType.Silver)
-            {
-                Reversing(50, number);
-            }
-            else if (_groundType == GroundType.gold)
-            {
-                Reversing(75, number);
-            }
-            OpenLight(_groundType,false);
-        }
-
-        //避免同物件進行回調時回調被清掉或回調錯誤
-        yield return new WaitForSeconds(0.75f);
-        switch (number)
-        {
-            case 1:
-                if (onShowedFst != null)
-                {
-                    onShowedFst.Invoke(this, number);
-                }
-                break;
-            case 2:
-                if (onShowedSec != null)
-                {
-                    onShowedSec.Invoke(this, number);
-                }
-                break;
-            case 3:
-                if (onShowedThr != null)
-                {
-                    onShowedThr.Invoke(this, number);
-                }
-                break;
-        }
-    }
-
 
     public void ChangeSprite(int number)
     {
@@ -197,64 +107,16 @@ public class GroundController : MonoBehaviour
         {
             if (background.sprite == GetSprites[1])
             {
-                Reversing(50, number);
                 background.sprite = GetSprites[2];
             }
             else if (background.sprite == GetSprites[2])
             {
-                Reversing(75, number);
                 background.sprite = GetSprites[3];
             }
         }
-
-        //避免同物件進行回調時回調被清掉或回調錯誤
-        switch (number)
-        {
-            case 1:
-                if (onShowedFst != null)
-                {
-                    onShowedFst.Invoke(this, number);
-                }
-                break;
-            case 2:
-                if (onShowedSec != null)
-                {
-                    onShowedSec.Invoke(this, number);
-                }
-                break;
-            case 3:
-                if (onShowedThr != null)
-                {
-                    onShowedThr.Invoke(this, number);
-                }
-                break;
-        }
     }
 
-    private void Reversing(int ratio, int number)
-    {
-        switch (number)
-        {
-            case 1:
-                if (onShowingFst != null)
-                {
-                    onShowingFst.Invoke(ratio, this, number);
-                }
-                break;
-            case 2:
-                if (onShowingSec != null)
-                {
-                    onShowingSec.Invoke(ratio, this, number);
-                }
-                break;
-            case 3:
-                if (onShowingThr != null)
-                {
-                    onShowingThr.Invoke(ratio, this, number);
-                }
-                break;
-        }
-    }
+   
 
     public void ResetSprite(GroundType type)
     {
@@ -271,43 +133,22 @@ public class GroundController : MonoBehaviour
 
     }
 
-    public void SetJob(int jobIdx, ExtraType extraType)
+    public void OnChangeType(bool isTouchUp)
     {
-        if (extraType == ExtraType.Gold)
-        {
-            extraGoldJob = jobIdx;
-        }
-        else
-        {
-            extraSilverJob = jobIdx;
-        }
+        RaycastRound(false, isTouchUp);
     }
 
-    public void UpLayer()
+    public void OnPrevType()
     {
-        if ((int)_groundType == 0)
-        {
-            _layer++;
-        }
+        RaycastRound(true, false);
     }
 
-    public List<RaycastData> OnChangeType(bool isTouchUp, bool isEnd, bool isTest = false)
-    {
-        return RaycastRound(false, isTouchUp, isEnd, isTest);
-    }
-
-    public void OnPrevType(bool isEnd)
-    {
-        RaycastRound(true, false, isEnd);
-    }
-
-    private Dictionary<int, List<RaycastData>> OnPrevType(RaycastHit2D[] hits, bool isEnd)
+    private void OnPrevType(RaycastHit2D[] hits)
     {
         foreach (var hit in hits)
         {
-            hit.collider.GetComponent<GroundController>().PrevType(isEnd);
+            hit.collider.GetComponent<GroundController>().PrevType();
         }
-        return null;
     }
 
     /// <summary>
@@ -317,11 +158,10 @@ public class GroundController : MonoBehaviour
     /// <param name="isPrev">是否還原狀態 <c>true</c> is previous.</param>
     /// <param name="isTouchUp">是否屏幕碰觸結束<c>true</c> is touch up.</param>
     /// <param name="isEnd">是否結束此回合<c>true</c> is end.</param>
-    private List<RaycastData> RaycastRound(bool isPrev, bool isTouchUp, bool isEnd, bool isTest = false)
+    private void RaycastRound(bool isPrev, bool isTouchUp)
     {
         RaycastHit2D[] hits;
         List<RaycastData> dataList = new List<RaycastData>();
-        bool hasActived = false;
         for (int i = 0; i < 6; i++)
         {
             hits = transform.parent.GetComponent<GroundRaycastController>().GetRaycastHits (transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
@@ -331,281 +171,109 @@ public class GroundController : MonoBehaviour
                 continue;
             }
 
-            bool hitNone = false;
             bool hasOcclusion = false;
             List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
 
             for (int j = 0; j < hits.Length; j++)
             {
                 hitGcs.Add(hits[j]);
-                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType > 0 && (int)hits[j].transform.GetComponent<GroundController>()._groundType < 10)
+                if ((int)hits[j].transform.GetComponent<GroundController>().charaJob != 10)
                 {
-                    hasOcclusion = true;
-                }
-                if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 0 || (int)hits[j].transform.GetComponent<GroundController>()._groundType == 99)
-                {
-                    hitNone = true;
-                }
-                else if ((int)hits[j].transform.GetComponent<GroundController>()._groundType == 10)
-                {
-                    if (hits[j].transform.GetComponent<GroundController>().charaJob != charaJob)
+                    if (isPrev)
                     {
-                        if (onProtection != null && !hasOcclusion)
-                        {
-                            onProtection.Invoke(hits[j].transform.GetComponent<GroundController>().charaJob);
-                        }
+                        OnPrevType(hitGcs.ToArray());
                     }
                     else
                     {
-                        if (!hitNone)
-                        {
-                            if (isPrev)
-                            {
-                                OnPrevType(hitGcs.ToArray(), isEnd);
-                            }
-                            else
-                            {
-
-                                int ratio = CalculateRatio(hitGcs.ToArray(), charaJob, isTouchUp, isEnd, isTest);
-
-                                if (ratio > 0)
-                                {
-                                    RaycastData data = new RaycastData();
-
-                                    data.start = GetComponent<GroundController>();
-                                    data.end = hits[j].transform.GetComponent<GroundController>();
-                                    data.ratio = ratio;
-                                    data.hits = new List<GroundController>();
-                                    if (charaJob != 0)
-                                    {
-                                        data.CharaJob = charaJob;
-                                    }
-                                    for (int h = 0; h < hitGcs.Count - 1; h++)
-                                    {
-                                        data.hits.Add(hitGcs[h].collider.GetComponent<GroundController>());
-                                    }
-                                    dataList.Add(data);
-
-                                    hasActived = true;
-                                }
-
-                                if (j > 0)
-                                {
-                                    if (hits[j].collider.GetComponent<GroundController>().isActived)
-                                    {
-                                        hasActived = true;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                        }
-
-                        break;
+                        CalculateRatio(hitGcs.ToArray(), charaJob, isTouchUp);
                     }
+
+                    break;
                 }
             }
         }
 
         if (!isPrev)
         {
-            OnRaycasted(hasActived, isTouchUp);
+            raycasted = true;
         }
-
-        return dataList;
     }
 
     //計算加成
-    private int CalculateRatio(RaycastHit2D[] hits, int charaJob, bool isTouchUp, bool isEnd, bool isTest)
+    private void CalculateRatio(RaycastHit2D[] hits, int charaJob, bool isTouchUp)
     {
-        int extraRatio = 0;
-
-        bool hasChange = !(hits[hits.Length - 1].collider.GetComponent<GroundController>().isActived == true && isActived == true);
-
         foreach (var hit in hits)
         {
             if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
             {
                 hit.collider.GetComponent<GroundController>().raycasted = true;
-                if (!hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted || isTest)
+                if (!hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted)
                 {
-                    bool isChange = hasChange || isTouchUp;
-                    switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
-                    {
-                        case 1:
-                            if (isChange && isEnd)
-                            {
-                                hit.collider.GetComponent<GroundController>().SetExtraData(
-                                    this.GetComponent<GroundController>(),
-                                    hits[hits.Length - 1].collider.GetComponent<GroundController>(),
-                                    ExtraType.Silver
-                                );
-                            }
-                            //記錄回傳用資料
-                            if ((isTouchUp || isEnd) && !hasChange)
-                            {
-
-                                hit.collider.GetComponent<GroundController>().SetJob(
-                                    charaJob,
-                                    ExtraType.Silver
-                                );
-                            }
-                            break;
-                        case 2:
-                            if (isChange && isEnd)
-                            {
-                                hit.collider.GetComponent<GroundController>().SetExtraData(
-                                    this.GetComponent<GroundController>(),
-                                    hits[hits.Length - 1].collider.GetComponent<GroundController>(),
-                                    ExtraType.Gold
-                                );
-                            }
-                            //記錄回傳用資料
-                            if (isTouchUp || isEnd)
-                            {
-                                hit.collider.GetComponent<GroundController>().SetJob(
-                                    charaJob,
-                                    ExtraType.Gold
-                                );
-                            }
-                            break;
-                    }
-
-
-                    if (hasChange || isTouchUp)
-                    {
-                        extraRatio += hit.collider.GetComponent<GroundController>().ChangeType(isTouchUp, isEnd);
-                    }
-                    else
-                    {
-                        switch ((int)hit.collider.GetComponent<GroundController>()._groundType)
-                        {
-                            case 2:
-                                extraRatio += 50;
-                                break;
-                            case 3:
-                                extraRatio += goldRatio;
-                                break;
-                        }
-                    }
+                    hit.collider.GetComponent<GroundController>().ChangeType(isTouchUp);
                 }
             }
         }
-        return extraRatio;
     }
 
     //改變狀態，並記錄回朔狀態
-    public int ChangeType(bool isTouchUp, bool isEnd)
+    public void ChangeType(bool isTouchUp, bool useEnergy = true)
     {
-        int ratio = 0;
-        if (isTouchUp && !isEnd)
+        if (!isTouchUp)
         {
-            _roundPrevType = _groundType;
-            return ratio;
+            _prevType = _groundType;
         }
 
         if ((int)_groundType == 0)
         {
             _groundType = GroundType.Copper;
             ChangeSprite(_groundType, true);
+            plusGroundType.Invoke(_groundType, useEnergy);
         }
         else
         {
             if ((int)_groundType == 1)
             {
                 _groundType = GroundType.Silver;
-                ratio = 50;
-                if (isEnd)
-                {
-                    OnPlusRatio(ExtraType.Silver);
-                }
+                plusGroundType.Invoke(_groundType, useEnergy);
             }
             else if ((int)_groundType == 2)
             {
                 _groundType = GroundType.gold;
-                ratio = goldRatio;
-                if (isEnd)
-                {
-                    OnPlusRatio(ExtraType.Gold);
-                }
+                plusGroundType.Invoke(_groundType, useEnergy);
             }
             isChanged = true;
         }
 
-        if (isEnd)
+        if (isTouchUp)
         {
             _prevType = _groundType;
-            _roundPrevType = _groundType;
         }
-        else
-        {
-            ChangeSprite(_groundType);
-        }
-        _layer = 0;
-
-        return ratio;
+        
+        ChangeSprite(_groundType);
     }
 
     public void OnRaycasted(bool hasAcitve, bool isTouchUp)
     {
-        if (hasAcitve)
-        {
-            isActived = true;
-            if (isTouchUp)
-            {
-                roundActLock = true;
-            }
-        }
         raycasted = true;
     }
 
     public void ChangeChara(int job)
     {
         isChanged = true;
-        _groundType = GroundType.Chara;
+        //_groundType = GroundType.Chara;
         charaJob = job;
-
-        _layer = 0;
     }
 
     //回朔狀態，以是否為回合結束為基準;
-    public void PrevType(bool isEnd)
+    public void PrevType()
     {
+        charaJob = 10;
+        raycasted = false;
+
         if ((int)_groundType != 10)
         {
-            if (isChanged)
-            {
-                if (isEnd)
-                {
-                    _groundType = _prevType;
-                    isChanged = false;
-                    raycasted = false;
-                }
-                else
-                {
-                    _groundType = _roundPrevType;
-                    ChangeSprite(_groundType, true);
-                }
-            }
-        }
-        else
-        {
-            if (!isEnd)
-            {
-                if (!roundActLock)
-                {
-                    isActived = false;
-                }
-            }
-            else
-            {
-                if (!activeLock)
-                {
-                    isActived = false;
-                }
-            }
+            _groundType = _prevType;
+            ChangeSprite(_groundType, true);
         }
     }
 
@@ -615,8 +283,6 @@ public class GroundController : MonoBehaviour
         _roundPrevType = _groundType;
         _groundType = defaultType;
         ChangeSprite(_groundType);
-
-        _layer = 0;
     }
 
     //還原覆蓋用
@@ -628,86 +294,14 @@ public class GroundController : MonoBehaviour
             isChanged = false;
             raycasted = false;
 
-            isActived = false;
             ChangeSprite(_groundType);
         }
     }
 
-    //回傳額外傷害加成，回傳後移除回傳資料，避免重複回傳
-    private void OnPlusRatio(ExtraType extraType)
-    {
-        if (extraType == ExtraType.Silver)
-        {
-            if (extraSilverJob != null)
-            {
-                ExtraRatioData data = new ExtraRatioData();
-
-                data.gc = this;
-                data.extraJob = (int)extraSilverJob;
-                data.upRatio = 50;
-                data.linkData = linkData[ExtraType.Silver];
-
-                plusRatio.Invoke(data);
-            }
-        }
-        else
-        {
-            if (extraGoldJob != null)
-            {
-                ExtraRatioData data = new ExtraRatioData();
-                data.gc = this;
-                data.extraJob = (int)extraGoldJob;
-                data.linkData = linkData[ExtraType.Gold];
-                data.upRatio = 25;
-
-                plusRatio.Invoke(data);
-
-                if (extraSilverJob != null)
-                {
-                    data = new ExtraRatioData();
-                    data.gc = this;
-                    data.linkData = linkData[ExtraType.Silver];
-                    data.extraJob = (int)extraSilverJob;
-                    data.upRatio = 50;
-
-                    plusRatio.Invoke(data);
-                }
-            }
-        }
-
-    }
-
-    public void SetExtraData(GroundController start, GroundController end, ExtraType extraType)
-    {
-        Dictionary<GroundController, GroundController> link = new Dictionary<GroundController, GroundController>();
-        link.Add(start, end);
-        //Debug.Log (this.name + " : " + extraType);
-        linkData.Add(extraType, link);
-    }
-
     public void FightEnd()
     {
-        if (isActived)
-        {
-            activeLock = true;
-            roundActLock = activeLock;
-        }
-
         raycasted = false;
         isChanged = false;
-
-
-        if ((int)_groundType == 0)
-        {
-            _layer = 1;
-        }
-        else
-        {
-            _layer = 0;
-        }
-        extraGoldJob = null;
-        extraSilverJob = null;
-        linkData = new Dictionary<ExtraType, Dictionary<GroundController, GroundController>>();
     }
 
     public void OpenLight(GroundType gType = GroundType.None, bool isShow = true)

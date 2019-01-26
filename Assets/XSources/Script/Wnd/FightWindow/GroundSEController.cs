@@ -86,38 +86,7 @@ public class GroundSEController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (setComplete && isRun) {
-			if (seType == SpecailEffectType.Reverse) {
-				showTime -= Time.deltaTime;
-
-				ratioTxts.SetActive (true);
-				showDamage = (int)DataUtil.LimitFloat (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
-				foreach (Text txt in ratioTxt) {
-					txt.text = "＋" + showDamage.ToString ();
-				}
-
-				if (showedCount < seGrounds.Count) {
-					if (showTime <= 0) {
-						foreach (Text txt in ratioTxt) {
-							txt.GetComponent<TweenScale> ().PlayForward ();
-						}
-
-						StartCoroutine (seGrounds [showedCount].ChangeSpriteWait (showNumber [showedCount]));
-
-
-						showedCount++;
-						showTime = 0.6f;
-					}
-				} else {
-					if (showTime <= 0) {
-						setComplete = false;
-					}
-				}
-			} else if (seType == SpecailEffectType.ExtraRatio) {
-				extraLight.runFinish = OnRunFinish;
-				extraLight.gameObject.SetActive (true);
-				extraLight.PlayForward ();
-				setComplete = false;
-			} else if (seType == SpecailEffectType.Attack) {
+			if (seType == SpecailEffectType.Attack) {
 				damageLight.runFinish = OnRunFinish;
 				damageLight.gameObject.SetActive (true);
 				damageLight.PlayForward ();
@@ -139,85 +108,6 @@ public class GroundSEController : MonoBehaviour {
 				}
 			}
 		}
-	}
-
-	public void SetReverseSE(List<GroundController> grounds, List<Vector3> positions)
-	{
-		showNumber = new List<int> ();
-		plusDamage = 0;
-		seGrounds = grounds;
-
-		for (int i = 0; i < positions.Count; i++) {
-			ratioTxt [i].gameObject.SetActive (true);
-			ratioTxt [i].transform.localPosition = positions [i];
-		}
-
-		foreach (var ground in seGrounds) {
-			if (ground.onShowedFst == null) {
-				ground.onShowedFst = OnShowed;
-				ground.onShowingFst = OnShowing;
-
-				showNumber.Add (1);
-			} else {
-				if (ground.onShowedSec == null) {
-					ground.onShowedSec = OnShowed;
-					ground.onShowingSec = OnShowing;
-
-					showNumber.Add (2);
-				} 
-				else {
-					ground.onShowedThr = OnShowed;
-					ground.onShowingThr = OnShowing;
-
-					showNumber.Add (3);
-				}
-			}
-		}
-
-		showedCount = 0;
-		showTime = 0;
-
-		seType = SpecailEffectType.Reverse;
-
-
-
-		setComplete = true;
-		isRun = false;
-	}
-
-	/// <summary>
-	/// Sets the extra S.
-	/// </summary>
-	/// <param name="grounds">原點</param>
-	/// <param name="dir">方向</param>
-	/// <param name="idxs">角色編號</param>
-	/// <param name="upInt">上升值</param>
-	public void SetExtraSE(List<GroundController> grounds, Vector3 dir, int idxs, int upInt){
-		extraLight.SetParabola (grounds [0].transform.localPosition, dir);
-
-        var eP = extraParticle.main;
-
-        if (upInt == 25)
-        {
-            eP.startColor = particleColor[1];
-        }
-        else {
-            eP.startColor = particleColor[0];
-        }
-
-        SetLightParent(grounds[0].transform.localPosition, dir);
-
-		upRatio = upInt;
-
-		showedCount = 0;
-		showTime = 0;
-
-		seType = SpecailEffectType.ExtraRatio;
-
-		charaIdx = idxs;
-
-		setComplete = true;
-		isRun = false;
 	}
 
 	public void SetAttackShow(Vector3 orgPos, Vector3 targetPos, FightItemButton target, DamageData data){
@@ -285,52 +175,6 @@ public class GroundSEController : MonoBehaviour {
 			onRecycleDamage.Invoke (this, damageData, callbackTarget, tPos);
 			onRecycleDamage = null;
 		}
-	}
-
-	private void OnShowed(GroundController gc, int number){
-		switch(number){
-		case 1:
-			gc.onShowedFst = null;
-			break;
-		case 2:
-			gc.onShowedSec = null;
-			break;
-		case 3:
-			gc.onShowedThr = null;
-			break;
-		}
-
-		if (gc == seGrounds [seGrounds.Count - 1]) {
-			if (number == showNumber [showedCount-1]) {
-				if (onRecycle != null) {
-					onRecycle.Invoke (this);
-				} else {
-					Debug.Log ("Null : " + seGrounds [0].name);
-				}
-			}
-		}
-	}
-
-	private void OnShowing(int ratio, GroundController gc, int number){
-		switch(number){
-		case 1:
-			gc.onShowingFst = null;
-			break;
-		case 2:
-			gc.onShowingSec = null;
-			break;
-		case 3:
-			gc.onShowingThr = null;
-			break;
-		}
-
-		if (ratio == 25) {
-			plusSpeed = ratio * 2;
-		} 
-		else {
-			plusSpeed = ratio * 4;
-		}
-		plusDamage += ratio;
 	}
 
 	public void Run(){
