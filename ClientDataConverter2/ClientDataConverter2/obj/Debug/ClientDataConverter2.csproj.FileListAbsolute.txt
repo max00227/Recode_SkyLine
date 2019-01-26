@@ -1,0 +1,15 @@
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\ClientDataConverter2.exe.config
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\ClientDataConverter2.exe
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\ClientDataConverter2.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\obj\Debug\ClientDataConverter2.csprojAssemblyReference.cache
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\obj\Debug\ClientDataConverter2.csproj.CoreCompileInputs.cache
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\obj\Debug\ClientDataConverter2.exe
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\obj\Debug\ClientDataConverter2.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\CsvHelper.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Newtonsoft.Json.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\System.ValueTuple.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\CsvHelper.xml
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Newtonsoft.Json.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Newtonsoft.Json.xml
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\System.ValueTuple.xml
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\obj\Debug\ClientDataConverter2.csproj.CopyComplete
