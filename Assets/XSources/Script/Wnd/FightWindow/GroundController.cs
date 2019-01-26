@@ -249,7 +249,6 @@ public class GroundController : MonoBehaviour
 
         if (isTouchUp)
         {
-            Debug.Log("123");
             _prevType = _groundType;
         }
         
