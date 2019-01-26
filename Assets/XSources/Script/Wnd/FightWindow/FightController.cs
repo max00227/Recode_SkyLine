@@ -49,6 +49,8 @@ public class FightController : MonoBehaviour {
 	[HideInInspector]
 	public ChessData[] enemys;
 
+    public List<int> canAttack;
+
 	#region 主資料
 	private ChessData mainOrgChess;
 	private ChessData[] mainOrgsChess;
@@ -772,23 +774,24 @@ public class FightController : MonoBehaviour {
 	/// <param name="canAttack">玩家角色是否有可能攻擊者</param>
 	/// <param name="ratios">職業攻擊力加成</param>
 	/// <param name="actLevel">攻擊者攻擊階級</param>
-	public void FightStart(bool lockEnemy, List<int> canAttack){
+	public void FightStart(bool lockEnemy){
 		bool enemyFight = DataUtil.CheckArray<int> (cdTime, 0);
 
 		for(int i = 0;i<playersActLevel.Length;i++){
-			if (playersActLevel[i]!=0) {
+			if (playersActLevel[i]!=0 && !canAttack.Contains(i)) {
                 canAttack.Add(i);
 			}
 		}
-
-		actIdx = new List<int> ();
 
 		if (canAttack.Count > 0) {
 			mainTarget = TargetType.P_E.ToString().Split('_');
 			FightPairs (canAttack.ToArray ());
 			OnFight ();
 			StartCoroutine (ShowFight (!enemyFight));
-		} 
+		}
+        else{
+            EnemyFight();
+        }
 	}
 
 	/// <summary>

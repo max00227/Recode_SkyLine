@@ -58,7 +58,7 @@
 	"Soul":[
 		{"id":114001,"name":"惡鬼","detail":"劍＋暗","soulType":0,"rank":4,"Job":0,"Ethnicity":7,"Attributes":6,"Ability":{"Atk":242,"Def":35,"mAtk":76,"mDef":47,"Hp":704,"Cri":14},"Act":[0,0,0],"ActCondition":[[5,0,0],[0,2,4],[0,0,0]],"Skill":100001},
 		{"id":114002,"name":"精靈","detail":"拳＋光","soulType":0,"rank":4,"Job":1,"Ethnicity":3,"Attributes":5,"Ability":{"Atk":121,"Def":73,"mAtk":41,"mDef":51,"Hp":880,"Cri":18},"Act":[0,0,0],"ActCondition":[[4,1,0],[0,3,0],[0,0,0]],"Skill":100002},
-		{"id":114003,"name":"人","detail":"盾＋無","soulType":0,"rank":4,"Job":2,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":70,"Def":141,"mAtk":35,"mDef":114,"Hp":1679,"Cri":1},"Act":[0,0,0],"ActCondition":[[3,0,0],[0,1,4],[0,0,0]],"Skill":100003},
+		{"id":114003,"name":"人","detail":"盾＋無","soulType":0,"rank":4,"Job":2,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":70,"Def":141,"mAtk":35,"mDef":114,"Hp":1679,"Cri":1},"Act":[0,0,0],"ActCondition":[[4,0,0],[0,1,4],[0,0,0]],"Skill":100003},
 		{"id":114004,"name":"機器人","detail":"弓＋無","soulType":0,"rank":4,"Job":3,"Ethnicity":5,"Attributes":0,"Ability":{"Atk":73,"Def":33,"mAtk":60,"mDef":98,"Hp":821,"Cri":10},"Act":[0,0,0],"ActCondition":[[6,3,0],[0,7,0],[0,0,0]],"Skill":100004},
 		{"id":114005,"name":"光靈","detail":"杖＋光","soulType":0,"rank":4,"Job":4,"Ethnicity":6,"Attributes":5,"Ability":{"Atk":37,"Def":10,"mAtk":236,"mDef":188,"Hp":367,"Cri":6},"Act":[0,0,0],"ActCondition":[[2,3,0],[0,0,3],[0,0,0]],"Skill":100005},
 		{"id":214001,"name":"神","detail":"神","soulType":1,"rank":4,"Job":0,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":440,"Def":154,"mAtk":367,"mDef":220,"Hp":5280,"Cri":8},"Act":[0,0,0],"ActCondition":[[0,0,0],[0,0,0],[0,0,0]],"Skill":0},

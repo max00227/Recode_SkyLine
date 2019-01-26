@@ -37,11 +37,11 @@ public class FightUIController : MonoBehaviour {
 
 	GroundController startGc, endGc;
 
-	[SerializeField]
-	Button checkButton;
-
     [SerializeField]
     NumberSetting energyNum;
+
+    [SerializeField]
+    Button checkButton;
 
 	bool isResetGround = false;
 
@@ -108,8 +108,6 @@ public class FightUIController : MonoBehaviour {
 	int unShowed;
 
 	int lockCount;
-
-	List<int> canAttack;
 
 	List<ExtraRatioData> extraedGc;
 
@@ -269,8 +267,10 @@ public class FightUIController : MonoBehaviour {
     }
 
 
-	private void OnFight(){
-		fightController.FightStart (lockCount != 0, canAttack);
+	public void OnFight(){
+        Debug.Log("Fight");
+        MonsterCdDown();
+		fightController.FightStart (lockCount != 0);
 	}
 
 	public void OnShowFight(List<DamageData> allDamage){
@@ -335,12 +335,6 @@ public class FightUIController : MonoBehaviour {
 		gse.onRecycle = null;
 	}
 	#endregion
-
-	private void AddCanAttack(int idx){
-		if (!canAttack.Contains (idx)) {
-			canAttack.Add (idx);
-		}
-	}
 
 	private void OnProtection(int targetJob){
 		if (protectJob [targetJob] < 30 && hasProtect) {
@@ -480,9 +474,6 @@ public class FightUIController : MonoBehaviour {
 		ChangeStatus (FightStatus.RoundStart);
 
         ResetTemple();
-
-        checkButton.interactable = false;
-
 	}
 
 	private void CheckLockStatus (){
@@ -525,7 +516,6 @@ public class FightUIController : MonoBehaviour {
 		spCount++;
 
 		completeSe = new List<GroundSEController> ();
-		canAttack = new List<int> ();
 
 		ChangeStatus (FightStatus.FightStart);
 
@@ -691,9 +681,6 @@ public class FightUIController : MonoBehaviour {
                             fightController.ConditionDown(conditionDown);
 
                             spaceCount++;
-
-                            checkButton.interactable = true;
-
                             canCover = false;
 
                             foreach (GroundController gc in allGcs) {
