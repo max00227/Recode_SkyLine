@@ -130,7 +130,10 @@ public class GroundController : MonoBehaviour
     /// <param name="hasPre">是否止執行AddJob<c>true</c> has pre.</param>
     public void SetType()
     {
-
+        if (charaJob != 10) {
+            _groundType = GroundType.Chara;
+        }
+        _prevType = _groundType;
     }
 
     public void OnChangeType(bool isTouchUp)
@@ -246,6 +249,7 @@ public class GroundController : MonoBehaviour
 
         if (isTouchUp)
         {
+            Debug.Log("123");
             _prevType = _groundType;
         }
         

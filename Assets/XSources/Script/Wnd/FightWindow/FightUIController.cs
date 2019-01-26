@@ -696,6 +696,10 @@ public class FightUIController : MonoBehaviour {
 
                             canCover = false;
 
+                            foreach (GroundController gc in allGcs) {
+                                gc.SetType();
+                            }
+
                             fightController.SetJob((int)charaIdx);
                             ResetStatus();
                             ResetTemple();
