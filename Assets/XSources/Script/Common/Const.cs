@@ -93,4 +93,18 @@ public static class Const {
 		Amount = 1,
 		Ratio = 2
 	}
+
+    public enum NewAttributes
+    {
+        None = 0,
+        Fire = 1,
+        Wood = -1,
+        Thunder = 2,
+        Earth = -2,
+        Wind = 3,
+        Voice = -3,
+        Water = 4,
+        Light = 5,
+        Dark = -5
+    }
 }

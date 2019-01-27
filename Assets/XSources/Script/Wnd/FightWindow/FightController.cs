@@ -461,7 +461,6 @@ public class FightController : MonoBehaviour {
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
 
-        Debug.Log(mainTarget[0] + " : " + mainTarget[1] + " , " + damageData.damage+" , "+ attriJob);
 		return damageData;
 	}
 

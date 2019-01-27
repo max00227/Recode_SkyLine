@@ -9,6 +9,8 @@ public class EnergyStone : MonoBehaviour
 
     public Color[] energyColor;
 
+    public TweenColor useBg;
+
     bool isEmpty = false;
     
     // Start is called before the first frame update
@@ -37,7 +39,9 @@ public class EnergyStone : MonoBehaviour
             }
         }
 
-        if (isEmpty || init) {
+        useBg.gameObject.SetActive(false);
+
+        if (init || !isEmpty) {
             bg.PlayForward();
         }
     }
@@ -63,9 +67,21 @@ public class EnergyStone : MonoBehaviour
                 }
             }
         }
-        if (!isEmpty|| !init)
+
+        useBg.gameObject.SetActive(false);
+        if (!init || !isEmpty)
         {
             bg.PlayReverse();
         }
+    }
+
+    public void UseEnergy() {
+        useBg.gameObject.SetActive(true);
+        useBg.PlayForward();
+    }
+
+    public void CloseUseBg()
+    {
+        useBg.gameObject.SetActive(false);
     }
 }

@@ -21,7 +21,7 @@ public class FightItemButton : MonoBehaviour {
 	Button btn;
 
     [SerializeField]
-    Image actBg;
+    Outline outline;
 
 	bool isLock = false;
 
@@ -65,7 +65,6 @@ public class FightItemButton : MonoBehaviour {
 	}
 
 	public void SetConditonText(List<int> condition){
-        int viewCount = 0;
         for (int i = 0; i < conditionViews.Length; i++)
         {
             for (int j = 0; j < condition.Count; j++)
@@ -84,8 +83,9 @@ public class FightItemButton : MonoBehaviour {
                     }
                 }
             }
+            conditionViews[i].minusText.gameObject.SetActive(false);
         }
-	}
+    }
 
     public void InitConditonText(List<int> condition, int? level)
     {
@@ -98,19 +98,61 @@ public class FightItemButton : MonoBehaviour {
                 conditionViews[viewCount].conditionText.gameObject.SetActive(true);
                 conditionViews[viewCount].conditionText.SetColor(conditionColor[i]);
                 conditionViews[viewCount].conditionText.SetNumber(condition[i]);
+
                 viewCount++;
             }
             else
             {
-                if (viewCount < 2)
+                if (viewCount <= 1)
                 {
                     conditionViews[viewCount].conditionText.gameObject.SetActive(false);
                 }
             }
+            if (viewCount <= 1)
+            {
+                conditionViews[viewCount].minusText.gameObject.SetActive(false);
+            }
         }
 
-        if (level != null) {
-            actBg.color = conditionColor[(int)level - 1];
+
+
+        if (level != null)
+        {
+            outline.effectColor = conditionColor[(int)level - 1];
+        }
+        else {
+            outline.effectColor = Color.black;
+        }
+    }
+
+    public void SetMinus(int[] minus) {
+        for (int i = 0; i < conditionViews.Length; i++)
+        {
+            for (int j = 0; j < minus.Length; j++)
+            {
+                if ((int)conditionViews[i].conditionType == j)
+                {
+                    {
+                        if (minus[j] != 0)
+                        {
+                            conditionViews[i].minusText.gameObject.SetActive(true);
+                            conditionViews[i].minusText.SetNumber(minus[j] * -1);
+                        }
+                        else
+                        {
+                            conditionViews[i].minusText.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void CloseMinus()
+    {
+        for (int i = 0; i < conditionViews.Length; i++)
+        {
+            conditionViews[i].minusText.gameObject.SetActive(false);
         }
     }
 
@@ -139,6 +181,7 @@ public class FightItemButton : MonoBehaviour {
     [Serializable]
     public struct ConditionView {
         public NumberSetting conditionText;
+        public NumberSetting minusText;
         public ConditionType conditionType;
     }
 

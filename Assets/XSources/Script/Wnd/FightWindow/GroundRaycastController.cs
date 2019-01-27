@@ -105,7 +105,7 @@ public class GroundRaycastController : MonoBehaviour {
 		List<GroundController> noneGcs = new List<GroundController> ();
 
 		foreach (GroundController gc in allGcs) {
-			if ((int)gc._groundType != 99) {
+			if (gc._groundType == GroundType.None) {
 				noneGcs.Add (gc);
 			}
 		}

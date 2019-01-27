@@ -119,6 +119,8 @@ public class FightUIController : MonoBehaviour {
 
 	List<RaycastData> newRaycastData;
 
+    int round;
+
 	#region GroundShow 格子轉換效果
 	[SerializeField]
 	GroundSEController showGrounds;
@@ -227,9 +229,7 @@ public class FightUIController : MonoBehaviour {
 
         SetData();
 
-        energe = 5;
         conditionDown = new int[3];
-        SetEnergy(true);
 
         SetCenter();
         startShowController.ShowStart(groundPool.transform.GetChild(centerIdx).position);
@@ -264,11 +264,21 @@ public class FightUIController : MonoBehaviour {
         }
 
         conditionDown[(int)groundType - 1]++;
+
+        for (int i = 0; i < usedEnergy; i++) {
+            if (energe - 1 - i >= 0)
+            {
+                energyStone[energe - 1 - i].UseEnergy();
+            }
+        }
+
+        foreach (FightItemButton button in playerButton) {
+            button.SetMinus(conditionDown);
+        }
     }
 
 
 	public void OnFight(){
-        Debug.Log("Fight");
         MonsterCdDown();
 		fightController.FightStart (lockCount != 0);
 	}
@@ -498,6 +508,9 @@ public class FightUIController : MonoBehaviour {
             ResetGround();
         }
         else {
+            round++;
+            energe = 5 + round;
+            SetEnergy();
             fightController.ConditionDown(conditionDown);
         }
 
@@ -590,7 +603,15 @@ public class FightUIController : MonoBehaviour {
 						if (endGc != r.gameObject.GetComponent<GroundController> ()) {
                             startGc.OnPrevType();
 
-							if (endGc != null) {
+                            foreach (FightItemButton button in playerButton) {
+                                button.CloseMinus();
+                            }
+                            foreach (EnergyStone stone in energyStone)
+                            {
+                                stone.CloseUseBg();
+                            }
+
+                            if (endGc != null) {
                                 endGc.OnPrevType();
                                 if (charaGc.Last.Value == endGc) {
 									if (endCover) {
@@ -713,6 +734,7 @@ public class FightUIController : MonoBehaviour {
                             charaGc.RemoveLast();
                             isResetGround = false;
                             ResetStatus();
+                            ResetTemple();
                         }
 					}
 				}
@@ -857,6 +879,10 @@ public class FightUIController : MonoBehaviour {
         }
 
         OnOpenButton ();
+
+        energe = 5;
+        SetEnergy(true);
+        round = 0;
 
 		RoundStart ();
 	}
