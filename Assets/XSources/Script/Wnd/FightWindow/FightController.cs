@@ -84,6 +84,7 @@ public class FightController : MonoBehaviour {
 
 	public FightStatus fightStatus;
 
+    bool isSetJob = false;
 
 	void Update(){
 	}
@@ -183,11 +184,18 @@ public class FightController : MonoBehaviour {
         }
     }
 
-    public void ConditionDown(int[] down) {
-        for(int i = 0;i<players.Length;i++) {
-            for (int j = 0; j < 3; j++) {
+    public void ConditionDown(int[] down)
+    {
+        Dictionary<int, int> overDowns = new Dictionary<int, int>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            int overDown = 0;
+            for (int j = 0; j < 3; j++)
+            {
                 players[i].condition[j] -= down[j];
-                if (players[i].condition[j] <= 0) {
+                if (players[i].condition[j] < 0)
+                {
+                    overDown -= players[i].condition[j];
                     players[i].condition[j] = 0;
                 }
             }
@@ -197,11 +205,25 @@ public class FightController : MonoBehaviour {
                 playersActLevel[i]++;
                 players[i].condition = players[i].soulData.actCondition[playersActLevel[i]];
                 fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
+                overDowns.Add(i, overDown);
             }
-            else {
+            else
+            {
                 fightUIController.SetButtonCondition(i, players[i].condition, false);
             }
+        }
 
+        if (!isSetJob)
+        {
+            if (overDowns.Count > 1)
+            {
+                Dictionary<int, int> sort = overDowns.OrderBy(Data => Data.Value).ToDictionary(keyvalue => keyvalue.Key, keyvalue => keyvalue.Value);
+                SetJob(sort.ElementAt(sort.Count - 1).Key);
+            }
+            else if (overDowns.Count == 1)
+            {
+                SetJob(overDowns.ElementAt(0).Key);
+            }
         }
     }
 
@@ -221,6 +243,8 @@ public class FightController : MonoBehaviour {
 
     public void SetJob(int charaIdx)
     {
+        Debug.Log(charaIdx);
+        isSetJob = true;
         mainJob = players[charaIdx].soulData.job;
         mainAttri = players[charaIdx].soulData.attributes;
         int abiChanged = 0;
@@ -1161,6 +1185,7 @@ public class FightController : MonoBehaviour {
 				skillCdTime [i]--;
 			}
 		}
+        isSetJob = false;
 	}
 
 	public void OnTriggerSkill(List<DamageData> allDamage){

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnergyStone : MonoBehaviour
 {
-    public ParticleSystem[] particles;
+    ParticleSystem[] particles;
     public TweenColor bg;
 
     public Color[] energyColor;
@@ -16,7 +16,7 @@ public class EnergyStone : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        particles = transform.GetComponentsInChildren<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -27,29 +27,24 @@ public class EnergyStone : MonoBehaviour
 
     public void EnergyCharge(bool init)
     {
-        if (init) {
-            isEmpty = false;
-        }
-
         foreach (ParticleSystem ps in particles)
         {
-            if (!ps.isPlaying)
-            {
-                ps.Play();
-            }
+            ps.Play(true);
+            ps.gameObject.SetActive(false);
+            ps.gameObject.SetActive(true);
         }
 
         useBg.gameObject.SetActive(false);
 
-        if (init || !isEmpty) {
+        if (init || isEmpty) {
             bg.PlayForward();
         }
+        isEmpty = false;
     }
 
     public void EneryEmpty(bool init)
     {
-        if (init)
-        {
+        if (init) {
             isEmpty = true;
         }
 
@@ -73,6 +68,7 @@ public class EnergyStone : MonoBehaviour
         {
             bg.PlayReverse();
         }
+        isEmpty = true;
     }
 
     public void UseEnergy() {

@@ -456,7 +456,6 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	public void FightEnd(){
-		UpEnerge ();
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType != 99) {
 				gc.FightEnd ();
@@ -543,16 +542,6 @@ public class FightUIController : MonoBehaviour {
 		endCharaImage = null;
 		startGc = null;
 		endGc = null;
-	}
-
-	private void UpEnerge(){
-		if (energe < 6) {
-            energe += 2;
-			if (energe > 6) {
-				energe = 6;
-			}
-            SetEnergy();
-		}
 	}
 
 	private void TouchDown(bool isTouch = false){
@@ -708,7 +697,6 @@ public class FightUIController : MonoBehaviour {
                                 gc.SetType();
                             }
 
-                            fightController.SetJob((int)charaIdx);
                             ResetStatus();
                             ResetTemple();
                         }
