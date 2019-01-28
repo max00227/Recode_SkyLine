@@ -563,21 +563,19 @@ public class FightUIController : MonoBehaviour {
 
 	private void TouchDown(GroundController gc, bool isCover){
 		startGc = gc;
-		if (charaIdx != null) {
-			charaGc.AddLast (startGc);
-			if (isCover) {
-				startCover = true;
-				startGc.OnCover ();
-			}
-			startGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
+		charaGc.AddLast (startGc);
+		if (isCover) {
+			startCover = true;
+			startGc.OnCover ();
+		}
+		startGc.ChangeChara ();
 
-			startCharaImage = SetChess(startGc);
-			endCharaImage = SetChess(startGc);
+		startCharaImage = SetChess(startGc);
+		endCharaImage = SetChess(startGc);
 
-			if ((int)gc.GetComponent<GroundController> ()._groundType == 99) {
-				isResetGround = true;
-			}
-		} 
+		if ((int)gc.GetComponent<GroundController> ()._groundType == 99) {
+			isResetGround = true;
+		}
 	}
 
 	private void TouchDrap(bool isTouch = false){
@@ -644,7 +642,7 @@ public class FightUIController : MonoBehaviour {
 				endGc.OnCover ();
 			}
 
-            endGc.ChangeChara (fightController.GetJob("P", (int)charaIdx));
+            endGc.ChangeChara ();
 
 			charaGc.AddLast (endGc);
 
@@ -688,7 +686,7 @@ public class FightUIController : MonoBehaviour {
                             energe = energe - usedEnergy;
                             SetEnergy();
 
-                            fightController.ConditionDown(conditionDown);
+                            fightController.ConditionDown(conditionDown, true);
 
                             spaceCount++;
                             canCover = false;
@@ -899,7 +897,7 @@ public class FightUIController : MonoBehaviour {
                 image = _imagePool.Pop();
 
                 image.GetComponent<RectTransform>().SetParent(CharaGroup.transform.GetChild(linkGc.groundRow));
-                image.sprite = CharaSprite[(int)charaIdx];
+                //image.sprite = CharaSprite[(int)charaIdx];
 
                 image.transform.localPosition = linkGc.transform.localPosition.x * Vector3.right;
 
@@ -930,7 +928,7 @@ public class FightUIController : MonoBehaviour {
                 image.GetComponent<RectTransform>().SetParent(imagePool);
                 image.transform.localPosition = Vector3.zero;
                 image.gameObject.SetActive(false);
-                image.sprite = null;
+                //image.sprite = null;
                 _imagePool.Push(image);
             }
             return null;
@@ -1222,11 +1220,11 @@ public class FightUIController : MonoBehaviour {
 
 	public int GetJobGround(int job){
 		int count = 0;
-		foreach (GroundController gc in allGcs) {
+		/*foreach (GroundController gc in allGcs) {
 			if (gc._groundType == GroundType.Chara && gc.charaJob == job) {
 				count++;
 			}
-		}
+		}*/
 
 		return count / 2;
 	}

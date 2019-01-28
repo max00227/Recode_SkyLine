@@ -24,7 +24,7 @@
 		}
 
 		[Newtonsoft.Json.JsonProperty("Act")]
-		public System.Int32[] act { get; set; }
+        public System.Collections.Generic.List<System.Collections.Generic.List<System.Int32>> act { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ActCondition")]
         public System.Collections.Generic.List<System.Collections.Generic.List<System.Int32>> actCondition { get; set; }
@@ -42,8 +42,8 @@
 
 		public void Merge(System.Int32 skillId){
 			if (skillId != 0) {
-                _skill = MasterDataManager.GetSkillData (skillId);
-                _skill.Merge (_skill.rule_id);
+                //_skill = MasterDataManager.GetSkillData (skillId);
+                //_skill.Merge (_skill.rule_id);
 			}
 		}
     }

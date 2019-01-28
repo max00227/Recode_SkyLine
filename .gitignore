@@ -1,3 +1,8 @@
 *Library*
 *Temp*
 *DS_Store*
+*.csproj*
+*.vs*
+*.sln
+*ClientDataConverser/test/SrcCsv/data/bac*
+*ClientDataConverser_newRule*

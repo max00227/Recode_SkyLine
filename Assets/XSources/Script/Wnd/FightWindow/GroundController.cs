@@ -40,7 +40,7 @@ public class GroundController : MonoBehaviour
     public PlusGroundType plusGroundType;
 
     //[HideInInspector]
-    public int charaJob;
+    public bool isChara;
 
     private Color colorTransparent = new Color(1, 1, 1, 0);
     
@@ -69,7 +69,7 @@ public class GroundController : MonoBehaviour
             _groundType = defaultType;
         }
         raycasted = false;
-        charaJob = 10;
+        isChara = false;
         ResetSprite(_groundType);
     }
 
@@ -130,7 +130,7 @@ public class GroundController : MonoBehaviour
     /// <param name="hasPre">是否止執行AddJob<c>true</c> has pre.</param>
     public void SetType()
     {
-        if (charaJob != 10) {
+        if (isChara) {
             _groundType = GroundType.Chara;
         }
         _prevType = _groundType;
@@ -180,7 +180,7 @@ public class GroundController : MonoBehaviour
             for (int j = 0; j < hits.Length; j++)
             {
                 hitGcs.Add(hits[j]);
-                if ((int)hits[j].transform.GetComponent<GroundController>().charaJob != 10)
+                if (hits[j].transform.GetComponent<GroundController>().isChara)
                 {
                     if (isPrev)
                     {
@@ -188,7 +188,7 @@ public class GroundController : MonoBehaviour
                     }
                     else
                     {
-                        CalculateRatio(hitGcs.ToArray(), charaJob, isTouchUp);
+                        CalculateRatio(hitGcs.ToArray(), isTouchUp);
                     }
 
                     break;
@@ -203,7 +203,7 @@ public class GroundController : MonoBehaviour
     }
 
     //計算加成
-    private void CalculateRatio(RaycastHit2D[] hits, int charaJob, bool isTouchUp)
+    private void CalculateRatio(RaycastHit2D[] hits, bool isTouchUp)
     {
         foreach (var hit in hits)
         {
@@ -260,17 +260,17 @@ public class GroundController : MonoBehaviour
         raycasted = true;
     }
 
-    public void ChangeChara(int job)
+    public void ChangeChara()
     {
         isChanged = true;
         //_groundType = GroundType.Chara;
-        charaJob = job;
+        isChara = true;
     }
 
     //回朔狀態，以是否為回合結束為基準;
     public void PrevType()
     {
-        charaJob = 10;
+        isChara = false;
         raycasted = false;
 
         if ((int)_groundType != 10)

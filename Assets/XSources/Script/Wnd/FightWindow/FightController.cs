@@ -126,6 +126,7 @@ public class FightController : MonoBehaviour {
 		SoulLargeData[] soulData = new SoulLargeData[enemyData.TeamData[0].Team.Count];
 		enemys = new ChessData[enemyData.TeamData [0].Team.Count];
 
+        int[] enemyAct = new int[5] { 100, 1, 0, 100, 1 };
 		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
 			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
 			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.TeamData[0].Team[i].lv));
@@ -136,6 +137,7 @@ public class FightController : MonoBehaviour {
 			enemys [i].statusTime = new Dictionary<StatusLargeData, int> ();
 			enemys [i].abiChange = new Dictionary<int, Dictionary<string, int>> ();
 			enemys [i].hasStatus = new bool[Enum.GetNames (typeof(Status)).Length];
+            enemys[i].act = new List<int>(enemyAct); 
 			enemys [i].initAttri = enemys [i].soulData.attributes;
 			soulData [i] = enemys [i].soulData;
 
@@ -168,6 +170,7 @@ public class FightController : MonoBehaviour {
 			players [i].hasStatus = new bool[Enum.GetNames (typeof(Status)).Length];
 			players [i].initAttri = players [i].soulData.attributes;
             players [i].condition = players [i].soulData.actCondition[0];
+            players[i].act = players[i].soulData.act[0];
 			soulData [i] = players [i].soulData;
 
             uniteHp += players[i].soulData.abilitys["Hp"];
@@ -184,28 +187,46 @@ public class FightController : MonoBehaviour {
         }
     }
 
-    public void ConditionDown(int[] down)
+    public void ConditionDown(int[] down, bool chgJob = false)
     {
         Dictionary<int, int> overDowns = new Dictionary<int, int>();
         for (int i = 0; i < players.Length; i++)
         {
             int overDown = 0;
-            for (int j = 0; j < 3; j++)
+            if (playersActLevel[i] <= 3)
             {
-                players[i].condition[j] -= down[j];
-                if (players[i].condition[j] < 0)
+
+                for (int j = 0; j < 3; j++)
                 {
-                    overDown -= players[i].condition[j];
-                    players[i].condition[j] = 0;
+                    players[i].condition[j] -= down[j];
+                    {
+                        if (players[i].condition[j] < 0)
+                        {
+                            overDown -= players[i].condition[j];
+                            players[i].condition[j] = 0;
+                        }
+                    }
                 }
             }
 
             if (players[i].condition.Sum(x => Convert.ToInt32(x)) == 0)
             {
                 playersActLevel[i]++;
-                players[i].condition = players[i].soulData.actCondition[playersActLevel[i]];
-                fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
-                overDowns.Add(i, overDown);
+                if (playersActLevel[i] <= 3)
+                {
+                    players[i].condition = players[i].soulData.actCondition[playersActLevel[i]];
+                    players[i].act = players[i].soulData.act[playersActLevel[i]];
+
+                    fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
+                }
+                else
+                {
+                    fightUIController.SetButtonCondition(i, players[i].condition, false);
+                }
+                if (overDown > 0)
+                {
+                    overDowns.Add(i, overDown);
+                }
             }
             else
             {
@@ -213,7 +234,7 @@ public class FightController : MonoBehaviour {
             }
         }
 
-        if (!isSetJob)
+        if (!isSetJob && chgJob)
         {
             if (overDowns.Count > 1)
             {
@@ -471,17 +492,16 @@ public class FightController : MonoBehaviour {
         damageData = CalDamage (
 			mainOrgChess.soulData.abilitys [titleKey + "Atk"] * orgChanged / 100 * orgStatusRatio / 100,
             targetDef * targetChanged / 100 * targetStatusRatio / 100, 
-			ratio, 
+			mainOrgChess.act, 
 			attriJob,
             mainTargetChess.minus, 
-			actLevel, 
 			mainOrgChess.soulData.abilitys ["Cri"], 
 			isAll
 		);
 		damageData.damageType = dType;
 
 		damageData.tType = (string[])mainTarget.Clone();
-		damageData.attributes = mainOrgChess.soulData.act [actLevel];
+		damageData.attributes = mainOrgChess.soulData.act [actLevel][2];
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
 
@@ -614,31 +634,22 @@ public class FightController : MonoBehaviour {
 
 	/// <summary>
 	/// 計算傷害值
-	public DamageData CalDamage(int atk, int def, int ratio, float ratioAJ, int minus,int actLevel, int crt, bool isAll){
+	public DamageData CalDamage(int atk, int def, List<int> act, float ratioAJ, int minus, int crt, bool isAll){
 		DamageData damageData = new DamageData ();
 
-		int actRatio;
-		if (actLevel != 0) {
-			actRatio = 50 * (int)Mathf.Pow (2, actLevel);
-		} else {
-			actRatio = 0;
-		}
-		bool isCrt = UnityEngine.Random.Range (0, 101) <= crt;
+		damageData.isCrt = UnityEngine.Random.Range(0, 101) <= crt;
 
-		damageData.isCrt = isCrt;
-		float crtRatio = Mathf.Pow (1.5f, Convert.ToInt32 (isCrt));
+        float crtRatio = Mathf.Pow (1.5f, Convert.ToInt32 (damageData.isCrt));
 
+        //爆擊時必命中
+        damageData.isMiss = damageData.isCrt == true ? false : UnityEngine.Random.Range(0, 101) <= act[3];
 
-		//狀態效果影響
-		float randomRatio = mainOrgChess.hasStatus [(int)Status.Maximum] == true ? 
-			100 : 
-			isAll != true ? UnityEngine.Random.Range (75, 101) : UnityEngine.Random.Range (40, 75);
+        int finalDef = mainOrgChess.hasStatus [(int)Status.UnDef] == true ? 0 : def;
+		//int finalMinus = mainOrgChess.hasStatus [(int)Status.UnDef] == true ? 0 : minus;
+        int finalMinus = 100;
 
-		int finalDef = mainOrgChess.hasStatus [(int)Status.UnDef] == true ? 0 : def;
-		int finalMinus = mainOrgChess.hasStatus [(int)Status.UnDef] == true ? 0 : minus;
-
-		int damage = Mathf.CeilToInt ((atk * (randomRatio / 100) * (100 + ratio + actRatio) / 100 * ratioAJ * resetRatio * crtRatio - finalDef) * finalMinus / 100);
-        //((Atk * randamRatio * (100 + ratio + actRatio) * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
+		int damage = Mathf.CeilToInt ((atk * (act[0]/100) * ratioAJ * resetRatio * crtRatio - finalDef) * finalMinus / 100);
+        //((Atk * randamRatio * ratio * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
 
 		damageData.damage = damage <= 0 ? 1 : damage * (100+ GetAbilityStatus ("Dmg")) / 100;//狀態傷害加成
 
@@ -902,7 +913,7 @@ public class FightController : MonoBehaviour {
 		if (targetString == "E") {
 			for (int i = 0; i < players [orgIdx].according.Length; i++) {
                 players[orgIdx].according[i].attriRatio = 
-                    ParameterConvert.AttriRatioCal(players[orgIdx].soulData.act[playersActLevel[orgIdx] - 1], enemys[i].soulData.attributes);
+                    ParameterConvert.AttriRatioCal(players[orgIdx].soulData.act[playersActLevel[orgIdx] - 1][2], enemys[i].soulData.attributes);
 			}
 		}
 
@@ -1442,6 +1453,7 @@ public struct DamageData{
 	public DamageType damageType;
 	public int attributes;
 	public bool isCrt;
+    public bool isMiss;
 	public string[] tType;
 }
 
@@ -1481,6 +1493,7 @@ public struct ChessData{
 	public bool[] hasStatus;
     public int minus;
     public List<int> condition;
+    public List<int> act;
 }
 
 public struct AccordingData{
