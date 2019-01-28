@@ -92,6 +92,10 @@ public class FightItemButton : MonoBehaviour {
         int viewCount = 0;
         for (int i = 0; i < condition.Count; i++)
         {
+            if (viewCount <= 1)
+            {
+                conditionViews[viewCount].minusText.gameObject.SetActive(false);
+            }
             if (condition[i] != 0)
             {
                 conditionViews[viewCount].conditionType = (ConditionType)Enum.ToObject(typeof(ConditionType), i);
@@ -108,10 +112,7 @@ public class FightItemButton : MonoBehaviour {
                     conditionViews[viewCount].conditionText.gameObject.SetActive(false);
                 }
             }
-            if (viewCount <= 1)
-            {
-                conditionViews[viewCount].minusText.gameObject.SetActive(false);
-            }
+           
         }
 
 

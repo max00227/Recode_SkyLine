@@ -568,7 +568,6 @@ public class FightUIController : MonoBehaviour {
 			startCover = true;
 			startGc.OnCover ();
 		}
-		startGc.ChangeChara ();
 
 		startCharaImage = SetChess(startGc);
 		endCharaImage = SetChess(startGc);
@@ -642,6 +641,7 @@ public class FightUIController : MonoBehaviour {
 				endGc.OnCover ();
 			}
 
+            startGc.ChangeChara();
             endGc.ChangeChara ();
 
 			charaGc.AddLast (endGc);
@@ -726,6 +726,7 @@ public class FightUIController : MonoBehaviour {
 				}
 			}
 		}
+        conditionDown = new int[3];
 	}
 
 

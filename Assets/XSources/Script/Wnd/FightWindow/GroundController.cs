@@ -174,7 +174,6 @@ public class GroundController : MonoBehaviour
                 continue;
             }
 
-            bool hasOcclusion = false;
             List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
 
             for (int j = 0; j < hits.Length; j++)
@@ -205,12 +204,16 @@ public class GroundController : MonoBehaviour
     //計算加成
     private void CalculateRatio(RaycastHit2D[] hits, bool isTouchUp)
     {
+        bool hasChange = !raycasted || !hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted;
         foreach (var hit in hits)
         {
-            if ((int)hit.collider.GetComponent<GroundController>()._groundType != 10)
+            if (hit.collider.GetComponent<GroundController>().isChara)
             {
                 hit.collider.GetComponent<GroundController>().raycasted = true;
-                if (!hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted)
+            }
+            else
+            {
+                if (hasChange)
                 {
                     hit.collider.GetComponent<GroundController>().ChangeType(isTouchUp);
                 }

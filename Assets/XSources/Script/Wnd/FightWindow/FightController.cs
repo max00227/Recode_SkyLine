@@ -264,7 +264,6 @@ public class FightController : MonoBehaviour {
 
     public void SetJob(int charaIdx)
     {
-        Debug.Log(charaIdx);
         isSetJob = true;
         mainJob = players[charaIdx].soulData.job;
         mainAttri = players[charaIdx].soulData.attributes;
