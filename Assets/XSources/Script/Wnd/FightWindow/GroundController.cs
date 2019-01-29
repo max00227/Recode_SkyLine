@@ -75,51 +75,24 @@ public class GroundController : MonoBehaviour
 
     public void ChangeSprite(GroundType type, bool isSpeed = false)
     {
-        if (background != null)
+        if ((int)type != 10)
         {
-            if ((int)type != 10)
+            if ((int)type == 0 || (int)type == 99)
             {
-                if ((int)type == 99)
-                {
-                    background.sprite = GetSprites[4];
-                }
-                else if ((int)type == 0)
-                {
-                    light.Stop(Color.white);
-                    background.sprite = GetSprites[0];
-                    light.gameObject.SetActive(false);
-                }
-                else
-                {
-                    background.sprite = GetSprites[0];
-                    light.gameObject.SetActive(true);
+                light.Stop(Color.white);
+                light.gameObject.SetActive(false);
+            }
+            else
+            {
+                light.gameObject.SetActive(true);
 
-                    light.SetFromAndTo(Color.white, colorTransparent);
-                    light.PlayForward(System.Convert.ToInt32(!isSpeed));
-                    colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent));
-                    colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
-                }
+                light.SetFromAndTo(Color.white, colorTransparent);
+                light.PlayForward(System.Convert.ToInt32(!isSpeed));
+                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent));
+                colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
             }
         }
     }
-
-
-    public void ChangeSprite(int number)
-    {
-        if (background != null)
-        {
-            if (background.sprite == GetSprites[1])
-            {
-                background.sprite = GetSprites[2];
-            }
-            else if (background.sprite == GetSprites[2])
-            {
-                background.sprite = GetSprites[3];
-            }
-        }
-    }
-
-   
 
     public void ResetSprite(GroundType type)
     {
@@ -139,14 +112,14 @@ public class GroundController : MonoBehaviour
         _prevType = _groundType;
     }
 
-    public void OnChangeType(bool isTouchUp, int dirIdx)
+    public void OnChangeType(bool isTouchUp, int dirIdx, GroundController end)
     {
-        RaycastRound(false, isTouchUp, dirIdx);
+        RaycastRound(false, isTouchUp, dirIdx, end);
     }
 
-    public void OnPrevType(int dirIdx)
+    public void OnPrevType(int dirIdx, GroundController end)
     {
-        RaycastRound(true, false, dirIdx);
+        RaycastRound(true, false, dirIdx, end);
     }
 
     private void OnPrevType(RaycastHit2D[] hits)
@@ -164,7 +137,7 @@ public class GroundController : MonoBehaviour
     /// <param name="isPrev">是否還原狀態 <c>true</c> is previous.</param>
     /// <param name="isTouchUp">是否屏幕碰觸結束<c>true</c> is touch up.</param>
     /// <param name="isEnd">是否結束此回合<c>true</c> is end.</param>
-    private void RaycastRound(bool isPrev, bool isTouchUp, int dirIdx)
+    private void RaycastRound(bool isPrev, bool isTouchUp, int dirIdx, GroundController end)
     {
         RaycastHit2D[] hits;
         List<RaycastData> dataList = new List<RaycastData>();
@@ -181,7 +154,7 @@ public class GroundController : MonoBehaviour
         for (int j = 0; j < hits.Length; j++)
         {
             hitGcs.Add(hits[j]);
-            if (hits[j].transform.GetComponent<GroundController>().isChara)
+            if (hits[j].transform.GetComponent<GroundController>() == end)
             {
                 if (isPrev)
                 {
@@ -189,36 +162,21 @@ public class GroundController : MonoBehaviour
                 }
                 else
                 {
-                    CalculateRatio(hitGcs.ToArray(), isTouchUp);
+                    CalculateRatio(hitGcs.ToArray(), isTouchUp, end);
                 }
 
                 break;
             }
         }
-
-        if (!isPrev)
-        {
-            raycasted = true;
-        }
     }
 
     //計算加成
-    private void CalculateRatio(RaycastHit2D[] hits, bool isTouchUp)
+    private void CalculateRatio(RaycastHit2D[] hits, bool isTouchUp, GroundController end)
     {
-        bool hasChange = !raycasted || !hits[hits.Length - 1].collider.GetComponent<GroundController>().raycasted;
         foreach (var hit in hits)
         {
-            if (hit.collider.GetComponent<GroundController>().isChara)
-            {
-                hit.collider.GetComponent<GroundController>().raycasted = true;
-            }
-            else
-            {
-                if (hasChange)
-                {
-                    hit.collider.GetComponent<GroundController>().ChangeType(isTouchUp);
-                }
-            }
+            if(hit.transform.GetComponent<GroundController>() != end && !hit.transform.GetComponent<GroundController>().isChara)
+            hit.collider.GetComponent<GroundController>().ChangeType(isTouchUp);
         }
     }
 

@@ -218,10 +218,7 @@ public class FightUIController : MonoBehaviour {
 
         foreach (GroundController gc in allGcs)
         {
-            if ((int)gc._groundType != 99)
-            {
-                gc.plusGroundType = OnPlusGroundType;
-            }
+            gc.plusGroundType = OnPlusGroundType;
         }
 
         CreateGround = 3;
@@ -592,7 +589,7 @@ public class FightUIController : MonoBehaviour {
                         endCharaImage = SetChess(r.gameObject.GetComponent<GroundController>(), endCharaImage);
 
 						if (endGc != r.gameObject.GetComponent<GroundController> ()) {
-                            startGc.OnPrevType(dirIdx);
+                            startGc.OnPrevType(dirIdx, endGc);
 
                             foreach (FightItemButton button in playerButton) {
                                 button.CloseMinus();
@@ -612,17 +609,7 @@ public class FightUIController : MonoBehaviour {
 								} 
 							}
 
-							/*if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 0 
-								|| (int)r.gameObject.GetComponent<GroundController>()._groundType == 99
-								|| ((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover))
-							{*/
-								TouchDrap (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover));
-							/*}
-							else
-							{
-                                Debug.Log("Error");
-								TouchError ();
-							}*/
+                            TouchDrap (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover));
 						}
 					}
 				}
@@ -652,7 +639,7 @@ public class FightUIController : MonoBehaviour {
 
 			charaGc.AddLast (endGc);
 
-            startGc.OnChangeType(false, dirIdx);
+            startGc.OnChangeType(false, dirIdx, endGc);
             //endGc.OnChangeType(false, dirIdx);
 
             spaceCorrect = true;
@@ -715,10 +702,9 @@ public class FightUIController : MonoBehaviour {
                             }
                             else
                             {
-                                startGc.OnPrevType(dirIdx);
+                                startGc.OnPrevType(dirIdx, endGc);
                                 if (endGc != null)
                                 {
-                                    endGc.OnPrevType(dirIdx);
                                     endGc.ResetType();
                                 }
                                 startGc.ResetType();
@@ -923,11 +909,11 @@ public class FightUIController : MonoBehaviour {
 
         OnOpenButton ();
 
-        energe = 5;
-        SetEnergy(true);
         round = 0;
+        energe = 4 + round;
+        SetEnergy(true);
 
-		RoundStart ();
+        RoundStart ();
 	}
 
 	private void ResetStatus(){

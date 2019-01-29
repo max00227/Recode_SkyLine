@@ -356,14 +356,14 @@ public class fightBGMaker : MonoBehaviour {
 					if (i == 0 || i == myMaxHC - 1)
 					{
 						backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [1];
 					}
 					else
 					{
 						if (j == 0 || j == myRadio + i - 1)
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [1];
 						}
 						else
 						{
@@ -388,14 +388,14 @@ public class fightBGMaker : MonoBehaviour {
 					if (i == 0 || i == myMaxHC - 1)
 					{
 						backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+						backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [1];
 					}
 					else
 					{
 						if (j == 0 || j == myRadio + ((myMaxHC - 1) - i) - 1)
 						{
 							backGround.GetComponent<GroundController>()._groundType = GroundType.Caution;
-							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [4];
+							backGround.GetComponent<GroundController>().background.sprite = backGround.GetComponent<GroundController> ().GetSprites [1];
                         }
 						else
 						{

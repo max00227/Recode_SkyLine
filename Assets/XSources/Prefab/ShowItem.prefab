@@ -361,7 +361,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: 123
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3df3a2c92e1e64d139a386016b8293f0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1b0c3f1a7d3ce4343b010cc9070a531f, type: 2}
   m_sharedMaterial: {fileID: 21526069887051288, guid: 1b0c3f1a7d3ce4343b010cc9070a531f,
     type: 2}
   m_fontSharedMaterials: []
@@ -5451,7 +5451,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: 123
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3df3a2c92e1e64d139a386016b8293f0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1b0c3f1a7d3ce4343b010cc9070a531f, type: 2}
   m_sharedMaterial: {fileID: 21526069887051288, guid: 1b0c3f1a7d3ce4343b010cc9070a531f,
     type: 2}
   m_fontSharedMaterials: []
