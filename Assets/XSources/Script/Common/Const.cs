@@ -41,11 +41,11 @@ public static class Const {
 	}
 
 	public static Color[] attriColor = new Color[7] {
-		new Color (0.26f, 0.08f, 0.08f, 1f),//Attributes.None
-		new Color (0.86f, 0f, 0f, 1f),//Attributes.Fire
-		new Color (0.55f, 0.48f, 0f, 1f),//Attributes.Earth
-		new Color (0.13f, 0.55f, 0f, 1f),//Attributes.Wind
-		new Color (0.13f, 0.68f, 1f, 1f),//Attributes.Water
+		new Color (1f, 1f, 1f, 1f),//Attributes.None
+		new Color (1f, 0f, 0f, 1f),//Attributes.Fire
+		new Color (0.82f, 0.72f, 0f, 1f),//Attributes.Earth
+		new Color (0.01f, 0.83f, 0f, 1f),//Attributes.Wind
+		new Color (0f, 0.35f, 1f, 1f),//Attributes.Water
 		new Color (1f, 0.95f, 0.49f, 1f),//Attributes.Litht
 		new Color (0.28f, 0f, 0.56f, 1f)//Attributes.Dark
 	};

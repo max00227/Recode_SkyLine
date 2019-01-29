@@ -170,7 +170,6 @@ public class FightController : MonoBehaviour {
 			players [i].hasStatus = new bool[Enum.GetNames (typeof(Status)).Length];
 			players [i].initAttri = players [i].soulData.attributes;
             players [i].condition = players [i].soulData.actCondition[0];
-            players[i].act = players[i].soulData.act[0];
 			soulData [i] = players [i].soulData;
 
             uniteHp += players[i].soulData.abilitys["Hp"];
@@ -193,9 +192,8 @@ public class FightController : MonoBehaviour {
         for (int i = 0; i < players.Length; i++)
         {
             int overDown = 0;
-            if (playersActLevel[i] <= 3)
+            if (playersActLevel[i] <= 2)
             {
-
                 for (int j = 0; j < 3; j++)
                 {
                     players[i].condition[j] -= down[j];
@@ -207,30 +205,30 @@ public class FightController : MonoBehaviour {
                         }
                     }
                 }
-            }
 
-            if (players[i].condition.Sum(x => Convert.ToInt32(x)) == 0)
-            {
-                playersActLevel[i]++;
-                if (playersActLevel[i] <= 3)
+                if (players[i].condition.Sum(x => Convert.ToInt32(x)) == 0)
                 {
-                    players[i].condition = players[i].soulData.actCondition[playersActLevel[i]];
-                    players[i].act = players[i].soulData.act[playersActLevel[i]];
+                    playersActLevel[i]++;
+                    if (playersActLevel[i] <= 3)
+                    {
+                        players[i].condition = playersActLevel[i] < 3 ? players[i].soulData.actCondition[playersActLevel[i]] : new List<int>(new int[3]);
+                        players[i].act = players[i].soulData.act[playersActLevel[i] - 1];
 
-                    fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
+                        fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
+                    }
+                    else
+                    {
+                        fightUIController.SetButtonCondition(i, players[i].condition, false);
+                    }
+                    if (overDown > 0)
+                    {
+                        overDowns.Add(i, overDown);
+                    }
                 }
                 else
                 {
                     fightUIController.SetButtonCondition(i, players[i].condition, false);
                 }
-                if (overDown > 0)
-                {
-                    overDowns.Add(i, overDown);
-                }
-            }
-            else
-            {
-                fightUIController.SetButtonCondition(i, players[i].condition, false);
             }
         }
 
@@ -650,7 +648,7 @@ public class FightController : MonoBehaviour {
 		int damage = Mathf.CeilToInt ((atk * (act[0]/100) * ratioAJ * resetRatio * crtRatio - finalDef) * finalMinus / 100);
         //((Atk * randamRatio * ratio * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
 
-		damageData.damage = damage <= 0 ? 1 : damage * (100+ GetAbilityStatus ("Dmg")) / 100;//狀態傷害加成
+		damageData.damage = damage <= 0 ? 1 : damage;//狀態傷害加成
 
 		return damageData;
 	}

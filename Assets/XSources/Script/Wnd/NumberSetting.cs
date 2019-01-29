@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class NumberSetting : MonoBehaviour {
 	[SerializeField]
 	Text text;
+
+    [SerializeField]
+    TextMeshProUGUI textMesh;
 
 	int showRatio = 0;
 
@@ -23,7 +27,19 @@ public class NumberSetting : MonoBehaviour {
 
 	bool isSet = false;
 
-	[SerializeField]
+    public enum SymbolType
+    {
+        None,
+        Plus = '+',
+        Minus = '-',
+        Multiply = 'x',
+        Divided = '/',
+        Percent = '%'
+    }
+
+    public SymbolType symbolType;
+
+    [SerializeField]
 	bool isReturnMin = false;
 
 	// Use this for initialization
@@ -38,11 +54,12 @@ public class NumberSetting : MonoBehaviour {
 				if (!isReturnMin) {
 					if (prevRatio < showRatio) {
 						prevRatio = (int)DataUtil.LimitFloat (Mathf.CeilToInt (prevRatio + upSpeed * Time.deltaTime), showRatio, isReturnMin);
-						text.text = prevRatio.ToString ();
-					} 
-					else {
-						text.text = showRatio.ToString ();
-						isRun = false;
+                        SetText(prevRatio.ToString());
+                    }
+                    else {
+                        SetText(showRatio.ToString());
+
+                        isRun = false;
 						isSet = false;
 						prevRatio = showRatio;
 						if (onComplete != null) {
@@ -54,11 +71,11 @@ public class NumberSetting : MonoBehaviour {
 				else {
 					if (prevRatio > showRatio) {
 						prevRatio = (int)DataUtil.LimitFloat (Mathf.CeilToInt (prevRatio + upSpeed * Time.deltaTime), showRatio, isReturnMin);
-						text.text = prevRatio.ToString ();
-					} 
-					else {
-						text.text = showRatio.ToString ();
-						isRun = false;
+                        SetText(prevRatio.ToString());
+                    }
+                    else {
+                        SetText(showRatio.ToString());
+                        isRun = false;
 						isSet = false;
 						prevRatio = showRatio;
 						if (onComplete != null) {
@@ -75,7 +92,7 @@ public class NumberSetting : MonoBehaviour {
 	}
 
 	public void SetNumber (int number) {
-		text.text = number.ToString();
+        SetText(number.ToString());
 	}
 
 	public void SetShowUp(int number) {
@@ -91,17 +108,49 @@ public class NumberSetting : MonoBehaviour {
 	public void SetPlus(int number){
 		showRatio = showRatio + number;
 
-		text.text = showRatio.ToString();
-	}
+        SetText(showRatio.ToString());
+    }
 
-	public void ResetNumber () {
+    public void ResetNumber () {
 		showRatio = 0;
-		text.text = showRatio.ToString();
+        SetText(showRatio.ToString());
+    }
 
-	}
+    public void SetText(string content) {
+        string finalContent;
+        if (symbolType == SymbolType.None)
+        {
+            finalContent = content;
+        }
+        else if (symbolType == SymbolType.Percent)
+        {
+            finalContent = content + ((char)symbolType).ToString();
+        }
+        else
+        {
+            finalContent = ((char)symbolType).ToString() + content;
+        }
 
-	public void SetColor (Color color) {
-		text.color = color;
+
+        if (text != null)
+        {
+            text.text = finalContent;
+        }
+        if (textMesh != null)
+        {
+            textMesh.text = finalContent;
+        }
+    }
+
+    public void SetColor (Color color) {
+        if (text != null)
+        {
+            text.color = color;
+        }
+        if (textMesh != null)
+        {
+            textMesh.color = color;
+        }
 	}
 
 	public void run(){

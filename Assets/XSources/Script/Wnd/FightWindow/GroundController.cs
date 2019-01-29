@@ -77,25 +77,28 @@ public class GroundController : MonoBehaviour
     {
         if (background != null)
         {
-            if ((int)type == 99)
+            if ((int)type != 10)
             {
-                background.sprite = GetSprites[4];
-            }
-            else if ((int)type == 0)
-            {
-                light.Stop(Color.white);
-                background.sprite = GetSprites[0];
-                light.gameObject.SetActive(false);
-            }
-            else
-            {
-                background.sprite = GetSprites[0];
-                light.gameObject.SetActive(true);
+                if ((int)type == 99)
+                {
+                    background.sprite = GetSprites[4];
+                }
+                else if ((int)type == 0)
+                {
+                    light.Stop(Color.white);
+                    background.sprite = GetSprites[0];
+                    light.gameObject.SetActive(false);
+                }
+                else
+                {
+                    background.sprite = GetSprites[0];
+                    light.gameObject.SetActive(true);
 
-                light.SetFromAndTo(Color.white, colorTransparent);
-                light.PlayForward(System.Convert.ToInt32(!isSpeed));
-                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent));
-                colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
+                    light.SetFromAndTo(Color.white, colorTransparent);
+                    light.PlayForward(System.Convert.ToInt32(!isSpeed));
+                    colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent));
+                    colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
+                }
             }
         }
     }
@@ -136,14 +139,14 @@ public class GroundController : MonoBehaviour
         _prevType = _groundType;
     }
 
-    public void OnChangeType(bool isTouchUp)
+    public void OnChangeType(bool isTouchUp, int dirIdx)
     {
-        RaycastRound(false, isTouchUp);
+        RaycastRound(false, isTouchUp, dirIdx);
     }
 
-    public void OnPrevType()
+    public void OnPrevType(int dirIdx)
     {
-        RaycastRound(true, false);
+        RaycastRound(true, false, dirIdx);
     }
 
     private void OnPrevType(RaycastHit2D[] hits)
@@ -161,37 +164,35 @@ public class GroundController : MonoBehaviour
     /// <param name="isPrev">是否還原狀態 <c>true</c> is previous.</param>
     /// <param name="isTouchUp">是否屏幕碰觸結束<c>true</c> is touch up.</param>
     /// <param name="isEnd">是否結束此回合<c>true</c> is end.</param>
-    private void RaycastRound(bool isPrev, bool isTouchUp)
+    private void RaycastRound(bool isPrev, bool isTouchUp, int dirIdx)
     {
         RaycastHit2D[] hits;
         List<RaycastData> dataList = new List<RaycastData>();
-        for (int i = 0; i < 6; i++)
-        {
-            hits = transform.parent.GetComponent<GroundRaycastController>().GetRaycastHits (transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + constAngle + i * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + constAngle + i * 60))), 116f * 8);
 
-            if (hits.Length == 0)
-            {
-                continue;
-            }
+        hits = transform.parent.GetComponent<GroundRaycastController>().GetRaycastHits (transform.position, new Vector2(Mathf.Sin(Mathf.Deg2Rad * (constAngle + dirIdx * 60)), Mathf.Cos(Mathf.Deg2Rad * (constAngle + dirIdx * 60))), 116f * 8);
+
+        if (hits.Length == 0)
+        {
+            return;
+        }
 
             List<RaycastHit2D> hitGcs = new List<RaycastHit2D>();
 
-            for (int j = 0; j < hits.Length; j++)
+        for (int j = 0; j < hits.Length; j++)
+        {
+            hitGcs.Add(hits[j]);
+            if (hits[j].transform.GetComponent<GroundController>().isChara)
             {
-                hitGcs.Add(hits[j]);
-                if (hits[j].transform.GetComponent<GroundController>().isChara)
+                if (isPrev)
                 {
-                    if (isPrev)
-                    {
-                        OnPrevType(hitGcs.ToArray());
-                    }
-                    else
-                    {
-                        CalculateRatio(hitGcs.ToArray(), isTouchUp);
-                    }
-
-                    break;
+                    OnPrevType(hitGcs.ToArray());
                 }
+                else
+                {
+                    CalculateRatio(hitGcs.ToArray(), isTouchUp);
+                }
+
+                break;
             }
         }
 

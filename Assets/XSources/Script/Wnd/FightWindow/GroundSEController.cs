@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GroundSEController : MonoBehaviour {
 	[HideInInspector]
@@ -42,29 +43,21 @@ public class GroundSEController : MonoBehaviour {
 
 	private int upRatio;
 
-	[SerializeField]
-	private TweenPostion extraLight;
-
     [SerializeField]
     private ParticleSystem extraParticle;
 
     [SerializeField]
     private Color[] particleColor;
 
-	[SerializeField]
-	private GameObject ratioTxts;
 
 	[SerializeField]
 	private TweenPostion damageLight;
 
 	[SerializeField]
-	private Text[] ratioTxt;
-
-	[SerializeField]
 	private GameObject damageTxts;
 
 	[SerializeField]
-	private Text[] damageTxt;
+	private TextMeshProUGUI[] damageTxt;
 	int damageTxtIdx;
 
     [SerializeField]
@@ -182,13 +175,7 @@ public class GroundSEController : MonoBehaviour {
 	}
 
 	public void CloseSE(){
-		extraLight.gameObject.SetActive (false);
-		foreach (Text txt in ratioTxt) {
-			txt.gameObject.SetActive (false);
-		}
-		ratioTxts.SetActive (false);
-
-		foreach (Text txt in damageTxt) {
+		foreach (TextMeshProUGUI txt in damageTxt) {
 			txt.gameObject.SetActive (false);
 			txt.color = Color.black;
 		}
@@ -198,11 +185,10 @@ public class GroundSEController : MonoBehaviour {
 	public void AllReset(){
 		lightParant.rotation = Quaternion.identity;
 		lightParant.localPosition = Vector3.zero;
-		extraLight.gameObject.SetActive (false);
 		damageLight.gameObject.SetActive (false);
 
 		damageTxts.SetActive (false);
-		foreach (Text txt in damageTxt) {
+		foreach (TextMeshProUGUI txt in damageTxt) {
 			txt.transform.localPosition = Vector3.zero;
 			txt.text = "";
 			txt.gameObject.SetActive (false);

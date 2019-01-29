@@ -97,6 +97,8 @@ public class FightUIController : MonoBehaviour {
 	public FightItemButton[] enemyButton;
 	Vector3[] enemyButtonPos;
 
+    int dirIdx;
+
 	private int energe;
 
 	private int lockEnerge;
@@ -507,8 +509,11 @@ public class FightUIController : MonoBehaviour {
             ResetGround();
         }
         else {
-            round++;
-            energe = 5 + round;
+            if (round < 4)
+            {
+                round++;
+            }
+            energe = 4 + round;
             SetEnergy();
             fightController.ConditionDown(conditionDown);
         }
@@ -587,7 +592,7 @@ public class FightUIController : MonoBehaviour {
                         endCharaImage = SetChess(r.gameObject.GetComponent<GroundController>(), endCharaImage);
 
 						if (endGc != r.gameObject.GetComponent<GroundController> ()) {
-                            startGc.OnPrevType();
+                            startGc.OnPrevType(dirIdx);
 
                             foreach (FightItemButton button in playerButton) {
                                 button.CloseMinus();
@@ -598,7 +603,6 @@ public class FightUIController : MonoBehaviour {
                             }
 
                             if (endGc != null) {
-                                endGc.OnPrevType();
                                 if (charaGc.Last.Value == endGc) {
 									if (endCover) {
 										endGc.OnPrevCover ();
@@ -631,8 +635,10 @@ public class FightUIController : MonoBehaviour {
         usedEnergy = 0;
         conditionDown = new int[3];
 		Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
+        dirIdx = IsCorrectDir(dir);
 
-		if (IsCorrectDir(dir))
+
+        if (dirIdx != -99)
 		{
 			endGc = gc;
 
@@ -646,8 +652,8 @@ public class FightUIController : MonoBehaviour {
 
 			charaGc.AddLast (endGc);
 
-            startGc.OnChangeType(false);
-            endGc.OnChangeType(false);
+            startGc.OnChangeType(false, dirIdx);
+            //endGc.OnChangeType(false, dirIdx);
 
             spaceCorrect = true;
 		}
@@ -709,10 +715,10 @@ public class FightUIController : MonoBehaviour {
                             }
                             else
                             {
-                                startGc.OnPrevType();
+                                startGc.OnPrevType(dirIdx);
                                 if (endGc != null)
                                 {
-                                    endGc.OnPrevType();
+                                    endGc.OnPrevType(dirIdx);
                                     endGc.ResetType();
                                 }
                                 startGc.ResetType();
@@ -726,7 +732,6 @@ public class FightUIController : MonoBehaviour {
 				}
 			}
 		}
-        conditionDown = new int[3];
 	}
 
 
@@ -803,21 +808,72 @@ public class FightUIController : MonoBehaviour {
 		fightController.SetCDTime (monsterCdTimes);
 	}
 
-	public bool IsCorrectDir(Vector2 dirNormalized) {
+	public int IsCorrectDir(Vector2 dirNormalized) {
 		if (isPortrait) {
 			if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 9 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 5) {
-				return true;
-			} else if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 0 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 10) {
-				return true;
-			}
+                if (dirNormalized.x > 0)
+                {
+                    if (dirNormalized.y > 0) {
+                        return 1;
+                    }
+                    else {
+                        return 2;
+                    }
+                }
+                else {
+                    if (dirNormalized.y > 0)
+                    {
+                        return 5;
+                    }
+                    else
+                    {
+                        return 4;
+                    }
+                }
+            } else if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 0 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 10) {
+                if (dirNormalized.y > 0) {
+                    return 0;
+                }
+                else {
+                    return 3;
+                }
+            }
 		} else {
 			if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 5 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 9) {
-				return true;
-			} else if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 10 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 0) {
-				return true;
-			}
+                if (dirNormalized.x > 0)
+                {
+                    if (dirNormalized.y > 0)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+                }
+                else
+                {
+                    if (dirNormalized.y > 0)
+                    {
+                        return 5;
+                    }
+                    else
+                    {
+                        return 3;
+                    }
+                }
+            } else if (Mathf.Round (Mathf.Abs (dirNormalized.x * 10)) == 10 && Mathf.Round (Mathf.Abs (dirNormalized.y * 10)) == 0) {
+                if (dirNormalized.x > 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 4;
+                }
+            }
 		}
-		return false;
+		return -99;
 	}
 
 
@@ -1009,6 +1065,9 @@ public class FightUIController : MonoBehaviour {
 	}
 
     public void SetButtonCondition(int idx, List<int> condition, bool isInit, int? level = null) {
+        if (idx == 0 && level != null) {
+            Debug.Log((int)level);
+        }
         if (isInit)
         {
             playerButton[idx].InitConditonText(condition, level);

@@ -137,7 +137,7 @@ public class FightItemButton : MonoBehaviour {
                         if (minus[j] != 0)
                         {
                             conditionViews[i].minusText.gameObject.SetActive(true);
-                            conditionViews[i].minusText.SetNumber(minus[j] * -1);
+                            conditionViews[i].minusText.SetNumber(minus[j]);
                         }
                         else
                         {

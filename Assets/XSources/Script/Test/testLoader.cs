@@ -92,4 +92,24 @@ public class testLoader : MonoBehaviour {
 			Debug.Log (v);		
 		}*/
 	}
+
+    public enum SymbolType
+    {
+        None,
+        Plus = '+',
+        Minus = '-',
+        Multiply = 'x',
+        Divided = '/',
+        Percent = '%'
+    }
+
+    [MenuItem("MyProject/TestAngle")]
+    public static void testAngle() {
+        GameObject sel = Selection.activeGameObject;
+        Image[] imgs = sel.GetComponentsInChildren<Image>();
+
+        for(int i = 0; i < Const.attriColor.Length; i++) {
+            imgs[i].color = Const.attriColor[i];
+        }
+    }
 }
