@@ -499,6 +499,7 @@ public class FightUIController : MonoBehaviour {
 	/// </summary>
 	/// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
+        conditionDown = new int[3]; 
         isResetGround = !groundPool.NextRound();
 
         if (isResetGround)
@@ -1051,9 +1052,6 @@ public class FightUIController : MonoBehaviour {
 	}
 
     public void SetButtonCondition(int idx, List<int> condition, bool isInit, int? level = null) {
-        if (idx == 0 && level != null) {
-            Debug.Log((int)level);
-        }
         if (isInit)
         {
             playerButton[idx].InitConditonText(condition, level);

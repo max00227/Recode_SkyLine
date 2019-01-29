@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 [RequireComponent(typeof(Button))]
 public class FightItemButton : MonoBehaviour {
@@ -90,6 +91,12 @@ public class FightItemButton : MonoBehaviour {
     public void InitConditonText(List<int> condition, int? level)
     {
         int viewCount = 0;
+        if (condition.Sum()==0)
+        {
+            foreach (ConditionView cv in conditionViews) {
+                cv.conditionText.gameObject.SetActive(false);
+            }
+        }
         for (int i = 0; i < condition.Count; i++)
         {
             if (viewCount <= 1)
@@ -112,7 +119,7 @@ public class FightItemButton : MonoBehaviour {
                     conditionViews[viewCount].conditionText.gameObject.SetActive(false);
                 }
             }
-           
+
         }
 
 
@@ -121,7 +128,8 @@ public class FightItemButton : MonoBehaviour {
         {
             outline.effectColor = conditionColor[(int)level - 1];
         }
-        else {
+        else
+        {
             outline.effectColor = Color.black;
         }
     }
