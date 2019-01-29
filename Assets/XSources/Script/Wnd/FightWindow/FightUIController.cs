@@ -322,7 +322,9 @@ public class FightUIController : MonoBehaviour {
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
+            Debug.Log(damageData.hpRatio);
             uniteHpBar.SetBar(damageData.hpRatio, true, false);
+            uniteHpBar.OnRun();
         }
         else
         {
