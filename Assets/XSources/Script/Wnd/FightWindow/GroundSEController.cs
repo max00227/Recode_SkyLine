@@ -92,8 +92,12 @@ public class GroundSEController : MonoBehaviour {
 				if (!isShowDamage) {
                     damageTxt[damageTxtIdx].GetComponent<TweenPostion>().PlayForward(Random.Range(0, 2));
 				}
-				showDamage = (int)DataUtil.LimitFloat (Mathf.CeilToInt (showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
-				damageTxt[damageTxtIdx].text = showDamage.ToString ();
+
+                if (plusDamage != 0)
+                {
+                    showDamage = (int)DataUtil.LimitFloat(Mathf.CeilToInt(showDamage + Time.deltaTime * plusSpeed), plusDamage, false);
+                    damageTxt[damageTxtIdx].text = showDamage.ToString();
+                }
 				isShowDamage = true;
 				if (showDamage >= plusDamage) {
 					showTime -= Time.deltaTime;
@@ -105,12 +109,13 @@ public class GroundSEController : MonoBehaviour {
 		}
 	}
 
-	public void SetAttackShow(Vector3 orgPos, Vector3 targetPos, FightItemButton target, DamageData data){
+	public void SetAttackShow(Vector3 orgPos, Vector3 targetPos, int idx ,FightItemButton target, DamageData data){
 		SetLightParent(orgPos, targetPos);
 
 		damageData = data;
 		callbackTarget = target;
 		tPos = targetPos;
+        damageIdx = idx;
 
         seType = SpecailEffectType.Attack;
 		damageLight.SetParabola (orgPos, targetPos);
@@ -130,22 +135,33 @@ public class GroundSEController : MonoBehaviour {
 		}
     }
 
-	public void SetDamageShow(int idx,DamageData damageData, Vector3 orgPos){
-		showDamage = 0;
-		plusDamage = damageData.damage[idx];
- 		speedRatio = Random.Range (0.5f, 1.2f);
-		plusSpeed = damageData.damage[idx] / speedRatio;
-		seType = SpecailEffectType.Damage;
-		showTime = 0.5f;
+    public void SetDamageShow(int idx, DamageData damageData, Vector3 orgPos)
+    {
+        showDamage = 0;
+        plusDamage = damageData.damage[idx];
+        speedRatio = Random.Range(0.5f, 1.2f);
+        
+        seType = SpecailEffectType.Damage;
+        showTime = 0.5f;
         damageIdx = idx;
 
-		damageTxtIdx = System.Convert.ToInt32 (damageData.isCrt);
+        if (damageData.damage[idx] == 0)
+        {
+            damageTxt[damageTxtIdx].text = "Miss";
+            plusSpeed = 6 / speedRatio;
+        }
+        else {
+            plusSpeed = damageData.damage[idx] / speedRatio;
+        }
+
+
+        damageTxtIdx = System.Convert.ToInt32(damageData.isCrt[idx]);
         damageTxt[damageTxtIdx].GetComponent<TweenPostion>().SetJump(orgPos, orgPos + Vector3.right * Random.Range(-50, 50), speedRatio);
-		damageTxt [damageTxtIdx].color = Const.attriColor [damageData.attributes];
-		setComplete = true;
-		isRun = false;
-		isShowDamage = false;
-	}
+        damageTxt[damageTxtIdx].color = Const.attriColor[damageData.attributes];
+        setComplete = true;
+        isRun = false;
+        isShowDamage = false;
+    }
 
 
 	private void OnRunFinish(TweenPostion tp = null){

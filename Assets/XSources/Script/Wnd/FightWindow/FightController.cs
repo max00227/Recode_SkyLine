@@ -161,8 +161,6 @@ public class FightController : MonoBehaviour {
 			players [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
 			players [i].soulData.Merge (ParameterConvert.GetCharaAbility (players [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
 			players [i].soulData.Merge (players [i].soulData.skill);
-			//players [i].fullHp = players [i].soulData.abilitys["Hp"];
-			//player[i].initCD = (int)player [i].soulData._skill.cdTime;
 			players [i].status = new Dictionary<StatusLargeData, int> ();
 			players [i].recStatus = new Dictionary<StatusLargeData, int> ();
 			players [i].statusTime = new Dictionary<StatusLargeData, int> ();
@@ -174,7 +172,6 @@ public class FightController : MonoBehaviour {
 
             uniteHp += players[i].soulData.abilitys["Hp"];
             uniteFullHp += players[i].soulData.abilitys["Hp"];
-            //skillCdTime [i] = (int)player [i].soulData._norSkill.cdTime;
         }
 		return soulData;
 	}
@@ -500,6 +497,7 @@ public class FightController : MonoBehaviour {
 		damageData.attributes = mainOrgChess.soulData.act [actLevel][2];
 		damageData.orgIdx = orgIdx;
 		damageData.targetIdx = targetIdx;
+        damageData.atkJob = mainOrgChess.soulData.job;
 
 		return damageData;
 	}
@@ -560,6 +558,7 @@ public class FightController : MonoBehaviour {
 
         if (damageData.tType[1] == "E")
         {
+            data.hpRatio = new float[damageData.damage.Length];
             for (int i = 0; i < damageData.damage.Length; i++)
             {
                 mainTargetChess.soulData.abilitys["Hp"] -= data.damage[i];
@@ -584,6 +583,7 @@ public class FightController : MonoBehaviour {
             }
         }
         else {
+            data.hpRatio = new float[1];
             uniteHp -= data.damage[0];
             data.hpRatio[0] = (float)uniteHp / (float)uniteFullHp;
         }
@@ -628,16 +628,18 @@ public class FightController : MonoBehaviour {
 	public DamageData CalDamage(int atk, int def, int[] act, float ratioAJ, int crt, bool isAll){
 		DamageData damageData = new DamageData ();
         damageData.damage = new int[act[1]];
+        damageData.isCrt = new bool[act[1]];
         for (int i = 0; i < damageData.damage.Length; i++)
         {
-            damageData.isCrt = UnityEngine.Random.Range(0, 101) <= crt;
+            damageData.isCrt[i] = UnityEngine.Random.Range(0, 101) <= crt;
 
-            float crtRatio = Mathf.Pow(1.5f, Convert.ToInt32(damageData.isCrt));
+            float crtRatio = Mathf.Pow(2f, Convert.ToInt32(damageData.isCrt[i]));
 
-            int hitRate = UnityEngine.Random.Range(0, 101);
+            int hitRate = UnityEngine.Random.Range(0, 50);
             //爆擊時必命中
-            bool isMiss = damageData.isCrt == true ? false : hitRate <= act[3];
+            bool isMiss = damageData.isCrt[i] == true ? false : hitRate <= act[3];
             float radio;
+            Debug.Log(act[3]);
             if (!isMiss)
             {
                 radio = (100 - hitRate / 10);
@@ -648,7 +650,7 @@ public class FightController : MonoBehaviour {
             int damage = Mathf.CeilToInt((atk * (act[0] / 100) * ratioAJ * resetRatio * crtRatio - finalDef));
             //((Atk * randamRatio * ratio * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
 
-            damageData.damage[i] = damage <= 0 ? 1 : isMiss == true ? 0 : damage;//狀態傷害加成
+            damageData.damage[i] = isMiss == true? 0: damage <= 0 ? 1 : damage;//狀態傷害加成
         }
 		return damageData;
 	}
@@ -781,7 +783,6 @@ public class FightController : MonoBehaviour {
 		if (Callback) {
 			CheckSoulStatus ();
 			fightUIController.FightEnd ();
-
 		}
 		else {
 			EnemyFight ();
@@ -1457,7 +1458,8 @@ public struct DamageData{
 	public float[] hpRatio;
 	public DamageType damageType;
 	public int attributes;
-	public bool isCrt;
+    public int atkJob;
+	public bool[] isCrt;
 	public string[] tType;
 }
 

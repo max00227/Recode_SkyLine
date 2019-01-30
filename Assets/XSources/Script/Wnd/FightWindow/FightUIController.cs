@@ -297,11 +297,26 @@ public class FightUIController : MonoBehaviour {
 			target = allDamage[i].tType[1] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
 			Vector3 targetPos = allDamage[i].tType[1] == "P" ? uniteHpBar.transform.localPosition : enemyButtonPos [allDamage [i].targetIdx - minusCount];
 
-			GroundSEController gse = SEPool.Dequeue ();
-			gse.SetAttackShow (orgPos, targetPos, target, allDamage [i]);
-			gse.onRecycleDamage = ShowFightEnd;
-			gse.gameObject.SetActive (true);
-			gse.Run ();
+            for (int j = 0; j < allDamage[i].damage.Length; j++)
+            {
+                GroundSEController gse = SEPool.Dequeue();
+                gse.SetAttackShow(orgPos, targetPos, j, target, allDamage[i]);
+                gse.onRecycleDamage = ShowFightEnd;
+                gse.gameObject.SetActive(true);
+                gse.Run();
+                if (j == 0)
+                {
+                    if (allDamage[i].damage.Length == 1)
+                    {
+                        yield return new WaitForSeconds(0.3f);//該名角色最後攻擊所需時間
+                    }
+                    yield return new WaitForSeconds(0.1f);//該名角色的物理及魔法攻擊的顯示間隔
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.3f);//該名角色最後攻擊所需時間
+                }
+            }
 
 			if (i == 0) {
 				if (allDamage.Count == 1) {
@@ -318,11 +333,11 @@ public class FightUIController : MonoBehaviour {
 	}
 
 
+
 	private void ShowFightEnd(GroundSEController gse, int damageIdx, DamageData damageData, FightItemButton target, Vector3 tPos){
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
-            Debug.Log(damageData.hpRatio);
             uniteHpBar.SetBar(damageData.hpRatio[damageIdx], true, false);
             uniteHpBar.OnRun();
         }
