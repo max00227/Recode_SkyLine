@@ -24,10 +24,10 @@
 		}
 
 		[Newtonsoft.Json.JsonProperty("Act")]
-        public System.Collections.Generic.List<System.Collections.Generic.List<System.Int32>> act { get; set; }
+        public System.Collections.Generic.List<int[]> act { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ActCondition")]
-        public System.Collections.Generic.List<System.Collections.Generic.List<System.Int32>> actCondition { get; set; }
+        public System.Collections.Generic.List<int[]> actCondition { get; set; }
 
         [Newtonsoft.Json.JsonProperty("Skill")]
 		public System.Int32 skill { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using model.data;
 
 public class SkillController : MonoBehaviour {
@@ -216,60 +217,76 @@ public class SkillController : MonoBehaviour {
 		bool[] meets = new bool[data.ruleData.Count];
 		int parameter = 0;
 		foreach(DamageData damageData in allDamage){
-			if(damageData.hpRatio<=0){
-				for (int i = 0; i < data.ruleData.Count; i++) {
-					if (data.ruleData [i].rule [0] == (int)Rule.Death) {
-						meets [i] = true;
-						if (data.isOr) {
-							OnEffectTarget (data.ruleData [i]);
-							return;
-						}
-					}
-				}
-			}
+            foreach (float hr in damageData.hpRatio)
+            {
+                if (hr <= 0)
+                {
+                    for (int i = 0; i < data.ruleData.Count; i++)
+                    {
+                        if (data.ruleData[i].rule[0] == (int)Rule.Death)
+                        {
+                            meets[i] = true;
+                            if (data.isOr)
+                            {
+                                OnEffectTarget(data.ruleData[i]);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
 		}
 
-		for (int i = 0; i < data.ruleData.Count; i++) {
-			switch (data.ruleData[i].rule [0]) {
-			case (int)Rule.None:
-				meets [i] = true;
-				break;
-			case (int)Rule.norDmg:
-				meets [i] = allDamage.Count > 0;
-				parameter = GetDamage (allDamage);
-				break;
-			case (int)Rule.norDmgP:
-				if (allDamage.Count > 0 && allDamage [0].damageType == DamageType.Physical) {
-					meets [i] = true;
-					parameter = allDamage [0].damage;
-				}
-				else{
-					meets[i] = false;
-				}
-				break;
-			case (int)Rule.norDmgM:
-				//兩種傷害時，傷害一 物理：傷害二 魔法
-				if (allDamage.Count == 2) {
-					meets [i] = true;
-					parameter = allDamage [1].damage;
-				} 
-				//但種傷害時，因傷害一可能為物理傷害，所以必須檢查
-				else if (allDamage.Count == 1) {
-					if (allDamage [0].damageType == DamageType.Magic) {
-						meets [i] = true;
-						parameter = allDamage [0].damage;
-					} 
-					else {
-						meets [i] = false;
-					}
-				} 
-				else {
-					meets [i] = false;
+        for (int i = 0; i < data.ruleData.Count; i++)
+        {
+            switch (data.ruleData[i].rule[0])
+            {
+                case (int)Rule.None:
+                    meets[i] = true;
+                    break;
+                case (int)Rule.norDmg:
+                    meets[i] = allDamage.Count > 0;
+                    parameter = GetDamage(allDamage);
+                    break;
+                case (int)Rule.norDmgP:
+                    if (allDamage.Count > 0 && allDamage[0].damageType == DamageType.Physical)
+                    {
+                        meets[i] = true;
+                        parameter = allDamage[0].damage.Sum();
+                    }
+                    else
+                    {
+                        meets[i] = false;
+                    }
+                    break;
+                case (int)Rule.norDmgM:
+                    //兩種傷害時，傷害一 物理：傷害二 魔法
+                    if (allDamage.Count == 2)
+                    {
+                        meets[i] = true;
+                        parameter = allDamage[1].damage.Sum();
+                    }
+                    //但種傷害時，因傷害一可能為物理傷害，所以必須檢查
+                    else if (allDamage.Count == 1)
+                    {
+                        if (allDamage[0].damageType == DamageType.Magic)
+                        {
+                            meets[i] = true;
+                            parameter = allDamage[0].damage.Sum();
+                        }
+                        else
+                        {
+                            meets[i] = false;
+                        }
+                    }
+                    else
+                    {
+                        meets[i] = false;
 
-				}
-				break;
-			}
-		}
+                    }
+                    break;
+            }
+        }
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
@@ -483,7 +500,7 @@ public class SkillController : MonoBehaviour {
 	private int GetDamage(List<DamageData> damageData){
 		int damage = 0;
 		foreach (DamageData data in damageData) {
-			damage += data.damage;
+			damage += data.damage.Sum();
 		}
 
 		return damage;

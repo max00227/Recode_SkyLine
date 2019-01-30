@@ -37,7 +37,7 @@ public class GroundSEController : MonoBehaviour {
 
 	public OnExtraUp onExtraUp;
 
-	public delegate void OnRecycleDamage(GroundSEController gse, DamageData damageData, FightItemButton target, Vector3 pos);
+	public delegate void OnRecycleDamage(GroundSEController gse,int damageIdx ,DamageData damageData, FightItemButton target, Vector3 pos);
 
 	public OnRecycleDamage onRecycleDamage;
 
@@ -70,6 +70,8 @@ public class GroundSEController : MonoBehaviour {
 	Color[] attriColor;
 
 	Vector3 tPos;
+
+    int damageIdx;
 
 
 	// Use this for initialization
@@ -128,13 +130,14 @@ public class GroundSEController : MonoBehaviour {
 		}
     }
 
-	public void SetDamageShow(DamageData damageData, Vector3 orgPos){
+	public void SetDamageShow(int idx,DamageData damageData, Vector3 orgPos){
 		showDamage = 0;
-		plusDamage = damageData.damage;
+		plusDamage = damageData.damage[idx];
  		speedRatio = Random.Range (0.5f, 1.2f);
-		plusSpeed = damageData.damage / speedRatio;
+		plusSpeed = damageData.damage[idx] / speedRatio;
 		seType = SpecailEffectType.Damage;
 		showTime = 0.5f;
+        damageIdx = idx;
 
 		damageTxtIdx = System.Convert.ToInt32 (damageData.isCrt);
         damageTxt[damageTxtIdx].GetComponent<TweenPostion>().SetJump(orgPos, orgPos + Vector3.right * Random.Range(-50, 50), speedRatio);
@@ -165,7 +168,7 @@ public class GroundSEController : MonoBehaviour {
 		}
 
 		if (onRecycleDamage != null) {
-			onRecycleDamage.Invoke (this, damageData, callbackTarget, tPos);
+            onRecycleDamage.Invoke(this, damageIdx, damageData, callbackTarget, tPos);
 			onRecycleDamage = null;
 		}
 	}

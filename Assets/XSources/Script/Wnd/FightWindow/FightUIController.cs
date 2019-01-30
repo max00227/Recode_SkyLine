@@ -318,21 +318,21 @@ public class FightUIController : MonoBehaviour {
 	}
 
 
-	private void ShowFightEnd(GroundSEController gse, DamageData damageData, FightItemButton target, Vector3 tPos){
+	private void ShowFightEnd(GroundSEController gse, int damageIdx, DamageData damageData, FightItemButton target, Vector3 tPos){
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
             Debug.Log(damageData.hpRatio);
-            uniteHpBar.SetBar(damageData.hpRatio, true, false);
+            uniteHpBar.SetBar(damageData.hpRatio[damageIdx], true, false);
             uniteHpBar.OnRun();
         }
         else
         {
-            target.SetHpBar(damageData.hpRatio);
+            target.SetHpBar(damageData.hpRatio[damageIdx]);
         }
 		SEPool.Enqueue (gse);
 		gse.onRecycle = null;
-		gse.SetDamageShow (damageData, tPos);
+        gse.SetDamageShow(damageIdx, damageData, tPos);
 		gse.onRecycle = ShowDamageEnd;
 		gse.gameObject.SetActive (true);
 		gse.Run ();
@@ -943,8 +943,6 @@ public class FightUIController : MonoBehaviour {
                 image = _imagePool.Pop();
 
                 image.GetComponent<RectTransform>().SetParent(CharaGroup.transform.GetChild(linkGc.groundRow));
-                //image.sprite = CharaSprite[(int)charaIdx];
-
                 image.transform.localPosition = linkGc.transform.localPosition.x * Vector3.right;
 
                 CharaImageData imageData = new CharaImageData();
@@ -974,7 +972,6 @@ public class FightUIController : MonoBehaviour {
                 image.GetComponent<RectTransform>().SetParent(imagePool);
                 image.transform.localPosition = Vector3.zero;
                 image.gameObject.SetActive(false);
-                //image.sprite = null;
                 _imagePool.Push(image);
             }
             return null;
@@ -1053,7 +1050,7 @@ public class FightUIController : MonoBehaviour {
 		enemyButton [idx].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
 	}
 
-    public void SetButtonCondition(int idx, List<int> condition, bool isInit, int? level = null) {
+    public void SetButtonCondition(int idx, int[] condition, bool isInit, int? level = null) {
         if (isInit)
         {
             playerButton[idx].InitConditonText(condition, level);

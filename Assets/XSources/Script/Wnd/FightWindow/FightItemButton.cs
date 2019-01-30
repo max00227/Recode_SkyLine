@@ -65,10 +65,10 @@ public class FightItemButton : MonoBehaviour {
 		btn.interactable = true;
 	}
 
-	public void SetConditonText(List<int> condition){
+	public void SetConditonText(int[] condition){
         for (int i = 0; i < conditionViews.Length; i++)
         {
-            for (int j = 0; j < condition.Count; j++)
+            for (int j = 0; j < condition.Length; j++)
             {
                 if ((int)conditionViews[i].conditionType == j)
                 {
@@ -88,7 +88,7 @@ public class FightItemButton : MonoBehaviour {
         }
     }
 
-    public void InitConditonText(List<int> condition, int? level)
+    public void InitConditonText(int[] condition, int? level)
     {
         int viewCount = 0;
         if (condition.Sum()==0)
@@ -97,7 +97,7 @@ public class FightItemButton : MonoBehaviour {
                 cv.conditionText.gameObject.SetActive(false);
             }
         }
-        for (int i = 0; i < condition.Count; i++)
+        for (int i = 0; i < condition.Length; i++)
         {
             if (viewCount <= 1)
             {
