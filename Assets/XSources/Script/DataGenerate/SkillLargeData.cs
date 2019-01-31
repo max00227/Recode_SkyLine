@@ -8,8 +8,8 @@ namespace model.data{
 		[Newtonsoft.Json.JsonProperty("CD")]
 		public System.Int32? cdTime;
 
-		[Newtonsoft.Json.JsonProperty("launchType")]
-		public System.Int32 launchType;
+        [Newtonsoft.Json.JsonProperty("Condition")]
+        public System.Collections.Generic.List<int[]> condition;
 
 		[Newtonsoft.Json.JsonProperty("Round")]
 		public System.Int32? round;

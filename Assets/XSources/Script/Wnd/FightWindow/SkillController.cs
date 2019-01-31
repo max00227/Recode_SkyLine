@@ -11,7 +11,7 @@ public class SkillController : MonoBehaviour {
 	[SerializeField]
 	private FightUIController fightUIController;
 
-	public delegate void OnTriggerComplete();
+	/*public delegate void OnTriggerComplete();
 	public OnTriggerComplete onTriggerComplete;
 
 	[HideInInspector]
@@ -40,10 +40,10 @@ public class SkillController : MonoBehaviour {
 
 
     private ChessData mainOrgData;
-	private ChessData mainTargetData;
+	private ChessData mainTargetData;*/
 
 	public void SetData(SoulLargeData[] playerData, SoulLargeData[] enemyData){
-		playerCount = playerData.Length;
+		/*playerCount = playerData.Length;
 		monsterCount = enemyData.Length;
 		playerTriggerSkill = new Dictionary<int, SkillLargeData> ();
 		playerRoundSkill = new Dictionary<int, SkillLargeData> ();
@@ -57,7 +57,7 @@ public class SkillController : MonoBehaviour {
 		for (int i = 0; i < playerCount; i++) {
 			if (playerData [i]._skill != null) {
 				if (playerData [i]._skill.type == 1) {
-					if (playerData [i]._skill.launchType == 0) {
+					if (playerData [i]._skill.type == 0) {
 						playerTriggerSkill.Add (i, playerData [i]._skill);
 					} else {
 						playerRoundSkill.Add (i, playerData [i]._skill);
@@ -87,10 +87,10 @@ public class SkillController : MonoBehaviour {
 					enemyPermanentSkill.Add (i, enemyData [i]._skill);
 				}
 			}
-		}
+		}*/
 	}
 
-	public void OnPermanentSkill(){
+	/*public void OnPermanentSkill(){
 		foreach (var value in playerPermanentSkill.Values) {
             mainTarget = new string[2] { "P", "" };
 			OnUseSkill (value);
@@ -512,7 +512,7 @@ public class SkillController : MonoBehaviour {
 				Debug.Log (data.id + " , " + data.abilitys.Count);
 			}
 		}
-	}
+	}*/
 }
 /// <summary>
 /// Rule type.

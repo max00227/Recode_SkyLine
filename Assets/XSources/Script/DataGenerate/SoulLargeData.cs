@@ -42,9 +42,12 @@
 
 		public void Merge(System.Int32 skillId){
 			if (skillId != 0) {
-                //_skill = MasterDataManager.GetSkillData (skillId);
-                //_skill.Merge (_skill.rule_id);
-			}
+                _skill = MasterDataManager.GetSkillData (skillId);
+                if (_skill != null)
+                {
+                    _skill.Merge(_skill.rule_id);
+                }
+            }
 		}
     }
 }

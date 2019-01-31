@@ -105,11 +105,6 @@ public class testLoader : MonoBehaviour {
 
     [MenuItem("MyProject/TestAngle")]
     public static void testAngle() {
-        GameObject sel = Selection.activeGameObject;
-        Image[] imgs = sel.GetComponentsInChildren<Image>();
 
-        for(int i = 0; i < Const.attriColor.Length; i++) {
-            imgs[i].color = Const.attriColor[i];
-        }
     }
 }

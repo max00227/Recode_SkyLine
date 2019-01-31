@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TeamLargeData {
-	public System.Collections.Generic.List<TeamData> Team { get; set; }
+    [Newtonsoft.Json.JsonProperty("Member")]
+	public System.Collections.Generic.List<MemberData> member { get; set; }
 
 }

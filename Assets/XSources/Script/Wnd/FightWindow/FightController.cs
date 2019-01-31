@@ -19,12 +19,7 @@ public class FightController : MonoBehaviour {
 	private Dictionary<int,AccordingData[]> fightPairs;
 
 	private int[] cdTime;
-
-	private int[] skillCdTime;
-	private int[] skillInitCD;
-
-	private int[] protectChara;
-
+    
 	private int enemyProtect;
 
 	private int charaProtect;
@@ -86,6 +81,8 @@ public class FightController : MonoBehaviour {
 
     bool isSetJob = false;
 
+    TeamLargeData teamData;
+
 	void Update(){
 	}
 
@@ -123,13 +120,13 @@ public class FightController : MonoBehaviour {
 
 		EnemyLargeData enemyData = JsonConversionExtensions.ConvertJson<EnemyLargeData>(json);
 
-		SoulLargeData[] soulData = new SoulLargeData[enemyData.TeamData[0].Team.Count];
-		enemys = new ChessData[enemyData.TeamData [0].Team.Count];
+		SoulLargeData[] soulData = new SoulLargeData[enemyData.teams[0].member.Count];
+		enemys = new ChessData[enemyData.teams[0].member.Count];
 
         int[] enemyAct = new int[5] { 100, 1, 0, 100, 1 };
-		for (int i = 0;i<enemyData.TeamData[0].Team.Count;i++) {
-			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.TeamData[0].Team[i].id);
-			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.TeamData[0].Team[i].lv));
+		for (int i = 0;i<enemyData.teams[0].member.Count;i++) {
+			enemys[i].soulData = MasterDataManager.GetSoulData (enemyData.teams[0].member[i].id);
+			enemys[i].soulData.Merge (ParameterConvert.GetEnemyAbility (enemys[i].soulData, enemyData.teams[0].member[i].lv));
 			enemys[i].soulData.Merge (enemys[i].soulData.skill);
 			enemys[i].fullHp = enemys[i].soulData.abilitys["Hp"];
 			enemys [i].status = new Dictionary<StatusLargeData, int> ();
@@ -150,29 +147,28 @@ public class FightController : MonoBehaviour {
 	}
 
 	private SoulLargeData[] SetCharaData(){
-		SoulLargeData[] soulData = new SoulLargeData[MyUserData.GetTeamData(0).Team.Count];
-		skillCdTime = new int[MyUserData.GetTeamData(0).Team.Count];
-		skillInitCD = new int[MyUserData.GetTeamData(0).Team.Count];
-		players = new ChessData[MyUserData.GetTeamData (0).Team.Count];
-		protectChara = new int[MyUserData.GetTeamData(0).Team.Count];
+        teamData = MyUserData.GetTeamData(0);
+        SoulLargeData[] soulData = new SoulLargeData[teamData.member.Count];
+		players = new ChessData[teamData.member.Count];
 
-
-		for (int i = 0;i<MyUserData.GetTeamData(0).Team.Count;i++) {
-			players [i].soulData = MasterDataManager.GetSoulData (MyUserData.GetTeamData(0).Team[i].id);
-			players [i].soulData.Merge (ParameterConvert.GetCharaAbility (players [i].soulData, MyUserData.GetTeamData (0).Team [i].lv));
-			players [i].soulData.Merge (players [i].soulData.skill);
-			players [i].status = new Dictionary<StatusLargeData, int> ();
-			players [i].recStatus = new Dictionary<StatusLargeData, int> ();
-			players [i].statusTime = new Dictionary<StatusLargeData, int> ();
-			players [i].abiChange = new Dictionary<int, Dictionary<string, int>> ();
-			players [i].hasStatus = new bool[Enum.GetNames (typeof(Status)).Length];
-			players [i].initAttri = players [i].soulData.attributes;
-            players [i].condition = (int[])players [i].soulData.actCondition[0].Clone();
-			soulData [i] = players [i].soulData;
+        for (int i = 0; i < teamData.member.Count; i++)
+        {
+            players[i].soulData = MasterDataManager.GetSoulData(teamData.member[i].id);
+            players[i].soulData.Merge(ParameterConvert.GetCharaAbility(players[i].soulData, teamData.member[i].lv));
+            players[i].soulData.Merge(players[i].soulData.skill);
+            players[i].status = new Dictionary<StatusLargeData, int>();
+            players[i].recStatus = new Dictionary<StatusLargeData, int>();
+            players[i].statusTime = new Dictionary<StatusLargeData, int>();
+            players[i].abiChange = new Dictionary<int, Dictionary<string, int>>();
+            players[i].hasStatus = new bool[Enum.GetNames(typeof(Status)).Length];
+            players[i].initAttri = players[i].soulData.attributes;
+            players[i].condition = SetCondition(i, 0);
+            soulData[i] = players[i].soulData;
 
             uniteHp += players[i].soulData.abilitys["Hp"];
             uniteFullHp += players[i].soulData.abilitys["Hp"];
         }
+
 		return soulData;
 	}
 
@@ -208,7 +204,7 @@ public class FightController : MonoBehaviour {
                     playersActLevel[i]++;
                     if (playersActLevel[i] <= 3)
                     {
-                        players[i].condition = playersActLevel[i] < 3 ? (int[])players[i].soulData.actCondition[playersActLevel[i]].Clone() : new int[3];
+                        players[i].condition = playersActLevel[i] < 3 ? SetCondition(i, playersActLevel[i]) : new int[3];
                         players[i].act = (int[])players[i].soulData.act[playersActLevel[i] - 1].Clone();
 
                         fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
@@ -242,20 +238,6 @@ public class FightController : MonoBehaviour {
             }
         }
     }
-
-	public void SetProtect(int[] jobProtects){
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < players.Length; j++) {
-				if (players [j].soulData.job == i) {
-					protectChara [j] = jobProtects [i];
-				}
-			}
-		}
-
-		for (int i = 0; i < protectChara.Length; i++) {
-            players[i].minus = protectChara[i];
-		}
-	}
 
     public void SetJob(int charaIdx)
     {
@@ -471,7 +453,7 @@ public class FightController : MonoBehaviour {
         int orgStatusRatio = 100;
         int targetStatusRatio = 100;
 
-        if (mainTarget[0] == "E")
+        /*if (mainTarget[0] == "E")
         {
             orgChanged = GetAbiChange(orgIdx, 0, titleKey + "Atk");
             orgStatusRatio = 100 + GetAbilityStatus(titleKey + "Atk", true);
@@ -479,7 +461,7 @@ public class FightController : MonoBehaviour {
         if (mainTarget[1] == "E") {
             targetChanged = GetAbiChange(orgIdx, 0, titleKey + "Atk");
             targetStatusRatio = 100 + GetAbilityStatus(titleKey + "Atk", true);
-        }
+        }*/
 
         int targetDef = mainTarget[1] == "P" ? uniteDef : mainTargetChess.soulData.abilitys[titleKey + "Def"];
 
@@ -629,17 +611,17 @@ public class FightController : MonoBehaviour {
 		DamageData damageData = new DamageData ();
         damageData.damage = new int[act[1]];
         damageData.isCrt = new bool[act[1]];
+
         for (int i = 0; i < damageData.damage.Length; i++)
         {
-            damageData.isCrt[i] = UnityEngine.Random.Range(0, 101) <= crt;
+            damageData.isCrt[i] = UnityEngine.Random.Range(0, 100) < crt;
 
             float crtRatio = Mathf.Pow(2f, Convert.ToInt32(damageData.isCrt[i]));
 
-            int hitRate = UnityEngine.Random.Range(0, 50);
+            int hitRate = UnityEngine.Random.Range(0, 100);
             //爆擊時必命中
-            bool isMiss = damageData.isCrt[i] == true ? false : hitRate <= act[3];
+            bool isMiss = damageData.isCrt[i] == true ? false : !(hitRate < act[3]);
             float radio;
-            Debug.Log(act[3]);
             if (!isMiss)
             {
                 radio = (100 - hitRate / 10);
@@ -1069,14 +1051,14 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void FightEnd(){
-		for (int i = 0; i < skillCdTime.Length; i++) {
+		/*for (int i = 0; i < skillCdTime.Length; i++) {
 			if (skillCdTime [i] > 0) {
 				skillCdTime [i]--;
 				if (skillCdTime [i] == 0) {
 					fightUIController.OnSkillCDEnd (i);
 				}
 			}
-		}
+		}*/
 	}
 
 	private float GetCalcRatio(int aj, int bj, int aa, int ba){
@@ -1095,7 +1077,7 @@ public class FightController : MonoBehaviour {
 	}
 
 	public void SelectSkillTarget(string targetString, int idx){
-		skillController.SelectSkillTarget (targetString, idx);
+		//skillController.SelectSkillTarget (targetString, idx);
 	}
 
 	public void OnSelectSkillTarget(List<int> idxList, string targetString){
@@ -1188,19 +1170,15 @@ public class FightController : MonoBehaviour {
 
 		
 	public void RoundEnd(){
-		skillController.OnRoundSkill ();
-		for (int i = 0; i < skillCdTime.Length; i++) {
-			if (skillCdTime[i] > 0) {
-				skillCdTime [i]--;
-			}
-		}
+		//skillController.OnRoundSkill ();
         isSetJob = false;
 	}
 
     public void ResetGround() {
         playersActLevel = new int[players.Length];
-        for(int i = 0; i < players.Length; i++) {
-            players[i].condition = (int[])players[i].soulData.actCondition[0].Clone();
+        for (int i = 0; i < players.Length; i++)
+        {
+            players[i].condition = SetCondition(i, 0);
             players[i].act = null;
         }
     }
@@ -1210,7 +1188,7 @@ public class FightController : MonoBehaviour {
 		ChessData orgChess = allDamage [0].tType [0] == "E" ? enemys [allDamage [0].targetIdx] : players [allDamage [0].orgIdx];
 		ChessData targetChess = allDamage [0].tType [1] == "E" ? enemys [allDamage [0].targetIdx] : players [allDamage [0].orgIdx];
 
-		skillController.OnTriggerSkill (orgChess, targetChess, allDamage);
+		//skillController.OnTriggerSkill (orgChess, targetChess, allDamage);
 	}
 
 	public ChessData GetChessData(string targetString,int index){
@@ -1340,7 +1318,7 @@ public class FightController : MonoBehaviour {
 			fightUIController.OnRecovery (idx, targetString, (float)deputyTargetChess.soulData.abilitys ["Hp"] / (float)deputyTargetChess.fullHp);
 
 			if (over > 0) {
-				skillController.OverRecovery (idx, orgIdx, over, deputyTarget);
+				//skillController.OverRecovery (idx, orgIdx, over, deputyTarget);
 			}
 		}
 	}
@@ -1405,8 +1383,24 @@ public class FightController : MonoBehaviour {
 		return changeParam;
 	}
 
+    public int[] SetCondition(int playerIdx,int level) {
+        if(level == teamData.member[playerIdx].skillSet - 1)
+        {
+            int[] condition = new int[3];
+            for(int i = 0; i < condition.Length; i++)
+            {
+                condition[i] = players[playerIdx].soulData.actCondition[level][i] + players[playerIdx].soulData._skill.condition[level][i];
+            }
 
-	public void ShowData(){
+            return condition;
+        }
+        else {
+            return (int[])players[playerIdx].soulData.actCondition[level].Clone();
+        }
+    }
+
+
+    public void ShowData(){
 		foreach (ChessData data in players) {
 			foreach (KeyValuePair<string, int> kv in data.soulData.abilitys) {
 					Debug.Log (data.soulData.name+" : "+kv.Key + " : " + kv.Value);

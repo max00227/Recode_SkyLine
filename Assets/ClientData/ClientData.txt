@@ -27,7 +27,7 @@
 		{"id":9,"name":"狂暴化","detail":0,"CharaDetail":"不分敵我隨機攻擊，","EnemyDetail":0,"EffectType":9,"CharaStatus":4,"EnemyStatus":0,"ChgAttri":0,"StatusParam":{"Atk":[20,40,60,80,100],"Def":[-20,-20,-20,-20,-20]},"RmType":0,"RmParam":5,"ConvertType":2,"CanRemove":1,"ImmunityType":1}
 	],
 	"Rule":[
-		{"id":100001,"Target":0,"Rule":[11,30,0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0},
+		{"id":100001,"Target":0,"Rule":[11,30,0],"EffectType":0,"Effect":[4],"Energe":0,"ConvType":0},
 		{"id":100002,"Target":1,"Rule":[0],"EffectType":1,"Effect":[0],"Energe":0,"ConvType":0},
 		{"id":100003,"Target":0,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0},
 		{"id":100004,"Target":1,"Rule":[0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0},
@@ -44,27 +44,27 @@
 		{"id":100015,"Target":0,"Rule":[0,0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0}
 	],
 	"Skill":[
-		{"id":300001,"name":"格子數含以上(職業){30}","detail":"，格子數含以上(職業){30}","Type":2,"CD":15,"LaunchType":0,"Round":1,"rule_id":[100001],"isOr":1,"hasAnim":0},
-		{"id":300002,"name":"無","detail":"，無","Type":2,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100002],"isOr":1,"hasAnim":0},
-		{"id":300003,"name":"無","detail":"，無","Type":2,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100003],"isOr":1,"hasAnim":0},
-		{"id":300004,"name":"無","detail":"，無","Type":2,"CD":7,"LaunchType":0,"Round":1,"rule_id":[100004],"isOr":1,"hasAnim":0},
-		{"id":300005,"name":"無","detail":"，無","Type":2,"CD":10,"LaunchType":0,"Round":1,"rule_id":[100005],"isOr":1,"hasAnim":0},
-		{"id":100001,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100006],"isOr":1,"hasAnim":0},
-		{"id":100002,"name":"無","detail":"，無","Type":0,"CD":0,"LaunchType":0,"Round":0,"rule_id":[100007],"isOr":1,"hasAnim":0},
-		{"id":200003,"name":"無","detail":"，無","Type":1,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100008],"isOr":1,"hasAnim":0},
-		{"id":200004,"name":"無","detail":"，無","Type":1,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100009],"isOr":1,"hasAnim":0},
-		{"id":200005,"name":"無","detail":"，無","Type":1,"CD":0,"LaunchType":1,"Round":0,"rule_id":[100010],"isOr":1,"hasAnim":0}
+		{"id":100001,"name":"警戒解除","detail":"格子數含以上(職業){30}，警戒解除","Type":0,"CD":0,"Round":0,"Condition":[[0,-1,0],[0,0,0],[0,0,0]],"rule_id":[100001],"isOr":1,"hasAnim":0},
+		{"id":100002,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100002],"isOr":1,"hasAnim":0},
+		{"id":100003,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100003],"isOr":1,"hasAnim":0},
+		{"id":100004,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100004],"isOr":1,"hasAnim":0},
+		{"id":100005,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100005],"isOr":1,"hasAnim":0},
+		{"id":100001,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100006],"isOr":1,"hasAnim":0},
+		{"id":100002,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100007],"isOr":1,"hasAnim":0},
+		{"id":100003,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100008],"isOr":1,"hasAnim":0},
+		{"id":100004,"name":"無","detail":"無，無","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100009],"isOr":1,"hasAnim":0},
+		{"id":100005,"name":"回血{}","detail":"無，回血{}","Type":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100010],"isOr":1,"hasAnim":0}
 	],
 	"Soul":[
 		{"id":114001,"name":"惡鬼","detail":"劍＋暗","soulType":0,"rank":4,"Job":0,"Ethnicity":7,"Attributes":6,"Ability":{"Atk":242,"Def":26,"mAtk":76,"mDef":35,"Hp":704,"Cri":14},"Act":[[50,4,0,50,1],[100,5,0,50,1],[180,5,0,50,1]],"ActCondition":[[3,1,0],[4,2,0],[4,0,3]],"Skill":100001},
-		{"id":114002,"name":"精靈","detail":"拳＋光","soulType":0,"rank":4,"Job":1,"Ethnicity":3,"Attributes":5,"Ability":{"Atk":121,"Def":55,"mAtk":41,"mDef":39,"Hp":880,"Cri":18},"Act":[[50,7,0,0,1],[125,3,0,70,1],[150,5,0,70,1]],"ActCondition":[[5,0,0],[5,0,2],[4,0,4]],"Skill":100002},
-		{"id":114003,"name":"人","detail":"盾＋無","soulType":0,"rank":4,"Job":2,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":70,"Def":106,"mAtk":35,"mDef":86,"Hp":1679,"Cri":1},"Act":[[100,1,0,0,1],[200,2,0,70,1],[400,1,0,50,1]],"ActCondition":[[3,3,0],[4,5,0],[6,5,0]],"Skill":100003},
-		{"id":114004,"name":"機器人","detail":"弓＋無","soulType":0,"rank":4,"Job":3,"Ethnicity":5,"Attributes":0,"Ability":{"Atk":73,"Def":25,"mAtk":60,"mDef":74,"Hp":821,"Cri":10},"Act":[[100,2,0,0,1],[200,3,0,80,1],[400,2,0,50,1]],"ActCondition":[[4,2,0],[5,0,2],[5,5,0]],"Skill":100004},
-		{"id":114005,"name":"光靈","detail":"杖＋光","soulType":0,"rank":4,"Job":4,"Ethnicity":6,"Attributes":5,"Ability":{"Atk":37,"Def":8,"mAtk":236,"mDef":141,"Hp":367,"Cri":6},"Act":[[150,3,6,6,1],[250,1,6,70,2],[325,1,6,90,2]],"ActCondition":[[6,0,0],[5,0,3],[7,0,4]],"Skill":100005},
-		{"id":214001,"name":"神","detail":"神","soulType":1,"rank":4,"Job":0,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":440,"Def":92,"mAtk":367,"mDef":132,"Hp":5280,"Cri":8},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
-		{"id":214002,"name":"獸","detail":"獸","soulType":1,"rank":4,"Job":1,"Ethnicity":5,"Attributes":0,"Ability":{"Atk":405,"Def":187,"mAtk":73,"mDef":55,"Hp":7040,"Cri":25},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
-		{"id":214003,"name":"岩","detail":"岩","soulType":1,"rank":4,"Job":2,"Ethnicity":4,"Attributes":0,"Ability":{"Atk":147,"Def":334,"mAtk":59,"mDef":257,"Hp":15840,"Cri":1},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
-		{"id":214004,"name":"魔","detail":"魔","soulType":1,"rank":4,"Job":3,"Ethnicity":2,"Attributes":0,"Ability":{"Atk":403,"Def":33,"mAtk":275,"mDef":110,"Hp":2464,"Cri":19},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
-		{"id":214005,"name":"龍","detail":"龍","soulType":1,"rank":4,"Job":4,"Ethnicity":3,"Attributes":0,"Ability":{"Atk":128,"Def":31,"mAtk":411,"mDef":246,"Hp":3080,"Cri":8},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0}
+		{"id":114002,"name":"精靈","detail":"拳＋光","soulType":0,"rank":4,"Job":1,"Ethnicity":3,"Attributes":5,"Ability":{"Atk":121,"Def":55,"mAtk":41,"mDef":39,"Hp":880,"Cri":18},"Act":[[50,7,0,70,1],[125,3,0,70,1],[150,5,0,70,1]],"ActCondition":[[5,0,0],[5,0,2],[4,0,4]],"Skill":100002},
+		{"id":114003,"name":"人","detail":"盾＋無","soulType":0,"rank":4,"Job":2,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":70,"Def":106,"mAtk":35,"mDef":86,"Hp":1679,"Cri":1},"Act":[[100,1,0,100,1],[200,2,0,70,1],[400,1,0,50,1]],"ActCondition":[[3,3,0],[4,5,0],[6,5,0]],"Skill":100003},
+		{"id":114004,"name":"機器人","detail":"弓＋無","soulType":0,"rank":4,"Job":3,"Ethnicity":5,"Attributes":0,"Ability":{"Atk":73,"Def":25,"mAtk":60,"mDef":74,"Hp":821,"Cri":10},"Act":[[100,2,0,60,1],[200,3,0,80,1],[400,2,0,50,1]],"ActCondition":[[4,2,0],[5,0,2],[5,5,0]],"Skill":100004},
+		{"id":114005,"name":"光靈","detail":"杖＋光","soulType":0,"rank":4,"Job":4,"Ethnicity":6,"Attributes":5,"Ability":{"Atk":37,"Def":8,"mAtk":236,"mDef":141,"Hp":367,"Cri":6},"Act":[[150,3,6,80,1],[250,1,6,70,2],[325,1,6,90,2]],"ActCondition":[[5,0,1],[4,0,4],[5,0,6]],"Skill":100005},
+		{"id":214001,"name":"神","detail":"神","soulType":1,"rank":4,"Job":0,"Ethnicity":1,"Attributes":0,"Ability":{"Atk":616,"Def":92,"mAtk":513,"mDef":132,"Hp":5280,"Cri":8},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
+		{"id":214002,"name":"獸","detail":"獸","soulType":1,"rank":4,"Job":1,"Ethnicity":5,"Attributes":0,"Ability":{"Atk":567,"Def":187,"mAtk":103,"mDef":55,"Hp":7040,"Cri":25},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
+		{"id":214003,"name":"岩","detail":"岩","soulType":1,"rank":4,"Job":2,"Ethnicity":4,"Attributes":0,"Ability":{"Atk":205,"Def":334,"mAtk":82,"mDef":257,"Hp":15840,"Cri":1},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
+		{"id":214004,"name":"魔","detail":"魔","soulType":1,"rank":4,"Job":3,"Ethnicity":2,"Attributes":0,"Ability":{"Atk":565,"Def":33,"mAtk":385,"mDef":110,"Hp":2464,"Cri":19},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0},
+		{"id":214005,"name":"龍","detail":"龍","soulType":1,"rank":4,"Job":4,"Ethnicity":3,"Attributes":0,"Ability":{"Atk":180,"Def":31,"mAtk":575,"mDef":246,"Hp":3080,"Cri":8},"Act":[[100,1,0,100,0]],"ActCondition":[[0,0,0]],"Skill":0}
 	]
 }

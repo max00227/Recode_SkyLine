@@ -3,5 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyLargeData : MonoBehaviour {
-	public System.Collections.Generic.List<TeamLargeData> TeamData { get; set; }
+    [Newtonsoft.Json.JsonProperty("Team")]
+	public System.Collections.Generic.List<TeamLargeData> teams { get; set; }
 }

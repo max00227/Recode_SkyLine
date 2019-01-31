@@ -338,6 +338,7 @@ public class FightUIController : MonoBehaviour {
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
+            Debug.Log(damageData.hpRatio[damageIdx]);
             uniteHpBar.SetBar(damageData.hpRatio[damageIdx], true, false);
             uniteHpBar.OnRun();
         }
@@ -1089,7 +1090,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void UseSkill(int idx){
-		skillController.UseSkill (idx);
+		//skillController.UseSkill (idx);
 	}
 
 	public void OnSkillCDEnd(int charaIdx){
