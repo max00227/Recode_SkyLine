@@ -1174,6 +1174,7 @@ public class FightUIController : MonoBehaviour {
 		else {
 			enemyStatus.Remove (idx);
 			enemyButton [idx].SetEnable (false, true);
+            SetUnLockUI(idx);
 		}
 	}
 

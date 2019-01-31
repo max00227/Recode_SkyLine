@@ -188,7 +188,7 @@ public class GroundController : MonoBehaviour
             _prevType = _groundType;
         }
 
-        if ((int)_groundType == 0)
+        if (_groundType == GroundType.None ||_groundType == GroundType.Caution)
         {
             _groundType = GroundType.Copper;
             ChangeSprite(_groundType, true);
@@ -196,12 +196,12 @@ public class GroundController : MonoBehaviour
         }
         else
         {
-            if ((int)_groundType == 1)
+            if (_groundType == GroundType.Copper)
             {
                 _groundType = GroundType.Silver;
                 plusGroundType.Invoke(_groundType, useEnergy);
             }
-            else if ((int)_groundType == 2)
+            else if (_groundType == GroundType.Silver)
             {
                 _groundType = GroundType.gold;
                 plusGroundType.Invoke(_groundType, useEnergy);

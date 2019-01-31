@@ -969,6 +969,7 @@ public class FightController : MonoBehaviour {
 	/// <param name="count">Count.</param>
 	public void SetResetRatio(int count){
 		resetRatio = Mathf.Pow (1.5f, count);
+        ResetGround();
 	}
 
 	private enum AccChangeType{
@@ -1185,6 +1186,7 @@ public class FightController : MonoBehaviour {
         {
             players[i].condition = SetCondition(i, 0);
             players[i].act = null;
+            fightUIController.SetButtonCondition(i, players[i].condition, true);
         }
     }
 
