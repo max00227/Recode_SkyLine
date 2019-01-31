@@ -614,6 +614,7 @@ public class FightController : MonoBehaviour {
 
         for (int i = 0; i < damageData.damage.Length; i++)
         {
+            Debug.Log(atk + " :" + ratioAJ + " , " + def);
             damageData.isCrt[i] = UnityEngine.Random.Range(0, 100) < crt;
 
             float crtRatio = Mathf.Pow(2f, Convert.ToInt32(damageData.isCrt[i]));
@@ -1104,22 +1105,26 @@ public class FightController : MonoBehaviour {
 	}
 
 
-	/// <summary>
-	/// 技能條件是否符合
-	/// <param name="idx">Index.</param>
-	/// <param name="ruleId">Rule identifier.</param>
-	/// <param name="param">Parameter.</param>
-	/// <param name="tType">T type.</param>
-	public bool OnRuleMeets(int idx ,int[] ruleId, string targetString){
-		if (targetString == "P") {
-			return OnCharacterRule (idx, ruleId);
-		} 
-		else {
-			return OnEnemyRule (idx, ruleId);
-		}
-	}
+    /// <summary>
+    /// 技能條件是否符合
+    /// <param name="idx">Index.</param>
+    /// <param name="ruleId">Rule identifier.</param>
+    /// <param name="param">Parameter.</param>
+    /// <param name="tType">T type.</param>
+    public bool OnRuleMeets(int idx, int[] ruleId, string targetString)
+    {
+        if (targetString == "P")
+        {
+            return playersActLevel[idx] >= teamData.member[idx].skillSet - 1;
+            //return OnEnemyRule(idx, ruleId);
+        }
+        else
+        {
+            return OnEnemyRule(idx, ruleId);
+        }
+    }
 
-	public bool OnCharacterRule(int idx ,int[] ruleId){
+    public bool OnCharacterRule(int idx ,int[] ruleId){
 		if (playersActLevel[idx] > 0 && players [idx].soulData.abilitys["Hp"]>0) {
             switch (ruleId[0])
             {

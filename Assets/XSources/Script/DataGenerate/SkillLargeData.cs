@@ -5,7 +5,10 @@ namespace model.data{
 		[Newtonsoft.Json.JsonProperty("type")]
 		public System.Int32 type;
 
-		[Newtonsoft.Json.JsonProperty("CD")]
+        [Newtonsoft.Json.JsonProperty("LaunchType")]
+        public System.Int32 launchType;
+
+        [Newtonsoft.Json.JsonProperty("CD")]
 		public System.Int32? cdTime;
 
         [Newtonsoft.Json.JsonProperty("Condition")]

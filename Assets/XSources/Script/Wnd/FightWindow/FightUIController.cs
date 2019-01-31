@@ -7,6 +7,7 @@ using model.data;
 using System;
 using System.Linq;
 using UnityEngine.Profiling;
+using TMPro;
 
 public class FightUIController : MonoBehaviour {
 	[SerializeField]
@@ -273,6 +274,13 @@ public class FightUIController : MonoBehaviour {
 
         foreach (FightItemButton button in playerButton) {
             button.SetMinus(conditionDown);
+        }
+        if (usedEnergy > energe)
+        {
+            energyNum.GetComponent<TextMeshProUGUI>().color = Color.red;
+        }
+        else {
+            energyNum.GetComponent<TextMeshProUGUI>().color = Color.white;
         }
     }
 
@@ -1052,18 +1060,18 @@ public class FightUIController : MonoBehaviour {
 	public void SetLockUI(LinkedList<int> order){
 		if (order.Count == 0) {
 			for (int i = 0; i < enemyButton.Length; i++) {
-				enemyButton [i].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
+				enemyButton [i].transform.GetChild (0).GetComponent<TextMeshProUGUI> ().text = string.Empty;
 			}
 		} 
 		else {
 			for (int i = 0; i < order.Count; i++) {
-				enemyButton [order.ElementAt (i)].transform.GetChild (0).GetComponent<Text> ().text = (i + 1).ToString ();
+				enemyButton [order.ElementAt (i)].transform.GetChild (0).GetComponent<TextMeshProUGUI> ().text = (i + 1).ToString ();
 			}
 		}
 	}
 
 	public void SetUnLockUI(int idx){
-		enemyButton [idx].transform.GetChild (0).GetComponent<Text> ().text = string.Empty;
+		enemyButton [idx].transform.GetChild (0).GetComponent<TextMeshProUGUI> ().text = string.Empty;
 	}
 
     public void SetButtonCondition(int idx, int[] condition, bool isInit, int? level = null) {

@@ -11,7 +11,7 @@ public class SkillController : MonoBehaviour {
 	[SerializeField]
 	private FightUIController fightUIController;
 
-	/*public delegate void OnTriggerComplete();
+	public delegate void OnTriggerComplete();
 	public OnTriggerComplete onTriggerComplete;
 
 	[HideInInspector]
@@ -40,10 +40,10 @@ public class SkillController : MonoBehaviour {
 
 
     private ChessData mainOrgData;
-	private ChessData mainTargetData;*/
+	private ChessData mainTargetData;
 
 	public void SetData(SoulLargeData[] playerData, SoulLargeData[] enemyData){
-		/*playerCount = playerData.Length;
+		playerCount = playerData.Length;
 		monsterCount = enemyData.Length;
 		playerTriggerSkill = new Dictionary<int, SkillLargeData> ();
 		playerRoundSkill = new Dictionary<int, SkillLargeData> ();
@@ -54,7 +54,7 @@ public class SkillController : MonoBehaviour {
 		enemyPermanentSkill = new Dictionary<int, SkillLargeData> ();
 
 
-		for (int i = 0; i < playerCount; i++) {
+		/*for (int i = 0; i < playerCount; i++) {
 			if (playerData [i]._skill != null) {
 				if (playerData [i]._skill.type == 1) {
 					if (playerData [i]._skill.type == 0) {
@@ -63,16 +63,13 @@ public class SkillController : MonoBehaviour {
 						playerRoundSkill.Add (i, playerData [i]._skill);
 					}
 				} 
-				else if (playerData [i]._skill.type == 0) {					
-					playerPermanentSkill.Add (i, playerData [i]._skill);
-				} 
 				else {
 					playerNormalSkill.Add (i, playerData [i]._skill);
 				}
 			} 
-		}
+		}*/
 
-		for (int i = 0; i < monsterCount; i++) {
+		/*for (int i = 0; i < monsterCount; i++) {
 			if (enemyData[i]._skill != null)
             {
 				if (enemyData [i]._skill.type == 1) {
@@ -88,17 +85,6 @@ public class SkillController : MonoBehaviour {
 				}
 			}
 		}*/
-	}
-
-	/*public void OnPermanentSkill(){
-		foreach (var value in playerPermanentSkill.Values) {
-            mainTarget = new string[2] { "P", "" };
-			OnUseSkill (value);
-		}
-		foreach (var value in enemyPermanentSkill.Values) {
-			mainTarget = new string[2] { "E", "" };
-			OnUseSkill (value);
-		}
 	}
 
 	/// <summary>
@@ -189,16 +175,7 @@ public class SkillController : MonoBehaviour {
 		if (data.isOr) {
 			for (int i = 0; i < data.ruleData.Count; i++) {
 				if (meets [i] == true) {
-					if (mainTarget [0] == "E"
-						|| (mainTarget [0] == "P" && fightUIController.GetEnerge (data.ruleData [i].energe) == true)) {
-						Debug.Log ("Launch Success");
-						OnEffectTarget (AddParameter (false, data.ruleData [i], parameter));
-					} 
-					else {
-						if (fightUIController.GetEnerge (data.ruleData [i].energe) == false) {
-							Debug.Log("Energe Not Worth");
-						}
-					}
+					OnEffectTarget (AddParameter (false, data.ruleData [i], parameter));
 				}
 			}
 		} 
@@ -512,7 +489,7 @@ public class SkillController : MonoBehaviour {
 				Debug.Log (data.id + " , " + data.abilitys.Count);
 			}
 		}
-	}*/
+	}
 }
 /// <summary>
 /// Rule type.
