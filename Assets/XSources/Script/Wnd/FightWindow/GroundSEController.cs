@@ -59,8 +59,4 @@ public class GroundSEController : MonoBehaviour
     {
         light.gameObject.SetActive(false);
     }
-
-    public void OpenBonus(bool isOpen) {
-        bonusShining.SetActive(isOpen);
-    }
 }

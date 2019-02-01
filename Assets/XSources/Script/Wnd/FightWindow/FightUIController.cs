@@ -287,6 +287,7 @@ public class FightUIController : MonoBehaviour {
 
 	public void OnFight(){
         MonsterCdDown();
+        RoundEnd();
 		fightController.FightStart (lockCount != 0);
 	}
 

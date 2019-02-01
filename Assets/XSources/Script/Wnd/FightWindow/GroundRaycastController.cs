@@ -82,7 +82,6 @@ public class GroundRaycastController : MonoBehaviour {
             }
         }
 
-        OnBonus();
     }
 
     public void RoundEnd()
@@ -121,24 +120,8 @@ public class GroundRaycastController : MonoBehaviour {
             gc.ChangeType(true, false);
 		}
 
-        OnBonus();
 		return true;
 	}
-
-    public void OnBonus()
-    {
-        int randomIdx = UnityEngine.Random.Range(0, allGcs.Length);
-
-        while (!(allGcs[randomIdx]._groundType != GroundType.None || allGcs[randomIdx]._groundType != GroundType.Caution))
-        {
-            randomIdx = UnityEngine.Random.Range(0, allGcs.Length);
-        }
-
-        for (int i = 0; i < allGcs.Length; i++)
-        {
-            allGcs[i].OpenBonus(i == randomIdx);
-        }
-    }
 
     [Serializable]
 	public struct DirectGroundController{

@@ -285,10 +285,6 @@ public class GroundController : MonoBehaviour
         groundSEController.CloseLight();
     }
 
-    public void OpenBonus(bool isOpen) {
-        groundSEController.OpenBonus(isOpen);
-    }
-
     public void SetTag()
     {
         RaycastHit2D[] hits;

@@ -614,7 +614,6 @@ public class FightController : MonoBehaviour {
 
         for (int i = 0; i < damageData.damage.Length; i++)
         {
-            Debug.Log(atk + " :" + ratioAJ + " , " + def);
             damageData.isCrt[i] = UnityEngine.Random.Range(0, 100) < crt;
 
             float crtRatio = Mathf.Pow(2f, Convert.ToInt32(damageData.isCrt[i]));
