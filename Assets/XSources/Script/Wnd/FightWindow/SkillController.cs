@@ -115,7 +115,7 @@ public class SkillController : MonoBehaviour {
 		foreach (KeyValuePair<int, SkillLargeData> kv in playerRoundSkill) {
 			mainOrgIdx = kv.Key;
 			mainOrgData = fightController.GetChessData ("P", mainOrgIdx);
-			mainOrgRadio = fightController.GetRadio ("P", mainOrgIdx);
+			//mainOrgRadio = fightController.GetRadio ("P", mainOrgIdx);
 			mainTarget = new string[2]{"P",""};
 			OnSkillSelfRule (kv.Value);
 		}
@@ -123,7 +123,7 @@ public class SkillController : MonoBehaviour {
 		foreach (KeyValuePair<int, SkillLargeData> kv in enemyRoundSkill) {
 			mainOrgIdx = kv.Key;
 			mainOrgData = fightController.GetChessData ("E", mainOrgIdx);
-			mainOrgRadio = fightController.GetRadio ("E", mainOrgIdx);
+			//mainOrgRadio = fightController.GetRadio ("E", mainOrgIdx);
 			mainTarget = new string[2]{"E",""};
 			OnSkillSelfRule (kv.Value);
 		}

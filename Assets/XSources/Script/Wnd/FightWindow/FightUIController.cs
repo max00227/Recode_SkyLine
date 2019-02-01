@@ -354,9 +354,7 @@ public class FightUIController : MonoBehaviour {
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
-            Debug.Log(damageData.hpRatio[damageIdx]);
-            uniteHpBar.SetBar(damageData.hpRatio[damageIdx], true, false);
-            uniteHpBar.OnRun();
+            SetUniteHp(damageData.hpRatio[damageIdx], false);
         }
         else
         {
@@ -470,6 +468,10 @@ public class FightUIController : MonoBehaviour {
 
 	}
 
+    public void SetUniteHp(float hpRatio, bool isUp) {
+        uniteHpBar.SetBar(hpRatio, true, isUp);
+        uniteHpBar.OnRun();
+    }
 
 	public void OnPressUp(){
 		charaDetail = false;
@@ -731,6 +733,7 @@ public class FightUIController : MonoBehaviour {
                                 gc.SetType();
                             }
 
+                            fightController.OnHealing(healRatio);
                             ResetStatus();
                             ResetTemple();
                         }
@@ -965,6 +968,7 @@ public class FightUIController : MonoBehaviour {
 		startGc = null;
 		endGc = null;
         usedEnergy = 0;
+        healRatio = 0;
 	}
 
 	public void GetHasProtect(bool isHas){

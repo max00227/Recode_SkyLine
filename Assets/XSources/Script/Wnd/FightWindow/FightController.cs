@@ -1208,23 +1208,17 @@ public class FightController : MonoBehaviour {
 		}
 	}
 
-	public int GetRadio(string targetString, int index){
-        if (targetString == "P"){
-            return 0;
-		} 
-		else {
-			return 10000;
-		}
-	}
+    public void OnHealing(int healRatio) {
+        int healParam = 0;
+        for (int i = 0;i<players.Length;i++) {
+            if ((players[i].soulData.job == 2 || players[i].soulData.job == 4) && playersActLevel[i]>0) {
+                healParam += players[i].soulData.abilitys["Spc"] * healRatio;
+            }
+        }
 
-	public int GetJob(string targetString, int index){
-        if (targetString == "P"){
-            return players [index].soulData.job;
-		} 
-		else {
-			return enemys [index].soulData.job;
-		}
-	}
+        uniteHp += healParam;
+        fightUIController.SetUniteHp((float)uniteHp / (float)uniteFullHp, true);
+    }
 
 
 	#region Skill
