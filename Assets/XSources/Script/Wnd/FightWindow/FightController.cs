@@ -465,13 +465,15 @@ public class FightController : MonoBehaviour {
 
         int targetDef = mainTarget[1] == "P" ? uniteDef : mainTargetChess.soulData.abilitys[titleKey + "Def"];
 
+        int crt = (mainOrgChess.soulData.job != 2 && mainOrgChess.soulData.job != 4) ? mainOrgChess.soulData.abilitys["Spc"] : 0;
+
         damageData = CalDamage (
 			mainOrgChess.soulData.abilitys [titleKey + "Atk"] * orgChanged / 100 * orgStatusRatio / 100,
             targetDef * targetChanged / 100 * targetStatusRatio / 100, 
 			mainOrgChess.act, 
 			attriJob,
-			mainOrgChess.soulData.abilitys ["Cri"], 
-			isAll
+            crt,
+            isAll
 		);
 		damageData.damageType = dType;
 
@@ -1407,18 +1409,9 @@ public class FightController : MonoBehaviour {
 
 
     public void ShowData(){
-		foreach (ChessData data in players) {
-			foreach (KeyValuePair<string, int> kv in data.soulData.abilitys) {
-					Debug.Log (data.soulData.name+" : "+kv.Key + " : " + kv.Value);
-			}
-		}
-
-        foreach (ChessData data in enemys)
-        {
-            foreach (KeyValuePair<string, int> kv in data.soulData.abilitys)
-            {
-                Debug.Log(data.soulData.name + " : " + kv.Key + " : " + kv.Value);
-            }
+        Debug.Log(uniteHp);
+        foreach (ChessData cd in players) {
+            Debug.Log (cd.soulData.abilitys["Spc"]);
         }
 
     }

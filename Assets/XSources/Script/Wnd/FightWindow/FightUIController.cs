@@ -44,6 +44,9 @@ public class FightUIController : MonoBehaviour {
     [SerializeField]
     Button checkButton;
 
+    [SerializeField]
+    TweenColor healingIcon;
+
 	bool isResetGround = false;
 
 	private int[] monsterCdTimes = new int[5];
@@ -123,6 +126,8 @@ public class FightUIController : MonoBehaviour {
 	List<RaycastData> newRaycastData;
 
     int round;
+
+    int healRatio;
 
 	#region GroundShow 格子轉換效果
 	[SerializeField]
@@ -252,7 +257,7 @@ public class FightUIController : MonoBehaviour {
     }
 
     #region ShowView
-    private void OnPlusGroundType(GroundType groundType, bool useEnergy) {
+    private void OnPlusGroundType(GroundType groundType, bool isHealing, bool useEnergy) {
         if (useEnergy) {
             if (groundType == GroundType.Copper)
             {
@@ -262,6 +267,8 @@ public class FightUIController : MonoBehaviour {
                 usedEnergy += 1;
             }
         }
+
+        healRatio += Convert.ToInt32(isHealing);
 
         conditionDown[(int)groundType - 1]++;
 
@@ -649,7 +656,9 @@ public class FightUIController : MonoBehaviour {
 		GroundController checkGc = gc;
         usedEnergy = 0;
         conditionDown = new int[3];
-		Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
+        healRatio = 0;
+        healingIcon.gameObject.SetActive(false);
+        Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
         dirIdx = IsCorrectDir(dir);
 
 
@@ -671,7 +680,13 @@ public class FightUIController : MonoBehaviour {
             //endGc.OnChangeType(false, dirIdx);
 
             spaceCorrect = true;
-		}
+
+            if (healRatio > 0)
+            {
+                healingIcon.PlayForward();
+                healingIcon.gameObject.SetActive(true);
+            }
+        }
 		else
 		{
 			TouchError ();

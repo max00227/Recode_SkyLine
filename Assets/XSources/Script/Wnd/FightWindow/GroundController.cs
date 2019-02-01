@@ -24,7 +24,8 @@ public class GroundController : MonoBehaviour
     [HideInInspector]
     public bool raycasted;
 
-    GroundType defaultType;
+    [HideInInspector]
+    public GroundType defaultType;
 
     bool isChanged;
 
@@ -35,7 +36,7 @@ public class GroundController : MonoBehaviour
     private GroundType _roundPrevType;
     int goldRatio = 75;
 
-    public delegate void PlusGroundType(GroundType groundType, bool useEnergy);
+    public delegate void PlusGroundType(GroundType groundType,bool isHealing, bool useEnergy);
 
     public PlusGroundType plusGroundType;
 
@@ -47,6 +48,8 @@ public class GroundController : MonoBehaviour
     public int groundRow;
 
     public GroundSEController groundSEController;
+
+    public bool isHealing;
 
 
     [HideInInspector]
@@ -110,6 +113,7 @@ public class GroundController : MonoBehaviour
     {
         if (isChara) {
             _groundType = GroundType.Chara;
+            isHealing = false;
         }
         _prevType = _groundType;
     }
@@ -194,19 +198,19 @@ public class GroundController : MonoBehaviour
         {
             _groundType = GroundType.Copper;
             ChangeSprite(_groundType, true);
-            plusGroundType.Invoke(_groundType, useEnergy);
+            plusGroundType.Invoke(_groundType, isHealing, useEnergy);
         }
         else
         {
             if (_groundType == GroundType.Copper)
             {
                 _groundType = GroundType.Silver;
-                plusGroundType.Invoke(_groundType, useEnergy);
+                plusGroundType.Invoke(_groundType, isHealing, useEnergy);
             }
             else if (_groundType == GroundType.Silver)
             {
                 _groundType = GroundType.gold;
-                plusGroundType.Invoke(_groundType, useEnergy);
+                plusGroundType.Invoke(_groundType, isHealing, useEnergy);
             }
             isChanged = true;
         }
@@ -283,6 +287,11 @@ public class GroundController : MonoBehaviour
     public void CloseLight()
     {
         groundSEController.CloseLight();
+    }
+
+    public void SetHealing(bool isHeal) {
+        isHealing = isHeal;
+        groundSEController.SetHealing(isHeal);
     }
 
     public void SetTag()

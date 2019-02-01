@@ -82,6 +82,7 @@ public class GroundRaycastController : MonoBehaviour {
             }
         }
 
+        SetHealGround();
     }
 
     public void RoundEnd()
@@ -120,8 +121,33 @@ public class GroundRaycastController : MonoBehaviour {
             gc.ChangeType(true, false);
 		}
 
+        SetHealGround();
 		return true;
 	}
+
+    private void SetHealGround(int randomCount = 5) {
+        List<GroundController> defualtNoneGcs = new List<GroundController>();
+        foreach (GroundController gc in allGcs)
+        {
+            if (gc.defaultType == GroundType.None && gc._groundType != GroundType.Chara)
+            {
+                defualtNoneGcs.Add(gc);
+            }
+        }
+
+        List<GroundController> healingGcs = DataUtil.RandomList(randomCount, defualtNoneGcs.ToArray(), defualtNoneGcs.Count);
+
+        foreach (GroundController gc in allGcs)
+        {
+            if (healingGcs.Contains(gc))
+            {
+                gc.SetHealing(true);
+            }
+            else {
+                gc.SetHealing(false);
+            }
+        }
+    }
 
     [Serializable]
 	public struct DirectGroundController{

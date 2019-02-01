@@ -15,8 +15,12 @@ public class ParameterConvert {
 		charaAbility.Add ("mAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
 		charaAbility.Add ("mDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
 		charaAbility.Add ("Hp", (int)Mathf.Ceil (data.abilitys["Hp"] * radio));
+        if (data.job == 2 || data.job == 4)
+        {
+            charaAbility.Add("Spc", (int)Mathf.Ceil(data.abilitys["Spc"] * radio));
+        }
 
-		return charaAbility;
+        return charaAbility;
 	}
 
 	public static Dictionary<string, int> GetEnemyAbility(SoulLargeData data,int monsterLv){
