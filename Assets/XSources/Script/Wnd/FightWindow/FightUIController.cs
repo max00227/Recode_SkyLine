@@ -91,7 +91,7 @@ public class FightUIController : MonoBehaviour {
 
 	List<ExtraRatioData> ExtraRatios;
 
-	List<GroundSEController> completeSe;
+	List<FightSEController> completeSe;
 
 	public FightItemButton[] playerButton;
 	Vector3[] playerButtonPos;
@@ -126,15 +126,15 @@ public class FightUIController : MonoBehaviour {
 
 	#region GroundShow 格子轉換效果
 	[SerializeField]
-	GroundSEController showGrounds;
+	FightSEController showGrounds;
 
 	[SerializeField]
 	Transform showGroup;
 
     int centerIdx;
 
-	Queue<GroundSEController> SEPool = new Queue<GroundSEController>();
-	Queue<GroundSEController> SEingPool = new Queue<GroundSEController>();
+	Queue<FightSEController> SEPool = new Queue<FightSEController>();
+	Queue<FightSEController> SEingPool = new Queue<FightSEController>();
 	#endregion
 
 	#region CharaButton 角色選去按鈕用
@@ -205,7 +205,7 @@ public class FightUIController : MonoBehaviour {
 
         for (int i = 0; i < showItemCount; i++)
         {
-            GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
+            FightSEController showItem = Instantiate(showGrounds) as FightSEController;
             showItem.GetComponent<RectTransform>().SetParent(showGroup);
             showItem.transform.localPosition = Vector3.zero;
             showItem.transform.localScale = Vector3.one;
@@ -307,7 +307,7 @@ public class FightUIController : MonoBehaviour {
 
             for (int j = 0; j < allDamage[i].damage.Length; j++)
             {
-                GroundSEController gse = SEPool.Dequeue();
+                FightSEController gse = SEPool.Dequeue();
                 gse.SetAttackShow(orgPos, targetPos, j, target, allDamage[i]);
                 gse.onRecycleDamage = ShowFightEnd;
                 gse.gameObject.SetActive(true);
@@ -342,7 +342,7 @@ public class FightUIController : MonoBehaviour {
 
 
 
-	private void ShowFightEnd(GroundSEController gse, int damageIdx, DamageData damageData, FightItemButton target, Vector3 tPos){
+	private void ShowFightEnd(FightSEController gse, int damageIdx, DamageData damageData, FightItemButton target, Vector3 tPos){
 		gse.gameObject.SetActive (false);
         if (damageData.tType[1] == "P")
         {
@@ -363,7 +363,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 
-	private void ShowDamageEnd(GroundSEController gse){
+	private void ShowDamageEnd(FightSEController gse){
 		gse.gameObject.SetActive (false);
 		SEPool.Enqueue (gse);
 		gse.CloseSE ();
@@ -556,7 +556,7 @@ public class FightUIController : MonoBehaviour {
 	{
 		spCount++;
 
-		completeSe = new List<GroundSEController> ();
+		completeSe = new List<FightSEController> ();
 
 		ChangeStatus (FightStatus.FightStart);
 
@@ -1089,7 +1089,7 @@ public class FightUIController : MonoBehaviour {
 		showItemCount += 16;
 		for (int i = 0; i < 16; i++)
 		{
-			GroundSEController showItem = Instantiate(showGrounds) as GroundSEController;
+			FightSEController showItem = Instantiate(showGrounds) as FightSEController;
 			showItem.GetComponent<RectTransform>().SetParent(showGroup);
 			showItem.transform.localPosition = Vector3.zero;
 			showItem.gameObject.SetActive (false);

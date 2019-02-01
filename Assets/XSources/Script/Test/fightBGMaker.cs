@@ -479,18 +479,15 @@ public class fightBGMaker : MonoBehaviour {
     {
         GameObject selGO = Selection.activeGameObject;
         GroundController[] uiGC = selGO.transform.GetChild(0).GetComponentsInChildren<GroundController>();
-        GroundController[] gc = selGO.transform.GetChild(2).GetComponentsInChildren<GroundController>();
-        Transform[] se = selGO.transform.GetChild(1).GetComponentsInChildren<Transform>();
+        GroundSEController[] gcSE = selGO.transform.GetChild(1).GetComponentsInChildren<GroundSEController>();
 
-
-
-        if (uiGC.Length == gc.Length)
+        Debug.Log(gcSE.Length);
+        if (uiGC.Length == gcSE.Length)
         {
-            for (int i = 0; i < gc.Length; i++)
+            for (int i = 0; i < gcSE.Length; i++)
             {
-                
-                uiGC[i].light = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetComponent<TweenColor>();
-                uiGC[i].colorLight = selGO.transform.GetChild(1).GetChild(i).GetChild(0).GetChild(0).GetComponent<TweenColor>();
+
+                uiGC[i].groundSEController = gcSE[i];
                 //gc[i].matchController = uiGC[i];
                 //uiGC[i].matchController = gc[i];
             }

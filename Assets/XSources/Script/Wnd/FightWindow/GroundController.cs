@@ -46,6 +46,8 @@ public class GroundController : MonoBehaviour
     
     public int groundRow;
 
+    public GroundSEController groundSEController;
+
 
     [HideInInspector]
     public enum ExtraType
@@ -271,40 +273,20 @@ public class GroundController : MonoBehaviour
 
     public void OpenLight(GroundType gType = GroundType.None, bool isShow = true)
     {
-        if (isShow)
-        {
-            light.Stop(Color.white);
-            colorLight.Stop(lightColor[(int)gType - 1]);
-            colorLight.SetFromAndTo(lightColor[(int)gType - 1], lightColor[(int)gType - 1] * colorTransparent);
-            light.SetFromAndTo(Color.white, colorTransparent);
-            light.PlayForward(0);
-            colorLight.PlayForward(0);
-        }
-        else
-        {
-            if (gType != GroundType.None)
-            {
-                colorLight.Stop(lightColor[(int)gType - 1]);
-            }
-            else {
-                colorLight.Stop(lightColor[(int)_groundType - 1]);
-            }
-            light.Stop(Color.white);
-            light.gameObject.SetActive(true);
-        }
+        groundSEController.OpenLight(lightColor[(int)gType - 1], colorTransparent, isShow, gType);
     }
 
     public void ResetTemple(int idx = 0) {
-        if (_groundType != GroundType.Caution && _groundType != GroundType.None && _groundType != GroundType.Chara)
-        {
-            light.PlayForward(idx);
-            colorLight.PlayForward(idx);
-        }
+        groundSEController.ResetTemple(_groundType, idx);
     }
 
     public void CloseLight()
     {
-        light.gameObject.SetActive(false);
+        groundSEController.CloseLight();
+    }
+
+    public void OpenBonus(bool isOpen) {
+        groundSEController.OpenBonus(isOpen);
     }
 
     public void SetTag()
