@@ -24,13 +24,14 @@ public class GroundController : MonoBehaviour
     [HideInInspector]
     public bool raycasted;
 
-    [HideInInspector]
+    //[HideInInspector]
     public GroundType defaultType;
 
     bool isChanged;
 
     public Sprite[] GetSprites;
 
+    [SerializeField]
     private GroundType _prevType = GroundType.None;
 
     private GroundType _roundPrevType;
@@ -64,6 +65,7 @@ public class GroundController : MonoBehaviour
     {
         constAngle = isPortrait == true ? 0 : 30;
         defaultType = _groundType;
+        _prevType = _groundType;
         raycasted = false;
     }
 
@@ -72,8 +74,11 @@ public class GroundController : MonoBehaviour
         if (init)
         {
             _groundType = defaultType;
+            _prevType = defaultType;
         }
         raycasted = false;
+        isChara = false;
+        isChanged = false;
         isChara = false;
         ResetSprite(_groundType);
     }

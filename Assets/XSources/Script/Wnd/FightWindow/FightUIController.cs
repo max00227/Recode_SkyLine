@@ -702,7 +702,11 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchUp(bool isTouch = false){
-		if (endCharaImage != null) {
+        if (startGc.defaultType == GroundType.Caution || (endGc!=null && endGc.defaultType == GroundType.Caution))
+        {
+            isResetGround = true;
+        }
+        if (endCharaImage != null) {
 			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 			if (result.Count > 0) {
 				foreach (var r in result) {
@@ -715,12 +719,6 @@ public class FightUIController : MonoBehaviour {
                         }
                         if (spaceCorrect == true)
                         {
-                            if ((int)r.gameObject.GetComponent<GroundController>()._groundType == 99)
-                            {
-                                isResetGround = true;
-                            }
-
-
                             energe = energe - usedEnergy;
                             SetEnergy();
 
@@ -969,6 +967,7 @@ public class FightUIController : MonoBehaviour {
 		endGc = null;
         usedEnergy = 0;
         healRatio = 0;
+        healingIcon.gameObject.SetActive(false);
 	}
 
 	public void GetHasProtect(bool isHas){
