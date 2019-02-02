@@ -13,3 +13,17 @@ D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Newto
 D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Newtonsoft.Json.xml
 D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\System.ValueTuple.xml
 D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\obj\Debug\ClientDataConverter2.csproj.CopyComplete
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Auth.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Auth.PlatformServices.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Core.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.PlatformServices.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Sheets.v4.dll
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.xml
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Auth.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Auth.xml
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Core.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Core.xml
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Sheets.v4.pdb
+D:\GAME\Recode_SkyLine\ClientDataConverter2\ClientDataConverter2\bin\Debug\Google.Apis.Sheets.v4.xml

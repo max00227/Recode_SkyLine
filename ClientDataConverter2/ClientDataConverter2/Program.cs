@@ -8,12 +8,29 @@ using CsvHelper;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
+using System.Threading;
 
 namespace ClientDataConverter2
 {
+
+
     class Program
     {
+        static string[] columnEnglish = new string[26]{ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
+        "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
+        static string spreadsheetId = "1kcz9hIEIW9F8_VubrquiD_ckHwtyF6l7EQYdLxvl6lo";
+
+
         static string wanted_path;
+
+        static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        static string ApplicationName = "Google Sheets API .NET Quickstart";
 
         static void Main(string[] args)
         {
@@ -21,7 +38,10 @@ namespace ClientDataConverter2
 
             File.WriteAllText(wanted_path + "/A.txt", wanted_path);
 
-            ClientDataMakerNew();
+            //ClientDataMakerNew();
+
+            ReadGoogleSheets();
+
         }
 
 
@@ -46,7 +66,171 @@ namespace ClientDataConverter2
                 textReader(path);
             }
 
-            ClientDataMakerNew();
+            //ClientDataMakerNew();
+            ReadGoogleSheets();
+        }
+
+        static public void ReadGoogleSheets() {
+            UserCredential credential;
+
+            using (var stream =
+                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            {
+                // The file token.json stores the user's access and refresh tokens, and is created
+                // automatically when the authorization flow completes for the first time.
+                string credPath = "token.json";
+                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    Scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(credPath, true)).Result;
+                Console.WriteLine("Credential file saved to: " + credPath);
+            }
+            var service = new SheetsService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = ApplicationName,
+            });
+
+            SpreadsheetsResource.ValuesResource.GetRequest request;
+            Dictionary<string, object> allData = new Dictionary<string, object>();
+            var sheetsRequest = service.Spreadsheets.Get(spreadsheetId);
+            var spreadsheet = sheetsRequest.Execute();
+            var sheetlist = spreadsheet.Sheets
+                            .OrderByDescending(s => s.Properties.Title);
+            List<string> sheetNames = new List<string>();
+            foreach (var sheet in sheetlist)
+            {
+                if (!sheet.Properties.Title.Contains("^"))
+                {
+                    sheetNames.Add(sheet.Properties.Title);
+                }
+            }
+            sheetNames.Sort();
+            foreach (string sheetName in sheetNames) {
+
+                request = service.Spreadsheets.Values.Get(spreadsheetId, string.Format("{0}!A1:Z20000", sheetName));
+                allData.Add(sheetName, SheetToDictionary(request));
+            }
+
+            string json = JsonConvert.SerializeObject(allData);
+            string jsonData = SortClientData(json);
+            File.WriteAllText(wanted_path + clientData + "/ClientData.txt", jsonData);
+        }
+
+        static public List<Dictionary<string, object>> SheetToDictionary(SpreadsheetsResource.ValuesResource.GetRequest request) {
+            ValueRange response = request.Execute();
+            IList<IList<Object>> values = response.Values;
+            List<string> columnTitle = new List<string>();
+            List<Dictionary<string, object>> rowContents = new List<Dictionary<string, object>>();
+            foreach (var v in values[0]) {
+                columnTitle.Add(v.ToString());
+            }
+            if (values != null && values.Count > 0)
+            {
+                for (int i = 1; i < values.Count; i++)
+                {
+                    Dictionary<string, object> contents = new Dictionary<string, object>();
+
+                    for (int j = 0; j < columnTitle.Count; j++)
+                    {
+                        try
+                        {
+                            contents.Add(columnTitle[j], Convert.ToInt32(values[i][j]));
+                        }
+                        catch
+                        {
+                            if (j < values[i].Count)
+                            {
+                                string content = values[i][j].ToString();
+                                if (content != string.Empty && content != null)
+                                {
+                                    if (content.Substring(0, 1) == "{" && content.Substring(content.Length - 1, 1) == "}")
+                                    {
+                                        string[] elements = content.Substring(1, content.Length - 2).Split(',');
+                                        if (elements[0].Contains(":"))
+                                        {
+                                            Dictionary<string, object> elementDic = new Dictionary<string, object>();
+                                            foreach (string element in elements)
+                                            {
+                                                string[] elementKv = element.Split(':');
+                                                if (elementKv[1] != null && elementKv[1] != string.Empty)
+                                                {
+                                                    try
+                                                    {
+                                                        elementDic.Add(elementKv[0].Replace("\"\"", "").ToString(), Convert.ToInt32(elementKv[1]));
+                                                    }
+                                                    catch {
+                                                        if (elementKv[1].Substring(0, 1) == "{" && elementKv[1].Substring(elementKv[1].Length - 1, 1) == "}")
+                                                        {
+                                                            string[] insides = elementKv[1].Substring(1, elementKv[1].Length - 2).Split('/');
+                                                            List<object> insideList = new List<object>();
+                                                            foreach (string inside in insides)
+                                                            {
+                                                                insideList.Add(Convert.ToInt32(inside));
+                                                            }
+                                                            elementDic.Add(elementKv[0].Replace("\"\"", "").ToString(), insideList);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            contents.Add(columnTitle[j], elementDic);
+
+                                        }
+                                        else
+                                        {
+                                            if (elements[0].Substring(0, 1) == "{" && elements[0].Substring(elements[0].Length - 1, 1) == "}")
+                                            {
+                                                List<List<object>> elementDoubleList = new List<List<object>>();
+                                                foreach (string element in elements)
+                                                {
+                                                    string[] insides = element.Substring(1, element.Length - 2).Split('/');
+                                                    List<object> insideList = new List<object>();
+                                                    foreach (string inside in insides)
+                                                    {
+                                                        insideList.Add(Convert.ToInt32(inside));
+                                                    }
+                                                    elementDoubleList.Add(insideList);
+                                                }
+                                                contents.Add(columnTitle[j], elementDoubleList);
+                                            }
+                                            else
+                                            {
+                                                List<object> elementList = new List<object>();
+                                                foreach (string element in elements)
+                                                {
+                                                    elementList.Add(Convert.ToInt32(element));
+                                                }
+                                                contents.Add(columnTitle[j], elementList);
+                                            }
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        contents.Add(columnTitle[j], content);
+                                    }
+                                }
+                                else
+                                {
+                                    contents.Add(columnTitle[j], null);
+                                }
+                            }
+                            else {
+                                contents.Add(columnTitle[j], null);
+                            }
+                        }
+                    }
+                    rowContents.Add(contents);
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No data found.");
+            }
+
+            return rowContents;
         }
 
         static public void textReader(string sourcePath)
@@ -145,10 +329,13 @@ namespace ClientDataConverter2
             }
 
             string json = JsonConvert.SerializeObject(clientDataDic);
+
+            Debug.WriteLine("Csv");
+            Debug.WriteLine(json);
             string jsonData = SortClientData(json);
 
 
-            if (File.Exists(clientDataTxt))
+            /*if (File.Exists(clientDataTxt))
             {
                 string[] bacFilePath = Directory.GetFiles(wanted_path + clientData + "/bac", "*.bac", SearchOption.TopDirectoryOnly);
 
@@ -158,7 +345,7 @@ namespace ClientDataConverter2
             File.Delete(wanted_path + clientData + "/ClientData.txt");
 
 
-            File.WriteAllText(wanted_path + clientData + "/ClientData.txt", jsonData);
+            File.WriteAllText(wanted_path + clientData + "/ClientData.txt", jsonData);*/
         }
 
         static string SortClientData(string jdata)
