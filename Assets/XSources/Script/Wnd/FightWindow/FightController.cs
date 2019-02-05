@@ -294,6 +294,7 @@ public class FightController : MonoBehaviour {
 	private void NormalFight(int selfIdx, bool isAll){
         //自動攻擊之敵人跳過盾職
 		bool ignore = false;
+        bool atkSuccess = false;
 		if (mainTarget[1] == "P"){
             if (cdTime[selfIdx] == 0)
             {
@@ -326,18 +327,12 @@ public class FightController : MonoBehaviour {
 
                     if (mainTargetChess.soulData.abilitys["Hp"] > 0)
                     {
-                        if (ignore && mainTargetChess.soulData.job == (int)Const.jobType.Shielder)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            OnDamage(FightDamageData(selfIdx, order[i], isAll));
-                        }
+                        OnDamage(FightDamageData(selfIdx, order[i], isAll));
+                        atkSuccess = true;
                     }
 
 
-                    if (!isAll)
+                    if ((!isAll && atkSuccess) || i == order.Length - 1)
                     {
                         break;
                     }
@@ -631,10 +626,20 @@ public class FightController : MonoBehaviour {
 
             int finalDef = mainOrgChess.hasStatus[(int)Status.UnDef] == true ? 0 : def;
 
-            int damage = Mathf.CeilToInt((atk * (act[0] / 100) * ratioAJ * resetRatio * crtRatio - finalDef));
-            //((Atk * randamRatio * ratio * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
+            int damage = 0;
+            if(isMiss == false)
+            {
+                if (act[0] == 999)
+                {
+                    damage = 999999999;
+                }
+                else {
+                    damage = Mathf.CeilToInt((atk * (act[0] / 100) * ratioAJ * resetRatio * crtRatio - finalDef));
+                    //((Atk * randamRatio * ratio * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
+                }
+            }
 
-            damageData.damage[i] = isMiss == true? 0: damage <= 0 ? 1 : damage;//狀態傷害加成
+            damageData.damage[i] = isMiss == true ? 0 : damage <= 0 ? 1 : damage;//狀態傷害加成
         }
 		return damageData;
 	}
@@ -1182,13 +1187,22 @@ public class FightController : MonoBehaviour {
 	}
 
     public void ResetGround() {
-        playersActLevel = new int[players.Length];
+        for (int i = 0; i < playersActLevel.Length; i++) {
+            if (playersActLevel[i] == 3 || playersActLevel[i] == 0)
+            {
+                playersActLevel[i] = 0;
+            }
+            else {
+                playersActLevel[i]--;
+            }
+        }
         for (int i = 0; i < players.Length; i++)
         {
-            players[i].condition = SetCondition(i, 0);
+            players[i].condition = SetCondition(i, playersActLevel[i]);
             players[i].act = null;
-            fightUIController.SetButtonCondition(i, players[i].condition, true);
+            fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
         }
+        canAttack = new List<int>();
     }
 
     public void OnTriggerSkill(List<DamageData> allDamage){

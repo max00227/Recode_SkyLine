@@ -702,7 +702,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchUp(bool isTouch = false){
-        if (startGc.defaultType == GroundType.Caution || (endGc!=null && endGc.defaultType == GroundType.Caution))
+        if ((startGc != null && startGc.defaultType == GroundType.Caution) || (endGc!=null && endGc.defaultType == GroundType.Caution))
         {
             isResetGround = true;
         }

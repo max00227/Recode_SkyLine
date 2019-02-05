@@ -142,18 +142,43 @@ public class NumberSetting : MonoBehaviour {
         }
     }
 
-    public void SetColor (Color color) {
+    public void SetColor (Color color, TextMeshType tmType = TextMeshType.Default) {
         if (text != null)
         {
             text.color = color;
         }
         if (textMesh != null)
         {
-            textMesh.color = color;
+            if (tmType != TextMeshType.Default)
+            {
+                switch (tmType) {
+                    case TextMeshType.Face:
+                        textMesh.faceColor = color;
+                        break;
+                    case TextMeshType.OutLine:
+                        textMesh.faceColor = color;
+                        break;
+                }
+            }
+            else
+            {
+                textMesh.color = color;
+            }
         }
 	}
+
+    public void SetFont(TMP_FontAsset fontAsset) {
+        textMesh.font = fontAsset;
+    }
 
 	public void run(){
 		isRun = true;
 	}
+}
+
+public enum TextMeshType
+{
+    Default,
+    Face,
+    OutLine,
 }

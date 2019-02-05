@@ -4,11 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using TMPro;
 
 [RequireComponent(typeof(Button))]
 public class FightItemButton : MonoBehaviour {
 	public delegate void OnComplete();
 	public OnComplete onComplete;
+
+    public enum ButtonFaction {
+        Player,
+        Enemy
+    }
+
+    public TMP_FontAsset[] conditionFonts;
+
+    public ButtonFaction buttonFaction;
 
     public Color[] conditionColor;
 
@@ -107,7 +117,7 @@ public class FightItemButton : MonoBehaviour {
             {
                 conditionViews[viewCount].conditionType = (ConditionType)Enum.ToObject(typeof(ConditionType), i);
                 conditionViews[viewCount].conditionText.gameObject.SetActive(true);
-                conditionViews[viewCount].conditionText.SetColor(conditionColor[i]);
+                conditionViews[viewCount].conditionText.SetFont(conditionFonts[i]);
                 conditionViews[viewCount].conditionText.SetNumber(condition[i]);
 
                 viewCount++;
@@ -124,7 +134,7 @@ public class FightItemButton : MonoBehaviour {
 
 
 
-        if (level != null)
+        if (level != null && level > 0)
         {
             outline.effectColor = conditionColor[(int)level - 1];
         }

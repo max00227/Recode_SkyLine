@@ -4736,7 +4736,7 @@ MonoBehaviour:
   m_ParticleSystem: {fileID: 1686842965814047524}
   m_TrailParticle: {fileID: 0}
   m_IsTrail: 0
-  m_Scale: 65
+  m_Scale: 50
   m_IgnoreParent: 0
 --- !u!1 &1168671653825692751
 GameObject:
@@ -9474,7 +9474,7 @@ MonoBehaviour:
   m_ParticleSystem: {fileID: 467452818060669445}
   m_TrailParticle: {fileID: 0}
   m_IsTrail: 0
-  m_Scale: 65
+  m_Scale: 50
   m_IgnoreParent: 0
 --- !u!1 &1765232184917179695
 GameObject:
@@ -9522,7 +9522,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 130}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &499334539717737800
 CanvasRenderer:
@@ -9662,7 +9662,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 130}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &422570073936323506
 CanvasRenderer:
@@ -9715,7 +9715,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showGameObject: {fileID: 0}
   isLoop: 1
-  animationCurves: []
+  animationCurves:
+  - serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.49999988
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9999998
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 0
+    m_PostInfinity: 0
+    m_RotationOrder: 0
   mainAniCurve:
     serializedVersion: 2
     m_Curve: []
@@ -14466,7 +14498,7 @@ MonoBehaviour:
   m_ParticleSystem: {fileID: 3742142306093349501}
   m_TrailParticle: {fileID: 0}
   m_IsTrail: 0
-  m_Scale: 65
+  m_Scale: 50
   m_IgnoreParent: 0
 --- !u!1 &7015003750562573627
 GameObject:
@@ -14504,7 +14536,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 130}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3380695828379450349
 CanvasRenderer:
@@ -19292,7 +19324,7 @@ MonoBehaviour:
   m_ParticleSystem: {fileID: 5838417301333894548}
   m_TrailParticle: {fileID: 0}
   m_IsTrail: 0
-  m_Scale: 65
+  m_Scale: 50
   m_IgnoreParent: 0
 --- !u!1 &8295827509851187727
 GameObject:
@@ -24067,7 +24099,7 @@ MonoBehaviour:
   m_ParticleSystem: {fileID: 3676698711123132704}
   m_TrailParticle: {fileID: 0}
   m_IsTrail: 0
-  m_Scale: 65
+  m_Scale: 50
   m_IgnoreParent: 0
 --- !u!1 &8576267413799093053
 GameObject:
@@ -24105,7 +24137,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 130}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4433935439439766498
 CanvasRenderer:
@@ -24194,7 +24226,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!198 &4621197732682686861
 ParticleSystem:
@@ -24449,7 +24481,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 3
       scalar: 4
-      minScalar: 1
+      minScalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -28941,7 +28973,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!198 &1763788632345891073
 ParticleSystem:
@@ -33640,7 +33672,7 @@ MonoBehaviour:
   m_ParticleSystem: {fileID: 1763788632345891073}
   m_TrailParticle: {fileID: 0}
   m_IsTrail: 0
-  m_Scale: 65
+  m_Scale: 50
   m_IgnoreParent: 0
 --- !u!1 &8992057642365505613
 GameObject:
@@ -33668,7 +33700,7 @@ RectTransform:
   m_GameObject: {fileID: 8992057642365505613}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5000087, y: 0.5000087, z: 0.5000087}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7952148490195360313}
   m_Father: {fileID: 0}
@@ -33691,14 +33723,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba8f07a2f9155491eba1e7fc6eb8cb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particles:
-  - {fileID: 1686842965814047524}
-  - {fileID: 3676698711123132704}
-  - {fileID: 5838417301333894548}
-  - {fileID: 1763788632345891073}
-  - {fileID: 4621197732682686861}
-  - {fileID: 3742142306093349501}
-  - {fileID: 467452818060669445}
   bg: {fileID: 8710200665930462433}
   energyColor:
   - {r: 0, g: 0, b: 0, a: 1}

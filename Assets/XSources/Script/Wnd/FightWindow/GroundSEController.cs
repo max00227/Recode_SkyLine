@@ -8,6 +8,7 @@ public class GroundSEController : MonoBehaviour
     public TweenColor colorLight;
     public TweenColor HealingLight;
     public bool init = false;
+    bool isHealing = false;
 
     // Start is called before the first frame update
     void Start()
@@ -57,17 +58,19 @@ public class GroundSEController : MonoBehaviour
     }
 
     public void SetHealing(bool isHeal) {
-        if (isHeal)
+        if (isHeal != isHealing)
         {
-            HealingLight.PlayForward();
-        }
-        else {
-            if (init)
+            if (isHeal)
+            {
+                HealingLight.PlayForward();
+            }
+            else
             {
                 HealingLight.PlayReverse();
             }
         }
-        init = true;
+
+        isHealing = isHeal;
     }
 
     public void CloseLight()
