@@ -16,6 +16,10 @@ public class FightItemButton : MonoBehaviour {
         Enemy
     }
 
+    public Color[] boardColors;
+
+    public Image board;
+
     public TMP_FontAsset[] conditionFonts;
 
     public ButtonFaction buttonFaction;
@@ -134,13 +138,13 @@ public class FightItemButton : MonoBehaviour {
 
 
 
-        if (level != null && level > 0)
+        if (level != null)
         {
-            outline.effectColor = conditionColor[(int)level - 1];
+            board.color = boardColors[(int)level];
         }
         else
         {
-            outline.effectColor = Color.black;
+            board.color = boardColors[0];
         }
     }
 

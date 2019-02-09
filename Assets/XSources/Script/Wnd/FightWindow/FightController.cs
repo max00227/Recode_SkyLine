@@ -615,13 +615,14 @@ public class FightController : MonoBehaviour {
 
             float crtRatio = Mathf.Pow(2f, Convert.ToInt32(damageData.isCrt[i]));
 
-            int hitRate = UnityEngine.Random.Range(0, 100);
+            int hitRate = damageData.isCrt[i] == true ? 99 : UnityEngine.Random.Range(0, 100);
             //爆擊時必命中
             bool isMiss = damageData.isCrt[i] == true ? false : !(hitRate < act[3]);
-            float radio;
+            float radio = isAll == true ? (mainTarget[1] == "E" ? 60 : 100f + (float)fightUIController.GetCharaGround() * 10) : 100;
+
             if (!isMiss)
             {
-                radio = (100 - hitRate / 10);
+                radio -= ((99 - hitRate) / 10);
             }
 
             int finalDef = mainOrgChess.hasStatus[(int)Status.UnDef] == true ? 0 : def;
@@ -634,7 +635,7 @@ public class FightController : MonoBehaviour {
                     damage = 999999999;
                 }
                 else {
-                    damage = Mathf.CeilToInt((atk * (act[0] / 100) * ratioAJ * resetRatio * crtRatio - finalDef));
+                    damage = Mathf.CeilToInt((atk * (act[0] / 100) * radio / 100 * ratioAJ * resetRatio * crtRatio - finalDef));
                     //((Atk * randamRatio * ratio * ratioAJ * resetCount) * isCrt - finalDef) * finalMinus
                 }
             }
@@ -1199,7 +1200,7 @@ public class FightController : MonoBehaviour {
         for (int i = 0; i < players.Length; i++)
         {
             players[i].condition = SetCondition(i, playersActLevel[i]);
-            players[i].act = null;
+            players[i].act = playersActLevel[i] > 0 ? players[i].soulData.act[playersActLevel[i] - 1] : null;
             fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
         }
         canAttack = new List<int>();
@@ -1286,13 +1287,8 @@ public class FightController : MonoBehaviour {
 		case (int)Normal.RmNerf:
 			OnRmNerf (idx, targetString);
 			break;
-		case (int)Normal.Revive:
-			OnRevive (orgIdx, idx, data, targetString);
-			break;
 		case (int)Normal.Energe:
 			fightUIController.AddEnerge (data.effect [1]);
-			break;
-		case (int)Normal.DelJob:
 			break;
 		case (int)Normal.LockEng:
 			fightUIController.LockEnemy (data.effect [1]);
@@ -1417,11 +1413,16 @@ public class FightController : MonoBehaviour {
 
 
     public void ShowData(){
-        Debug.Log(uniteHp);
-        foreach (ChessData cd in players) {
-            Debug.Log (cd.soulData.abilitys["Spc"]);
+        int healParam = 0;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].soulData.job == 2 || players[i].soulData.job == 4)
+            {
+                healParam += players[i].soulData.abilitys["Spc"];
+            }
         }
-
+        Debug.Log(uniteHp);
+        Debug.Log(healParam);
     }
 
     public void TestFunction(){

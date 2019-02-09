@@ -145,25 +145,16 @@ public class SkillController : MonoBehaviour {
 			case (int)Rule.None:
 				meets [i] = true;
 				break;
-			case (int)Rule.HpLess:
-			case (int)Rule.HpBest:
-				meets [i] = fightController.OnRuleMeets (mainOrgIdx, data.ruleData [i].rule, mainTarget[0]);
+			case (int)Rule.HpPercent:
+                //meets[i] = fightController.OnRuleMeets(mainOrgIdx, data.ruleData[i].rule, mainTarget[0]);
 				break;
 			case (int)Rule.OnDmg:
 				meets [i] = allDamage !=null && allDamage.Count > 0;
 				parameter = GetDamage (allDamage);
 				break;
-			case (int)Rule.JobCntUp:
-				meets [i] = fightUIController.GetJobGround (data.ruleData [i].rule [1]) >= data.ruleData [i].rule [2];
-				parameter = fightUIController.GetJobGround (data.ruleData [i].rule [1]);
-				break;
 			case (int)Rule.LayerCntUp:
 				meets [i] = fightUIController.GetLayerGround (data.ruleData [i].rule [1]) >= data.ruleData [i].rule [2];
 				parameter = fightUIController.GetLayerGround (data.ruleData [i].rule [1]);
-				break;
-			case (int)Rule.JobCntDown:
-				meets [i] = fightUIController.GetJobGround (data.ruleData [i].rule [1]) < data.ruleData [i].rule [2];
-				parameter = fightUIController.GetJobGround (data.ruleData [i].rule [1]);
 				break;
 			case (int)Rule.LayerCntDown:
 				meets [i] = fightUIController.GetLayerGround (data.ruleData [i].rule [1]) < data.ruleData [i].rule [2];
@@ -350,13 +341,6 @@ public class SkillController : MonoBehaviour {
 				idxList.Add (mainTargetIdx);
 			}
 			break;
-		case (int)Target.DirTeam:
-			selLockRuleData = data;
-			fightController.OnSelectSkillTarget (idxList, "P");
-			return;
-		case (int)Target.OnlyMate://移除發動者
-			idxList.Remove (mainOrgIdx);
-			break;
 		case (int)Target.DirEnemy:
 			selLockRuleData = data;
 			fightController.OnSelectSkillTarget (idxList, "E");
@@ -495,22 +479,19 @@ public class SkillController : MonoBehaviour {
 /// Rule type.
 /// None (無),HpLess (血量(少於)),HpBest (血量(多於含)),Nerf (異常狀態),norDmg (自身傷害(全)),norDmgP (自身傷害(物))
 /// norDmgM (自身傷害(魔)),OnDmg (對方傷害),DeathCount (隊友死亡數),Over (溢補值),Death (自己死亡)
-public enum Rule {
-	None = 0,
-	HpLess = 1,
-	HpBest = 2,
-	Nerf = 3,
-	norDmg = 4,
-	norDmgP = 5,
-	norDmgM = 6,
-	OnDmg = 7,
-	DeathCount = 8,
-	Over = 9,
-	Death = 10,
-	JobCntUp = 11,
-	LayerCntUp =12,
-	JobCntDown = 13,
-	LayerCntDown = 14,
+public enum Rule{
+    None = 0,
+    HpPercent = 1,
+    Nerf = 2,
+    norDmg = 3,
+    norDmgP = 4,
+    norDmgM = 5,
+    OnDmg = 6,
+    Over = 7,
+    LayerCntUp = 8,
+    LayerCntDown = 9,
+    Beat = 10,
+    Death = 11
 }
 
 /// <summary>
@@ -519,11 +500,8 @@ public enum Rule {
 public enum Target {
 	None = 0,
 	Self = 1,
-	DirTeam = 2,
-	OnlyMate = 3,
-	Team = 4,
-	TeamJob = 5,
-	Enemy = 11,
+	TeamJob = 2,
+	Enemy = 10,
 	DirEnemy = 12,
 	EnemyJob = 13,
 	Trigger = 21,
@@ -545,12 +523,11 @@ public enum Normal {
 	RmAlarm = 4,
 	RmNerf = 5,
 	Dmg = 6,
-	Exchange = 7,
-	Call = 8,
-	Revive = 9,
-	Energe = 10,
-	DelJob = 11,
-	LockEng = 12
+	Call = 7,
+	Energe = 8,
+	LockEng = 9,
+    DirSpc = 10,
+    ChangeSpc = 11
 }
 
 /// <summary>
@@ -564,7 +541,8 @@ public enum Status {
 	AddNerf = 3,
 	Suffer = 4,
 	Maximum = 5,
-	UnDirect = 6
+	UnDirect = 6,
+    Escape = 7
 }
 
 /// <summary>

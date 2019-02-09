@@ -69,8 +69,6 @@ public class FightUIController : MonoBehaviour {
 
 	Image startCharaImage, endCharaImage;
 
-	LinkedList<GroundController> charaGc;
-
 	int resetGroundCount;
 
 	public Sprite[] CharaSprite;
@@ -160,7 +158,7 @@ public class FightUIController : MonoBehaviour {
     bool fightInit = false;
 
 	void SetData() {
-		monsterCdTimes = new int[5]{7,5,1,10,6};
+		monsterCdTimes = new int[5]{7,5,10,3,6};
 		fightController.SetCDTime (monsterCdTimes, false);
 		fightController.SetData ();
 		playerStatus = new Dictionary<int, Dictionary<StatusLargeData, int>> ();
@@ -293,6 +291,7 @@ public class FightUIController : MonoBehaviour {
 
 
 	public void OnFight(){
+        conditionDown = new int[3];
         MonsterCdDown();
         RoundEnd();
 		fightController.FightStart (lockCount != 0);
@@ -602,7 +601,6 @@ public class FightUIController : MonoBehaviour {
 
 	private void TouchDown(GroundController gc, bool isCover){
 		startGc = gc;
-		charaGc.AddLast (startGc);
 		if (isCover) {
 			startCover = true;
 			startGc.OnCover ();
@@ -636,16 +634,6 @@ public class FightUIController : MonoBehaviour {
                                 stone.CloseUseBg();
                             }
 
-                            if (endGc != null) {
-                                if (charaGc.Last.Value == endGc) {
-									if (endCover) {
-										endGc.OnPrevCover ();
-										endCover = false;
-									}
-									charaGc.RemoveLast ();
-								} 
-							}
-
                             TouchDrap (r.gameObject.GetComponent<GroundController> (),((int)r.gameObject.GetComponent<GroundController>()._groundType !=10 && canCover));
 						}
 					}
@@ -655,18 +643,17 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchDrap(GroundController gc, bool isCover){
-		GroundController checkGc = gc;
+        endGc = gc;
         usedEnergy = 0;
         conditionDown = new int[3];
         healRatio = 0;
         healingIcon.gameObject.SetActive(false);
-        Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, checkGc.transform.localPosition);
+        Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, endGc.transform.localPosition);
         dirIdx = IsCorrectDir(dir);
 
 
-        if (dirIdx != -99)
+        if (dirIdx != -99 && startGc != endGc)
 		{
-			endGc = gc;
 
 			if (isCover) {
 				endCover = true;
@@ -676,10 +663,7 @@ public class FightUIController : MonoBehaviour {
             startGc.ChangeChara();
             endGc.ChangeChara ();
 
-			charaGc.AddLast (endGc);
-
             startGc.OnChangeType(false, dirIdx, endGc);
-            //endGc.OnChangeType(false, dirIdx);
 
             spaceCorrect = true;
 
@@ -753,7 +737,6 @@ public class FightUIController : MonoBehaviour {
                                 }
                                 startGc.ResetType();
                             }
-                            charaGc.RemoveLast();
                             isResetGround = false;
                             ResetStatus();
                             ResetTemple();
@@ -924,7 +907,6 @@ public class FightUIController : MonoBehaviour {
 		allRatioData = new List<RaycastData> ();
 		recAllRatioData = new List<RaycastData> ();
 
-		charaGc = new LinkedList<GroundController> ();
 		extraedGc = new List<ExtraRatioData> ();
 
 		newRaycastData = new List<RaycastData> ();
@@ -1316,7 +1298,21 @@ public class FightUIController : MonoBehaviour {
 		return count / 2;
 	}
 
-	public int GetLayerGround(int layer){
+    public int GetCharaGround()
+    {
+        int count = 0;
+        foreach (GroundController gc in allGcs)
+       {
+            if (gc._groundType == GroundType.Chara)
+            {
+                count++;
+            }
+       }
+
+        return count;
+    }
+
+    public int GetLayerGround(int layer){
 		int count = 0;
 		foreach (GroundController gc in allGcs) {
 			if ((int)gc._groundType >= layer && gc._groundType != GroundType.Chara && gc._groundType != GroundType.Caution) {
