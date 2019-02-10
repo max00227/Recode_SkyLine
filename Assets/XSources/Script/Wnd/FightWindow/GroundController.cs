@@ -37,14 +37,14 @@ public class GroundController : MonoBehaviour
     private GroundType _roundPrevType;
     int goldRatio = 75;
 
-    public delegate void PlusGroundType(GroundType groundType,bool isHealing, bool useEnergy);
+    public delegate void PlusGroundType(GroundController gc, bool useEnergy);
 
     public PlusGroundType plusGroundType;
 
     //[HideInInspector]
     public bool isChara;
 
-    private Color colorTransparent = new Color(1, 1, 1, 0);
+    private Color halfTransparent = new Color(1, 1, 1, 0.5f);
     
     public int groundRow;
 
@@ -52,17 +52,13 @@ public class GroundController : MonoBehaviour
 
     public bool isHealing;
 
+    public SpecailGround specailGround;
 
-    [HideInInspector]
-    public enum ExtraType
-    {
-        Silver,
-        Gold
-    }
 
     // Use this for initialization
     void Awake()
     {
+        specailGround = SpecailGround.None;
         constAngle = isPortrait == true ? 0 : 30;
         defaultType = _groundType;
         _prevType = _groundType;
@@ -96,9 +92,9 @@ public class GroundController : MonoBehaviour
             {
                 light.gameObject.SetActive(true);
 
-                light.SetFromAndTo(Color.white, colorTransparent);
+                light.SetFromAndTo(Color.white, halfTransparent);
                 light.PlayForward(System.Convert.ToInt32(!isSpeed));
-                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * colorTransparent));
+                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * halfTransparent));
                 colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
             }
         }
@@ -203,19 +199,19 @@ public class GroundController : MonoBehaviour
         {
             _groundType = GroundType.Copper;
             ChangeSprite(_groundType, true);
-            plusGroundType.Invoke(_groundType, isHealing, useEnergy);
+            plusGroundType.Invoke(this, useEnergy);
         }
         else
         {
             if (_groundType == GroundType.Copper)
             {
                 _groundType = GroundType.Silver;
-                plusGroundType.Invoke(_groundType, isHealing, useEnergy);
+                plusGroundType.Invoke(this, useEnergy);
             }
             else if (_groundType == GroundType.Silver)
             {
                 _groundType = GroundType.gold;
-                plusGroundType.Invoke(_groundType, isHealing, useEnergy);
+                plusGroundType.Invoke(this, useEnergy);
             }
             isChanged = true;
         }
@@ -282,7 +278,7 @@ public class GroundController : MonoBehaviour
 
     public void OpenLight(GroundType gType = GroundType.None, bool isShow = true)
     {
-        groundSEController.OpenLight(lightColor[(int)gType - 1], colorTransparent, isShow, gType);
+        groundSEController.OpenLight(lightColor[(int)gType - 1], halfTransparent, isShow, gType);
     }
 
     public void ResetTemple(int idx = 0) {
@@ -294,9 +290,9 @@ public class GroundController : MonoBehaviour
         groundSEController.CloseLight();
     }
 
-    public void SetHealing(bool isHeal) {
-        isHealing = isHeal;
-        groundSEController.SetHealing(isHeal);
+    public void SetSpecial(SpecailGround sg) {
+        specailGround = sg;
+        groundSEController.SetSpecial(specailGround);
     }
 
     public void SetTag()

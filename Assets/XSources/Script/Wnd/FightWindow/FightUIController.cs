@@ -125,7 +125,7 @@ public class FightUIController : MonoBehaviour {
 
     int round;
 
-    int healRatio;
+    int[] specialRatio;
 
 	#region GroundShow 格子轉換效果
 	[SerializeField]
@@ -185,6 +185,8 @@ public class FightUIController : MonoBehaviour {
 		}
 
 		lockOrder = new LinkedList<int> ();
+
+        specialRatio = new int[Enum.GetNames(typeof(SpecailGround)).Length - 1];
 
 		groundPool.SetController ();
 	}
@@ -255,9 +257,9 @@ public class FightUIController : MonoBehaviour {
     }
 
     #region ShowView
-    private void OnPlusGroundType(GroundType groundType, bool isHealing, bool useEnergy) {
+    private void OnPlusGroundType(GroundController gc, bool useEnergy) {
         if (useEnergy) {
-            if (groundType == GroundType.Copper)
+            if (gc._groundType == GroundType.Copper)
             {
                 usedEnergy += 2;
             }
@@ -266,9 +268,9 @@ public class FightUIController : MonoBehaviour {
             }
         }
 
-        healRatio += Convert.ToInt32(isHealing);
+        SpecialGroundEffecnt(gc.specailGround);
 
-        conditionDown[(int)groundType - 1]++;
+        conditionDown[(int)gc._groundType - 1]++;
 
         for (int i = 0; i < usedEnergy; i++) {
             if (energe - 1 - i >= 0)
@@ -286,6 +288,13 @@ public class FightUIController : MonoBehaviour {
         }
         else {
             energyNum.GetComponent<TextMeshProUGUI>().color = Color.white;
+        }
+    }
+
+    public void SpecialGroundEffecnt(SpecailGround specailGround) {
+        if (specailGround != SpecailGround.None)
+        {
+            specialRatio[(int)specailGround - 1]++;
         }
     }
 
@@ -435,7 +444,8 @@ public class FightUIController : MonoBehaviour {
 				TouchUp (false);
 			}
 
-			if (Input.touchCount == 1) {
+
+/*            if (Input.touchCount == 1) {
 				if (Input.GetTouch (0).phase == TouchPhase.Began) {
 					TouchDown (true);
 				}
@@ -448,9 +458,10 @@ public class FightUIController : MonoBehaviour {
 					TouchUp (true);
 				}
 			}
-		}
+*/
+        }
 
-		if (onPress) {
+        if (onPress) {
 			// 當前時間 -  最後按鈕按下時間 > 延遲1秒
 			if (Time.time - lastIsDownTime > delay && !charaDetail) {
 				SetCharaDetail ((int)charaIdx);
@@ -583,6 +594,7 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchDown(bool isTouch = false){
+        Debug.Log("456456");
 		var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 
 		if (result.Count > 0) {
@@ -646,7 +658,7 @@ public class FightUIController : MonoBehaviour {
         endGc = gc;
         usedEnergy = 0;
         conditionDown = new int[3];
-        healRatio = 0;
+        ResetSpecialRatio();
         healingIcon.gameObject.SetActive(false);
         Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, endGc.transform.localPosition);
         dirIdx = IsCorrectDir(dir);
@@ -667,7 +679,7 @@ public class FightUIController : MonoBehaviour {
 
             spaceCorrect = true;
 
-            if (healRatio > 0)
+            if (specialRatio[(int)SpecailGround.Heal - 1] > 0)
             {
                 healingIcon.PlayForward();
                 healingIcon.gameObject.SetActive(true);
@@ -715,7 +727,7 @@ public class FightUIController : MonoBehaviour {
                                 gc.SetType();
                             }
 
-                            fightController.OnHealing(healRatio);
+                            fightController.OnHealing(specialRatio[(int)SpecailGround.Heal - 1]);
                             ResetStatus();
                             ResetTemple();
                         }
@@ -948,9 +960,20 @@ public class FightUIController : MonoBehaviour {
 		startGc = null;
 		endGc = null;
         usedEnergy = 0;
-        healRatio = 0;
+        ResetSpecialRatio();
         healingIcon.gameObject.SetActive(false);
 	}
+
+
+    private void ResetSpecialRatio(bool init = false) {
+        if (init)
+        {
+            specialRatio = new int[Enum.GetNames(typeof(SpecailGround)).Length - 1];
+        }
+        else {
+            specialRatio[(int)SpecailGround.Heal - 1] = 0;
+        }
+    }
 
 	public void GetHasProtect(bool isHas){
 		hasProtect = isHas;
@@ -1354,5 +1377,13 @@ public struct CharaImageData{
 public enum SpecailEffectType{
 	Attack = 3,
 	Damage = 4
+}
+
+public enum SpecailGround
+{
+    None = 0,
+    Heal = 1,
+    isPhysical = 2,
+    isMagic = 3,
 }
 

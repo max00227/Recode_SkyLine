@@ -9779,7 +9779,7 @@ MonoBehaviour:
   recTime: 0
   isRun: 0
   runForward: 1
-  TweenTime: 4
+  TweenTime: 3
   image: {fileID: 5669665246183948359}
   from: {r: 1, g: 1, b: 1, a: 1}
   to: {r: 1, g: 1, b: 1, a: 0}
@@ -10078,7 +10078,7 @@ MonoBehaviour:
   recTime: 0
   isRun: 0
   runForward: 1
-  TweenTime: 4
+  TweenTime: 3
   image: {fileID: 4772992097443563539}
   from: {r: 1, g: 1, b: 1, a: 1}
   to: {r: 1, g: 1, b: 1, a: 0}

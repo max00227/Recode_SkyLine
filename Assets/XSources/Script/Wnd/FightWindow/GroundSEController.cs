@@ -10,10 +10,17 @@ public class GroundSEController : MonoBehaviour
     public bool init = false;
     bool isHealing = false;
 
+    SpecailGround specailGround = SpecailGround.None;
+
     // Start is called before the first frame update
+    private void Awake()
+    {
+    }
+
     void Start()
     {
-        
+        Debug.Log(specailGround.ToString());
+        specailGround = SpecailGround.None;
     }
 
     // Update is called once per frame
@@ -57,10 +64,11 @@ public class GroundSEController : MonoBehaviour
         }
     }
 
-    public void SetHealing(bool isHeal) {
-        if (isHeal != isHealing)
+    public void SetSpecial(SpecailGround sg) {
+        if (sg != specailGround)
         {
-            if (isHeal)
+            Debug.Log("123");
+            if (sg == SpecailGround.Heal)
             {
                 HealingLight.PlayForward();
             }
@@ -70,7 +78,7 @@ public class GroundSEController : MonoBehaviour
             }
         }
 
-        isHealing = isHeal;
+        specailGround = sg;
     }
 
     public void CloseLight()

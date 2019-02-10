@@ -141,10 +141,10 @@ public class GroundRaycastController : MonoBehaviour {
         {
             if (healingGcs.Contains(gc))
             {
-                gc.SetHealing(true);
+                gc.SetSpecial(SpecailGround.Heal);
             }
             else {
-                gc.SetHealing(false);
+                gc.SetSpecial(SpecailGround.None);
             }
         }
     }
