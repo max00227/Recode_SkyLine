@@ -268,7 +268,7 @@ public class FightUIController : MonoBehaviour {
             }
         }
 
-        SpecialGroundEffecnt(gc.specailGround);
+        SpecialGroundEffecnt(gc.specailType);
 
         conditionDown[(int)gc._groundType - 1]++;
 
@@ -1383,7 +1383,7 @@ public enum SpecailGround
 {
     None = 0,
     Heal = 1,
-    isPhysical = 2,
-    isMagic = 3,
+    Physical = 2,
+    Magic = 3,
 }
 

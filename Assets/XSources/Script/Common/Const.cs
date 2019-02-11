@@ -50,13 +50,17 @@ public static class Const {
 		new Color (0.28f, 0f, 0.56f, 1f)//Attributes.Dark
 	};
 
+    public static Color colorTransparent = new Color(1f, 1f, 1f, 0f);
+    public static Color colorHalfTransparent = new Color(1f, 1f, 1f, 0.5f);
 
-	/// <summary>
-	/// Effect type.
-	/// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
-	/// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
-	/// </summary>
-	public enum NormalType {
+
+
+    /// <summary>
+    /// Effect type.
+    /// None(無),Recovery(回血),Act(激活),Cover(覆蓋),RmAlarm(警戒解除)
+    /// ,RmNerf(異常解除),Dmg(固定傷害),Exchange(位置對調),Call(召喚)
+    /// </summary>
+    public enum NormalType {
 		None = 0,
 		Recovery = 1,
 		Act = 2,

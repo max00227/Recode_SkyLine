@@ -6,11 +6,11 @@ public class GroundSEController : MonoBehaviour
 {
     public TweenColor light;
     public TweenColor colorLight;
-    public TweenColor HealingLight;
+    public TweenColor specailLight;
     public bool init = false;
     bool isHealing = false;
 
-    SpecailGround specailGround = SpecailGround.None;
+    SpecailGround specailType = SpecailGround.None;
 
     // Start is called before the first frame update
     private void Awake()
@@ -19,8 +19,7 @@ public class GroundSEController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(specailGround.ToString());
-        specailGround = SpecailGround.None;
+        specailType = SpecailGround.None;
     }
 
     // Update is called once per frame
@@ -29,14 +28,14 @@ public class GroundSEController : MonoBehaviour
         
     }
 
-    public void OpenLight(Color lightColor, Color colorTransparent, bool isShow, GroundType gType)
+    public void OpenLight(Color lightColor, bool isShow, GroundType gType)
     {
         if (isShow)
         {
             light.Stop(Color.white);
             colorLight.Stop(lightColor);
-            colorLight.SetFromAndTo(lightColor, lightColor * colorTransparent);
-            light.SetFromAndTo(Color.white, colorTransparent);
+            colorLight.SetFromAndTo(lightColor, lightColor * Const.colorHalfTransparent);
+            light.SetFromAndTo(Color.white, Const.colorHalfTransparent);
             light.PlayForward(0);
             colorLight.PlayForward(0);
         }
@@ -65,20 +64,41 @@ public class GroundSEController : MonoBehaviour
     }
 
     public void SetSpecial(SpecailGround sg) {
-        if (sg != specailGround)
+        if (sg != specailType)
         {
-            Debug.Log("123");
-            if (sg == SpecailGround.Heal)
+            Color sc = SpecialColor(sg);
+            if (sc != Color.clear)
             {
-                HealingLight.PlayForward();
+                if (specailType == SpecailGround.None)
+                {
+                    specailLight.SetFromAndTo(sc * Const.colorTransparent, sc);
+                }
+                else {
+                    specailLight.SetFromAndTo(SpecialColor(specailType), sc);
+                }
+                specailLight.PlayForward();
             }
             else
             {
-                HealingLight.PlayReverse();
+                specailLight.PlayReverse();
             }
         }
 
-        specailGround = sg;
+        specailType = sg;
+    }
+
+    private Color SpecialColor(SpecailGround sg)
+    {
+        switch (sg) {
+            case SpecailGround.Heal:
+                return Color.white;
+            case SpecailGround.Physical:
+                return Color.red;
+            case SpecailGround.Magic:
+                return Color.blue;
+            default:
+                return Color.clear;
+        }
     }
 
     public void CloseLight()

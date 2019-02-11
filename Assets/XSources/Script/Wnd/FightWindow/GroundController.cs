@@ -44,21 +44,19 @@ public class GroundController : MonoBehaviour
     //[HideInInspector]
     public bool isChara;
 
-    private Color halfTransparent = new Color(1, 1, 1, 0.5f);
-    
     public int groundRow;
 
     public GroundSEController groundSEController;
 
     public bool isHealing;
 
-    public SpecailGround specailGround;
+    public SpecailGround specailType;
 
 
     // Use this for initialization
     void Awake()
     {
-        specailGround = SpecailGround.None;
+        specailType = SpecailGround.None;
         constAngle = isPortrait == true ? 0 : 30;
         defaultType = _groundType;
         _prevType = _groundType;
@@ -92,9 +90,9 @@ public class GroundController : MonoBehaviour
             {
                 light.gameObject.SetActive(true);
 
-                light.SetFromAndTo(Color.white, halfTransparent);
+                light.SetFromAndTo(Color.white, Const.colorHalfTransparent);
                 light.PlayForward(System.Convert.ToInt32(!isSpeed));
-                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * halfTransparent));
+                colorLight.SetFromAndTo(lightColor[(int)type - 1], (lightColor[(int)type - 1] * Const.colorHalfTransparent));
                 colorLight.PlayForward(System.Convert.ToInt32(!isSpeed));
             }
         }
@@ -278,7 +276,7 @@ public class GroundController : MonoBehaviour
 
     public void OpenLight(GroundType gType = GroundType.None, bool isShow = true)
     {
-        groundSEController.OpenLight(lightColor[(int)gType - 1], halfTransparent, isShow, gType);
+        groundSEController.OpenLight(lightColor[(int)gType - 1], isShow, gType);
     }
 
     public void ResetTemple(int idx = 0) {
@@ -291,8 +289,8 @@ public class GroundController : MonoBehaviour
     }
 
     public void SetSpecial(SpecailGround sg) {
-        specailGround = sg;
-        groundSEController.SetSpecial(specailGround);
+        specailType = sg;
+        groundSEController.SetSpecial(specailType);
     }
 
     public void SetTag()
