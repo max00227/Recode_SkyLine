@@ -6,7 +6,9 @@ public class GroundSEController : MonoBehaviour
 {
     public TweenColor light;
     public TweenColor colorLight;
-    public TweenColor specailLight;
+    public TweenColor spcColor;
+    public TweenColor spcLight;
+
     public bool init = false;
     bool isHealing = false;
 
@@ -71,16 +73,18 @@ public class GroundSEController : MonoBehaviour
             {
                 if (specailType == SpecailGround.None)
                 {
-                    specailLight.SetFromAndTo(sc * Const.colorTransparent, sc);
+                    spcColor.SetFromAndTo(sc * Const.colorTransparent, sc);
                 }
                 else {
-                    specailLight.SetFromAndTo(SpecialColor(specailType), sc);
+                    spcColor.SetFromAndTo(SpecialColor(specailType), sc);
                 }
-                specailLight.PlayForward();
+                spcColor.PlayForward();
+                spcLight.PlayForward();
             }
             else
             {
-                specailLight.PlayReverse();
+                spcColor.PlayReverse();
+                spcLight.PlayReverse();
             }
         }
 
@@ -93,9 +97,9 @@ public class GroundSEController : MonoBehaviour
             case SpecailGround.Heal:
                 return Color.white;
             case SpecailGround.Physical:
-                return Color.red;
+                return new Color(1f, 0.27f, 0.27f, 1f);
             case SpecailGround.Magic:
-                return Color.blue;
+                return new Color(0.275f, 0.443f, 1f, 1f);
             default:
                 return Color.clear;
         }

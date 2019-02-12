@@ -44,7 +44,7 @@
 		{"id":100015,"Target":0,"Rule":[0,0],"EffectType":0,"Effect":[0],"Energe":0,"ConvType":0,"Ability":{}}
 	],
 	"Skill":[
-		{"id":100001,"name":"血量(%){30}","detail":"，血量(%){30}","Type":0,"LaunchType":0,"CD":0,"Round":0,"Condition":[[0,-1,0],[0,0,0],[0,0,0]],"rule_id":[100001],"isOr":1,"hasAnim":0},
+		{"id":100001,"name":"血量(%){30}","detail":"，血量(%){30}","Type":0,"LaunchType":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100001],"isOr":1,"hasAnim":0},
 		{"id":100002,"name":"無","detail":"，無","Type":0,"LaunchType":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100002],"isOr":1,"hasAnim":0},
 		{"id":100003,"name":"無","detail":"，無","Type":0,"LaunchType":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100003],"isOr":1,"hasAnim":0},
 		{"id":100004,"name":"無","detail":"，無","Type":0,"LaunchType":0,"CD":0,"Round":0,"Condition":[[0,0,0],[0,0,0],[0,0,0]],"rule_id":[100004],"isOr":1,"hasAnim":0},
