@@ -1189,12 +1189,12 @@ public class FightController : MonoBehaviour {
 
     public void ResetGround() {
         for (int i = 0; i < playersActLevel.Length; i++) {
-            if (playersActLevel[i] == 3 || playersActLevel[i] == 0)
+            if (playersActLevel[i] == 2)
             {
-                playersActLevel[i] = 0;
+                playersActLevel[i] = 1;
             }
             else {
-                playersActLevel[i]--;
+                playersActLevel[i] = 0;
             }
         }
         for (int i = 0; i < players.Length; i++)
