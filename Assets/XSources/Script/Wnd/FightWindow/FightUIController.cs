@@ -187,8 +187,8 @@ public class FightUIController : MonoBehaviour {
 
 		lockOrder = new LinkedList<int> ();
 
-        ResetSpecialRatio(specialNow, true);
-        ResetSpecialRatio(specialRatio, true);
+        specialNow = ResetSpecialRatio(specialNow, true);
+        specialRatio = ResetSpecialRatio(specialRatio, true);
 
         groundPool.SetController ();
 	}
@@ -296,7 +296,12 @@ public class FightUIController : MonoBehaviour {
     public void SpecialGroundEffecnt(SpecailGround specailGround) {
         if (specailGround != SpecailGround.None)
         {
-            specialRatio[specailGround.ToString()]++;
+            if (specialNow.ContainsKey(specailGround.ToString())){
+                specialNow[specailGround.ToString()]++;
+            }
+            else {
+                specialNow.Add(specailGround.ToString(), 1);
+            }
         }
     }
 
@@ -660,7 +665,7 @@ public class FightUIController : MonoBehaviour {
         endGc = gc;
         usedEnergy = 0;
         conditionDown = new int[3];
-        ResetSpecialRatio(specialNow, true);
+        specialNow = ResetSpecialRatio(specialNow, true);
         healingIcon.gameObject.SetActive(false);
         Vector2 dir = ConvertDirNormalized(startGc.transform.localPosition, endGc.transform.localPosition);
         dirIdx = IsCorrectDir(dir);
@@ -734,7 +739,7 @@ public class FightUIController : MonoBehaviour {
                             fightController.OnHealing(specialRatio[SpecailGround.Heal.ToString()]);
                             ResetStatus();
                             ResetTemple();
-                            ResetSpecialRatio(specialRatio);
+                            specialRatio = ResetSpecialRatio(specialRatio);
                         }
                         else
                         {
@@ -965,12 +970,12 @@ public class FightUIController : MonoBehaviour {
 		startGc = null;
 		endGc = null;
         usedEnergy = 0;
-        ResetSpecialRatio(specialRatio);
+        specialRatio = ResetSpecialRatio(specialRatio);
         healingIcon.gameObject.SetActive(false);
 	}
 
 
-    private void ResetSpecialRatio(Dictionary<string, int> specailData, bool init = false)
+    private Dictionary<string, int> ResetSpecialRatio(Dictionary<string, int> specailData, bool init = false)
     {
         if (init)
         {
@@ -978,11 +983,14 @@ public class FightUIController : MonoBehaviour {
         }
         else
         {
+
             if (specailData.ContainsKey(SpecailGround.Heal.ToString()))
             {
                 specailData[SpecailGround.Heal.ToString()] = 0;
             }
         }
+
+        return specailData;
     }
 
     private void SetSpecialRatio() { 
