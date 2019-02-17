@@ -601,7 +601,6 @@ public class FightUIController : MonoBehaviour {
 	}
 
 	private void TouchDown(bool isTouch = false){
-        Debug.Log("456456");
 		var result = CanvasManager.Instance.GetRaycastResult (isTouch);
 
 		if (result.Count > 0) {
@@ -736,7 +735,10 @@ public class FightUIController : MonoBehaviour {
 
 
                             SetSpecialRatio();
-                            fightController.OnHealing(specialRatio[SpecailGround.Heal.ToString()]);
+                            if (specialRatio.ContainsKey(SpecailGround.Heal.ToString()) && specialRatio[SpecailGround.Heal.ToString()] > 0)
+                            {
+                                fightController.OnHealing(specialRatio[SpecailGround.Heal.ToString()]);
+                            }
                             ResetStatus();
                             ResetTemple();
                             specialRatio = ResetSpecialRatio(specialRatio);

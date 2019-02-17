@@ -16,7 +16,7 @@ public class FightItemButton : MonoBehaviour {
         Enemy
     }
 
-    public Color[] boardColors;
+    public Sprite[] boardSprites;
 
     public Image board;
 
@@ -140,11 +140,11 @@ public class FightItemButton : MonoBehaviour {
 
         if (level != null)
         {
-            board.color = boardColors[(int)level];
+            //board.sprite = boardSprites[(int)level];
         }
         else
         {
-            board.color = boardColors[0];
+            //board.sprite = boardSprites[0];
         }
     }
 
