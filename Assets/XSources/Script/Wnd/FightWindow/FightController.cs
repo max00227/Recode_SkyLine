@@ -1200,7 +1200,16 @@ public class FightController : MonoBehaviour {
         for (int i = 0; i < players.Length; i++)
         {
             players[i].condition = SetCondition(i, playersActLevel[i]);
-            players[i].act = playersActLevel[i] > 0 ? players[i].soulData.act[playersActLevel[i] - 1] : null;
+            if (playersActLevel[i] > 0)
+            {
+                if (playersActLevel[i] < 3)
+                {
+                    players[i].act = players[i].soulData.act[playersActLevel[i] - 1];
+                }
+            }
+            else {
+                players[i].act = null;
+            }
             fightUIController.SetButtonCondition(i, players[i].condition, true, playersActLevel[i]);
         }
         canAttack = new List<int>();
@@ -1222,6 +1231,15 @@ public class FightController : MonoBehaviour {
 			return enemys [index];
 		}
 	}
+
+    public void OnBrust() { 
+        for(int i = 0; i < players.Length; i++)
+        {
+            if (playersActLevel[i] == 3) {
+                players[i].act = players[i].soulData.act[2];
+            }
+        }
+    }
 
     public void OnHealing(int healRatio) {
         int healParam = 0;

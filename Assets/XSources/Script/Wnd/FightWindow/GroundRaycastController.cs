@@ -114,7 +114,7 @@ public class GroundRaycastController : MonoBehaviour {
         if (noneGcs.Count == 0) {
             return false;
         }
-
+        
         nextRoundGcs = DataUtil.RandomList(CreateGround, noneGcs.ToArray(), noneGcs.Count);
 
 		foreach (GroundController gc in nextRoundGcs) {
@@ -122,7 +122,7 @@ public class GroundRaycastController : MonoBehaviour {
 		}
 
         SetHealGround();
-		return true;
+        return CreateGround <= noneGcs.Count;
 	}
 
     private void SetHealGround(int randomCount = 5) {

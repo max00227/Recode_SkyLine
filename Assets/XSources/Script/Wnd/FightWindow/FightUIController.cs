@@ -47,7 +47,8 @@ public class FightUIController : MonoBehaviour {
     [SerializeField]
     TweenColor healingIcon;
 
-	bool isResetGround = false;
+	bool finalRound = false;
+    bool lockFinal = false;
 
 	private int[] monsterCdTimes = new int[5];
 
@@ -431,7 +432,7 @@ public class FightUIController : MonoBehaviour {
 
 
 		if (Input.GetKeyDown(KeyCode.A)) {
-
+            Debug.Log("FinalRound : " + finalRound);
 		}
 
 		if (Input.GetKeyDown(KeyCode.U)) {
@@ -516,7 +517,7 @@ public class FightUIController : MonoBehaviour {
 
 		fightController.FightEnd ();
 		ChangeStatus (FightStatus.FightEnd);
-		if (isResetGround) {
+		if (finalRound) {
 			ResetGround ();
 		} else {
 			NextRound ();
@@ -553,11 +554,11 @@ public class FightUIController : MonoBehaviour {
 	/// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
         conditionDown = new int[3]; 
-        isResetGround = !groundPool.NextRound();
 
-        if (isResetGround)
+        if (finalRound)
         {
             ResetGround();
+            return;
         }
         else {
             if (round < 4)
@@ -566,16 +567,21 @@ public class FightUIController : MonoBehaviour {
             }
             energe = 4 + round;
             SetEnergy();
-            fightController.ConditionDown(conditionDown);
         }
 
-		OnOpenButton ();
+        finalRound = !groundPool.NextRound();
+        fightController.ConditionDown(conditionDown);
+
+        OnOpenButton();
 
 		newRaycastData = new List<RaycastData> ();
 		CheckLockStatus ();
 
         ResetTemple();
-
+        if (finalRound)
+        {
+            fightController.OnBrust();
+        }
         ChangeStatus (FightStatus.RoundStart);
 	}
 
@@ -628,7 +634,7 @@ public class FightUIController : MonoBehaviour {
 		endCharaImage = SetChess(startGc);
 
 		if ((int)gc.GetComponent<GroundController> ()._groundType == 99) {
-			isResetGround = true;
+			finalRound = true;
 		}
 	}
 
@@ -706,7 +712,7 @@ public class FightUIController : MonoBehaviour {
 	private void TouchUp(bool isTouch = false){
         if ((startGc != null && startGc.defaultType == GroundType.Caution) || (endGc!=null && endGc.defaultType == GroundType.Caution))
         {
-            isResetGround = true;
+            finalRound = true;
         }
         if (endCharaImage != null) {
 			var result = CanvasManager.Instance.GetRaycastResult (isTouch);
@@ -742,6 +748,11 @@ public class FightUIController : MonoBehaviour {
                             ResetStatus();
                             ResetTemple();
                             specialRatio = ResetSpecialRatio(specialRatio);
+                            if (finalRound)
+                            {
+                                lockFinal = true;
+                                fightController.OnBrust();
+                            }
                         }
                         else
                         {
@@ -761,7 +772,10 @@ public class FightUIController : MonoBehaviour {
                                 }
                                 startGc.ResetType();
                             }
-                            isResetGround = false;
+                            if (!lockFinal)
+                            {
+                                finalRound = false;
+                            }
                             ResetStatus();
                             ResetTemple();
                         }
@@ -938,12 +952,13 @@ public class FightUIController : MonoBehaviour {
 
 		charaIdx = null;
 
-		isResetGround = false;
+		finalRound = false;
+        lockFinal = false;
 		spaceCorrect = false;
 		spaceCount = 0;
 
 		ResetStatus ();
-
+        ResetTemple();
 
 		while (_charaGroup.Count > 0) {
 			SetChess ();
@@ -964,7 +979,11 @@ public class FightUIController : MonoBehaviour {
         SetEnergy(true);
 
         RoundStart ();
-	}
+
+        CheckLockStatus();
+
+        ChangeStatus(FightStatus.RoundStart);
+    }
 
 	private void ResetStatus(){
 		startCharaImage = null;

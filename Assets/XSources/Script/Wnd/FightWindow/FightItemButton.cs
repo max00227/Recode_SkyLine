@@ -16,7 +16,7 @@ public class FightItemButton : MonoBehaviour {
         Enemy
     }
 
-    public Sprite[] boardSprites;
+    public TweenColor[] levelLight;
 
     public Image board;
 
@@ -25,6 +25,8 @@ public class FightItemButton : MonoBehaviour {
     public ButtonFaction buttonFaction;
 
     public Color[] conditionColor;
+
+    bool[] lightOpen = new bool[3];
 
 	[SerializeField]
 	FilledBarController hpBar;
@@ -140,11 +142,23 @@ public class FightItemButton : MonoBehaviour {
 
         if (level != null)
         {
-            //board.sprite = boardSprites[(int)level];
-        }
-        else
-        {
-            //board.sprite = boardSprites[0];
+            levelLight[(int)level - 1].PlayForward();
+            for(int i = 0; i < lightOpen.Length; i++)
+            {
+                if (i < level) { 
+                    if(lightOpen[i] == false) {
+                        levelLight[i].PlayForward();
+                        lightOpen[i] = true;
+                    }
+                }
+                else {
+                    if (lightOpen[i] == true)
+                    {
+                        levelLight[i].PlayReverse();
+                        lightOpen[i] = false;
+                    }
+                }
+            }
         }
     }
 

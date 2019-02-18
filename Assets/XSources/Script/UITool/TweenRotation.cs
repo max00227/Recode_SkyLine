@@ -43,28 +43,46 @@ public class TweenRotation : TweenUI {
 
 			Vector3 deltaV3 = from + (to - from) * mainAniCurve.Evaluate (oriTime / TweenTime);
 
-			transform.Rotate (deltaV3);
+            transform.rotation = Quaternion.Euler(deltaV3);
+            
 
-			if (runForward) {
-				if (oriTime >= TweenTime) {
-					isRun = false;
+            if (runForward)
+            {
+                if (oriTime >= TweenTime)
+                {
+                    if (!isLoop)
+                    {
+                        isRun = false;
 
-					if (runFinish != null) {
-						runFinish.Invoke (this);
-					}
-				}
-			}
-			else {
-				if (oriTime <= 0) {
-					if (isPopupWnd) {
-						showGameObject.SetActive (false);
-					}
-					isRun = false;
-					if (runFinish != null) {
-						runFinish.Invoke (this);
-					}
-				}
-			}
+                        if (runFinish != null)
+                        {
+                            runFinish.Invoke(this);
+                        }
+                    }
+                    else
+                    {
+                        recTime = Time.realtimeSinceStartup;
+                    }
+                }
+            }
+            else
+            {
+                if (oriTime <= 0)
+                {
+                    if (!isLoop)
+                    {
+                        isRun = false;
+                        if (runFinish != null)
+                        {
+                            runFinish.Invoke(this);
+                        }
+                    }
+                    else
+                    {
+                        recTime = Time.realtimeSinceStartup;
+                    }
+                }
+            }
 		}
 	}
 
