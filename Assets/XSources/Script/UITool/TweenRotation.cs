@@ -15,10 +15,6 @@ public class TweenRotation : TweenUI {
 
 	Vector3 orginV3;
 
-	public delegate void RunFinish(TweenRotation tt);
-
-	public RunFinish runFinish;
-
 	void Stop(){
 		isRun = false;
 		transform.Rotate (orginV3);
@@ -32,58 +28,57 @@ public class TweenRotation : TweenUI {
 	// Update is called once per frame
 	void Update () {
 		if (isRun == true) {
-			if (isPopupWnd) {
-				showGameObject.SetActive (true);
-			}
-			if (runForward) {
-				oriTime = Time.realtimeSinceStartup - recTime;
-			} else {
-				oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
-			}
-
-			Vector3 deltaV3 = from + (to - from) * mainAniCurve.Evaluate (oriTime / TweenTime);
-
-            transform.rotation = Quaternion.Euler(deltaV3);
-            
-
-            if (runForward)
+            if (delayFinish)
             {
-                if (oriTime >= TweenTime)
+                if (isPopup && popupGo != null)
                 {
-                    if (!isLoop)
-                    {
-                        isRun = false;
+                    popupGo.SetActive(true);
+                }
+                CalOriTime();
 
-                        if (runFinish != null)
+                Vector3 deltaV3 = from + (to - from) * mainAniCurve.Evaluate(oriTime / TweenTime);
+
+                transform.rotation = Quaternion.Euler(deltaV3);
+
+
+                if (runForward)
+                {
+                    if (oriTime >= TweenTime)
+                    {
+                        if (!isLoop)
                         {
-                            runFinish.Invoke(this);
+                            TweenEnd();
+                        }
+                        else
+                        {
+                            ResetRecTime();
                         }
                     }
-                    else
+                }
+                else
+                {
+                    if (oriTime <= 0)
                     {
-                        recTime = Time.realtimeSinceStartup;
+                        if (!isLoop)
+                        {
+                            TweenEnd();
+                        }
+                        else
+                        {
+                            ResetRecTime();
+                        }
                     }
                 }
             }
-            else
-            {
-                if (oriTime <= 0)
+            else {
+                oriTime = Time.realtimeSinceStartup - recTime;
+                if (oriTime >= delay)
                 {
-                    if (!isLoop)
-                    {
-                        isRun = false;
-                        if (runFinish != null)
-                        {
-                            runFinish.Invoke(this);
-                        }
-                    }
-                    else
-                    {
-                        recTime = Time.realtimeSinceStartup;
-                    }
+                    recTime = Time.realtimeSinceStartup;
+                    delayFinish = true;
                 }
             }
-		}
+        }
 	}
 
 	public void SetFromAndTo(Vector3 f, Vector3 t){
@@ -92,7 +87,12 @@ public class TweenRotation : TweenUI {
 	}
 
 
-	public void resetPosition(){
-		transform.Rotate (from);
-	} 
+    public override void Reset()
+    {
+        transform.Rotate (from);
+        if (isPopup && popupGo != null)
+        {
+            popupGo.SetActive(false);
+        }
+    }
 }

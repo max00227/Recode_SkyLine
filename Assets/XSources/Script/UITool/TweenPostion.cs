@@ -36,10 +36,6 @@ public class TweenPostion : TweenUI {
 
 	float parabolaPower;
 
-    public delegate void RunFinish(TweenPostion tt);
-
-	public RunFinish runFinish;
-
 	void Stop(){
 		isRun = false;
 			
@@ -55,14 +51,11 @@ public class TweenPostion : TweenUI {
 	// Update is called once per frame
 	void Update () {
 		if (isRun == true) {
-			if (isPopupWnd) {
-				showGameObject.SetActive (true);
-			}
-			if (runForward) {
-				oriTime = Time.realtimeSinceStartup - recTime;
-			} else {
-				oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
-			}
+            if (isPopup && popupGo != null)
+            {
+                popupGo.SetActive(true);
+            }
+            CalOriTime();
 
             Vector3 deltaV3;
 			if (tweenType == TweenType.Normal)
@@ -82,24 +75,18 @@ public class TweenPostion : TweenUI {
 
 			if (runForward) {
 				if (oriTime >= TweenTime) {
-					isRun = false;
-
-					if (runFinish != null) {
-						runFinish.Invoke (this);
-					}
-				}
-			}
+                    TweenEnd();
+                }
+            }
 			else {
 				if (oriTime <= 0) {
-					if (isPopupWnd) {
-						showGameObject.SetActive (false);
-					}
-					isRun = false;
-					if (runFinish != null) {
-						runFinish.Invoke (this);
-					}
-				}
-			}
+                    if (isPopup && popupGo != null)
+                    {
+                        popupGo.SetActive(false);
+                    }
+                    TweenEnd();
+                }
+            }
 		}
 	}
 
@@ -134,9 +121,14 @@ public class TweenPostion : TweenUI {
 
 
 
-    public void resetPosition(){
-		transform.localPosition = from;
-	} 
+    public override void Reset()
+    {
+        transform.localPosition = from;
+        if (isPopup && popupGo != null)
+        {
+            popupGo.SetActive(false);
+        }
+    } 
 
 	[Serializable]
 	struct PowerRange{

@@ -15,11 +15,6 @@ public class TweenColor : TweenUI
     
     Color orginClr;
 
-    public delegate void RunFinish(TweenColor tc);
-
-    public RunFinish runFinish;
-
-
     public void Stop(Color? stopColor = null)
     {
         isRun = false;
@@ -37,53 +32,50 @@ public class TweenColor : TweenUI
     {
         if (isRun == true)
         {
-            if (runForward)
+            if (delayFinish)
             {
-                oriTime = Time.realtimeSinceStartup - recTime;
-            }
-            else
-            {
-                oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
-            }
+                CalOriTime();
 
-            Color color = from + (to - from) * mainAniCurve.Evaluate(oriTime / TweenTime);
+                Color color = from + (to - from) * mainAniCurve.Evaluate(oriTime / TweenTime);
 
-            image.color = color;
+                image.color = color;
 
-            if (runForward)
-            {
-                if (oriTime >= TweenTime)
+                if (runForward)
                 {
-                    if (!isLoop)
+                    if (oriTime >= TweenTime)
                     {
-                        isRun = false;
-
-                        if (runFinish != null)
+                        if (!isLoop)
                         {
-                            runFinish.Invoke(this);
+                            TweenEnd();
+                        }
+                        else
+                        {
+                            ResetRecTime();
                         }
                     }
-                    else
+                }
+                else
+                {
+                    if (oriTime <= 0)
                     {
-                        recTime = Time.realtimeSinceStartup;
+                        if (!isLoop)
+                        {
+                            TweenEnd();
+                        }
+                        else
+                        {
+                            ResetRecTime();
+                        }
                     }
                 }
             }
             else
             {
-                if (oriTime <= 0)
+                oriTime = Time.realtimeSinceStartup - recTime;
+                if (oriTime >= delay)
                 {
-                    if (!isLoop)
-                    {
-                        isRun = false;
-                        if (runFinish != null)
-                        {
-                            runFinish.Invoke(this);
-                        }
-                    }
-                    else {
-                        recTime = Time.realtimeSinceStartup;
-                    }
+                    recTime = Time.realtimeSinceStartup;
+                    delayFinish = true;
                 }
             }
         }
@@ -102,7 +94,7 @@ public class TweenColor : TweenUI
     }
 
 
-    public void resetPosition()
+    public void Reset()
     {
         image.color = from;
     }

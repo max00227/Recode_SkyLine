@@ -71,7 +71,7 @@ public class WindowManager : Singleton<WindowManager> {
 		} 
 
 		if (isPopup) {
-			popupWndPool.GetComponent<TweenPostion> ().showGameObject = window.gameObject;
+			popupWndPool.GetComponent<TweenPostion> ().SetPopupGameObject(window.gameObject);
 			popupWndPool.GetComponent<TweenPostion> ().PlayForward ();
 		} 
 		else {

@@ -164,12 +164,12 @@ public class FightSEController : MonoBehaviour {
     }
 
 
-	private void OnRunFinish(TweenPostion tp = null){
+	private void OnRunFinish(TweenUI tp = null){
 		AllReset ();
 
 		if (tp != null) {
 			tp.gameObject.SetActive (false);
-			tp.resetPosition ();
+			tp.Reset ();
 			tp.runFinish = null;
 		}
 

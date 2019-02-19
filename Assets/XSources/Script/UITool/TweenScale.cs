@@ -11,14 +11,7 @@ public class TweenScale : TweenUI {
 	[SerializeField]
 	bool isRoop;
 
-	[SerializeField]
-	bool isPopupWnd = false;
-
 	Vector3 orginV3;
-
-	public delegate void RunFinish(TweenScale tt);
-
-	public RunFinish runFinish;
 
     void Stop(){
 		isRun = false;
@@ -33,39 +26,29 @@ public class TweenScale : TweenUI {
 	// Update is called once per frame
 	void Update () {
 		if (isRun == true) {
-			if (isPopupWnd) {
-				showGameObject.SetActive (true);
+            if (isPopup && popupGo != null)
+            {
+                popupGo.SetActive (true);
 			}
-			if (runForward) {
-				oriTime = Time.realtimeSinceStartup - recTime;
-			} else {
-				oriTime = TweenTime - (Time.realtimeSinceStartup - recTime);
-			}
+            CalOriTime();
 
-			Vector3 deltaV3 = from + (to - from) * mainAniCurve.Evaluate (oriTime / TweenTime);
+            Vector3 deltaV3 = from + (to - from) * mainAniCurve.Evaluate (oriTime / TweenTime);
 
 			transform.localScale = deltaV3;
 
 			if (runForward) {
 				if (oriTime >= TweenTime) {
-					isRun = false;
-
-					if (runFinish != null) {
-						runFinish.Invoke (this);
-					}
+                    TweenEnd();
 				}
 			}
 			else {
 				if (oriTime <= 0) {
-					if (isPopupWnd) {
-						showGameObject.SetActive (false);
-					}
-					isRun = false;
-					if (runFinish != null) {
-						runFinish.Invoke (this);
-					}
-				}
-			}
+                    if (isPopup && popupGo != null){
+                        popupGo.SetActive(false);
+                    }
+                    TweenEnd();
+                }
+            }
 		}
 	}
 
@@ -75,7 +58,11 @@ public class TweenScale : TweenUI {
     }
 
 
-	public void resetPosition(){
+	public override void Reset(){
 		transform.localScale = from;
-	} 
+        if (isPopup && popupGo != null)
+        {
+            popupGo.SetActive(false);
+        }
+    } 
 }
