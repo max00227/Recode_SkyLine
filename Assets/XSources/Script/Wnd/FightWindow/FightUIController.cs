@@ -314,55 +314,45 @@ public class FightUIController : MonoBehaviour {
 		fightController.FightStart (lockCount != 0);
 	}
 
-	public void OnShowFight(List<DamageData> allDamage){
-		StartCoroutine (OnShowAllFight (allDamage));
+	public void OnShowFight(DamageData damageData){
+		StartCoroutine (OnShowAllFight (damageData));
 	}
 
-	private IEnumerator OnShowAllFight(List<DamageData> allDamage){
-		for (int i = 0; i < allDamage.Count; i++) {
-			FightItemButton target = null;
-			Vector3 orgPos = allDamage[i].tType[0] == "P" ? playerButtonPos [allDamage [i].orgIdx] : enemyButtonPos [allDamage [i].orgIdx];
+    private IEnumerator OnShowAllFight(DamageData damageData)
+    {
+        FightItemButton target = null;
+        Vector3 orgPos = damageData.tType[0] == "P" ? playerButtonPos[damageData.orgIdx] : enemyButtonPos[damageData.orgIdx];
 
-			//當TargetIdx重複時會加10，此時需要減去10
-			int minusCount = allDamage [i].targetIdx >= 10 ? 10 : 0;
+        //當TargetIdx重複時會加10，此時需要減去10
+        int minusCount = damageData.targetIdx >= 10 ? 10 : 0;
 
-			target = allDamage[i].tType[1] == "P" ? playerButton [allDamage [i].targetIdx - minusCount] : enemyButton [allDamage [i].targetIdx - minusCount];
-			Vector3 targetPos = allDamage[i].tType[1] == "P" ? uniteHpBar.transform.localPosition : enemyButtonPos [allDamage [i].targetIdx - minusCount];
+        target = damageData.tType[1] == "P" ? playerButton[damageData.targetIdx - minusCount] : enemyButton[damageData.targetIdx - minusCount];
+        Vector3 targetPos = damageData.tType[1] == "P" ? uniteHpBar.transform.localPosition : enemyButtonPos[damageData.targetIdx - minusCount];
 
-            for (int j = 0; j < allDamage[i].damage.Length; j++)
+        for (int i = 0; i < damageData.damage.Length; i++)
+        {
+            FightSEController gse = SEPool.Dequeue();
+            gse.SetAttackShow(orgPos, targetPos, i, target, damageData);
+            gse.onRecycleDamage = ShowFightEnd;
+            gse.gameObject.SetActive(true);
+            gse.Run();
+            if (i == 0)
             {
-                FightSEController gse = SEPool.Dequeue();
-                gse.SetAttackShow(orgPos, targetPos, j, target, allDamage[i]);
-                gse.onRecycleDamage = ShowFightEnd;
-                gse.gameObject.SetActive(true);
-                gse.Run();
-                if (j == 0)
-                {
-                    if (allDamage[i].damage.Length == 1)
-                    {
-                        yield return new WaitForSeconds(0.3f);//該名角色最後攻擊所需時間
-                    }
-                    yield return new WaitForSeconds(0.1f);//該名角色的物理及魔法攻擊的顯示間隔
-                }
-                else
+                if (damageData.damage.Length == 1)
                 {
                     yield return new WaitForSeconds(0.3f);//該名角色最後攻擊所需時間
                 }
+                yield return new WaitForSeconds(0.1f);//該名角色的物理及魔法攻擊的顯示間隔
             }
+            else
+            {
+                yield return new WaitForSeconds(0.3f);//該名角色最後攻擊所需時間
+            }
+        }
 
-			if (i == 0) {
-				if (allDamage.Count == 1) {
-					yield return new WaitForSeconds (0.5f);//該名角色最後攻擊所需時間
-				}
-				yield return new WaitForSeconds (0.2f);//該名角色的物理及魔法攻擊的顯示間隔
-			} 
-			else {
-				yield return new WaitForSeconds (0.5f);//該名角色最後攻擊所需時間
-			}
-		}
 
-		fightController.OnTriggerSkill (allDamage);
-	}
+        //fightController.OnTriggerSkill (allDamage);
+    }
 
 
 
@@ -522,6 +512,8 @@ public class FightUIController : MonoBehaviour {
 		} else {
 			NextRound ();
 		}
+
+        SetDeathIcon();
 	}
 
 
@@ -554,20 +546,12 @@ public class FightUIController : MonoBehaviour {
 	/// <param name="isSpace">是否擺放角色</param>
 	private void NextRound(bool isSpace = true){
         conditionDown = new int[3]; 
-
-        if (finalRound)
+        if (round < 4)
         {
-            ResetGround();
-            return;
+            round++;
         }
-        else {
-            if (round < 4)
-            {
-                round++;
-            }
-            energe = 4 + round;
-            SetEnergy();
-        }
+        energe = 4 + round;
+        SetEnergy();
 
         finalRound = !groundPool.NextRound();
         fightController.ConditionDown(conditionDown);
@@ -583,6 +567,8 @@ public class FightUIController : MonoBehaviour {
             fightController.OnBrust();
         }
         ChangeStatus (FightStatus.RoundStart);
+
+
 	}
 
 	private void RoundEnd()
@@ -753,6 +739,7 @@ public class FightUIController : MonoBehaviour {
                                 lockFinal = true;
                                 fightController.OnBrust();
                             }
+                            SetDeathIcon();
                         }
                         else
                         {
@@ -969,6 +956,7 @@ public class FightUIController : MonoBehaviour {
 			fightController.SetResetRatio (Mathf.CeilToInt(resetGroundCount/2));
 		}
         else {
+            SetDeathIcon();
             fightInit = false;
         }
 
@@ -1162,7 +1150,11 @@ public class FightUIController : MonoBehaviour {
         }
     }
 
-	private void CreateSE(){
+    private void SetDeathIcon() {
+        fightController.PrevDeathDamage();
+    }
+
+    private void CreateSE(){
 		showItemCount += 16;
 		for (int i = 0; i < 16; i++)
 		{

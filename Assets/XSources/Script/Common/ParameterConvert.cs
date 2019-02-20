@@ -12,13 +12,9 @@ public class ParameterConvert {
 
 		charaAbility.Add ("Atk", (int)Mathf.Ceil (data.abilitys["Atk"] * radio));
 		charaAbility.Add ("Def", (int)Mathf.Ceil (data.abilitys["Def"] * radio));
-		charaAbility.Add ("mAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
-		charaAbility.Add ("mDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
+		charaAbility.Add ("sAtk", (int)Mathf.Ceil (data.abilitys["sAtk"] * radio));
+		charaAbility.Add ("Spc", (int)Mathf.Ceil (data.abilitys["Spc"] * radio));
 		charaAbility.Add ("Hp", (int)Mathf.Ceil (data.abilitys["Hp"] * radio));
-        if (data.job == 2 || data.job == 4)
-        {
-            charaAbility.Add("Spc", (int)Mathf.Ceil(data.abilitys["Spc"] * radio));
-        }
 
         return charaAbility;
 	}
@@ -32,8 +28,8 @@ public class ParameterConvert {
 
 		monsterAbility.Add ("Atk", (int)Mathf.Ceil (data.abilitys["Atk"] * radio));
 		monsterAbility.Add ("Def", (int)Mathf.Ceil (data.abilitys["Def"] * radio));
-		monsterAbility.Add ("mAtk", (int)Mathf.Ceil (data.abilitys["mAtk"] * radio));
-		monsterAbility.Add ("mDef", (int)Mathf.Ceil (data.abilitys["mDef"] * radio));
+		monsterAbility.Add ("sAtk", (int)Mathf.Ceil (data.abilitys["sAtk"] * radio));
+		monsterAbility.Add ("Spc", (int)Mathf.Ceil (data.abilitys["Spc"] * radio));
 		monsterAbility.Add ("Hp", (int)Mathf.Ceil (data.abilitys["Hp"] * radio));
 
 		return monsterAbility;

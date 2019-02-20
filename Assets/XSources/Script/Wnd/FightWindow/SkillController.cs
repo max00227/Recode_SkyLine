@@ -216,43 +216,6 @@ public class SkillController : MonoBehaviour {
                     meets[i] = allDamage.Count > 0;
                     parameter = GetDamage(allDamage);
                     break;
-                case (int)Rule.norDmgP:
-                    if (allDamage.Count > 0 && allDamage[0].damageType == DamageType.Physical)
-                    {
-                        meets[i] = true;
-                        parameter = allDamage[0].damage.Sum();
-                    }
-                    else
-                    {
-                        meets[i] = false;
-                    }
-                    break;
-                case (int)Rule.norDmgM:
-                    //兩種傷害時，傷害一 物理：傷害二 魔法
-                    if (allDamage.Count == 2)
-                    {
-                        meets[i] = true;
-                        parameter = allDamage[1].damage.Sum();
-                    }
-                    //但種傷害時，因傷害一可能為物理傷害，所以必須檢查
-                    else if (allDamage.Count == 1)
-                    {
-                        if (allDamage[0].damageType == DamageType.Magic)
-                        {
-                            meets[i] = true;
-                            parameter = allDamage[0].damage.Sum();
-                        }
-                        else
-                        {
-                            meets[i] = false;
-                        }
-                    }
-                    else
-                    {
-                        meets[i] = false;
-
-                    }
-                    break;
             }
         }
 		if (data.isOr) {

@@ -142,7 +142,6 @@ public class FightItemButton : MonoBehaviour {
 
         if (level != null)
         {
-            levelLight[(int)level - 1].PlayForward();
             for(int i = 0; i < lightOpen.Length; i++)
             {
                 if (i < level) { 
